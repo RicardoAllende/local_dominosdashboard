@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Domino´s</title>
+  
+  <!-- Load c3.css -->
+    <link href="libs/c3.css" rel="stylesheet" type="text/css">
+    
+    
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+   
+    
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="libs/c3.js"></script>
+    <script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
+    <script src="app.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  
+  
+
+  <!-- Custom styles for this template -->
+  <link href="css/simple-sidebar.css" rel="stylesheet">
+  
+  <link href="estilos.css" rel="stylesheet">
+  
+  
+
+</head>
+
+<body>
+
+  <div class="d-flex" id="wrapper">
+
+    <!-- Sidebar -->
+    <div class="border-right" id="sidebar-wrapper">
+      <div class="sidebar-heading">Filtros </div>
+      <div class="list-group list-group-flush">
+                    <div id="accordion" align="right">
+              <div class="card">
+                <div class="card-header" id="headingOne">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      Nacional <input type="checkbox">
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                  <!--<div class="card-body">
+                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                  </div>-->
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" id="headingTwo">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      Regional <input type="checkbox">
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                  <div class="card-body">
+                    <p>Centro Norte <input type="checkbox"></p>
+                    <p>Centro Sur <input type="checkbox"></p>
+                    <p>Puebla-Veracruz <input type="checkbox"></p>
+                    <p>Occidente <input type="checkbox"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" id="headingThree">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      Distrital <input type="checkbox">
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                  <!--<div class="card-body">
+                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                  </div>-->
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" id="headingFour">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                      Entrenador <input type="checkbox">
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+                  <!--<div class="card-body">
+                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                  </div>-->
+                </div>
+              </div>
+              
+              <div class="card">
+                <div class="card-header" id="headingFive">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseThree">
+                      Tienda <input type="checkbox">
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordion">
+                  <!--<div class="card-body">
+                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                  </div>-->
+                </div>
+              </div>             
+              
+              <div class="card">
+                <div class="card-header" id="headingSix">
+                  <h5 class="mb-0">
+                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                      Resultado acumulado <input type="checkbox">
+                    </button>
+                  </h5>
+                </div>
+                <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordion">
+                  <!--<div class="card-body">
+                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                  </div>-->
+                </div>
+              </div>
+              
+            </div>
+      </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+
+      <nav class="navbar navbar-expand-lg navbar-light border-bottom" id="nav">
+        <button class="btn btn-primary" id="menu-toggle">Filtros</button>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="nav justify-content-center nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Cruce de indicadores</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Programas de entrenamiento</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Lanzamientos y campañas</a>
+              </li>
+            </ul>            
+        </div>
+        
+      </nav>
+      
+      <div class="tab-content" id="myTabContent">
+             
+             <!--Cruce de indicadores-->
+             
+             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                 <div class="titulo">
+                        <h1 style="text-align: center;">Cruce de indicadores</h1>
+                 </div>
+                 <div style="text-align: center;">
+                       <div class="grafica">
+                          <div class="titulog">
+                           <h1 style="text-align: center;">Programa 0-90 vs % Rotación</h1>
+                           </div>
+                           <div id="chart"></div>
+                       </div>
+                       <a href="Dashboard.html"><button type="button" class="btn btn-success">Dashboard</button></a>
+        
+                </div>
+                  
+                                  
+              </div>
+              
+              <!--Programas de entrenamiento-->
+              
+              <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                 
+                 <div class="titulo">
+                        <h1 style="text-align: center;">Programas de entrenamiento</h1>
+                 </div> 
+                  <div class="container">
+           <div class="row"> 
+           <div class="col-4" id="cards">
+                    <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                  <div class="card-body align-items-end">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                    <a href="Grafica.html" class="btn btn-primary">Entrenamiento nuevos ingresos inducción</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="col-4" id="cards">
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;"> 
+                    <!--<div id="chart"></div>--> 
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                  <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Entrenamiento sentido de pertenencia</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="col-4" id="cards">
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Certificación PPP</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4" id="cards">
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                  <div class="card-body align-items-end">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                    <a href="Grafica.html" class="btn btn-primary">Ruta Domino´s</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="col-4" id="cards">
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                    <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Certificación ERS</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="col-4" id="cards">
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Certificación RSC</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="row">
+           <div class="col-4" id="cards">
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                  <div class="card-body align-items-end">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                    <a href="Grafica.html" class="btn btn-primary">Entrenamiento Gerencial Formación de Supervisor</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="col-4" id="cards">
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                  <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Entrevista básico Norma 251</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="col-4" id="cards">       
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Formación Subgerente</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="row">
+           <div class="col-4" id="cards">
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                  <div class="card-body align-items-end">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                    <a href="Grafica.html" class="btn btn-primary">Seguridad y salud</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="col-4" id="cards">
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                  <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Formación gerente</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="col-4" id="cards">
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">
+                   <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                    <div class="card-body">
+                        <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Entrenamiento franquicias Staff general</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            </div>   
+            </div>                 
+            </div>
+             
+             <!--Lanzamiento y campañas-->
+             
+              <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                 <div class="titulo">
+                        <h1 style="text-align: center;">Lanzamientos y campañas</h1>
+                 </div>
+                  
+                  <div class="container">
+           <div class="row"> 
+           <div class="col-4" id="cards">          
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">              
+                    <!--<div id="chart"></div>--> 
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">             
+                  <div class="card-body align-items-end">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                    <a href="Grafica.html" class="btn btn-primary">Campañas seguridad y salud</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            <div class="col-4" id="cards">          
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">              
+                   <!-- <div id="chart2"></div> -->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">            
+                  <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Servicio</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            <div class="col-4" id="cards">          
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">              
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">              
+                <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Calidad</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            </div>
+            
+            <div class="row"> 
+           <div class="col-4" id="cards">          
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">              
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">              
+                  <div class="card-body align-items-end">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                    <a href="Grafica.html" class="btn btn-primary">Cursos en línea Alsea Anticorrupción</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            <div class="col-4" id="cards">          
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">              
+                    <!--<div id="chart"></div>--> 
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">              
+                  <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Privacidad de Datos</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            <div class="col-4" id="cards">          
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">              
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">              
+                <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Certificaciones Liderazgo con enfoque humano</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            </div>
+            
+            <div class="row"> 
+           <div class="col-4" id="cards">          
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">              
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">              
+                  <div class="card-body align-items-end">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                    <a href="Grafica.html" class="btn btn-primary">Gerente dueño</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            <div class="col-4" id="cards">          
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">              
+                    <!--<div id="chart"></div>--> 
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">              
+                  <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Certificaciones ICA Champion</a>
+                    </div>
+                  </div>
+                </div>
+            </div>           
+            
+            
+            </div>           
+            
+            
+      </div>
+                      
+              </div>
+            </div>
+      
+            
+      
+      </div>
+    
+
+  </div>
+  <br>
+  <br>
+  <!-- /#wrapper -->
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Menu Toggle Script -->
+  <script>
+    $("#menu-toggle").click(function(e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+    });
+  </script>
+
+</body>
+
+</html>

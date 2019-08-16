@@ -1,0 +1,36 @@
+Reporte de casos históricos por tienda  OK                  al convertir desde excel a .csv
+Reporte Scorecard                       OK                  al convertir desde excel a .csv
+Rerpote OPS México                      Error al conectar
+
+Campos agregados por yo Fabián en Layout_usuarios.csv
+puesto	sexo	rfc	numempleado	ingreso	nacimiento	idpuesto	ccosto	turno	curp	tiendadp	distritodp	ciadp	regiondp
+
+
+Configuración de los KPIS
+
+Reporte de casos histórico por tienda: relacionado con la tienda, entonces regresar filtro de tienda
+
+
+
+
+
+En PHP, ¿qué usarías para compartir la implementación de un método entre clases que no son parte de la misma cadena de herencia?
+¿Cómo usas traits en una clase?
+
+
+
+
+Pregunta acerca de los filtros: dónde estarán agregados, si es como campo de perfil de usuario
+
+Cómo hacen el cruzamiento de la información con los kpis
+
+Qué información será necesaria para mostrar en las gráficas, únicamente el indicador
+
+Estructura del histórico:
+    Será evolución de los valores cada cierto periodo de tiempo
+
+
+Formato de los .csv que se cargaran en la plataforma, si se exportarán directamente del archivo en excel para después
+
+
+Dudas que se tienen de la implementación de loa

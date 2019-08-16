@@ -1,0 +1,88 @@
+/* Cards */
+#cardsg {
+    background: white;    
+    border: #016392 3px solid;   
+}
+
+/* Texto que aparece al final de la card */
+.fincard {
+    background-color: #016392;
+    padding-top: 10px;
+    margin-top: 10px;
+}
+.fincard a {
+    color: white;
+}
+
+.fincard a:hover {
+    color: white;
+}
+
+/* Margen entre cada row */
+.margencard {
+    margin-top: 20px;
+}
+
+/* Header filtro */
+#filtros {
+    text-align: center;
+}
+
+/* Cuerpo de los filtros */
+.cuerpo-filtro {
+    background-color: #016392;
+}
+
+/* Subgrupo del filtro */
+.subgrupo-filtro {
+    background-color: #1e8abb;    
+}
+.subfiltro {
+    color: white;
+}
+
+/* texto del filtro */
+.texto-filtro {
+    color: white;
+}
+.texto-filtro:hover {
+    color: white;
+}
+
+.subfiltro {
+    color: white;
+}
+
+/* Pestañas */
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    color: white;
+    background-color: #016392;
+    border-color: transparent;
+}
+.nav-tabs .nav-link {
+    border: 0px;
+    background-color: red;
+    color: white;
+}
+
+/* Titulo de cada tab content */
+.titulo {
+    background-color: #016392;
+    color: white;
+    padding-bottom: 5px;
+}
+.titulog {
+    background-color: #d70c20;
+    color: white;
+    padding-bottom: 5px;
+}
+
+.numero {
+    font-size: 40px;
+}
+
+#texton {
+    font-size: 20px;
+}
+
+
