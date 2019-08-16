@@ -49,6 +49,20 @@ function local_dominosdashboard_extend_navigation(global_navigation $nav) {
             get_string('pluginname', 'local_dominosdashboard'),
             new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/dashboard.php' )
         );
+        if(LOCALDOMINOSDASHBOARD_DEBUG){
+            $node = $nav->add (
+                'Configuración ' . get_string('pluginname', 'local_dominosdashboard'),
+                new moodle_url( $CFG->wwwroot . '/admin/settings.php?section=local_dominosdashboard' )
+            );
+            $node = $nav->add (
+                'Prueba de peticiones por curso',
+                new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/dashboard.php' )
+            );
+            $node = $nav->add (
+                'Prueba de peticiones por pestaña',
+                new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/todos_los_cursos.php' )
+            );
+        }
         $node->showinflatnavigation = true;
     }
 }
@@ -412,6 +426,26 @@ function local_dominosdashboard_get_courses_with_filter(bool $allCourses = false
             break;
         
         case LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON: // Cruce de kpis KPI_NA
+            $kpis = local_dominosdashboard_get_KPIS();
+            $wherecourseidin = array();
+
+            foreach($kpis as $key => $kpi){
+                $name = 'kpi_' . $key;
+                if( $config = get_config('local_dominosdashboard', $name)){
+                    array_push($wherecourseidin, $config);
+                }
+                // $title = get_string('kpi_relation', $ldm_pluginname) . ': ' . $kpi;
+                // $description = get_string('kpi_relation' . '_desc', $ldm_pluginname);        
+                // $setting = new admin_setting_configmultiselect($name, $title, $description, array(), $courses_min);
+                // $page->add($setting);
+            }
+            if(!empty($wherecourseidin)){
+                $wherecourseidin = implode(',', $wherecourseidin);
+                $where = " AND id IN ({$wherecourseidin}) ";
+                return local_dominosdashboard_get_courses($allCourses, $where);
+            }
+            return array();
+
             return array_filter(local_dominosdashboard_get_courses($allCourses), function ($element){
                 $config = get_config('local_dominosdashboard', 'course_kpi_' . $element->id);
                 $result = ($config !== false && $config != KPI_NA);
@@ -428,7 +462,7 @@ function local_dominosdashboard_get_courses_with_filter(bool $allCourses = false
 /**
  * @return array
  */
-function local_dominosdashboard_get_courses_overview(int $type, bool $allCourses = false){
+function local_dominosdashboard_get_courses_overview(int $type, array $params = array(), bool $allCourses = false){
     $courses = local_dominosdashboard_get_courses_with_filter($allCourses, $type);
     $courses_in_order = array();
     switch ($type) {
@@ -437,9 +471,9 @@ function local_dominosdashboard_get_courses_overview(int $type, bool $allCourses
         case LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON: // Cruce de kpis
             foreach($courses as $course){
                 if($type === LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON){
-                    $course_information = local_dominosdashboard_get_course_information($course->id, $course->fullname, true, array());
+                    $course_information = local_dominosdashboard_get_course_information($course->id, $course->fullname, true, $params);
                 }else{
-                    $course_information = local_dominosdashboard_get_course_information($course->id, $course->fullname, false, array());
+                    $course_information = local_dominosdashboard_get_course_information($course->id, $course->fullname, false, $params);
                 }
                 if(empty($course_information)){
                     continue;

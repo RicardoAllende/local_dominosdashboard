@@ -38,11 +38,17 @@ $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 echo $OUTPUT->header();
 echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>";
 
-$courses = local_dominosdashboard_get_courses();
+// $courses = local_dominosdashboard_get_courses();
 
 // _print($course_elearning = local_dominosdashboard_get_courses_overview(LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO));
 // _print($classroom = local_dominosdashboard_get_courses_overview(LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS));
 // _print($comparison = local_dominosdashboard_get_courses_overview(LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON));
+
+$tabOptions = [
+    LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO => 'Campañas',
+    LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS => 'Campañas',
+    LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON => 'Comparación de kpis',
+];
 
 $indicators = local_dominosdashboard_get_indicators();
 ?>
@@ -57,13 +63,13 @@ $indicators = local_dominosdashboard_get_indicators();
             echo "<span type=\"checkbox\" class=\"btn btn-info uncheck_indicators\" data-indicator=\"indicator_{$indicator}\" value=\"1\">Desmarcar todas</span>";
             echo "<span type=\"checkbox\" class=\"btn btn-success check_indicators\" data-indicator=\"indicator_{$indicator}\" value=\"1\">Marcar todas</span><br>";
         }
-        echo "<br><select class='form-control course-selector' name='courseid'>";
-        foreach($courses as $course){
-            echo "<option value='{$course->id}'>{$course->id} -> {$course->fullname}</option>";
+        echo "<br><select class='form-control tab-selector' name='type'>";
+        foreach($tabOptions as $key => $option){
+            echo "<option value='{$key}'>{$key} -> {$option}</option>";
         }
         echo "</select>";
         ?>
-        <input type="hidden" name="request_type" value="course_completion"><br><br>
+        <input type="hidden" name="request_type" value="course_list"><br><br>
         <span class="btn btn-info" onclick="obtenerGraficas()">Volver a simular obtención de gráficas</span>
     </form>
     <div class="col-12 col-lg-6" id="local_dominosdashboard_content"></div>
@@ -84,7 +90,7 @@ $indicators = local_dominosdashboard_get_indicators();
                     obtenerGraficas();
                 });
                 // function 
-                $('.course-selector').change(function(){
+                $('.tab-selector').change(function(){
                     obtenerGraficas();
                 });
                 $('.uncheck_indicators').click(function(){
@@ -116,6 +122,7 @@ $indicators = local_dominosdashboard_get_indicators();
             $('#local_dominosdashboard_content').html(JSON.stringify(data));
         })
         .fail(function(error, error2) {
+            console.log("Petición enviada", informacion);
             console.log(error);
             console.log(error2);
         });

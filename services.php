@@ -28,7 +28,6 @@
 header("Content-Type: application/json");
 require_once(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/lib.php');
-// die("elements");
 if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
     // die(local_dominosdashboard_format_response($_POST));
     $request_type = $_POST['request_type'];
@@ -39,7 +38,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
                 $catalogue_name = $_POST['catalogue_name'];
                 die(local_dominosdashboard_format_response(local_dominosdashboard_get_catalogue($catalogue_name)));
             }else{
-                die(local_dominosdashboard_error_response());
+                die(local_dominosdashboard_error_response('catalogue_name (string) not found'));
             }
             break;
         case 'course_completion':
@@ -48,16 +47,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
                 _log("Parámetros enviados", $_POST);
                 die(local_dominosdashboard_format_response(local_dominosdashboard_get_course_information($courseid,  $coursename = "",  $get_kpi_comparison = false,  $params = $_POST)));
             }else{
-                die(local_dominosdashboard_error_response());
+                die(local_dominosdashboard_error_response("courseid (int) not found"));
             }
             break;
         case 'course_list':
             if(!empty($_POST['type'])){
-                die(local_dominosdashboard_format_response(local_dominosdashboard_get_courses_overview($_POST['type'])));
-                $courseid = $_POST['list'];
-                die(local_dominosdashboard_format_response(local_dominosdashboard_get_approved_users($courseid)));
+                die(local_dominosdashboard_format_response(local_dominosdashboard_get_courses_overview($_POST['type'], $_POST)));
             }else{
-                die(local_dominosdashboard_error_response());
+                die(local_dominosdashboard_error_response('type (int) not found'));
             }
             break;
         default:
