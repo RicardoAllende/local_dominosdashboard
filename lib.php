@@ -110,15 +110,20 @@ DEFINE('DOMINOSDASHBOARD_INDICATORS', 'regiones/distritos/entrenadores/tiendas/p
 DEFINE('DOMINOSDASHBOARD_CHARTS', 'bar/donut/chart3/chart4');
 
 
-function local_dominosdashboard_relate_column_with_fields(string $column, array $requiredFields){
+function local_dominosdashboard_relate_column_with_fields(array $columns, array $requiredFields){
     $response = array();
     foreach($requiredFields as $field){
         // $response[]
-        if(strpos($columns, $field) === false){
-            return false;
+        // $pos = strpos($columns, $field);
+        $pos = array_search($field, $columns);
+        if($pos === false){
+            _log("la clave no encontrada es: ", $field);
+            return false; // No se tienen las claves necesarias
+        }else{
+            $response[$field] = $pos;
         }
     }
-    return true;
+    return $response;
 }
 
 function local_dominosdashboard_check_column_has_one_of_fields(string $columns, $options){
@@ -128,6 +133,7 @@ function local_dominosdashboard_check_column_has_one_of_fields(string $columns, 
             $found = true;
         }
     }
+    return $found;
 }
 
 // function uu_validate_user_upload_columns(csv_import_reader $cir, $stdfields, $profilefields, moodle_url $returnurl) {
