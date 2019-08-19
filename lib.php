@@ -54,16 +54,18 @@ function local_dominosdashboard_extend_navigation(global_navigation $nav) {
                 'Configuración ' . get_string('pluginname', 'local_dominosdashboard'),
                 new moodle_url( $CFG->wwwroot . '/admin/settings.php?section=local_dominosdashboard' )
             );
+            $node->showinflatnavigation = true;
             $node = $nav->add (
-                'Prueba de peticiones por curso',
+                'Prueba de peticiones por curso ' . get_string('pluginname', 'local_dominosdashboard'),
                 new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/dashboard.php' )
             );
+            $node->showinflatnavigation = true;
             $node = $nav->add (
-                'Prueba de peticiones por pestaña',
+                'Prueba de peticiones por pestaña ' . get_string('pluginname', 'local_dominosdashboard'),
                 new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/todos_los_cursos.php' )
             );
+            $node->showinflatnavigation = true;
         }
-        $node->showinflatnavigation = true;
     }
 }
 
@@ -335,7 +337,7 @@ function local_dominosdashboard_is_enrolled(int $courseid, int $userid){
 function local_dominosdashboard_get_enrolled_users_count(int $courseid, string $userids = ''){
     $email_provider = local_dominosdashboard_get_email_provider_to_allow();
     if(empty($userids)){
-        _log("Retornando default en local_dominosdashboard_get_enrolled_users_count porque no hay usuarios que tengan las características, params", $params);
+        _log("Retornando default en local_dominosdashboard_get_enrolled_users_count porque no hay usuarios que tengan las características");
         return 0; // default
     }else{
         $whereids = " AND ra.userid IN ({$userids})";
@@ -354,7 +356,7 @@ function local_dominosdashboard_get_enrolled_users_count(int $courseid, string $
     AND ra.roleid IN (5) # default student role";
     global $DB;
     if($result = $DB->get_record_sql($query)){
-        return $result->learners;
+        return intval($result->learners);
     }
     return 0; // default
 }
@@ -388,7 +390,7 @@ function local_dominosdashboard_get_enrolled_users_ids(int $courseid){
     WHERE c.id = {$courseid}
     AND ra.userid IN(SELECT id from {user} WHERE deleted = 0 AND suspended = 0 {$where})
     AND ra.roleid IN (5) # default student role";
-    _log($query);
+    // _log($query);
     global $DB;
     if($result = $DB->get_fieldset_sql($query)){
         return $result;
@@ -532,25 +534,35 @@ function local_dominosdashboard_get_course_information(int $courseid, string $co
     if(LOCALDOMINOSDASHBOARD_DUMMY_RESPONSE){
         return $dummy_response;
     }
-    $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params);
-    if($userids === false){
-        return false;
-    }
-    _log("Línea con error de userids que retorna null", $userids);
-    $num_users = count($userids);
-    $userids = implode(',', $userids);
-    _log('$userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params, true);', $userids);
-
     $response = new stdClass();
     $response->key = 'course' . $courseid;
     $response->chart = local_dominosdashboard_get_course_chart($courseid);
     $response->title = $course->fullname;
+    $response->status = 'ok';
+    $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params);
+    if($userids === false){
+        $response->enrolled_users = 0;
+        $response->approved_users = 0;
+        $response->not_attempted = 0;
+        $response->percentage = 0;
+        $response->value = 0;
+        return $response;
+    }
+    // _log("Línea con error de userids que retorna null", $userids);
+    _log('Usuarios que cumplen con las características', $userids);
+    $num_users = count($userids);
+    $userids = implode(',', $userids);
+
+    $response = new stdClass();
+    // $response->key = 'course' . $courseid;
+    // $response->chart = local_dominosdashboard_get_course_chart($courseid);
+    // $response->title = $course->fullname;
     $response->enrolled_users = local_dominosdashboard_get_enrolled_users_count($courseid, $userids);
     $response->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids);
     $response->not_attempted = local_dominosdashboard_get_not_viewed_users_in_course($courseid, $userids, $num_users);
     $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users, 2);
     $response->value = $response->percentage;
-    $response->status = 'ok';
+    // $response->status = 'ok';
     if($get_kpi_comparison){
         $response->kpi = local_dominosdashboard_compare_kpi($courseid);
     }else{
@@ -758,7 +770,7 @@ function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $p
         }
     }
     $ids = array_unique($ids);
-    _log('$allow_users', $allow_users);
+    // _log('$allow_users', $allow_users);
     if($filter_active){
         if(count($allow_users) > 1){
             $allow_users = call_user_func_array('array_intersect', $allow_users);

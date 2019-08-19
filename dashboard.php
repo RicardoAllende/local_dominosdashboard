@@ -47,7 +47,7 @@ $courses = local_dominosdashboard_get_courses();
 $indicators = local_dominosdashboard_get_indicators();
 ?>
 <div class="row">
-    <form id="filter_form" method="post" action="services.php" class='col-12 col-lg-6'>
+    <form id="filter_form" method="post" action="services.php" class='col-sm-4'>
         <?php
         foreach($indicators as $indicator){
             echo "<h3>Indicador: {$indicator}</h3>";
@@ -66,7 +66,8 @@ $indicators = local_dominosdashboard_get_indicators();
         <input type="hidden" name="request_type" value="course_completion"><br><br>
         <span class="btn btn-info" onclick="obtenerGraficas()">Volver a simular obtención de gráficas</span>
     </form>
-    <div class="col-12 col-lg-6" id="local_dominosdashboard_content"></div>
+    <div class="col-sm-8" id="local_dominosdashboard_content"></div>
+    <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>
 </div>
 <script>
     var indicator;
@@ -90,10 +91,12 @@ $indicators = local_dominosdashboard_get_indicators();
                 $('.uncheck_indicators').click(function(){
                     demark = $(this).attr('data-indicator');
                     $('.' + demark).prop('checked', false);
+                    obtenerGraficas();
                 });
                 $('.check_indicators').click(function(){
                     demark = $(this).attr('data-indicator');
                     $('.' + demark).prop('checked', true);
+                    obtenerGraficas();
                 });
                 obtenerGraficas();
             });
@@ -104,6 +107,7 @@ $indicators = local_dominosdashboard_get_indicators();
     function obtenerGraficas(){
         console.log("Obteniendo gráficas");
         informacion = $('#filter_form').serializeArray();
+        $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize())
         $.ajax({
             type: "POST",
             url: "services.php",
@@ -113,7 +117,7 @@ $indicators = local_dominosdashboard_get_indicators();
         .done(function(data) {
             console.log("Petición correcta");
             console.log(data);
-            $('#local_dominosdashboard_content').html(JSON.stringify(data));
+            $('#local_dominosdashboard_content').html(JSON.stringify(data).replace(/{/g, "<br/>{"));
         })
         .fail(function(error, error2) {
             console.log(error);
