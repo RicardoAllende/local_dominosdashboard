@@ -56,6 +56,11 @@ function local_dominosdashboard_extend_navigation(global_navigation $nav) {
             );
             $node->showinflatnavigation = true;
             $node = $nav->add (
+                'Pruebachart.php ' . get_string('pluginname', 'local_dominosdashboard'),
+                new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/prueba_chart.php' )
+            );
+            $node->showinflatnavigation = true;
+            $node = $nav->add (
                 'Prueba de peticiones por curso ' . get_string('pluginname', 'local_dominosdashboard'),
                 new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/dashboard.php' )
             );
