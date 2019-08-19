@@ -35,7 +35,7 @@ $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', $pluginName));
 $PAGE->set_heading(get_string('pluginname', $pluginName));
 // admin_externalpage_setup('dominosdashboard');
-$returnurl = new moodle_url('/local/dominosdashboard/subir_archivo.php');
+$returnurl = new moodle_url('/local/dominosdashboard/dashboard.php');
 
 $mform = new local_dominosdashboard_upload_kpis();
 
@@ -53,13 +53,16 @@ if ($formdata = $mform->get_data()) {
         print_error('Existe un error en la estructura de su archivo', '', $returnurl, $csvloaderror);
     }
     $columns = $cir->get_columns();
+    $columns = array_map(function($element){
+        return trim($element);
+    }, $columns);
     _log('$cir->get_columns()', $columns);
     $kpi = $formdata->kpi;
     switch ($kpi) {
         /*
         campos de la tabla
         <FIELD NAME="id"            TYPE="int"   LENGTH="10"  NOTNULL="true"   SEQUENCE="true" />
-        <FIELD NAME="kpi"           TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
+        <FIELD NAME="kpi"           TYPE="char"  LENGTH="10" NOTNULL="false"  SEQUENCE="false" />
         <FIELD NAME="nombre"        TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
         <FIELD NAME="valor"         TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
         <FIELD NAME="typevalue"     TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
@@ -74,23 +77,93 @@ if ($formdata = $mform->get_data()) {
         <FIELD NAME="distrital"     TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
         <FIELD NAME="timecreated"   TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
         */
-
         case KPI_OPS:
+            /*
+                $record = new stdClass();
+                $record->kpi = KPI_OPS;
+                $record->nombre = "ICA";
+                $record->valor = $line[$columns_['CALIFICACION']];
+                $record->typevalue = "text";
+                $record->day = "";
+                $record->week = "";
+                $record->month = "";
+                $record->year = "";
+                $record->region = "";
+                $record->ccosto = "";
+                $record->nom_ccosto = "";
+                $record->original_time = "";
+                $record->distrital = "";
+                $record->timecreated = "";
+            */
         /*
-        Columnas esperadas:
-        CC,NOMBRE,REGION ,DISTRITAL COACH,CALIFICACION,ESTATUS,# CRITICOS,DIA,SEMANA,MES,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, 
-        CC->ccosto,NOMBRE->nom_ccosto,REGION->region ,DISTRITAL COACH -> distrital,CALIFICACION -> calificacion,ESTATUS -> estatus,# CRITICOS,DIA->day,SEMANA->week,MES->month
-        CC,NOMBRE,REGION,DISTRITAL COACH,CALIFICACION,ESTATUS,DIA,SEMANA,MES
+            Columnas esperadas:
+            CC,NOMBRE,REGION ,DISTRITAL COACH,CALIFICACION,ESTATUS,# CRITICOS,DIA,SEMANA,MES,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, 
+            CC->ccosto,NOMBRE->nom_ccosto,REGION->region ,DISTRITAL COACH -> distrital,CALIFICACION -> calificacion,ESTATUS -> estatus,# CRITICOS,DIA->day,SEMANA->week,MES->month
+            CC,NOMBRE,REGION,DISTRITAL COACH,CALIFICACION,ESTATUS,DIA,SEMANA,MES
         */
-        $requiredFields="CC,NOMBRE,REGION,DISTRITAL COACH,CALIFICACION,ESTATUS,DIA,SEMANA,MES";
-        /*
-        Si estatus está vacía ignorar esa columna
-        */
+        $requiredFields=explode(',',"CC,NOMBRE,REGION,DISTRITAL COACH,CALIFICACION,ESTATUS,DIA,SEMANA,MES");
+        
+        //Si estatus está vacía ignorar esa columna
+
+        $count= 0;
+        
+        // while ($line = $cir->next()) {
+        //     _log("Línea", $line);
+        // }
+        $hasRequiredColumns = true;
+        $columns_ = local_dominosdashboard_relate_column_with_fields($columns, $requiredFields, $hasRequiredColumns);
+        if(!$hasRequiredColumns){
+            $missingColumns = implode(',', $columns_);
+            print_error('Faltan los siguientes campos:' . $missingColumns, '', $returnurl, $missingColumns);
+        }
+        $cir->init();
+        $linenum = 1; //column header is first line
+        global $DB;
         while ($line = $cir->next()) {
             _log("Línea", $line);
-            foreach ($line as $keynum => $value){
-                
+            if(empty($line[$columns_["ESTATUS"]])){
+                _log("Estatus vacío en la línea", $line);
+                continue;
             }
+            if( ! $DB->record_exists('dominos_kpis', array('day' => $line[$columns_['DIA']], 'ccosto' => $line[$columns_['CC']],
+                'nom_ccosto' => $line[$columns_['NOMBRE']],
+                'nom_ccosto' => $line[$columns_['REGION']],
+                'nom_ccosto' => $line[$columns_['DISTRITAL COACH']],
+                // 'nom_ccosto' => $line[$columns_['CALIFICACION']]
+                // 'nom_ccosto' => $line[$columns_['NOMBRE']]
+                ))
+            ){ 
+                $record = new stdClass();
+                $record->kpi = KPI_OPS;
+                $record->nombre = "ICA";
+                $record->valor = $line[$columns_['CALIFICACION']];
+                $record->typevalue = "text";
+                $record->day = $line[$columns_['DIA']];
+                $record->week = $line[$columns_['SEMANA']];
+                $record->month = $line[$columns_['MES']];
+                $record->year = date('Y');
+                $record->region = $line[$columns_['REGION']];
+                $record->ccosto = $line[$columns_['CC']];
+                $record->nom_ccosto = $line[$columns_['NOMBRE']];
+                $record->original_time = "";
+                $record->distrital = $line[$columns_['DISTRITAL COACH']];
+                $record->timecreated = time();
+                $DB->insert_record('dominos_kpis', $record);
+            }else{
+                // Llegando aquí el KPI ya está registrado
+            }
+            if($DB->record_exists('dominos_kpis', array())){
+
+            }
+            // foreach ($line as $keynum => $value){
+            //     _log("keynum ", $keynum, 'value', $value, 'tipo de dato', gettype($value));
+            // }
+            
+            
+            // $count++;
+            // if($count > 5){
+            //     break;
+            // }
         }
         // foreach($columns as $column){
         //     _log("Dentro de la columna ", $column, ' tipo de dato: ', gettype($column));
@@ -102,6 +175,7 @@ if ($formdata = $mform->get_data()) {
         Columnas esperadas
         Regi�n / Raz�n social,No_Tienda,Nombre_Tienda,Nombre del Distrital / Gerente de Operaciones,1_ENERO,2_FEBRERO,3_MARZO,4_ABRIL,5_MAYO,6_JUNIO,7_JULIO,Total general
         */
+        // 1_ENERO,2_FEBRERO,3_MARZO,4_ABRIL,5_MAYO,6_JUNIO,7_JULIO,8_AGOSTO,9_SEPTIEMBRE,10_OCTUBRE,11_NOVIEMBRE,12_DICIEMBRE,Total general
         
         foreach($columns as $column){
             _log("Dentro de la columna ", $column, ' tipo de dato: ', gettype($column));
@@ -122,12 +196,12 @@ if ($formdata = $mform->get_data()) {
             break;
     }
     // init csv import helper
-    $cir->init();
-    $linenum = 1; //column header is first line
+    // $cir->init();
+    // $linenum = 1; //column header is first line
 
-    while ($line = $cir->next()) {
-        _log("Línea", $line);
-    }
+    // while ($line = $cir->next()) {
+    //     _log("Línea", $line);
+    // }
     die("Se envió un documento");
     unset($content);
 

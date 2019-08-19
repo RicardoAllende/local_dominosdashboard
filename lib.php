@@ -110,18 +110,24 @@ DEFINE('DOMINOSDASHBOARD_INDICATORS', 'regiones/distritos/entrenadores/tiendas/p
 DEFINE('DOMINOSDASHBOARD_CHARTS', 'bar/donut/chart3/chart4');
 
 
-function local_dominosdashboard_relate_column_with_fields(array $columns, array $requiredFields){
+function local_dominosdashboard_relate_column_with_fields(array $columns, array $requiredFields, bool &$hasRequiredColumns){
     $response = array();
+    $notFound = array();
     foreach($requiredFields as $field){
         // $response[]
         // $pos = strpos($columns, $field);
         $pos = array_search($field, $columns);
         if($pos === false){
-            _log("la clave no encontrada es: ", $field);
-            return false; // No se tienen las claves necesarias
+            $hasRequiredColumns = false;
+            array_push($notFound, $field);
+            // _log("la clave no encontrada es: ", $field);
+            // return false; // No se tienen las claves necesarias
         }else{
             $response[$field] = $pos;
         }
+    }
+    if(!$hasRequiredColumns){
+        return $notFound;
     }
     return $response;
 }

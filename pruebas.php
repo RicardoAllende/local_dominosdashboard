@@ -36,7 +36,18 @@ $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 
 echo $OUTPUT->header();
 
-_print(local_dominosdashboard_get_activities($courseid));
-_print(local_dominosdashboard_get_all_user_competencies());
+$columnas = array(
+    0 => trim('CC'),
+    1 => trim('NOMBRE'),
+    2 => trim('REGION '),
+    3 => trim('DISTRITAL COACH'),
+    4 => trim('CALIFICACION'),
+    5 => trim('ESTATUS'),
+    6 => trim('# CRITICOS'),
+    7 => trim('DIA'),
+    8 => trim('SEMANA'),
+    9 => trim('MES'),
+);
 
+_print(local_dominosdashboard_relate_column_with_fields($columnas, explode(',', "CC,CALIFICACION,ESTATUS,DIA,SEMANA,NOMBRE,REGION,DISTRITAL COACH,MES")));
 echo $OUTPUT->footer();

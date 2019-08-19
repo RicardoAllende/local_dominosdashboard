@@ -46,13 +46,7 @@ class local_dominosdashboard_upload_kpis extends moodleform {
 
         $choices = csv_import_reader::get_delimiter_list();
         $mform->addElement('select', 'delimiter_name', get_string('csvdelimiter', 'tool_uploaduser'), $choices);
-        if (array_key_exists('cfg', $choices)) {
-            $mform->setDefault('delimiter_name', 'cfg');
-        } else if (get_string('listsep', 'langconfig') == ';') {
-            $mform->setDefault('delimiter_name', 'semicolon');
-        } else {
-            $mform->setDefault('delimiter_name', 'comma');
-        }
+        $mform->setDefault('delimiter_name', 'comma');
 
         $choices = core_text::get_encodings();
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
@@ -62,7 +56,7 @@ class local_dominosdashboard_upload_kpis extends moodleform {
         $mform->addElement('select', 'kpi', get_string('kpi_select', 'local_dominosdashboard'), $choices);
         $mform->setType('previewrows', PARAM_INT);
 
-        $this->add_action_buttons(false, get_string('uploadusers', 'tool_uploaduser'));
+        $this->add_action_buttons(false, get_string('upload_kpi', 'local_dominosdashboard'));
     }
 }
 
