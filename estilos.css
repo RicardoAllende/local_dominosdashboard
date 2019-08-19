@@ -86,3 +86,30 @@
 }
 
 
+/* Cards en los archivos de Grafica */
+
+.cbody {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+    background-color: #f3f3f4;
+}
+
+/* Texto del Ranking en los archivos de Grafica */
+
+.txta {   
+    color: #007bff!important;
+    font-size: 50px;
+}
+
+
+.txtn {
+    color: #ffc107!important;
+    font-size: 38px;
+}
+
+
+.txtt {
+    color: #28a745!important;
+    font-size: 67px;
+}

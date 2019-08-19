@@ -1,4 +1,4 @@
-var chartd;
+/*var chartd;
 var datad = {
     type: "donut",
     courses: [
@@ -57,4 +57,4 @@ addChartd = function(){
         bindto: "#chart2",
         data: data_,
     })
-}
+}*/
