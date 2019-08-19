@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 $string['pluginname'] = 'Domino\'s Dahsboard';
 $string['dashboardtitle'] = 'Domino\'s Dahsboard';
 $string['categoriestab'] = 'Categoría padre';
+$string['upload_kpi'] = "Subir KPI";
 
 $string['coursetypestab'] = 'Clasificación de cursos';
 

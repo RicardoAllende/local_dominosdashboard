@@ -6,14 +6,14 @@
         <TABLE NAME="dominos_kpis" COMMENT="">
             <FIELDS>
                 <FIELD NAME="id"            TYPE="int"   LENGTH="10"  NOTNULL="true"   SEQUENCE="true" />
-                <FIELD NAME="kpi"           TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="kpi"           TYPE="int"   LENGTH="2" NOTNULL="false"    SEQUENCE="false" />
                 <FIELD NAME="nombre"        TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="valor"         TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="typevalue"     TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="day"           TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="week"          TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="month"         TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="year"          TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="day"           TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="week"          TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="month"         TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="year"          TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="region"        TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="ccosto"        TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="nom_ccosto"    TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
@@ -28,9 +28,10 @@
         <TABLE NAME="dominos_historico" COMMENT="">
             <FIELDS>
                 <FIELD NAME="id"                TYPE="int"  LENGTH="10"  NOTNULL="true"  SEQUENCE="true" />
-                <FIELD NAME="course"            TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="coursename"        TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="enrolled_users"    TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="course"            TYPE="int"  LENGTH="10" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="shortname"         TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="fullname"          TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="enrolled_users"    TYPE="int"  LENGTH="10" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="approved_users"    TYPE="int"  LENGTH="10"  NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="timecreated"       TYPE="int"  LENGTH="10"  NOTNULL="false" SEQUENCE="false" />
                 <!-- <FIELD NAME="datetime"          TYPE="int"  LENGTH="10"  NOTNULL="false" SEQUENCE="false" /> -->
