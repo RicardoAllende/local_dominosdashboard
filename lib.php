@@ -465,7 +465,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     $dummy_response->title = $course->fullname;
     $dummy_response->enrolled_users = 100;
     $dummy_response->approved_users = random_int(0, 100);
-    $dummy_response->not_attempted = 2;
+    $dummy_response->not_viewed = 2;
     $dummy_response->percentage = $dummy_response->approved_users;
     $dummy_response->value = $dummy_response->percentage;
     $dummy_response->status = 'ok';
@@ -482,7 +482,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     if($userids === false){
         $response->enrolled_users = 0;
         $response->approved_users = 0;
-        $response->not_attempted = 0;
+        $response->not_viewed = 0;
         $response->percentage = 0;
         $response->value = 0;
         if($get_all_course_information){
@@ -502,7 +502,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     // $response->title = $course->fullname;
     $response->enrolled_users = local_dominosdashboard_get_enrolled_users_count($courseid, $userids);
     $response->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids);
-    $response->not_attempted = local_dominosdashboard_get_not_viewed_users_in_course($courseid, $userids, $num_users);
+    $response->not_viewed = local_dominosdashboard_get_not_viewed_users_in_course($courseid, $userids, $num_users);
     $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users, 2);
     $response->value = $response->percentage;
     if($get_all_course_information){
@@ -989,34 +989,14 @@ function local_dominosdashboard_get_all_user_competencies(array $conditions = ar
     });
     return $competencies;
 }
-/*
-var data = {
-    type: "bar",
-    courses: [
-        {
-            key: "course1",
-            value: 1,
-            color: "#265a88",
-            title: "Curso 1"
-        },
-        {
-            key: "course2",
-            value: 2,
-            color: "#419641",
-            title: "Curso 2"
-        },
-        {
-            key: "course3",
-            value: 3,
-            color: "#2aabd2",
-            title: "Curso 3"
-        },
-        {
-            key: "course4",
-            value: 4,
-            color: "#eb9316",
-            title: "Curso 4"
+
+function local_dominosdashboard_get_last_month_key(array $columns){
+    $meses = "12_DICIEMBRE,11_NOVIEMBRE,10_OCTUBRE,9_SEPTIEMBRE,8_AGOSTO,7_JULIO,6_JUNIO,5_MAYO,4_ABRIL,3_MARZO,2_FEBRERO,1_ENERO";
+    $meses = explode(',', $meses);
+    foreach($meses as $mes){
+        if($search = array_search($mes, $columns) !== false){
+            return $search;
         }
-    ]
-};
-*/
+    }
+    return -1; // it will throw an error
+}
