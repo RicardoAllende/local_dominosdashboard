@@ -369,11 +369,6 @@ function addChartk(){
 
 
 
-
-
-
-<<<<<<< HEAD
-
 function addCharta1(){
     var charta = c3.generate({
         data: {
