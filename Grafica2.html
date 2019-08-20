@@ -21,7 +21,6 @@
     
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="libs/c3.js"></script>
-    <script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
     <script src="app.js"></script>
 
   <!-- Bootstrap core CSS -->
@@ -43,15 +42,14 @@
   <div class="d-flex" id="wrapper">
 
     <!-- Sidebar -->
-    <div class="border-right" id="sidebar-wrapper">
-      <div class="sidebar-heading">Filtros </div>
+    <div class="mr-2" id="sidebar-wrapper">
       <div class="list-group list-group-flush">
-                    <div id="accordion" align="right">
+            <div id="accordion" align="left">
               <div class="card">
-                <div class="card-header" id="headingOne">
+                <div class="card-header cuerpo-filtro" id="headingOne">
                   <h5 class="mb-0">
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                      Nacional <input type="checkbox">
+                    <input type="checkbox"> <button class="btn btn-link collapsed texto-filtro" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      Nacional
                     </button>
                   </h5>
                 </div>
@@ -62,27 +60,27 @@
                 </div>
               </div>
               <div class="card">
-                <div class="card-header" id="headingTwo">
+                <div class="card-header cuerpo-filtro" id="headingTwo">
                   <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                      Regional <input type="checkbox">
+                    <input type="checkbox"><button class="btn btn-link collapsed texto-filtro" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      Regional
                     </button>
                   </h5>
                 </div>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                  <div class="card-body">
-                    <p>Centro Norte <input type="checkbox"></p>
-                    <p>Centro Sur <input type="checkbox"></p>
-                    <p>Puebla-Veracruz <input type="checkbox"></p>
-                    <p>Occidente <input type="checkbox"></p>
+                  <div class="card-body subgrupo-filtro">
+                    <input type="checkbox"> <span class="subfiltro">Centro Norte </span><br>
+                    <input type="checkbox"> <span class="subfiltro">Centro Sur </span><br>
+                    <input type="checkbox"> <span class="subfiltro">Puebla-Veracruz </span><br>
+                    <input type="checkbox"> <span class="subfiltro">Occidente </span><br>
                   </div>
                 </div>
               </div>
               <div class="card">
-                <div class="card-header" id="headingThree">
+                <div class="card-header cuerpo-filtro" id="headingThree">
                   <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                      Distrital <input type="checkbox">
+                  <input type="checkbox">  <button class="btn btn-link collapsed texto-filtro" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      Distrital
                     </button>
                   </h5>
                 </div>
@@ -93,10 +91,10 @@
                 </div>
               </div>
               <div class="card">
-                <div class="card-header" id="headingFour">
+                <div class="card-header cuerpo-filtro" id="headingFour">
                   <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                      Entrenador <input type="checkbox">
+                    <input type="checkbox"><button class="btn btn-link collapsed texto-filtro" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                      Entrenador
                     </button>
                   </h5>
                 </div>
@@ -106,12 +104,12 @@
                   </div>-->
                 </div>
               </div>
-              
+
               <div class="card">
-                <div class="card-header" id="headingFive">
+                <div class="card-header cuerpo-filtro" id="headingFive">
                   <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseThree">
-                      Tienda <input type="checkbox">
+                    <input type="checkbox"><button class="btn btn-link collapsed texto-filtro" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseThree">
+                      Tienda
                     </button>
                   </h5>
                 </div>
@@ -120,13 +118,13 @@
                     Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
                   </div>-->
                 </div>
-              </div>             
-              
+              </div>
+
               <div class="card">
-                <div class="card-header" id="headingSix">
+                <div class="card-header cuerpo-filtro" id="headingSix">
                   <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-                      Resultado acumulado <input type="checkbox">
+                  <input type="checkbox">  <button class="btn btn-link collapsed texto-filtro" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                      Resultado acumulado
                     </button>
                   </h5>
                 </div>
@@ -136,7 +134,7 @@
                   </div>-->
                 </div>
               </div>
-              
+
             </div>
       </div>
     </div>
@@ -146,7 +144,7 @@
     <div id="page-content-wrapper">
 
       <nav class="navbar navbar-expand-lg navbar-light border-bottom" id="nav">
-        <button class="btn btn-primary" id="menu-toggle">Filtros</button>
+        
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>

@@ -95,100 +95,172 @@ if ($formdata = $mform->get_data()) {
                 $record->distrital = "";
                 $record->timecreated = "";
             */
-        /*
-            Columnas esperadas:
-            CC,NOMBRE,REGION ,DISTRITAL COACH,CALIFICACION,ESTATUS,# CRITICOS,DIA,SEMANA,MES,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, 
-            CC->ccosto,NOMBRE->nom_ccosto,REGION->region ,DISTRITAL COACH -> distrital,CALIFICACION -> calificacion,ESTATUS -> estatus,# CRITICOS,DIA->day,SEMANA->week,MES->month
-            CC,NOMBRE,REGION,DISTRITAL COACH,CALIFICACION,ESTATUS,DIA,SEMANA,MES
-        */
-        $requiredFields=explode(',',"CC,NOMBRE,REGION,DISTRITAL COACH,CALIFICACION,ESTATUS,DIA,SEMANA,MES");
-        
-        //Si estatus está vacía ignorar esa columna
-
-        $count= 0;
-        
-        // while ($line = $cir->next()) {
-        //     _log("Línea", $line);
-        // }
-        $hasRequiredColumns = true;
-        $columns_ = local_dominosdashboard_relate_column_with_fields($columns, $requiredFields, $hasRequiredColumns);
-        if(!$hasRequiredColumns){
-            $missingColumns = implode(',', $columns_);
-            print_error('Faltan los siguientes campos:' . $missingColumns, '', $returnurl, $missingColumns);
-        }
-        $cir->init();
-        $linenum = 1; //column header is first line
-        global $DB;
-        while ($line = $cir->next()) {
-            _log("Línea", $line);
-            if(empty($line[$columns_["ESTATUS"]])){
-                _log("Estatus vacío en la línea", $line);
-                continue;
-            }
-            if( ! $DB->record_exists('dominos_kpis', array('day' => $line[$columns_['DIA']], 'ccosto' => $line[$columns_['CC']],
-                'nom_ccosto' => $line[$columns_['NOMBRE']],
-                'nom_ccosto' => $line[$columns_['REGION']],
-                'nom_ccosto' => $line[$columns_['DISTRITAL COACH']],
-                // 'nom_ccosto' => $line[$columns_['CALIFICACION']]
-                // 'nom_ccosto' => $line[$columns_['NOMBRE']]
-                ))
-            ){ 
-                $record = new stdClass();
-                $record->kpi = KPI_OPS;
-                $record->nombre = "ICA";
-                $record->valor = $line[$columns_['CALIFICACION']];
-                $record->typevalue = "text";
-                $record->day = $line[$columns_['DIA']];
-                $record->week = $line[$columns_['SEMANA']];
-                $record->month = $line[$columns_['MES']];
-                $record->year = date('Y');
-                $record->region = $line[$columns_['REGION']];
-                $record->ccosto = $line[$columns_['CC']];
-                $record->nom_ccosto = $line[$columns_['NOMBRE']];
-                $record->original_time = "";
-                $record->distrital = $line[$columns_['DISTRITAL COACH']];
-                $record->timecreated = time();
-                $DB->insert_record('dominos_kpis', $record);
-            }else{
-                // Llegando aquí el KPI ya está registrado
-            }
-            if($DB->record_exists('dominos_kpis', array())){
-
-            }
-            // foreach ($line as $keynum => $value){
-            //     _log("keynum ", $keynum, 'value', $value, 'tipo de dato', gettype($value));
-            // }
+            /*
+                Columnas esperadas:
+                CC,NOMBRE,REGION ,DISTRITAL COACH,CALIFICACION,ESTATUS,# CRITICOS,DIA,SEMANA,MES,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, 
+                CC->ccosto,NOMBRE->nom_ccosto,REGION->region ,DISTRITAL COACH -> distrital,CALIFICACION -> calificacion,ESTATUS -> estatus,# CRITICOS,DIA->day,SEMANA->week,MES->month
+                CC,NOMBRE,REGION,DISTRITAL COACH,CALIFICACION,ESTATUS,DIA,SEMANA,MES
+            */
+            $requiredFields=explode(',',"CC,NOMBRE,REGION,DISTRITAL COACH,CALIFICACION,ESTATUS,DIA,SEMANA,MES");
             
-            
-            // $count++;
-            // if($count > 5){
-            //     break;
-            // }
-        }
-        // foreach($columns as $column){
-        //     _log("Dentro de la columna ", $column, ' tipo de dato: ', gettype($column));
-        // }
+            //Si estatus está vacía ignorar esa columna
+
+            $count= 0;
+            $hasRequiredColumns = true;
+            $columns_ = local_dominosdashboard_relate_column_with_fields($columns, $requiredFields, $hasRequiredColumns);
+            if(!$hasRequiredColumns){
+                $missingColumns = implode(',', $columns_);
+                print_error('Faltan los siguientes campos:' . $missingColumns, '', $returnurl, $missingColumns);
+            }
+            $cir->init();
+            $linenum = 1; //column header is first line
+            global $DB;
+            while ($line = $cir->next()) {
+                _log("Línea", $line);
+                if(empty($line[$columns_["ESTATUS"]])){
+                    _log("Estatus vacío en la línea", $line);
+                    continue;
+                }
+                if( ! $DB->record_exists('dominos_kpis', array('day' => $line[$columns_['DIA']], 'ccosto' => $line[$columns_['CC']],
+                    // 'nom_ccosto' => $line[$columns_['NOMBRE']],
+                    'region' => $line[$columns_['REGION']],
+                    'distrital' => $line[$columns_['DISTRITAL COACH']],
+                    ))
+                ){ 
+                    $record = new stdClass();
+                    $record->kpi = KPI_OPS;
+                    $record->nombre = "ICA";
+                    $record->valor = $line[$columns_['ESTATUS']];
+                    $record->typevalue = "text";
+                    $record->day = $line[$columns_['DIA']];
+                    $record->week = $line[$columns_['SEMANA']];
+                    $record->month = $line[$columns_['MES']];
+                    $record->year = date('Y');
+                    $record->region = $line[$columns_['REGION']];
+                    $record->ccosto = $line[$columns_['CC']];
+                    $record->nom_ccosto = $line[$columns_['NOMBRE']];
+                    $record->original_time = "";
+                    $record->distrital = $line[$columns_['DISTRITAL COACH']];
+                    $record->timecreated = time();
+                    $DB->insert_record('dominos_kpis', $record);
+                }else{
+                    // Llegando aquí el KPI ya está registrado
+                }
+                if($DB->record_exists('dominos_kpis', array())){
+
+                }
+            }
         break;
 
         case KPI_HISTORICO: // 
         /*
         Columnas esperadas
         Regi�n / Raz�n social,No_Tienda,Nombre_Tienda,Nombre del Distrital / Gerente de Operaciones,1_ENERO,2_FEBRERO,3_MARZO,4_ABRIL,5_MAYO,6_JUNIO,7_JULIO,Total general
+        Region / Razon social,No_Tienda,Nombre_Tienda,Nombre del Distrital / Gerente de Operaciones,1_ENERO,2_FEBRERO,3_MARZO,4_ABRIL,5_MAYO,6_JUNIO,7_JULIO,Total general
         */
         // 1_ENERO,2_FEBRERO,3_MARZO,4_ABRIL,5_MAYO,6_JUNIO,7_JULIO,8_AGOSTO,9_SEPTIEMBRE,10_OCTUBRE,11_NOVIEMBRE,12_DICIEMBRE,Total general
         
-        foreach($columns as $column){
-            _log("Dentro de la columna ", $column, ' tipo de dato: ', gettype($column));
-        }
+            $requiredFields=explode(',',"CC,NOM_CCOSTO,REGION,GTE DTTO,Valor 1,ANIO,FECHA,MES,INDICADOR,TIPO");
+            $requiredFields=explode(',',"Region / Razon social,No_Tienda,REGION,GTE DTTO,Valor 1,ANIO,FECHA,MES,INDICADOR,TIPO");
+            
+            $count= 0;
+            $hasRequiredColumns = true;
+            $columns_ = local_dominosdashboard_relate_column_with_fields($columns, $requiredFields, $hasRequiredColumns);
+            if(!$hasRequiredColumns){
+                $missingColumns = implode(',', $columns_);
+                print_error('Faltan los siguientes campos:' . $missingColumns, '', $returnurl, $missingColumns);
+            }
+            $cir->init();
+            global $DB;
+            while ($line = $cir->next()) {
+                if(empty($line[$columns_["Valor 1"]])){
+                    _log("Estatus vacío en la línea", $line);
+                    continue;
+                }
+                if( ! $DB->record_exists('dominos_kpis', array('original_time' => $line[$columns_['FECHA']], 'ccosto' => $line[$columns_['CC']],
+                    // 'nom_ccosto' => $line[$columns_['NOMBRE']],
+                    'region' => $line[$columns_['REGION']],
+                    'distrital' => $line[$columns_['GTE DTTO']],
+                    'nombre'     => $line[$columns_['INDICADOR']],
+                    ))
+                ){ 
+                    $record = new stdClass();
+                    $record->kpi = KPI_SCORCARD;
+                    $record->nombre = $line[$columns_['INDICADOR']];
+                    $record->valor = $line[$columns_['Valor 1']];
+                    $record->typevalue = $line[$columns_['TIPO']];
+                    // $record->day = $line[$columns_['DIA']];
+                    // $record->week = $line[$columns_['SEMANA']];
+                    $record->month = $line[$columns_['MES']];
+                    $record->year = 'ANIO';
+                    $record->region = $line[$columns_['REGION']];
+                    $record->ccosto = $line[$columns_['CC']];
+                    $record->nom_ccosto = $line[$columns_['NOM_CCOSTO']];
+                    $record->original_time = $line[$columns_['FECHA']];
+                    $record->distrital = $line[$columns_['GTE DTTO']];
+                    $record->timecreated = time();
+                    $DB->insert_record('dominos_kpis', $record);
+                }else{
+                    // Llegando aquí el KPI ya está registrado
+                }
+                if($DB->record_exists('dominos_kpis', array())){
+
+                }
+            }
         break;
 
         case KPI_SCORCARD: // scorecard
         /*
         Columnas mostradas: REGION,GTE DTTO,CC,NOM_CCOSTO,ANIO,MES,INDICADOR,VALOR,FECHA,TIPO,Valor 1,,
         */
-        foreach($columns as $column){
-            _log("Dentro de la columna ", $column, ' tipo de dato: ', gettype($column));
-        }   
+            // $requiredFields=explode(',',"CC,NOM_CCOSTO,REGION,GTE DTTO,Valor 1,ESTATUS,DIA,SEMANA,MES");
+            $requiredFields=explode(',',"CC,NOM_CCOSTO,REGION,GTE DTTO,Valor 1,ANIO,FECHA,MES,INDICADOR,TIPO");
+            
+            $count= 0;
+            $hasRequiredColumns = true;
+            $columns_ = local_dominosdashboard_relate_column_with_fields($columns, $requiredFields, $hasRequiredColumns);
+            if(!$hasRequiredColumns){
+                $missingColumns = implode(',', $columns_);
+                print_error('Faltan los siguientes campos:' . $missingColumns, '', $returnurl, $missingColumns);
+            }
+            $cir->init();
+            global $DB;
+            while ($line = $cir->next()) {
+                if(empty($line[$columns_["Valor 1"]])){
+                    _log("Estatus vacío en la línea", $line);
+                    continue;
+                }
+                if( ! $DB->record_exists('dominos_kpis', array('original_time' => $line[$columns_['FECHA']], 'ccosto' => $line[$columns_['CC']],
+                    // 'nom_ccosto' => $line[$columns_['NOMBRE']],
+                    'region' => $line[$columns_['REGION']],
+                    'distrital' => $line[$columns_['GTE DTTO']],
+                    'nombre'     => $line[$columns_['INDICADOR']],
+                    ))
+                ){ 
+                    $record = new stdClass();
+                    $record->kpi = KPI_SCORCARD;
+                    $record->nombre = $line[$columns_['INDICADOR']];
+                    $record->valor = $line[$columns_['Valor 1']];
+                    $record->typevalue = $line[$columns_['TIPO']];
+                    // $record->day = $line[$columns_['DIA']];
+                    // $record->week = $line[$columns_['SEMANA']];
+                    $record->month = $line[$columns_['MES']];
+                    $record->year = 'ANIO';
+                    $record->region = $line[$columns_['REGION']];
+                    $record->ccosto = $line[$columns_['CC']];
+                    $record->nom_ccosto = $line[$columns_['NOM_CCOSTO']];
+                    $record->original_time = $line[$columns_['FECHA']];
+                    $record->distrital = $line[$columns_['GTE DTTO']];
+                    $record->timecreated = time();
+                    $DB->insert_record('dominos_kpis', $record);
+                }else{
+                    // Llegando aquí el KPI ya está registrado
+                }
+                if($DB->record_exists('dominos_kpis', array())){
+
+                }
+            }
+
             break;
 
         default:

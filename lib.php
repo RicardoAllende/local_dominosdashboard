@@ -142,57 +142,6 @@ function local_dominosdashboard_check_column_has_one_of_fields(string $columns, 
     return $found;
 }
 
-// function uu_validate_user_upload_columns(csv_import_reader $cir, $stdfields, $profilefields, moodle_url $returnurl) {
-//     $columns = $cir->get_columns();
-
-//     if (empty($columns)) {
-//         $cir->close();
-//         $cir->cleanup();
-//         print_error('cannotreadtmpfile', 'error', $returnurl);
-//     }
-//     if (count($columns) < 2) {
-//         $cir->close();
-//         $cir->cleanup();
-//         print_error('csvfewcolumns', 'error', $returnurl);
-//     }
-
-//     // test columns
-//     $processed = array();
-//     foreach ($columns as $key=>$unused) {
-//         $field = $columns[$key];
-//         $lcfield = core_text::strtolower($field);
-//         if (in_array($field, $stdfields) or in_array($lcfield, $stdfields)) {
-//             // standard fields are only lowercase
-//             $newfield = $lcfield;
-
-//         } else if (in_array($field, $profilefields)) {
-//             // exact profile field name match - these are case sensitive
-//             $newfield = $field;
-
-//         } else if (in_array($lcfield, $profilefields)) {
-//             // hack: somebody wrote uppercase in csv file, but the system knows only lowercase profile field
-//             $newfield = $lcfield;
-
-//         } else if (preg_match('/^(sysrole|cohort|course|group|type|role|enrolperiod|enrolstatus)\d+$/', $lcfield)) {
-//             // special fields for enrolments
-//             $newfield = $lcfield;
-
-//         } else {
-//             $cir->close();
-//             $cir->cleanup();
-//             print_error('invalidfieldname', 'error', $returnurl, $field);
-//         }
-//         if (in_array($newfield, $processed)) {
-//             $cir->close();
-//             $cir->cleanup();
-//             print_error('duplicatefieldname', 'error', $returnurl, $newfield);
-//         }
-//         $processed[$key] = $newfield;
-//     }
-
-//     return $processed;
-// }
-
 function local_dominosdashboard_get_catalogue(string $key){
     $indicators = local_dominosdashboard_get_indicators();
     if(array_search($key, $indicators) === false){
@@ -207,28 +156,28 @@ function local_dominosdashboard_get_catalogue(string $key){
     return $DB->get_fieldset_sql($query);
 }
 
-function local_dominosdashboard_get_course_all_catalogues($courseid){
-    global $DB;
-    $course = $DB->get_record('course', array('id' => $courseid));
-    if(empty($course)){
-        _log('No existe el curso');
-        die('no existe curso');
-    }
-    foreach (local_dominosdashboard_get_indicators() as $indicator) {
-        _log('indicator', $indicator);
-        foreach (local_dominosdashboard_get_catalogue($indicator) as $item) {
-            _log('item', $item);
-            _print("Indicador: " . $indicator, 'Buscando ' . $item);
-            $params = array();
-            $params[$indicator] = $item;
-            $course_information = local_dominosdashboard_get_course_information($course->id, $course->fullname, true, $params);
-            _log($course_information);
-            echo local_dominosdashboard_format_response($course_information);
-            echo "<br><br><br>";
-            _print($course_information);
-        }
-    }
-}
+// function local_dominosdashboard_get_course_all_catalogues($courseid){
+//     global $DB;
+//     $course = $DB->get_record('course', array('id' => $courseid));
+//     if(empty($course)){
+//         _log('No existe el curso');
+//         die('no existe curso');
+//     }
+//     foreach (local_dominosdashboard_get_indicators() as $indicator) {
+//         _log('indicator', $indicator);
+//         foreach (local_dominosdashboard_get_catalogue($indicator) as $item) {
+//             _log('item', $item);
+//             _print("Indicador: " . $indicator, 'Buscando ' . $item);
+//             $params = array();
+//             $params[$indicator] = $item;
+//             $course_information = local_dominosdashboard_get_course_information($course->id, true, $params);
+//             _log($course_information);
+//             echo local_dominosdashboard_format_response($course_information);
+//             echo "<br><br><br>";
+//             _print($course_information);
+//         }
+//     }
+// }
 
 function local_dominosdashboard_get_completion_modes(){
     return [
@@ -308,30 +257,6 @@ function local_dominosdashboard_get_course_completion(int $userid, stdClass $cou
         $completion_info = new completion_info($course);
     }
 
-}
-
-function local_dominosdashboard_get_course_completion_by_grade(){
-    
-}
-
-function local_dominosdashboard_get_course_completion_by_activity_grade(){
-    
-}
-
-function local_dominosdashboard_get_course_completion_by_badge(){
-    
-}
-
-function local_dominosdashboard_get_course_completion_by_activity_completed(){
-    
-}
-
-function local_dominosdashboard_get_course_completion_standard(){
-    
-}
-
-function local_dominosdashboard_get_course_completion_by_average(){
-    
 }
 
 function local_dominosdashboard_get_module_grade(int $userid, int $moduleid){
@@ -487,20 +412,16 @@ function local_dominosdashboard_get_courses_overview(int $type, array $params = 
     switch ($type) {
         case LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS: // Cursos presenciales
         case LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO: // Cursos en línea
-        case LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON: // Cruce de kpis
             foreach($courses as $course){
-                if($type === LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON){
-                    $course_information = local_dominosdashboard_get_course_information($course->id, $course->fullname, true, $params);
-                }else{
-                    $course_information = local_dominosdashboard_get_course_information($course->id, $course->fullname, false, $params);
-                }
+                $course_information = local_dominosdashboard_get_course_information($course->id, false, $params);
                 if(empty($course_information)){
                     continue;
                 }
                 if(empty($courses_in_order)){
                     array_push($courses_in_order, $course_information);
                 }else{
-                    if($course_information->percentage > $courses_in_order[0]->percentage){
+                    $max = count($courses_in_order) - 1;
+                    if($course_information->percentage > $courses_in_order[$max]->percentage){
                         array_unshift($courses_in_order, $course_information);
                     }else{
                         array_push($courses_in_order, $course_information);
@@ -509,6 +430,7 @@ function local_dominosdashboard_get_courses_overview(int $type, array $params = 
             }
             return $courses_in_order;
             break;
+        case LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON: // Cruce de kpis
         
         default:
             return array();
@@ -530,7 +452,7 @@ function local_dominosdashboard_get_course_color(int $courseid){
     return "#006491";
 }
 
-function local_dominosdashboard_get_course_information(int $courseid, string $coursename = "", bool $get_kpi_comparison = false, array $params = array()){
+function local_dominosdashboard_get_course_information(int $courseid, bool $get_all_course_information = false, array $params = array()){
     global $DB;
     $course = $DB->get_record('course', array('id' => $courseid));
     if($course === false){
@@ -540,7 +462,7 @@ function local_dominosdashboard_get_course_information(int $courseid, string $co
     $dummy_response->key = 'course' . $courseid;
     $dummy_response->chart = local_dominosdashboard_get_course_chart($courseid);
     $dummy_response->color = local_dominosdashboard_get_course_color($courseid);
-    $dummy_response->title = $coursename;
+    $dummy_response->title = $course->fullname;
     $dummy_response->enrolled_users = 100;
     $dummy_response->approved_users = random_int(0, 100);
     $dummy_response->not_attempted = 2;
@@ -563,6 +485,10 @@ function local_dominosdashboard_get_course_information(int $courseid, string $co
         $response->not_attempted = 0;
         $response->percentage = 0;
         $response->value = 0;
+        if($get_all_course_information){
+            $response->activities = [];
+            $response->kpi = [];
+        }
         return $response;
     }
     // _log("Línea con error de userids que retorna null", $userids);
@@ -579,11 +505,9 @@ function local_dominosdashboard_get_course_information(int $courseid, string $co
     $response->not_attempted = local_dominosdashboard_get_not_viewed_users_in_course($courseid, $userids, $num_users);
     $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users, 2);
     $response->value = $response->percentage;
-    // $response->status = 'ok';
-    if($get_kpi_comparison){
+    if($get_all_course_information){
         $response->kpi = local_dominosdashboard_compare_kpi($courseid);
-    }else{
-        $response->kpi = "N/A";
+        $response->activities = local_dominosdashboard_get_activities_completion($course->id, $userids);
     }
     return $response;
 }
@@ -981,10 +905,10 @@ function local_dominosdashboard_get_badges(int $badge_status = -1){
     return $DB->get_records_menu('badge', array(), '', 'id,name');
 }
 
-function local_dominosdashboard_get_activities(int $courseid/*, int $visible = 1*/){
-    // if($visible != 1 || $visible != 0){
-    //     $visible = 1;
-    // }
+function local_dominosdashboard_get_activities(int $courseid, int $visible = 1){
+    if($visible != 1 || $visible != 0){
+        $visible = 1;
+    }
     global $DB;
     // $query = "SELECT * ";
     $actividades = array();
@@ -997,9 +921,40 @@ function local_dominosdashboard_get_activities(int $courseid/*, int $visible = 1
     }
     $query .= " END AS name
     from {course_modules} cm
-    where course = {$courseid}"; // visible = ' . $visible . ' ';
+    where course = {$courseid} AND visible = {$visible} ";
         // $DB->get_records_sql_menu($sql);
     return $DB->get_records_sql_menu($query);
+}
+
+function local_dominosdashboard_get_activities_completion(int $courseid, string $userids){
+    global $DB;
+    $courseactivities = local_dominosdashboard_get_activities($courseid);
+    $activities = array();
+    foreach($courseactivities as $key => $activity){
+        $activityInformation = local_dominos_dashboard_get_activity_completions($activityid = $key, $userids, $title = $activity);
+        _log($activityInformation);
+        if(empty($activities)){
+            array_push($activities,
+             $activityInformation);
+        }else{
+            $max = count($activities) - 1;
+            if($activityInformation['completed'] > $activities[$max]['completed']){
+                array_unshift($activities, $activityInformation);
+            }else{
+                array_push($activities, $activityInformation);
+            }
+        }
+    }
+    return $activities;
+}
+
+function local_dominos_dashboard_get_activity_completions(int $activityid, string $userids = "", $title = ""){
+    global $DB;
+    $key = "module" . $activityid;
+    $inProgress         = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 0");
+    $completed          = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate IN (1,2)");
+    $completedWithFail  = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 3");
+    return compact('key', 'title', 'inProgress', 'completed', 'completedWithFail');
 }
 
 function local_dominosdashboard_get_competencies($conditions = array()){

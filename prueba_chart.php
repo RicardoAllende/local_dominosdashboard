@@ -690,10 +690,12 @@ echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>"
 
 
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<link href="libs/c3.css" rel="stylesheet">
 <link href="estilos.css" rel="stylesheet">
+
+<link href="libs/c3.css" rel="stylesheet">
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="libs/c3.js"></script>
+
 <script>
 
     $('.chart_').each(function(){
