@@ -43,11 +43,11 @@ echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>"
 //$indicators = local_dominosdashboard_get_indicators();
 ?>
 
-<div class="d-flex" id="wrapper">
+<div class="" id="wrapper">
 
     <!-- Sidebar -->
-    <div class="mr-2" id="sidebar-wrapper">
-      <div class="list-group list-group-flush">
+    <div class="row mr-2" id="sidebar-wrapper">
+      <div class="col-lg-3">
             <div id="accordion" align="left">
               <div class="card">
                 <div class="card-header cuerpo-filtro" id="headingOne">
@@ -141,554 +141,551 @@ echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>"
 
             </div>
       </div>
+
+      <div class="col-lg-9" id="page-content-wrapper">
+
+
+          <div id="navbarSupportedContent">
+            <ul class="nav justify-content-center nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active dtag" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Cruce de indicadores</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Programas de entrenamiento</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Lanzamientos y campañas</a>
+                </li>
+              </ul>
+          </div>
+
+
+           <div class="tab-content" id="myTabContent">
+
+               <!--Cruce de indicadores-->
+
+                <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                   <div class="">
+                          <h1 align="center">Cruce de indicadores</h1>
+                   </div>
+                    <div >
+                        <div class="row">
+                            <div class="col-sm-12 col-xl-6">
+                                <div class="card bg-faded border-0 m-2" id="" >
+
+
+                                       <div class="card-group">
+                                          <div class="card border-0 m-2">
+                                            <div class="card-body ">
+                                              <p class="card-text text-primary text-center">Aprobados</p>
+                                              <p class="card-text text-primary text-center">85%</p>
+                                            </div>
+                                          </div>
+                                          <div class="card border-0 m-2">
+                                            <div class="card-body text-center">
+                                              <p class="card-text text-warning text-center">No Aprobados</p>
+                                              <p class="card-text text-warning text-center">213</p>
+                                            </div>
+                                          </div>
+                                          <div class="card border-0 m-2">
+                                            <div class="card-body text-center ">
+                                              <p class="card-text text-success text-center">Total de usuarios</p>
+                                              <p class="card-text text-success text-center">1850</p>
+                                            </div>
+                                          </div>
+
+                                        </div>
+                                     <!-- <button type="button" class="btn btn-success col-sm-12 col-xl-4" id="texton"> <p class="numero">100</p></button>
+                                     <button type="button" class="btn btn-danger col-sm-12 col-xl-4" id="texton"> <p class="numero">50</p></button>
+                                     <button type="button" class="btn btn-info col-sm-12 col-xl-4" id="texton"> <p class="numero">150</p></button> -->
+
+
+
+                                    <div class="chart_ bg-white m-2" id="chart1"></div>
+                                    <!--<img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">-->
+                                    <div class="align-items-end">
+                                        <!--<h5 class="card-title">Card title  style="background-color: chocolate; width: 100% !important; bottom: 0 !important;"</h5>-->
+                                        <div class="fincard text-center">
+                                            <a href="Grafica.html">Programa 0-90 vs % Rotación</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-xl-6">
+                                <div class="card bg-gray border-0 m-2" id="" >
+
+
+                                       <div class="card-group">
+                                          <div class="card border-0 m-2">
+                                            <div class="card-body text-center">
+                                              <p class="card-text text-primary">Aprobados</p>
+                                              <p class="card-text text-primary">85%</p>
+                                            </div>
+                                          </div>
+                                          <div class="card border-0 m-2">
+                                            <div class="card-body text-center">
+                                              <p class="card-text text-warning">No Aprobados</p>
+                                              <p class="card-text text-warning">213</p>
+                                            </div>
+                                          </div>
+                                          <div class="card border-0 m-2">
+                                            <div class="card-body text-center">
+                                              <p class="card-text text-success">Total de usuarios</p>
+                                              <p class="card-text text-success">1850</p>
+                                            </div>
+                                          </div>
+
+                                        </div>
+                                     <!-- <button type="button" class="btn btn-success col-sm-12 col-xl-4" id="texton"> <p class="numero">100</p></button>
+                                     <button type="button" class="btn btn-danger col-sm-12 col-xl-4" id="texton"> <p class="numero">50</p></button>
+                                     <button type="button" class="btn btn-info col-sm-12 col-xl-4" id="texton"> <p class="numero">150</p></button> -->
+
+
+
+                                    <div class="chart_ bg-white m-2" id="chart2"></div>
+                                    <!--<img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">-->
+                                    <div class="align-items-end">
+                                        <!--<h5 class="card-title">Card title  style="background-color: chocolate; width: 100% !important; bottom: 0 !important;"</h5>-->
+                                        <div class="fincard text-center">
+                                            <a href="Grafica.html">Programa 0-90 vs Quejas de servicio</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-12 col-xl-6">
+                                <div class="card bg-gray border-0 m-2" id="" >
+
+
+                                       <div class="card-group">
+                                          <div class="card border-0 m-2">
+                                            <div class="card-body text-center">
+                                              <p class="card-text text-primary">Aprobados</p>
+                                              <p class="card-text text-primary">85%</p>
+                                            </div>
+                                          </div>
+                                          <div class="card border-0 m-2">
+                                            <div class="card-body text-center">
+                                              <p class="card-text text-warning">No Aprobados</p>
+                                              <p class="card-text text-warning">213</p>
+                                            </div>
+                                          </div>
+                                          <div class="card border-0 m-2">
+                                            <div class="card-body text-center">
+                                              <p class="card-text text-success">Total de usuarios</p>
+                                              <p class="card-text text-success">1850</p>
+                                            </div>
+                                          </div>
+
+                                        </div>
+                                     <!-- <button type="button" class="btn btn-success col-sm-12 col-xl-4" id="texton"> <p class="numero">100</p></button>
+                                     <button type="button" class="btn btn-danger col-sm-12 col-xl-4" id="texton"> <p class="numero">50</p></button>
+                                     <button type="button" class="btn btn-info col-sm-12 col-xl-4" id="texton"> <p class="numero">150</p></button> -->
+
+
+
+                                    <div class="chart_ bg-white m-2" id="chart3"></div>
+                                    <!--<img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">-->
+                                    <div class="align-items-end">
+                                        <!--<h5 class="card-title">Card title  style="background-color: chocolate; width: 100% !important; bottom: 0 !important;"</h5>-->
+                                        <div class="fincard text-center">
+                                            <a href="Grafica.html">Staff certificado vs % Venta de tiendas cubiertas</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-xl-6">
+                                <div class="card bg-gray border-0 m-2" id="" >
+
+
+                                       <div class="card-group">
+                                          <div class="card border-0 m-2">
+                                            <div class="card-body text-center">
+                                              <p class="card-text text-primary">Aprobados</p>
+                                              <p class="card-text text-primary">85%</p>
+                                            </div>
+                                          </div>
+                                          <div class="card border-0 m-2">
+                                            <div class="card-body text-center">
+                                              <p class="card-text text-warning">No Aprobados</p>
+                                              <p class="card-text text-warning">213</p>
+                                            </div>
+                                          </div>
+                                          <div class="card border-0 m-2">
+                                            <div class="card-body text-center">
+                                              <p class="card-text text-success">Total de usuarios</p>
+                                              <p class="card-text text-success">1850</p>
+                                            </div>
+                                          </div>
+
+                                        </div>
+                                     <!-- <button type="button" class="btn btn-success col-sm-12 col-xl-4" id="texton"> <p class="numero">100</p></button>
+                                     <button type="button" class="btn btn-danger col-sm-12 col-xl-4" id="texton"> <p class="numero">50</p></button>
+                                     <button type="button" class="btn btn-info col-sm-12 col-xl-4" id="texton"> <p class="numero">150</p></button> -->
+
+
+
+                                    <div class="chart_ bg-white m-2" id="chart4"></div>
+                                    <!--<img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">-->
+                                    <div class="align-items-end">
+                                        <!--<h5 class="card-title">Card title  style="background-color: chocolate; width: 100% !important; bottom: 0 !important;"</h5>-->
+                                        <div class="fincard text-center">
+                                            <a href="Grafica.html">Curso Norma 251 Certificado curso ICA Champion</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-12 col-xl-6">
+                                <div class="card bg-gray border-0 m-2" id="" >
+
+
+                                       <div class="card-group">
+                                          <div class="card border-0 m-2">
+                                            <div class="card-body text-center">
+                                              <p class="card-text text-primary">Aprobados</p>
+                                              <p class="card-text text-primary">85%</p>
+                                            </div>
+                                          </div>
+                                          <div class="card border-0 m-2">
+                                            <div class="card-body text-center">
+                                              <p class="card-text text-warning">No Aprobados</p>
+                                              <p class="card-text text-warning">213</p>
+                                            </div>
+                                          </div>
+                                          <div class="card border-0 m-2">
+                                            <div class="card-body text-center">
+                                              <p class="card-text text-success">Total de usuarios</p>
+                                              <p class="card-text text-success">1850</p>
+                                            </div>
+                                          </div>
+
+                                        </div>
+                                     <!-- <button type="button" class="btn btn-success col-sm-12 col-xl-4" id="texton"> <p class="numero">100</p></button>
+                                     <button type="button" class="btn btn-danger col-sm-12 col-xl-4" id="texton"> <p class="numero">50</p></button>
+                                     <button type="button" class="btn btn-info col-sm-12 col-xl-4" id="texton"> <p class="numero">150</p></button> -->
+
+
+
+                                    <div class="chart_ bg-white m-2" id="chart5"></div>
+                                    <!--<img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">-->
+                                    <div class="align-items-end">
+                                        <!--<h5 class="card-title">Card title  style="background-color: chocolate; width: 100% !important; bottom: 0 !important;"</h5>-->
+                                        <div class="fincard text-center">
+                                            <a href="Grafica.html">% Cubrimiento campaña de servicio KPI satisfacción del cliente</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+
+                    </div>
+
+
+                </div>
+
+                <!--Programas de entrenamiento-->
+
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+
+                   <div class="">
+                          <h1 align="center">Programas de entrenamiento</h1>
+                   </div>
+                    <div >
+                       <div class="row">
+                       <div class="col-6" id="cards">
+                                <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                              <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                <a href="Grafica6.html">Entrenamiento nuevos ingresos inducción</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="col-6" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                              <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                   <a href="Grafica.html">Entrenamiento sentido de pertenencia</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="col-4" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                            <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                   <a href="Grafica.html">Certificación PPP</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                              <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                <a href="Grafica.html">Ruta Domino´s</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="col-6" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                                <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                   <a href="Grafica.html">Certificación ERS</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="col-6" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                            <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                   <a href="Grafica.html">Certificación RSC</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        </div>
+
+                        <div class="row">
+                       <div class="col-6" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                              <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                <a href="Grafica.html">Entrenamiento Gerencial Formación de Supervisor</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="col-6" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                              <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                   <a href="Grafica.html">Entrevista básico Norma 251</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="col-6" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                            <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                   <a href="Grafica.html">Formación Subgerente</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        </div>
+
+                        <div class="row">
+                       <div class="col-6" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                              <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                <a href="Grafica.html">Seguridad y salud</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="col-6" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                              <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                   <a href="Grafica.html">Formación gerente</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="col-4" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                               <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                                <div class="align-items-end">
+                                    <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                   <a href="Grafica.html">Entrenamiento franquicias Staff general</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        </div>
+              </div>
+              </div>
+
+               <!--Lanzamiento y campañas-->
+
+                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                   <div class="">
+                          <h1 align="center">Lanzamientos y campañas</h1>
+                   </div>
+
+                    <div >
+                       <div class="row">
+                       <div class="col-6" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                              <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                <a href="Grafica.html">Campañas seguridad y salud</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                               <!-- <div id="chart2"></div> -->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                              <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                   <a href="Grafica.html">Servicio</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+
+                        <div class="col-4" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                            <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                   <a href="Grafica.html">Calidad</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+
+                        </div>
+
+                        <div class="row">
+                       <div class="col-6" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                              <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                <a href="Grafica.html">Cursos en línea Alsea Anticorrupción</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                              <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                   <a href="Grafica.html">Privacidad de Datos</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                            <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                   <a href="Grafica.html">Certificaciones Liderazgo con enfoque humano</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+
+                        </div>
+
+                        <div class="row">
+                       <div class="col-4" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                              <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                <a href="Grafica.html">Gerente dueño</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6" id="cards">
+                            <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
+                                <!--<div id="chart"></div>-->
+                                <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
+                              <div class="align-items-end">
+                                <!--<h5 class="card-title">Card title</h5>-->
+                                <div class="fincard" align="center">
+                                   <a href="Grafica.html">Certificaciones ICA Champion</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+
+
+                        </div>
+
+
+                              </div>
+
+                </div>
+              </div>
+
+
+
+  </div>
     </div>
 
-    <div id="page-content-wrapper">
 
-      <nav class="navbar navbar-expand-lg navbar-light border-bottom p-0 shadow-none" id="nav">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="nav justify-content-center nav-tabs" id="myTab" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link active dtag" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Cruce de indicadores</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Programas de entrenamiento</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Lanzamientos y campañas</a>
-              </li>
-            </ul>
-        </div>
-
-      </nav>
-
-         <div class="tab-content" id="myTabContent">
-
-             <!--Cruce de indicadores-->
-
-              <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                 <div class="">
-                        <h1 align="center">Cruce de indicadores</h1>
-                 </div>
-                  <div >
-                      <div class="row">
-                          <div class="col-sm-12 col-xl-6">
-                              <div class="card bg-gray border-0 m-2" id="" >
-
-
-                                     <div class="card-group">
-                                        <div class="card border-0 m-2">
-                                          <div class="card-body text-center">
-                                            <p class="card-text text-primary">Aprobados</p>
-                                            <p class="card-text text-primary">85%</p>
-                                          </div>
-                                        </div>
-                                        <div class="card border-0 m-2">
-                                          <div class="card-body text-center">
-                                            <p class="card-text text-warning">No Aprobados</p>
-                                            <p class="card-text text-warning">213</p>
-                                          </div>
-                                        </div>
-                                        <div class="card border-0 m-2">
-                                          <div class="card-body text-center">
-                                            <p class="card-text text-success">Total de usuarios</p>
-                                            <p class="card-text text-success">1850</p>
-                                          </div>
-                                        </div>
-
-                                      </div>
-                                   <!-- <button type="button" class="btn btn-success col-sm-12 col-xl-4" id="texton"> <p class="numero">100</p></button>
-                                   <button type="button" class="btn btn-danger col-sm-12 col-xl-4" id="texton"> <p class="numero">50</p></button>
-                                   <button type="button" class="btn btn-info col-sm-12 col-xl-4" id="texton"> <p class="numero">150</p></button> -->
-
-
-
-                                  <div class="chart_ bg-white m-2" id="chart1"></div>
-                                  <!--<img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">-->
-                                  <div class="align-items-end">
-                                      <!--<h5 class="card-title">Card title  style="background-color: chocolate; width: 100% !important; bottom: 0 !important;"</h5>-->
-                                      <div class="fincard text-center">
-                                          <a href="Grafica.html">Programa 0-90 vs % Rotación</a>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-sm-12 col-xl-6">
-                              <div class="card bg-gray border-0 m-2" id="" >
-
-
-                                     <div class="card-group">
-                                        <div class="card border-0 m-2">
-                                          <div class="card-body text-center">
-                                            <p class="card-text text-primary">Aprobados</p>
-                                            <p class="card-text text-primary">85%</p>
-                                          </div>
-                                        </div>
-                                        <div class="card border-0 m-2">
-                                          <div class="card-body text-center">
-                                            <p class="card-text text-warning">No Aprobados</p>
-                                            <p class="card-text text-warning">213</p>
-                                          </div>
-                                        </div>
-                                        <div class="card border-0 m-2">
-                                          <div class="card-body text-center">
-                                            <p class="card-text text-success">Total de usuarios</p>
-                                            <p class="card-text text-success">1850</p>
-                                          </div>
-                                        </div>
-
-                                      </div>
-                                   <!-- <button type="button" class="btn btn-success col-sm-12 col-xl-4" id="texton"> <p class="numero">100</p></button>
-                                   <button type="button" class="btn btn-danger col-sm-12 col-xl-4" id="texton"> <p class="numero">50</p></button>
-                                   <button type="button" class="btn btn-info col-sm-12 col-xl-4" id="texton"> <p class="numero">150</p></button> -->
-
-
-
-                                  <div class="chart_ bg-white m-2" id="chart2"></div>
-                                  <!--<img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">-->
-                                  <div class="align-items-end">
-                                      <!--<h5 class="card-title">Card title  style="background-color: chocolate; width: 100% !important; bottom: 0 !important;"</h5>-->
-                                      <div class="fincard text-center">
-                                          <a href="Grafica.html">Programa 0-90 vs Quejas de servicio</a>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-sm-12 col-xl-6">
-                              <div class="card bg-gray border-0 m-2" id="" >
-
-
-                                     <div class="card-group">
-                                        <div class="card border-0 m-2">
-                                          <div class="card-body text-center">
-                                            <p class="card-text text-primary">Aprobados</p>
-                                            <p class="card-text text-primary">85%</p>
-                                          </div>
-                                        </div>
-                                        <div class="card border-0 m-2">
-                                          <div class="card-body text-center">
-                                            <p class="card-text text-warning">No Aprobados</p>
-                                            <p class="card-text text-warning">213</p>
-                                          </div>
-                                        </div>
-                                        <div class="card border-0 m-2">
-                                          <div class="card-body text-center">
-                                            <p class="card-text text-success">Total de usuarios</p>
-                                            <p class="card-text text-success">1850</p>
-                                          </div>
-                                        </div>
-
-                                      </div>
-                                   <!-- <button type="button" class="btn btn-success col-sm-12 col-xl-4" id="texton"> <p class="numero">100</p></button>
-                                   <button type="button" class="btn btn-danger col-sm-12 col-xl-4" id="texton"> <p class="numero">50</p></button>
-                                   <button type="button" class="btn btn-info col-sm-12 col-xl-4" id="texton"> <p class="numero">150</p></button> -->
-
-
-
-                                  <div class="chart_ bg-white m-2" id="chart3"></div>
-                                  <!--<img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">-->
-                                  <div class="align-items-end">
-                                      <!--<h5 class="card-title">Card title  style="background-color: chocolate; width: 100% !important; bottom: 0 !important;"</h5>-->
-                                      <div class="fincard text-center">
-                                          <a href="Grafica.html">Staff certificado vs % Venta de tiendas cubiertas</a>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-sm-12 col-xl-6">
-                              <div class="card bg-gray border-0 m-2" id="" >
-
-
-                                     <div class="card-group">
-                                        <div class="card border-0 m-2">
-                                          <div class="card-body text-center">
-                                            <p class="card-text text-primary">Aprobados</p>
-                                            <p class="card-text text-primary">85%</p>
-                                          </div>
-                                        </div>
-                                        <div class="card border-0 m-2">
-                                          <div class="card-body text-center">
-                                            <p class="card-text text-warning">No Aprobados</p>
-                                            <p class="card-text text-warning">213</p>
-                                          </div>
-                                        </div>
-                                        <div class="card border-0 m-2">
-                                          <div class="card-body text-center">
-                                            <p class="card-text text-success">Total de usuarios</p>
-                                            <p class="card-text text-success">1850</p>
-                                          </div>
-                                        </div>
-
-                                      </div>
-                                   <!-- <button type="button" class="btn btn-success col-sm-12 col-xl-4" id="texton"> <p class="numero">100</p></button>
-                                   <button type="button" class="btn btn-danger col-sm-12 col-xl-4" id="texton"> <p class="numero">50</p></button>
-                                   <button type="button" class="btn btn-info col-sm-12 col-xl-4" id="texton"> <p class="numero">150</p></button> -->
-
-
-
-                                  <div class="chart_ bg-white m-2" id="chart4"></div>
-                                  <!--<img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">-->
-                                  <div class="align-items-end">
-                                      <!--<h5 class="card-title">Card title  style="background-color: chocolate; width: 100% !important; bottom: 0 !important;"</h5>-->
-                                      <div class="fincard text-center">
-                                          <a href="Grafica.html">Curso Norma 251 Certificado curso ICA Champion</a>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-sm-12 col-xl-6">
-                              <div class="card bg-gray border-0 m-2" id="" >
-
-
-                                     <div class="card-group">
-                                        <div class="card border-0 m-2">
-                                          <div class="card-body text-center">
-                                            <p class="card-text text-primary">Aprobados</p>
-                                            <p class="card-text text-primary">85%</p>
-                                          </div>
-                                        </div>
-                                        <div class="card border-0 m-2">
-                                          <div class="card-body text-center">
-                                            <p class="card-text text-warning">No Aprobados</p>
-                                            <p class="card-text text-warning">213</p>
-                                          </div>
-                                        </div>
-                                        <div class="card border-0 m-2">
-                                          <div class="card-body text-center">
-                                            <p class="card-text text-success">Total de usuarios</p>
-                                            <p class="card-text text-success">1850</p>
-                                          </div>
-                                        </div>
-
-                                      </div>
-                                   <!-- <button type="button" class="btn btn-success col-sm-12 col-xl-4" id="texton"> <p class="numero">100</p></button>
-                                   <button type="button" class="btn btn-danger col-sm-12 col-xl-4" id="texton"> <p class="numero">50</p></button>
-                                   <button type="button" class="btn btn-info col-sm-12 col-xl-4" id="texton"> <p class="numero">150</p></button> -->
-
-
-
-                                  <div class="chart_ bg-white m-2" id="chart5"></div>
-                                  <!--<img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">-->
-                                  <div class="align-items-end">
-                                      <!--<h5 class="card-title">Card title  style="background-color: chocolate; width: 100% !important; bottom: 0 !important;"</h5>-->
-                                      <div class="fincard text-center">
-                                          <a href="Grafica.html">% Cubrimiento campaña de servicio KPI satisfacción del cliente</a>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                        </div>
-
-                  </div>
-
-
-              </div>
-
-              <!--Programas de entrenamiento-->
-
-              <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-
-                 <div class="">
-                        <h1 align="center">Programas de entrenamiento</h1>
-                 </div>
-                  <div >
-                     <div class="row">
-                     <div class="col-6" id="cards">
-                              <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                            <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                              <a href="Grafica6.html">Entrenamiento nuevos ingresos inducción</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-                      <div class="col-6" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                            <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                                 <a href="Grafica.html">Entrenamiento sentido de pertenencia</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-                      <div class="col-4" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                          <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                                 <a href="Grafica.html">Certificación PPP</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-                      </div>
-
-                      <div class="row">
-                          <div class="col-6" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                            <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                              <a href="Grafica.html">Ruta Domino´s</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-                      <div class="col-6" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                              <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                                 <a href="Grafica.html">Certificación ERS</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-                      <div class="col-6" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                          <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                                 <a href="Grafica.html">Certificación RSC</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-                      </div>
-
-                      <div class="row">
-                     <div class="col-6" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                            <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                              <a href="Grafica.html">Entrenamiento Gerencial Formación de Supervisor</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-                      <div class="col-6" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                            <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                                 <a href="Grafica.html">Entrevista básico Norma 251</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-                      <div class="col-6" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                          <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                                 <a href="Grafica.html">Formación Subgerente</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-                      </div>
-
-                      <div class="row">
-                     <div class="col-6" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                            <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                              <a href="Grafica.html">Seguridad y salud</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-                      <div class="col-6" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                            <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                                 <a href="Grafica.html">Formación gerente</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-                      <div class="col-4" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                             <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                              <div class="align-items-end">
-                                  <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                                 <a href="Grafica.html">Entrenamiento franquicias Staff general</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-                      </div>
-            </div>
-            </div>
-
-             <!--Lanzamiento y campañas-->
-
-              <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                 <div class="">
-                        <h1 align="center">Lanzamientos y campañas</h1>
-                 </div>
-
-                  <div >
-                     <div class="row">
-                     <div class="col-6" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                            <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                              <a href="Grafica.html">Campañas seguridad y salud</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-
-                      <div class="col-6" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                             <!-- <div id="chart2"></div> -->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                            <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                                 <a href="Grafica.html">Servicio</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-
-                      <div class="col-4" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                          <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                                 <a href="Grafica.html">Calidad</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-
-                      </div>
-
-                      <div class="row">
-                     <div class="col-6" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                            <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                              <a href="Grafica.html">Cursos en línea Alsea Anticorrupción</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-
-                      <div class="col-6" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                            <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                                 <a href="Grafica.html">Privacidad de Datos</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-
-                      <div class="col-6" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                          <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                                 <a href="Grafica.html">Certificaciones Liderazgo con enfoque humano</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-
-                      </div>
-
-                      <div class="row">
-                     <div class="col-4" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                            <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                              <a href="Grafica.html">Gerente dueño</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-
-                      <div class="col-6" id="cards">
-                          <div class="card mt-3" id="" style="width: 18rem height: 18rem;">
-                              <!--<div id="chart"></div>-->
-                              <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">
-                            <div class="align-items-end">
-                              <!--<h5 class="card-title">Card title</h5>-->
-                              <div class="fincard" align="center">
-                                 <a href="Grafica.html">Certificaciones ICA Champion</a>
-                              </div>
-                            </div>
-                          </div>
-                      </div>
-
-
-                      </div>
-
-
-                            </div>
-
-              </div>
-            </div>
-
-
-
-</div>
 </div>
 
 
