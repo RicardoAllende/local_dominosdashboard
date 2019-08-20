@@ -1,8 +1,10 @@
 $(document).ready(function() {
     addCharta();// Aprobados-Pestaña 1
     addChartb();//No aprobados-Pestaña 1
+    //-----------------------------------
     addCharta1();// Aprobados-Pestaña 2
     addChartb2();//No aprobados-Pestaña 2
+    //-----------------------------------------------------------------------------CRUCE DE INDICADORES
     addChartc();//Programa 0-90 vs % Rotación
     addChartz();//Programa 0-90 vs % Rotación
     addChartd();//Programa 0-90 vs Quejas de servicio
@@ -13,6 +15,13 @@ $(document).ready(function() {
     addCharti();//Curso Norma 251 Certificado curso ICA Champion
     addChartj();//% Cubrimiento campaña de servicio KPI satisfacción del cliente
     addChartk();//% Cubrimiento campaña de servicio KPI satisfacción del cliente
+    //------------------------------------------------------------------------------PROGRAMAS DE ENTRENAMIENTO
+    addChartl();//Entrenamiento nuevos ingresos induccion
+    addChartm();//Entrevista sentido de pertenencia
+    addChartn();//Certificacion PPP
+    addCharto();//Ruta Domino´s
+    addChartp();//Certificación ERS
+    addChartq();//Certificación RSC
 })
 
 //-----------------------------------------------------------------------------------------------------RANKING--------------------------------------------------------------------------------------------------------------
@@ -60,8 +69,7 @@ function addChartb(){
         bindto: "#chart4",
         tooltip: {
         format: {
-            title: function (d) { return 'Aprobados ';},
-            
+            title: function (d) { return 'Aprobados ';},         
             
 
         }
@@ -76,7 +84,7 @@ function addCharta1(){
     var charta = c3.generate({
         data: {
             columns: [
-                ['Aprobados', 30]
+                ['Aprobados', 80]
                                 
             ],
             colors: {
@@ -101,7 +109,7 @@ function addChartb2(){
     var chartb = c3.generate({
         data: {
             columns: [
-                ['No_Aprobados', 70]
+                ['No_Aprobados', 20]
                                 
             ],
             colors: {
@@ -123,12 +131,12 @@ function addChartb2(){
 
 //-------------------------------------------------------------------------------Gráficas de CRUCE DE INDICADORES-----------------------------------------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------Programa 0-90 vs % Rotación
+//--------------------------------------------------------------------------------Programa 0-90 vs % Rotación (Grafica)
 function addChartc(){
     var chartc = c3.generate({
         data: {
             columns: [
-                ['Aprobado', 30],
+                ['Aprobado', 40],
                 ['No Aprobado', 130],
                 ['Destacado', 140]
             ],
@@ -137,9 +145,9 @@ function addChartc(){
         bindto: "#chart",
         tooltip: {
         format: {
-            title: function (d) { return 'Curso ' + d; },
+            title: function (d) { return 'Curso '; },
             value: function (value, ratio, id) {
-                var format = id === 'data1' ? d3.format(',') : d3.format('$');
+                var format = id === 'data1' ? d3.format(',') : d3.format('');
                 return format(value);
             }
 
@@ -163,7 +171,7 @@ function addChartz(){
         format: {
             title: function (d) { return 'Curso ' + d; },
             value: function (value, ratio, id) {
-                var format = id === 'data1' ? d3.format(',') : d3.format('$');
+                var format = id === 'data1' ? d3.format(',') : d3.format('');
                 return format(value);
             }
 
@@ -172,7 +180,7 @@ function addChartz(){
     });
 }
 
-//----------------------------------------------------------------------------------Programa 0-90 vs Quejas de servicio
+//----------------------------------------------------------------------------------Programa 0-90 vs Quejas de servicio (Grafica2)
 function addChartd(){
     var chartd = c3.generate({
         data: {
@@ -187,7 +195,7 @@ function addChartd(){
         format: {
             title: function (d) { return 'Quejas de servicio';},
             value: function (value, ratio, id) {
-                var format = id === 'data1' ? d3.format(',') : d3.format('$');
+                var format = id === 'data1' ? d3.format(',') : d3.format('');
                 return format(value);
             }
 
@@ -210,7 +218,7 @@ function addCharte(){
         format: {
             title: function (d) { return 'Quejas de servicio';},
             value: function (value, ratio, id) {
-                var format = id === 'data1' ? d3.format(',') : d3.format('$');
+                var format = id === 'data1' ? d3.format(',') : d3.format('');
                 return format(value);
             }
 
@@ -219,14 +227,14 @@ function addCharte(){
     });
 }
 
-//----------------------------------------------------------------------------------------Staff certificado vs % Venta de tiendas cubiertas
+//----------------------------------------------------------------------------------------Staff certificado vs % Venta de tiendas cubiertas (Grafica3)
 
 function addChartf(){
     var chartf = c3.generate({
         data: {
             columns: [
-                ['Quejas', 30],
-                ['Porcentaje', 130]                
+                ['Ventas', 30],
+                ['Staff certificado', 130]                
             ],
             type: 'bar'
         },
@@ -235,7 +243,7 @@ function addChartf(){
         format: {
             title: function (d) { return 'Quejas de servicio';},
             value: function (value, ratio, id) {
-                var format = id === 'data1' ? d3.format(',') : d3.format('$');
+                var format = id === 'data1' ? d3.format(',') : d3.format('');
                 return format(value);
             }
 
@@ -259,7 +267,7 @@ function addChartg(){
         format: {
             title: function (d) { return 'Quejas de servicio';},
             value: function (value, ratio, id) {
-                var format = id === 'data1' ? d3.format(',') : d3.format('$');
+                var format = id === 'data1' ? d3.format(',') : d3.format('');
                 return format(value);
             }
         
@@ -268,13 +276,13 @@ function addChartg(){
     });
 }
 
-//---------------------------------------------------------------------------------------------Curso Norma 251 Certificado curso ICA Champion
+//---------------------------------------------------------------------------------------------Curso Norma 251 Certificado curso ICA Champion (Grafica4)
 
 function addCharth(){
     var charth = c3.generate({
         data: {
             columns: [
-                ['Aprobado', 30],
+                ['Aprobado', 50],
                 ['No Aprobado', 100],
                 ['Destacado', 60]                
             ],
@@ -285,7 +293,7 @@ function addCharth(){
         format: {
             title: function (d) { return 'Quejas de servicio';},
             value: function (value, ratio, id) {
-                var format = id === 'data1' ? d3.format(',') : d3.format('$');
+                var format = id === 'data1' ? d3.format(',') : d3.format('');
                 return format(value);
             }
 
@@ -309,7 +317,7 @@ function addCharti(){
         format: {
             title: function (d) { return 'Quejas de servicio';},
             value: function (value, ratio, id) {
-                var format = id === 'data1' ? d3.format(',') : d3.format('$');
+                var format = id === 'data1' ? d3.format(',') : d3.format('');
                 return format(value);
             }
             
@@ -318,13 +326,13 @@ function addCharti(){
     });
 }
 
-//--------------------------------------------------------------------------------------% Cubrimiento campaña de servicio KPI satisfacción del cliente
+//--------------------------------------------------------------------------------------% Cubrimiento campaña de servicio KPI satisfacción del cliente (Grafica5)
 
 function addChartj(){
     var chartj = c3.generate({
         data: {
             columns: [
-                ['Aprobado', 30],
+                ['Aprobado', 50],
                 ['No Aprobado', 100],
                 ['Destacado', 60]                
             ],
@@ -335,7 +343,7 @@ function addChartj(){
         format: {
             title: function (d) { return 'Quejas de servicio';},
             value: function (value, ratio, id) {
-                var format = id === 'data1' ? d3.format(',') : d3.format('$');
+                var format = id === 'data1' ? d3.format(',') : d3.format('');
                 return format(value);
             }
 
@@ -359,7 +367,7 @@ function addChartk(){
         format: {
             title: function (d) { return 'Quejas de servicio';},
             value: function (value, ratio, id) {
-                var format = id === 'data1' ? d3.format(',') : d3.format('$');
+                var format = id === 'data1' ? d3.format(',') : d3.format('');
                 return format(value);
             }
             
@@ -370,8 +378,116 @@ function addChartk(){
 
 //-------------------------------------------------------------------------------Gráficas de PROGRAMAS DE ENTRENAMIENTO-----------------------------------------------------------------------------------------------------
 
+//------------------------------------------------------Entrenamiento nuevos ingresos induccion (Grafica6)
+
+function addChartl(){
+    var chartj = c3.generate({
+        data: {
+            columns: [
+                ['Aprobado', 30],
+                ['No Aprobado', 100],
+                ['No hecho', 60]                
+            ],
+            type: 'pie'
+        },
+        bindto: "#chart13",        
+    });
+}
+
+//--------------------------------------------------------Entrevista sentido de pertenencia (Grafica7)
+
+function addChartm(){
+    var chartj = c3.generate({
+        data: {
+            columns: [
+                ['Aprobado', 40],
+                ['No Aprobado', 100],
+                ['No hecho', 60]                
+            ],
+            type: 'pie'
+        },
+        bindto: "#chart14",        
+    });
+}
+
+//----------------------------------------------------------------Certificacion PPP (Grafica8)
+
+function addChartn(){
+    var chartj = c3.generate({
+        data: {
+            columns: [
+                ['Aprobado', 40],
+                ['No Aprobado', 100],
+                ['No hecho', 40]                
+            ],
+            type: 'pie'
+        },
+        bindto: "#chart15",        
+    });
+}
+
+//----------------------------------------------------------------Ruta Domino´s (Grafica9)
+
+function addCharto(){
+    var chartj = c3.generate({
+        data: {
+            columns: [
+                ['Aprobado', 40],
+                ['No Aprobado', 100],
+                ['No hecho', 10]                
+            ],
+            type: 'pie'
+        },
+        bindto: "#chart16",        
+    });
+}
+
+//----------------------------------------------------------------Certificación ERS (Grafica10)
+
+function addChartp(){
+    var chartj = c3.generate({
+       data: {
+            columns: [
+                ['Aprobado', 40],
+                ['No Aprobado', 30],
+                ['No hecho', 10]                
+            ],
+            type: 'pie'
+        },
+        bindto: "#chart17",        
+    });
+}
+
+//----------------------------------------------------------------Certificación RSC (Grafica11)
+
+function addChartq(){
+    var chartj = c3.generate({
+        /*size: {
+        height: 440,
+        width: 1080
+    },*/
+        data: {
+            columns: [
+                ['Aprobado', 40],
+                ['No Aprobado', 30],
+                ['No hecho', 90]                
+            ],
+            type: 'pie'
+        },
+        bindto: "#chart18",        
+    });
+}
 
 
 
 
 
+
+/*function chargePE(){
+    setTimeout(function(){
+        addCharta1();
+        addChartb2();
+        addCharth();
+        addCharti();
+    }, 500);
+}-->*/
