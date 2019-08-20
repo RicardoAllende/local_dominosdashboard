@@ -1,8 +1,8 @@
 $(document).ready(function() {
-    addCharta();// Aprobados
-    addChartb();//No aprobados
-    addCharta1();// Aprobados
-    addChartb2();//No aprobados
+    addCharta();// Aprobados-Pestaña 1
+    addChartb();//No aprobados-Pestaña 1
+    addCharta1();// Aprobados-Pestaña 2
+    addChartb2();//No aprobados-Pestaña 2
     addChartc();//Programa 0-90 vs % Rotación
     addChartz();//Programa 0-90 vs % Rotación
     addChartd();//Programa 0-90 vs Quejas de servicio
@@ -16,6 +16,8 @@ $(document).ready(function() {
 })
 
 //-----------------------------------------------------------------------------------------------------RANKING--------------------------------------------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------PESTAÑA 1
 
 //-------------------------------------------------------------------------------------------------Aprobados
 function addCharta(){
@@ -56,6 +58,58 @@ function addChartb(){
             type: 'gauge'
         },
         bindto: "#chart4",
+        tooltip: {
+        format: {
+            title: function (d) { return 'Aprobados ';},
+            
+            
+
+        }
+    }
+    });
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------PESTAÑA 2
+
+//-------------------------------------------------------------------------------------------------Aprobados
+function addCharta1(){
+    var charta = c3.generate({
+        data: {
+            columns: [
+                ['Aprobados', 30]
+                                
+            ],
+            colors: {
+            Aprobados: '#0e4bef'
+        },
+            type: 'gauge'
+        },
+        bindto: "#chart30",
+        tooltip: {
+        format: {
+            title: function (d) { return 'Aprobados ';},
+            
+            
+
+        }
+    }
+    });
+}
+
+//-----------------------------------------------------------------------------------------------------------No aprobados
+function addChartb2(){
+    var chartb = c3.generate({
+        data: {
+            columns: [
+                ['No_Aprobados', 70]
+                                
+            ],
+            colors: {
+            No_Aprobados: '#ffff00'
+        },
+            type: 'gauge'
+        },
+        bindto: "#chart40",
         tooltip: {
         format: {
             title: function (d) { return 'Aprobados ';},
@@ -320,54 +374,4 @@ function addChartk(){
 
 
 
-
-
-function addCharta1(){
-    var charta = c3.generate({
-        data: {
-            columns: [
-                ['Aprobados', 30]
-                                
-            ],
-            colors: {
-            Aprobados: '#0e4bef'
-        },
-            type: 'gauge'
-        },
-        bindto: "#chart30",
-        tooltip: {
-        format: {
-            title: function (d) { return 'Aprobados ';},
-            
-            
-
-        }
-    }
-    });
-}
-
-//-----------------------------------------------------------------------------------------------------------No aprobados
-function addChartb2(){
-    var chartb = c3.generate({
-        data: {
-            columns: [
-                ['No_Aprobados', 70]
-                                
-            ],
-            colors: {
-            No_Aprobados: '#ffff00'
-        },
-            type: 'gauge'
-        },
-        bindto: "#chart40",
-        tooltip: {
-        format: {
-            title: function (d) { return 'Aprobados ';},
-            
-            
-
-        }
-    }
-    });
-}
 
