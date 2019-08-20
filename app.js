@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
     addCharta();// Aprobados-Pestaña 1
     addChartb();//No aprobados-Pestaña 1
     //-----------------------------------
@@ -11,8 +12,8 @@ $(document).ready(function() {
     addCharte();//Programa 0-90 vs Quejas de servicio
     addChartf();//Staff certificado vs % Venta de tiendas cubiertas
     addChartg();//Staff certificado vs % Venta de tiendas cubiertas
-    addCharth();//Curso Norma 251 Certificado curso ICA Champion
-    addCharti();//Curso Norma 251 Certificado curso ICA Champion
+    //addCharth();//Curso Norma 251 Certificado curso ICA Champion
+    //addCharti();//Curso Norma 251 Certificado curso ICA Champion
     addChartj();//% Cubrimiento campaña de servicio KPI satisfacción del cliente
     addChartk();//% Cubrimiento campaña de servicio KPI satisfacción del cliente
     //------------------------------------------------------------------------------PROGRAMAS DE ENTRENAMIENTO
@@ -24,17 +25,12 @@ $(document).ready(function() {
     addChartq();//Certificación RSC
 })
 
-//-----------------------------------------------------------------------------------------------------RANKING--------------------------------------------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------PESTAÑA 1
-
-//-------------------------------------------------------------------------------------------------Aprobados
 function addCharta(){
     var charta = c3.generate({
         data: {
             columns: [
                 ['Aprobados', 30]
-                                
+
             ],
             colors: {
             Aprobados: '#0e4bef'
@@ -45,8 +41,8 @@ function addCharta(){
         tooltip: {
         format: {
             title: function (d) { return 'Aprobados ';},
-            
-            
+
+
 
         }
     }
@@ -59,7 +55,7 @@ function addChartb(){
         data: {
             columns: [
                 ['No_Aprobados', 70]
-                                
+
             ],
             colors: {
             No_Aprobados: '#ffff00'
@@ -69,8 +65,9 @@ function addChartb(){
         bindto: "#chart4",
         tooltip: {
         format: {
-            title: function (d) { return 'Aprobados ';},         
+            title: function (d) { return 'Aprobados ';},       
             
+
 
         }
     }
@@ -84,8 +81,10 @@ function addCharta1(){
     var charta = c3.generate({
         data: {
             columns: [
+
                 ['Aprobados', 80]
                                 
+
             ],
             colors: {
             Aprobados: '#0e4bef'
@@ -96,8 +95,8 @@ function addCharta1(){
         tooltip: {
         format: {
             title: function (d) { return 'Aprobados ';},
-            
-            
+
+
 
         }
     }
@@ -109,8 +108,10 @@ function addChartb2(){
     var chartb = c3.generate({
         data: {
             columns: [
+
                 ['No_Aprobados', 20]
                                 
+
             ],
             colors: {
             No_Aprobados: '#ffff00'
@@ -121,8 +122,8 @@ function addChartb2(){
         tooltip: {
         format: {
             title: function (d) { return 'Aprobados ';},
-            
-            
+
+
 
         }
     }
@@ -186,7 +187,7 @@ function addChartd(){
         data: {
             columns: [
                 ['Quejas', 30],
-                ['Porcentaje', 130]                
+                ['Porcentaje', 130]
             ],
             type: 'bar'
         },
@@ -209,7 +210,7 @@ function addCharte(){
         data: {
             columns: [
                 ['Quejas', 30, 200, 100, 400, 150, 250],
-                ['Porcentaje', 100, 100, 140, 200, 150, 50]                
+                ['Porcentaje', 100, 100, 140, 200, 150, 50]
             ],
             type: ''
         },
@@ -233,8 +234,10 @@ function addChartf(){
     var chartf = c3.generate({
         data: {
             columns: [
+
                 ['Ventas', 30],
                 ['Staff certificado', 130]                
+
             ],
             type: 'bar'
         },
@@ -257,8 +260,8 @@ function addChartg(){
         data: {
             columns: [
                 ['Ideal', 94, 94, 94, 94, 94, 94],
-                ['% Rotacion', 10, 100, 40, 20, 15, 50],                
-                ['% Capacitacion', 30, 60, 50, 20, 15, 35]                              
+                ['% Rotacion', 10, 100, 40, 20, 15, 50],
+                ['% Capacitacion', 30, 60, 50, 20, 15, 35]
             ],
             type: ''
         },
@@ -270,7 +273,7 @@ function addChartg(){
                 var format = id === 'data1' ? d3.format(',') : d3.format('');
                 return format(value);
             }
-        
+
         }
     }
     });
@@ -284,7 +287,7 @@ function addCharth(){
             columns: [
                 ['Aprobado', 50],
                 ['No Aprobado', 100],
-                ['Destacado', 60]                
+                ['Destacado', 60]
             ],
             type: 'bar'
         },
@@ -307,8 +310,8 @@ function addCharti(){
         data: {
             columns: [
                 ['Aprobado', 94, 94, 94, 94, 94, 94],
-                ['No Aprobado', 10, 100, 40, 20, 15, 50],                
-                ['Destacado', 30, 60, 50, 20, 15, 35]                              
+                ['No Aprobado', 10, 100, 40, 20, 15, 50],
+                ['Destacado', 30, 60, 50, 20, 15, 35]
             ],
             type: ''
         },
@@ -320,7 +323,7 @@ function addCharti(){
                 var format = id === 'data1' ? d3.format(',') : d3.format('');
                 return format(value);
             }
-            
+
         }
     }
     });
@@ -334,7 +337,7 @@ function addChartj(){
             columns: [
                 ['Aprobado', 50],
                 ['No Aprobado', 100],
-                ['Destacado', 60]                
+                ['Destacado', 60]
             ],
             type: 'bar'
         },
@@ -357,8 +360,8 @@ function addChartk(){
         data: {
             columns: [
                 ['Aprobado', 94, 94, 94, 94, 94, 94],
-                ['No Aprobado', 10, 100, 40, 20, 15, 50],                
-                ['Destacado', 30, 60, 50, 20, 15, 35]                              
+                ['No Aprobado', 10, 100, 40, 20, 15, 50],
+                ['Destacado', 30, 60, 50, 20, 15, 35]
             ],
             type: ''
         },
@@ -370,7 +373,7 @@ function addChartk(){
                 var format = id === 'data1' ? d3.format(',') : d3.format('');
                 return format(value);
             }
-            
+
         }
     }
     });
