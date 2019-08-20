@@ -77,7 +77,6 @@ $indicators = local_dominosdashboard_get_indicators();
    
     
     
-    <script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
     
     
 
