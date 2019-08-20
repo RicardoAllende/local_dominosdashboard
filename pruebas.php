@@ -26,7 +26,7 @@
 require_once(__DIR__ . '/../../config.php');
 // require_capability('local/dominosdashboard:view', context_system::instance()); // Requiere permisos de capa que en primera instancia son otorgados al administrador del sistema
 require_once(__DIR__ . '/lib.php');
-require_login();
+// require_login();
 global $DB;
 $PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/pruebas.php");
 $courseid = optional_param('courseid', 27, PARAM_INT);
@@ -36,18 +36,23 @@ $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 
 echo $OUTPUT->header();
 
-$columnas = array(
-    0 => trim('CC'),
-    1 => trim('NOMBRE'),
-    2 => trim('REGION '),
-    3 => trim('DISTRITAL COACH'),
-    4 => trim('CALIFICACION'),
-    5 => trim('ESTATUS'),
-    6 => trim('# CRITICOS'),
-    7 => trim('DIA'),
-    8 => trim('SEMANA'),
-    9 => trim('MES'),
-);
+// $columnas = array(
+//     0 => trim('CC'),
+//     1 => trim('NOMBRE'),
+//     2 => trim('REGION '),
+//     3 => trim('DISTRITAL COACH'),
+//     4 => trim('CALIFICACION'),
+//     5 => trim('ESTATUS'),
+//     6 => trim('# CRITICOS'),
+//     7 => trim('DIA'),
+//     8 => trim('SEMANA'),
+//     9 => trim('MES'),
+// );
 
-_print(local_dominosdashboard_relate_column_with_fields($columnas, explode(',', "CC,CALIFICACION,ESTATUS,DIA,SEMANA,NOMBRE,REGION,DISTRITAL COACH,MES")));
+// _print(local_dominosdashboard_relate_column_with_fields($columnas, explode(',', "CC,CALIFICACION,ESTATUS,DIA,SEMANA,NOMBRE,REGION,DISTRITAL COACH,MES")));
+
+foreach(local_dominosdashboard_get_courses() as $course){
+    // _print("Actividades del curso ", $course->fullname, local_dominosdashboard_get_activities($course->id));
+    _print('Actividades del curso ' . $course->fullname, local_dominosdashboard_get_activities_completion($course->id, "1,2,3,4,5,6"));
+}
 echo $OUTPUT->footer();
