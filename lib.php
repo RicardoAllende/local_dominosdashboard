@@ -310,30 +310,6 @@ function local_dominosdashboard_get_course_completion(int $userid, stdClass $cou
 
 }
 
-function local_dominosdashboard_get_course_completion_by_grade(){
-    
-}
-
-function local_dominosdashboard_get_course_completion_by_activity_grade(){
-    
-}
-
-function local_dominosdashboard_get_course_completion_by_badge(){
-    
-}
-
-function local_dominosdashboard_get_course_completion_by_activity_completed(){
-    
-}
-
-function local_dominosdashboard_get_course_completion_standard(){
-    
-}
-
-function local_dominosdashboard_get_course_completion_by_average(){
-    
-}
-
 function local_dominosdashboard_get_module_grade(int $userid, int $moduleid){
     global $DB;
     $grade = $default;
@@ -981,10 +957,10 @@ function local_dominosdashboard_get_badges(int $badge_status = -1){
     return $DB->get_records_menu('badge', array(), '', 'id,name');
 }
 
-function local_dominosdashboard_get_activities(int $courseid/*, int $visible = 1*/){
-    // if($visible != 1 || $visible != 0){
-    //     $visible = 1;
-    // }
+function local_dominosdashboard_get_activities(int $courseid, int $visible = 1){
+    if($visible != 1 || $visible != 0){
+        $visible = 1;
+    }
     global $DB;
     // $query = "SELECT * ";
     $actividades = array();
@@ -997,9 +973,49 @@ function local_dominosdashboard_get_activities(int $courseid/*, int $visible = 1
     }
     $query .= " END AS name
     from {course_modules} cm
-    where course = {$courseid}"; // visible = ' . $visible . ' ';
+    where course = {$courseid} AND visible = {$visible} ";
         // $DB->get_records_sql_menu($sql);
     return $DB->get_records_sql_menu($query);
+}
+
+function local_dominosdashboard_get_activities_completion(int $courseid, string $userids){
+    global $DB;
+    $courseactivities = local_dominosdashboard_get_activities($courseid);
+    $activities = array();
+    // dd($courseactivities);
+    foreach($courseactivities as $key => $activity){
+        $activityInformation = local_dominos_dashboard_get_activity_completions($activityid = $key, $userids, $title = $activity);
+        _log($activityInformation);
+        if(empty($activities)){
+            array_push($activities,
+             $activityInformation);
+        }else{
+            $max = count($activities) - 1;
+            if($activityInformation['completed'] > $activities[$max]['completed']){
+                array_unshift($activities, $activityInformation);
+            }else{
+                array_push($activities, $activityInformation);
+            }
+        }
+        // array_push($activities, $activityInformation);
+    }
+    return $activities;
+}
+
+function local_dominos_dashboard_get_activity_completions(int $activityid, string $userids = "", $title = ""){
+    global $DB;
+    $id = "module" . $activityid;
+    $result = new stdClass();
+    // $result->inProgress         = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 0");
+    // $result->completed          = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate IN (1,2)");
+    // $result->completedWithFail  = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 3");
+    $inProgress         = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 0");
+    $completed          = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate IN (1,2)");
+    $completedWithFail  = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 3");
+    // $result->completed          = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 1");
+    // $result->completedWithPass  = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 2");
+    return compact('id', 'title', 'inProgress', 'completed', 'completedWithFail');
+    return $result;
 }
 
 function local_dominosdashboard_get_competencies($conditions = array()){
