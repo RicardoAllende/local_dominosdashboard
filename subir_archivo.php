@@ -59,6 +59,11 @@ if ($formdata = $mform->get_data()) {
     }, $columns);
     // _log('$cir->get_columns()', $columns);
     $kpi = $formdata->kpi;
+    $cir->init();
+    while ($line = $cir->next()) {
+        _log('Imprimiendo primera columna', $line[0]);
+    }
+    die('Término de la función');
     switch ($kpi) {
         /*
         campos de la tabla

@@ -107,6 +107,7 @@ DEFINE("COMPLETION_BY_AVG", 6);
 // DEFINE("COMPLETION_BY_ATTENDANCE", 5);
 
 DEFINE('DOMINOSDASHBOARD_INDICATORS', 'regiones/distritos/entrenadores/tiendas/puestos');
+DEFINE('DOMINOSDASHBOARD_INDICATORS_FOR_KPIS', 'regiones/distritos/tiendas');
 DEFINE('DOMINOSDASHBOARD_CHARTS', 'bar/donut/chart3/chart4');
 
 
@@ -155,6 +156,38 @@ function local_dominosdashboard_get_catalogue(string $key){
     $query = "SELECT distinct data FROM {user_info_data} where fieldid = {$fieldid}";
     return $DB->get_fieldset_sql($query);
 }
+
+function local_dominosdashboard_get_kpi_catalogue(string $key){
+    // DEFINE('DOMINOSDASHBOARD_INDICATORS_FOR_KPIS', 'regiones/distritos/tiendas');
+    switch($key){
+        case 'regiones':
+            $query = "SELECT distinct region FROM {dominos_kpis}";
+        break;
+        case 'distritos':
+            $query = "SELECT distinct distrital FROM {dominos_kpis}";
+
+        break;
+        case 'tiendas':
+            $query = "SELECT distinct CONCAT(ccosto, '', nom_ccosto) FROM {dominos_kpis}";
+        break;
+        default: 
+            return [];
+        break;
+    }
+
+    // $indicators = local_dominosdashboard_get_kpi_indicators();
+    // if(array_search($key, $indicators) === false){
+    //     return [];
+    // }
+    // $fieldid = get_config('local_dominosdashboard', "filtro_" . $key);
+    // if($fieldid === false){
+    //     return [];
+    // }
+    // global $DB;
+    // $query = "SELECT distinct data FROM {user_info_data} where fieldid = {$fieldid}";
+    // return $DB->get_fieldset_sql($query);
+}
+
 
 // function local_dominosdashboard_get_course_all_catalogues($courseid){
 //     global $DB;
@@ -743,6 +776,10 @@ function local_dominosdashboard_get_gradable_items(int $courseid, int $hidden = 
 // }
 
 function local_dominosdashboard_get_indicators(){
+    return explode('/', DOMINOSDASHBOARD_INDICATORS);
+}
+
+function local_dominosdashboard_get_kpi_indicators(){
     return explode('/', DOMINOSDASHBOARD_INDICATORS);
 }
 

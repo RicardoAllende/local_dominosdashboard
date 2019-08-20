@@ -51,8 +51,12 @@ echo $OUTPUT->header();
 
 // _print(local_dominosdashboard_relate_column_with_fields($columnas, explode(',', "CC,CALIFICACION,ESTATUS,DIA,SEMANA,NOMBRE,REGION,DISTRITAL COACH,MES")));
 
-foreach(local_dominosdashboard_get_courses() as $course){
-    // _print("Actividades del curso ", $course->fullname, local_dominosdashboard_get_activities($course->id));
-    _print('Actividades del curso ' . $course->fullname, local_dominosdashboard_get_activities_completion($course->id, "1,2,3,4,5,6"));
+// foreach(local_dominosdashboard_get_courses() as $course){
+//     // _print("Actividades del curso ", $course->fullname, local_dominosdashboard_get_activities($course->id));
+//     _print('Actividades del curso ' . $course->fullname, local_dominosdashboard_get_activities_completion($course->id, "1,2,3,4,5,6"));
+// }
+
+foreach(local_dominosdashboard_get_kpi_indicators() as $indicator){
+    
 }
 echo $OUTPUT->footer();
