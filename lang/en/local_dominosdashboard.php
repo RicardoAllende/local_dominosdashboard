@@ -110,3 +110,19 @@ $string['allowed_email_addresses_in_course_desc']   = 'El correo electrónico de
 
 $string['allowed_email_admins']        = 'Correos electrónicos';
 $string['allowed_email_admins_desc']   = 'Escriba el correo electrónico de los usuarios que tendrán acceso al dashboard. <br> <strong>Para escribir distintos correos, utilice como separador un espacio</strong>';
+
+$string['uploadkpis'] = 'Subir kpis';
+$string['uploadkpis_help'] = 'Usted debe agregar los archivos kpis con el formato adecuado
+
+Para dar formato al archivo, abra el archivo excel y seleccione la opción Guardar como (en windows es con la tecla F12), busque la pestaña herramientas (está cerca del botón Guardar)
+Dentro de herramientas dar clic a Opciones web y buscar la pestaña codificación. En la opción Guardar este documento como seleccione "Unicode" y después aceptar los cambios
+Después de ello ubicarse en la hoja que posee el KPI y guardar como csv.
+El paso final es limpiar las columnas iniciales que estén vacías y las columnas al inicio que no tengan valores y guardar como CSV.
+
+';
+// $string['uploadkpis_help'] = 'Users may be uploaded (and optionally enrolled in courses) via text file. The format of the file should be as follows:
+
+// * Each line of the file contains one record
+// * Each record is a series of data separated by commas (or other delimiters)
+// * The first record contains a list of fieldnames defining the format of the rest of the file
+// * Required fieldnames are username, password, firstname, lastname, email';
