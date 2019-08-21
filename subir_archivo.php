@@ -99,7 +99,7 @@ if ($formdata = $mform->get_data()) {
             while ($line = $cir->next()) {
                 // _log("Línea", $line);
                 if(empty($line[$columns_["ESTATUS"]])){
-                    _log("Estatus vacío en la línea", $line);
+                    // _log("Estatus vacío en la línea", $line);
                     continue;
                 }
                 if( ! $DB->record_exists('dominos_kpis', array('day' => $line[$columns_['DIA']], 'ccosto' => $line[$columns_['CC']],
@@ -153,7 +153,7 @@ if ($formdata = $mform->get_data()) {
             while ($line = $cir->next()) {
                 $lastMonthColumn = local_dominosdashboard_get_last_month_key($columns);
                 if($lastMonthColumn === -1){
-                    _log("No se envía el mes", $line);
+                    // _log("No se envía el mes", $line);
                     continue;
                 }
                 if($line[$columns_['Región / Razón social']] == 'Total general'){
@@ -206,7 +206,7 @@ if ($formdata = $mform->get_data()) {
             global $DB;
             while ($line = $cir->next()) {
                 if(empty($line[$columns_["Valor 1"]])){
-                    _log("Estatus vacío Valor 1 en la línea", $line);
+                    // _log("Estatus vacío Valor 1 en la línea", $line);
                     continue;
                 }
                 if(!($line[$columns_['INDICADOR']] == "ROTACION MENSUAL" || $line[$columns_['INDICADOR']] == "ROTACION ROLLING")){
