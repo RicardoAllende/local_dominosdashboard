@@ -12,8 +12,8 @@ $(document).ready(function() {
     addCharte();//Programa 0-90 vs Quejas de servicio
     addChartf();//Staff certificado vs % Venta de tiendas cubiertas
     addChartg();//Staff certificado vs % Venta de tiendas cubiertas
-    //addCharth();//Curso Norma 251 Certificado curso ICA Champion
-    //addCharti();//Curso Norma 251 Certificado curso ICA Champion
+    addCharth();//Curso Norma 251 Certificado curso ICA Champion
+    addCharti();//Curso Norma 251 Certificado curso ICA Champion
     addChartj();//% Cubrimiento campaña de servicio KPI satisfacción del cliente
     addChartk();//% Cubrimiento campaña de servicio KPI satisfacción del cliente
     //------------------------------------------------------------------------------PROGRAMAS DE ENTRENAMIENTO
@@ -23,7 +23,17 @@ $(document).ready(function() {
     addCharto();//Ruta Domino´s
     addChartp();//Certificación ERS
     addChartq();//Certificación RSC
+    addChartr();//Entrenamiento Gerencial Formación de Supervisor
+    addCharts();//Entrevista básico Norma 251
+    addChartt();//Formación Subgerente
+    addChartu();//Seguridad y salud
+    addChartv();//Formación gerente
+    addChartw();//Entrenamiento franquicias Staff general
 })
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------PESTAÑA 1
+
+//-------------------------------------------------------------------------------------------------Aprobados
 
 function addCharta(){
     var charta = c3.generate({
@@ -481,6 +491,125 @@ function addChartq(){
     });
 }
 
+//----------------------------------------------------------------Entrenamiento Gerencial Formación de Supervisor (Grafica12)
+
+function addChartr(){
+    var chartj = c3.generate({
+        /*size: {
+        height: 440,
+        width: 1080
+    },*/
+        data: {
+            columns: [
+                ['Aprobado', 40],
+                ['No Aprobado', 30],
+                ['No hecho', 40]                
+            ],
+            type: 'pie'
+        },
+        bindto: "#chart19",        
+    });
+}
+
+//----------------------------------------------------------------Entrevista básico Norma 251 (Grafica13)
+
+function addCharts(){
+    var chartj = c3.generate({
+        /*size: {
+        height: 440,
+        width: 1080
+    },*/
+        data: {
+            columns: [
+                ['Aprobado', 40],
+                ['No Aprobado', 40],
+                ['No hecho', 40]                
+            ],
+            type: 'pie'
+        },
+        bindto: "#chart20",        
+    });
+}
+
+//----------------------------------------------------------------Formación Subgerente (Grafica14)
+
+function addChartt(){
+    var chartj = c3.generate({
+        /*size: {
+        height: 440,
+        width: 1080
+    },*/
+        data: {
+            columns: [
+                ['Aprobado', 10],
+                ['No Aprobado', 40],
+                ['No hecho', 40]                
+            ],
+            type: 'pie'
+        },
+        bindto: "#chart21",        
+    });
+}
+
+//----------------------------------------------------------------Seguridad y salud (Grafica15)
+
+function addChartu(){
+    var chartj = c3.generate({
+        /*size: {
+        height: 440,
+        width: 1080
+    },*/
+        data: {
+            columns: [
+                ['Aprobado', 10],
+                ['No Aprobado', 20],
+                ['No hecho', 40]                
+            ],
+            type: 'pie'
+        },
+        bindto: "#chart22",        
+    });
+}
+
+//----------------------------------------------------------------Formación gerente (Grafica16)
+
+function addChartv(){
+    var chartj = c3.generate({
+        /*size: {
+        height: 440,
+        width: 1080
+    },*/
+        data: {
+            columns: [
+                ['Aprobado', 10],
+                ['No Aprobado', 60],
+                ['No hecho', 40]                
+            ],
+            type: 'pie'
+        },
+        bindto: "#chart23",        
+    });
+}
+
+//----------------------------------------------------------------Entrenamiento franquicias Staff general (Grafica17)
+
+function addChartw(){
+    var chartj = c3.generate({
+        /*size: {
+        height: 440,
+        width: 1080
+    },*/
+        data: {
+            columns: [
+                ['Aprobado', 30],
+                ['No Aprobado', 60],
+                ['No hecho', 80]                
+            ],
+            type: 'pie'
+        },
+        bindto: "#chart24",        
+    });
+}
 
 
 
