@@ -38,8 +38,25 @@ $PAGE->set_heading(get_string('pluginname', $pluginName));
 $returnurl = new moodle_url('/local/dominosdashboard/dashboard.php');
 
 $mform = new local_dominosdashboard_upload_kpis();
-
 if ($formdata = $mform->get_data()) {
+    echo "<style>
+    .dominosloader {
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: dominosspin 2s linear infinite;
+      }
+      
+      @keyframes dominosspin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }</style>";
+    echo $OUTPUT->header();
+    // echo "<image id='loading-csv-content' src='https://thomas.vanhoutte.be/miniblog/wp-content/uploads/spinningwheel.gif'>";
+    echo "<div  id='loading-csv-content' class='dominosloader'></div>";
+    
     $currentYear = date('Y');
     $iid = csv_import_reader::get_new_iid($pluginName);
     $cir = new csv_import_reader($iid, $pluginName);
@@ -60,29 +77,7 @@ if ($formdata = $mform->get_data()) {
     // _log('$cir->get_columns()', $columns);
     $kpi = $formdata->kpi;
     $cir->init();
-    while ($line = $cir->next()) {
-        _log('Imprimiendo primera columna', $line[0]);
-    }
-    die('Término de la función');
     switch ($kpi) {
-        /*
-        campos de la tabla
-        <FIELD NAME="id"            TYPE="int"   LENGTH="10"  NOTNULL="true"   SEQUENCE="true" />
-        <FIELD NAME="kpi"           TYPE="char"  LENGTH="10" NOTNULL="false"  SEQUENCE="false" />
-        <FIELD NAME="nombre"        TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-        <FIELD NAME="valor"         TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-        <FIELD NAME="typevalue"     TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-        <FIELD NAME="day"           TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
-        <FIELD NAME="week"          TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
-        <FIELD NAME="month"         TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
-        <FIELD NAME="year"          TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
-        <FIELD NAME="region"        TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-        <FIELD NAME="ccosto"        TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-        <FIELD NAME="nom_ccosto"    TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-        <FIELD NAME="original_time" TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-        <FIELD NAME="distrital"     TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-        <FIELD NAME="timecreated"   TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
-        */
         case KPI_OPS:
             /*
                 $record = new stdClass();
@@ -107,7 +102,7 @@ if ($formdata = $mform->get_data()) {
                 CC->ccosto,NOMBRE->nom_ccosto,REGION->region ,DISTRITAL COACH -> distrital,CALIFICACION -> calificacion,ESTATUS -> estatus,# CRITICOS,DIA->day,SEMANA->week,MES->month
                 CC,NOMBRE,REGION,DISTRITAL COACH,CALIFICACION,ESTATUS,DIA,SEMANA,MES
             */
-            $requiredFields=explode(',',"CC,NOMBRE,REGION,DISTRITAL COACH,CALIFICACION,ESTATUS,DIA,SEMANA,MES");
+            $requiredFields=explode(',',"CC,NOMBRE,REGION,DISTRITAL COACH,CALIFICACIÓN,ESTATUS,DIA,SEMANA,MES");
             
             //Si estatus está vacía ignorar esa columna
 
@@ -159,16 +154,16 @@ if ($formdata = $mform->get_data()) {
         break;
 
         case KPI_HISTORICO: // 
-        /*
-        Columnas esperadas
-        Regi�n / Raz�n social,No_Tienda,Nombre_Tienda,Nombre del Distrital / Gerente de Operaciones,1_ENERO,2_FEBRERO,3_MARZO,4_ABRIL,5_MAYO,6_JUNIO,7_JULIO,Total general
-        Region / Razon social,No_Tienda,Nombre_Tienda,Nombre del Distrital / Gerente de Operaciones,1_ENERO,2_FEBRERO,3_MARZO,4_ABRIL,5_MAYO,6_JUNIO,7_JULIO,Total general
-        */
-            // Region / Razon social,No_Tienda,Nombre_Tienda,Nombre del Distrital / Gerente de Operaciones,1_ENERO,2_FEBRERO,3_MARZO,4_ABRIL,5_MAYO,6_JUNIO,7_JULIO,8_AGOSTO,9_SEPTIEMBRE,10_OCTUBRE,11_NOVIEMBRE,12_DICIEMBRE,Total general
+            /*
+            Columnas esperadas
+            Regi�n / Raz�n social,No_Tienda,Nombre_Tienda,Nombre del Distrital / Gerente de Operaciones,1_ENERO,2_FEBRERO,3_MARZO,4_ABRIL,5_MAYO,6_JUNIO,7_JULIO,Total general
+            Región / Razón social,No_Tienda,Nombre_Tienda,Nombre del Distrital / Gerente de Operaciones,1_ENERO,2_FEBRERO,3_MARZO,4_ABRIL,5_MAYO,6_JUNIO,7_JULIO,Total general
+            */
+            // Región / Razón social,No_Tienda,Nombre_Tienda,Nombre del Distrital / Gerente de Operaciones,1_ENERO,2_FEBRERO,3_MARZO,4_ABRIL,5_MAYO,6_JUNIO,7_JULIO,8_AGOSTO,9_SEPTIEMBRE,10_OCTUBRE,11_NOVIEMBRE,12_DICIEMBRE,Total general
         
             // $requiredFields=explode(',',"CC,NOM_CCOSTO,REGION,GTE DTTO,Valor 1,ANIO,FECHA,MES,INDICADOR,TIPO");
             $meses = "12_DICIEMBRE,11_NOVIEMBRE,10_OCTUBRE,9_SEPTIEMBRE,8_AGOSTO,7_JULIO,6_JUNIO,5_MAYO,4_ABRIL,3_MARZO,2_FEBRERO,1_ENERO";
-            $requiredFields=explode(',',"Region / Razon social,No_Tienda,Nombre_Tienda,Nombre del Distrital / Gerente de Operaciones,1_ENERO");
+            $requiredFields=explode(',',"Región / Razón social,No_Tienda,Nombre_Tienda,Nombre del Distrital / Gerente de Operaciones,1_ENERO");
             
             $count= 0;
             $hasRequiredColumns = true;
@@ -185,10 +180,13 @@ if ($formdata = $mform->get_data()) {
                     _log("No se envía el mes", $line);
                     continue;
                 }
+                if($line[$columns_['Región / Razón social']] == 'Total general'){
+                    continue;
+                }
                 if( ! $DB->record_exists('dominos_kpis', array('original_time' => $line[$lastMonthColumn], 'ccosto' => $line[$columns_['No_Tienda']],
                     // 'nom_ccosto' => $line[$columns_['NOMBRE']],
                     'year' => $currentYear,
-                    'region' => $line[$columns_['Region / Razon social']],
+                    'region' => $line[$columns_['Región / Razón social']],
                     'distrital' => $line[$columns_['Nombre del Distrital / Gerente de Operaciones']],
                     // 'nombre'     => $line[$columns_['INDICADOR']],
                     ))
@@ -202,7 +200,7 @@ if ($formdata = $mform->get_data()) {
                     // $record->week = $line[$columns_['SEMANA']];
                     $record->month = $line[$lastMonthColumn];
                     $record->year = $currentYear;
-                    $record->region = $line[$columns_['Region / Razon social']];
+                    $record->region = $line[$columns_['Región / Razón social']];
                     $record->ccosto = $line[$columns_['No_Tienda']];
                     $record->nom_ccosto = $line[$columns_['Nombre_Tienda']];
                     $record->original_time = $line[$lastMonthColumn];
@@ -219,9 +217,9 @@ if ($formdata = $mform->get_data()) {
         break;
 
         case KPI_SCORCARD: // scorecard
-        /*
-        Columnas mostradas: REGION,GTE DTTO,CC,NOM_CCOSTO,ANIO,MES,INDICADOR,VALOR,FECHA,TIPO,Valor 1,,
-        */
+            /*
+            Columnas mostradas: REGION,GTE DTTO,CC,NOM_CCOSTO,ANIO,MES,INDICADOR,VALOR,FECHA,TIPO,Valor 1,,
+            */
             // $requiredFields=explode(',',"CC,NOM_CCOSTO,REGION,GTE DTTO,Valor 1,ESTATUS,DIA,SEMANA,MES");
             $requiredFields=explode(',',"CC,NOM_CCOSTO,REGION,GTE DTTO,Valor 1,ANIO,FECHA,MES,INDICADOR,TIPO");
             
@@ -283,10 +281,17 @@ if ($formdata = $mform->get_data()) {
     // while ($line = $cir->next()) {
     //     _log("Línea", $line);
     // }
-    die("Se envió un documento");
     unset($content);
-
-    
+    echo "<h2>Se terminó la carga del documento</h2>";
+    echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                loader = document.getElementById('loading-csv-content');
+                if(loader != undefined){
+                    loader.style.display = 'none';
+                }
+            });
+        </script>";
+    echo $OUTPUT->footer();
     // admin\tool\uploaduser\index.php
     // admin\tool\uploaduser\locallib.php
     // test if columns ok

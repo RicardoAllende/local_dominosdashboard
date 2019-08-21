@@ -50,13 +50,15 @@ class local_dominosdashboard_upload_kpis extends moodleform {
 
         $choices = core_text::get_encodings();
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
-        $mform->setDefault('encoding', 'UTF-8');
+        $mform->setDefault('encoding', 'ISO-8859-1'); // default de excel
 
         $choices = local_dominosdashboard_get_KPIS();
+        $choices[0] = "Seleccionar tipo de KPI";
         $mform->addElement('select', 'kpi', get_string('kpi_select', 'local_dominosdashboard'), $choices);
-        $mform->setType('previewrows', PARAM_INT);
+        $mform->setDefault('kpi', 0);
 
         $this->add_action_buttons(false, get_string('upload_kpi', 'local_dominosdashboard'));
+        $mform->disabledIf('submitbutton', 'kpi', 'eq', 0);
     }
 }
 

@@ -115,14 +115,10 @@ function local_dominosdashboard_relate_column_with_fields(array $columns, array 
     $response = array();
     $notFound = array();
     foreach($requiredFields as $field){
-        // $response[]
-        // $pos = strpos($columns, $field);
         $pos = array_search($field, $columns);
         if($pos === false){
             $hasRequiredColumns = false;
             array_push($notFound, $field);
-            // _log("la clave no encontrada es: ", $field);
-            // return false; // No se tienen las claves necesarias
         }else{
             $response[$field] = $pos;
         }
@@ -131,16 +127,6 @@ function local_dominosdashboard_relate_column_with_fields(array $columns, array 
         return $notFound;
     }
     return $response;
-}
-
-function local_dominosdashboard_check_column_has_one_of_fields(string $columns, $options){
-    $found = false;
-    foreach($options as $option){
-        if(strpos($columns !== false)){
-            $found = true;
-        }
-    }
-    return $found;
 }
 
 function local_dominosdashboard_get_catalogue(string $key){
@@ -174,18 +160,6 @@ function local_dominosdashboard_get_kpi_catalogue(string $key){
             return [];
         break;
     }
-
-    // $indicators = local_dominosdashboard_get_kpi_indicators();
-    // if(array_search($key, $indicators) === false){
-    //     return [];
-    // }
-    // $fieldid = get_config('local_dominosdashboard', "filtro_" . $key);
-    // if($fieldid === false){
-    //     return [];
-    // }
-    // global $DB;
-    // $query = "SELECT distinct data FROM {user_info_data} where fieldid = {$fieldid}";
-    // return $DB->get_fieldset_sql($query);
 }
 
 
@@ -346,7 +320,6 @@ function local_dominosdashboard_get_email_provider_to_allow(){
 
 function local_dominosdashboard_get_userid_with_dominos_mail(){
     global $DB;
-    // return $DB->get_fieldset_selet('')
     $query = "SELECT id FROM {user} WHERE ";
     return $DB->get_fieldset_sql($query);
 }
@@ -365,7 +338,6 @@ function local_dominosdashboard_get_enrolled_users_ids(int $courseid){
     WHERE c.id = {$courseid}
     AND ra.userid IN(SELECT id from {user} WHERE deleted = 0 AND suspended = 0 {$where})
     AND ra.roleid IN (5) # default student role";
-    // _log($query);
     global $DB;
     if($result = $DB->get_fieldset_sql($query)){
         return $result;
@@ -524,15 +496,11 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         }
         return $response;
     }
-    // _log("Línea con error de userids que retorna null", $userids);
     _log('Usuarios que cumplen con las características', $userids);
     $num_users = count($userids);
     $userids = implode(',', $userids);
 
     $response = new stdClass();
-    // $response->key = 'course' . $courseid;
-    // $response->chart = local_dominosdashboard_get_course_chart($courseid);
-    // $response->title = $course->fullname;
     $response->enrolled_users = local_dominosdashboard_get_enrolled_users_count($courseid, $userids);
     $response->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids);
     $response->not_viewed = local_dominosdashboard_get_not_viewed_users_in_course($courseid, $userids, $num_users);
@@ -808,6 +776,9 @@ if(!function_exists('dd')){
 
 if(!function_exists('_log')){
     function _log(...$parameters){
+        if(!LOCALDOMINOSDASHBOARD_DEBUG){
+            return;
+        }
         $output = "";
         foreach($parameters as $parameter){
             if($parameter === true){
@@ -906,7 +877,6 @@ function local_dominosdashboard_get_categories_with_subcategories(int $category_
     $category = $DB->get_record('course_categories', array('id' => $category_id));
     $categories = array();
     if($category){
-        // $exploded_path = explode($category->path);
         $query = "SELECT id FROM {course_categories} WHERE path LIKE '{$category->path}%' AND id != {$category_id}";
         array_push($categories, $category_id);
         foreach($DB->get_records_sql($query) as $subc){
@@ -1007,8 +977,6 @@ function local_dominosdashboard_get_user_competencies($userid){
 function local_dominosdashboard_get_all_user_competencies(array $conditions = array()){
     global $DB;
     $competencies = $DB->get_records('competency', array(), '', 'id, shortname, shortname as title');
-    // $query = "SELECT c.id, c.shortname as name, count(*) as proficiency FROM {competency_usercomp} as uc join {competency} as c on uc.competencyid = c.id group by uc.competencyid";
-    // return $DB->get_records_sql($query);
     foreach($competencies as $competency){
         if(LOCALDOMINOSDASHBOARD_DUMMY_RESPONSE){
             $competency->proficiency = random_int(0, 1000);
@@ -1025,8 +993,11 @@ function local_dominosdashboard_get_all_user_competencies(array $conditions = ar
 function local_dominosdashboard_get_last_month_key(array $columns){
     $meses = "12_DICIEMBRE,11_NOVIEMBRE,10_OCTUBRE,9_SEPTIEMBRE,8_AGOSTO,7_JULIO,6_JUNIO,5_MAYO,4_ABRIL,3_MARZO,2_FEBRERO,1_ENERO";
     $meses = explode(',', $meses);
+    _log('local_dominosdashboard_get_last_month_key', $columns);
     foreach($meses as $mes){
-        if($search = array_search($mes, $columns) !== false){
+        $search = array_search($mes, $columns);
+        if($search !== false){
+            _log("El índice retornado es: ", $search);
             return $search;
         }
     }
