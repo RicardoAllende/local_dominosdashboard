@@ -29,6 +29,8 @@ $(document).ready(function() {
     addChartu();//Seguridad y salud
     addChartv();//Formación gerente
     addChartw();//Entrenamiento franquicias Staff general
+    //------------------------------------------------------------------------------LANZAMIENTO Y CAMPAÑAS
+    addChartaa();//Campañas seguridad y salud
 })
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------PESTAÑA 1
@@ -611,8 +613,26 @@ function addChartw(){
     });
 }
 
+//-----------------------------------------------------------------------------------------Graficas de LANZAMIENTO Y CAMPAÑAS-----------------------------------------------------------------------------------------------
 
-
+//------------------------------------------------------------Campañas seguridad y salud (Grafica18)
+function addChartaa(){
+    var chartj = c3.generate({
+        /*size: {
+        height: 440,
+        width: 1080
+    },*/
+        data: {
+            columns: [
+                ['Aprobado', 90],
+                ['No Aprobado', 60],
+                ['No hecho', 80]                
+            ],
+            type: 'pie'
+        },
+        bindto: "#chart25",        
+    });
+}
 
 
 /*function chargePE(){

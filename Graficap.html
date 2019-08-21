@@ -21,7 +21,7 @@
     
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="libs/c3.js"></script>
-    <script src="app.js"></script>
+    <script src="app2.js"></script>
     
 
   <!-- Bootstrap core CSS -->
@@ -33,6 +33,7 @@
   <link href="css/simple-sidebar.css" rel="stylesheet">
   
   <link href="estilos.css" rel="stylesheet">
+  <link href="tabla.css" rel="stylesheet">
   
   
 
@@ -161,6 +162,9 @@
               <li class="nav-item">
                 <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Lanzamientos y campañas</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" id="other-tab" data-toggle="tab" href="#other" role="tab" aria-controls="other" aria-selected="false">Ranking</a>
+              </li>
             </ul>            
         </div>
         
@@ -183,13 +187,13 @@
                                         <div class="card border-0 m-2">
                                           <div class="card-body text-center cbody">
                                             <p class="card-text text-primary txta">Aprobados</p>
-                                            <div id="chart30"></div>
+                                            <div id="chart3"></div>
                                           </div>
                                         </div>
                                         <div class="card border-0 m-2">
                                           <div class="card-body text-center cbody">
                                             <p class="card-text text-warning txtn">No Aprobados</p>
-                                            <div id="chart40"></div>
+                                            <div id="chart4"></div>
                                           </div>
                                         </div>
                                         <div class="card border-0 m-2">
@@ -201,9 +205,122 @@
 
                             </div>
                            <div class="row">
-                           <div class="col-sm-12" id="chart16"></div>                           
+                           <div class="col-sm-12" id="chart"></div>
                            </div>
+                           <div class="titulo">
+                           <h1 style="text-align: center;">Ranking</h1>    
+                           </div>                       
+                           <div class="col-sm-12" id="chart2"></div>
+                           <div class="titulo">
+                           <h1 style="text-align: center;">Ranking</h1>    
+                           </div>                       
+                           <div class="col-sm-12" id="chart5"></div>
+                           <div class="titulog">
+                           <h1 style="text-align: center;">Ranking</h1>    
+                           </div> 
+                           <div class="col-sm-12">
+                                       <table class="table">
+                                                  <thead>
+                                                    <tr>
+                                                      <th>#</th>
+                                                      <th>Nombre del curso</th>
+                                                      <th>Usuarios inscritos</th>                                                      
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                    <tr>
+                                                      <th>1</th>
+                                                      <td>Programa 0-90</td>
+                                                      <td><div class="progress">  
+                                                        <div class="progress-bar" style="width:70%">70</div>
+                                                      </div></td>
+                                                      
+                                                    </tr>
+                                                    <tr>
+                                                      <th>2</th>
+                                                      <td>Staff certificado</td>
+                                                      <td><div class="progress">  
+                                                        <div class="progress-bar" style="width:40%">40</div>
+                                                      </div></td>
+                                                      
+                                                    </tr>
+                                                    <tr>
+                                                      <th>3</th>
+                                                      <td>Curso Norma 251</td>
+                                                      <td><div class="progress">  
+                                                        <div class="progress-bar" style="width:20%">20</div>
+                                                      </div></td>
+                                                      
+                                                    </tr>
+                                                  </tbody>
+                                       </table>
+                            </div> 
+                            <div class="titulog">
+                           <h1 style="text-align: center;">Ranking</h1>    
+                           </div> 
+                           <div class="col-sm-12">
+                            <table style="width:100%">
+                                  <tr class="tranking">
+                                    <th class="tranking" style="background-color: #1e8abb;">#</th>
+                                    <th class="tranking" style="background-color: #d70c20;">Nombre del curso</th> 
+                                    <th class="tranking" style="background-color: #016392;">Usuarios inscritos</th>
+                                  </tr>
+                                  <tr class="tranking">
+                                    <td class="tranking">1</td>
+                                    <td class="tranking">Programa 0-90</td>
+                                    <td class="tranking">50</td>
+                                  </tr>
+                                  <tr class="tranking">
+                                    <td class="tranking">2</td>
+                                    <td class="tranking">Staff certificado</td>
+                                    <td class="tranking">94</td>
+                                  </tr>
+                                  <tr class="tranking">
+                                    <td class="tranking">3</td>
+                                    <td class="tranking">Curso Norma 251</td>
+                                    <td class="tranking">80</td>
+                                  </tr>
+                            </table> 
+                           </div>  
+                            <div class="titulo">
+                           <h1 style="text-align: center;">Ranking</h1>    
+                           </div>
+                            <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th>#</th>
+                                  <th>Nombre del curso</th>
+                                  <th>Usuarios inscritos</th>                                  
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">1</th>
+                                  <td>Programa 0-90</td>
+                                  <td><div class="progress">  
+                                        <div class="progress-bar" style="width:80%">80</div>
+                                    </div></td>                                  
+                                </tr>
+                                <tr>
+                                  <th scope="row">2</th>
+                                  <td>Staff certificado</td>
+                                  <td><div class="progress">  
+                                        <div class="progress-bar" style="width:50%">50</div>
+                                    </div></td>                                  
+                                </tr>
+                                <tr>
+                                  <th scope="row">3</th>
+                                  <td>Curso Norma 251</td>
+                                  <td><div class="progress">  
+                                        <div class="progress-bar" style="width:20%">20</div>
+                                    </div></td>                                  
+                                </tr>
+                              </tbody>
+                            </table>                                                                                     
+                                                   
+                           
                        </div>
+           
                        <a href="Dashboard.html"><button type="button" class="btn btn-success">Dashboard</button></a>
         
                 </div>
@@ -503,6 +620,132 @@
       </div>
                       
               </div>
+              
+              <div class="tab-pane fade" id="other" role="tabpanel" aria-labelledby="other-tab">
+                 <div class="titulo">
+                        <h1 style="text-align: center;">Ranking</h1>
+                 </div>
+                  
+                  <div class="container">
+           <div class="row"> 
+           <div class="col-4" id="cards">          
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">              
+                    <!--<div id="chart"></div>--> 
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">             
+                  <div class="card-body align-items-end">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                    <a href="Grafica.html" class="btn btn-primary">Campañas seguridad y salud</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            <div class="col-4" id="cards">          
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">              
+                   <!-- <div id="chart2"></div> -->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">            
+                  <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Servicio</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            <div class="col-4" id="cards">          
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">              
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">              
+                <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Calidad</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            </div>
+            
+            <div class="row"> 
+           <div class="col-4" id="cards">          
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">              
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">              
+                  <div class="card-body align-items-end">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                    <a href="Grafica.html" class="btn btn-primary">Cursos en línea Alsea Anticorrupción</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            <div class="col-4" id="cards">          
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">              
+                    <!--<div id="chart"></div>--> 
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">              
+                  <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Privacidad de Datos</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            <div class="col-4" id="cards">          
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">              
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">              
+                <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Certificaciones Liderazgo con enfoque humano</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            </div>
+            
+            <div class="row"> 
+           <div class="col-4" id="cards">          
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">              
+                    <!--<div id="chart"></div>-->
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">              
+                  <div class="card-body align-items-end">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                    <a href="Grafica.html" class="btn btn-primary">Gerente dueño</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            
+            <div class="col-4" id="cards">          
+                <div class="card mt-3" id="cardsg" style="width: 18rem; height: 18rem;">              
+                    <!--<div id="chart"></div>--> 
+                    <img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">              
+                  <div class="card-body">
+                    <!--<h5 class="card-title">Card title</h5>-->
+                    <div style="text-align: center;">
+                       <a href="Grafica.html" class="btn btn-primary">Certificaciones ICA Champion</a>
+                    </div>
+                  </div>
+                </div>
+            </div>           
+            
+            
+            </div>           
+            
+            
+      </div>
+                      
+              </div>
+              
             </div>
       
             
