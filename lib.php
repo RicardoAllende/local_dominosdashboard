@@ -942,15 +942,11 @@ function local_dominosdashboard_get_badges(int $badge_status = -1){
     return $DB->get_records_menu('badge', array(), '', 'id,name');
 }
 
-function local_dominosdashboard_get_activities(int $courseid, int $visible = 1){
-    if($visible != 1 || $visible != 0){
-        $visible = 1;
-    }
+function local_dominosdashboard_get_activities(int $courseid, string $andwhere = ""){
     global $DB;
-    // $query = "SELECT * ";
     $actividades = array();
     $query  = "SELECT id, CASE ";
-    $tiposDeModulos = $DB->get_records('modules', array(/*'visible' => $visible*/), 'id,name');
+    $tiposDeModulos = $DB->get_records('modules', array('visible' => 1), 'id,name');
     foreach ($tiposDeModulos as $modulo) {
         $nombre  = $modulo->name;
         $alias = 'a'.$modulo->id;
@@ -958,14 +954,13 @@ function local_dominosdashboard_get_activities(int $courseid, int $visible = 1){
     }
     $query .= " END AS name
     from {course_modules} cm
-    where course = {$courseid} AND visible = {$visible} ";
-        // $DB->get_records_sql_menu($sql);
+    where course = {$courseid} {$andwhere} ";
     return $DB->get_records_sql_menu($query);
 }
 
 function local_dominosdashboard_get_activities_completion(int $courseid, string $userids){
     global $DB;
-    $courseactivities = local_dominosdashboard_get_activities($courseid);
+    $courseactivities = local_dominosdashboard_get_activities($courseid, " AND completion != 0 ");
     $activities = array();
     foreach($courseactivities as $key => $activity){
         $activityInformation = local_dominos_dashboard_get_activity_completions($activityid = $key, $userids, $title = $activity);
