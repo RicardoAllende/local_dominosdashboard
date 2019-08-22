@@ -24,22 +24,22 @@
  */
 
 $tasks = [
-    // [
-    //     'classname' => 'local_dominosdashboard\task\make_historic_logs',
-    //     'blocking'  => 0,   // cambiar a 1 si la tarea tendrá un impacto alto en la plataforma
-    //     'minute'    => 'R', // Minuto aleatorio
-    //     'hour'      => '3', // 3 AM
-    //     'day'       => '*', // Todos los días
-    //     'month'     => '*', // Todos los meses
-    //     'dayofweek' => '6', // cada sábado
-    // ],
-    [ // prueba cada minuto
+    [
         'classname' => 'local_dominosdashboard\task\make_historic_logs',
         'blocking'  => 0,   // cambiar a 1 si la tarea tendrá un impacto alto en la plataforma
-        'minute'    => '*', // Minuto aleatorio
-        'hour'      => '*', // 3 AM
+        'minute'    => 'R', // Minuto aleatorio
+        'hour'      => '3', // 3 AM
         'day'       => '*', // Todos los días
         'month'     => '*', // Todos los meses
-        'dayofweek' => '*', // cada sábado
+        'dayofweek' => '6', // cada sábado
     ],
+    // [ // prueba cada minuto
+    //     'classname' => 'local_dominosdashboard\task\make_historic_logs',
+    //     'blocking'  => 0,   // cambiar a 1 si la tarea tendrá un impacto alto en la plataforma
+    //     'minute'    => '*', // cada minuto
+    //     'hour'      => '*', // cada hora
+    //     'day'       => '*', // Todos los días
+    //     'month'     => '*', // Todos los meses
+    //     'dayofweek' => '*', // todos los días
+    // ],
 ];

@@ -41,8 +41,6 @@ class make_historic_logs extends \core\task\scheduled_task {
      * Execute the task.
      */
     public function execute() {
-        global $DB;
-        $DB->execute("insert into eliminar_esta_tabla values(default, default)");
-        // _log('Ejecutando make_historic_logs');
+        local_dominosdashboard_make_historic_report();
     }
 }

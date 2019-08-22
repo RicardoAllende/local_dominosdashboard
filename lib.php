@@ -144,7 +144,6 @@ function local_dominosdashboard_get_catalogue(string $key){
 }
 
 function local_dominosdashboard_get_kpi_catalogue(string $key){
-    // DEFINE('DOMINOSDASHBOARD_INDICATORS_FOR_KPIS', 'regiones/distritos/tiendas');
     switch($key){
         case 'regiones':
             $query = "SELECT distinct region FROM {dominos_kpis}";
@@ -161,7 +160,6 @@ function local_dominosdashboard_get_kpi_catalogue(string $key){
         break;
     }
 }
-
 
 // function local_dominosdashboard_get_course_all_catalogues($courseid){
 //     global $DB;
@@ -464,6 +462,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         return false;
     }
     $dummy_response = new stdClass();
+    $dummy_response->id = $courseid;
     $dummy_response->key = 'course' . $courseid;
     $dummy_response->chart = local_dominosdashboard_get_course_chart($courseid);
     $dummy_response->color = local_dominosdashboard_get_course_color($courseid);
@@ -480,6 +479,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     }
     $response = new stdClass();
     $response->key = 'course' . $courseid;
+    $response->id = $courseid;
     $response->chart = local_dominosdashboard_get_course_chart($courseid);
     $response->title = $course->fullname;
     $response->status = 'ok';
@@ -929,9 +929,12 @@ function local_dominosdashboard_get_activities(int $courseid, string $andwhere =
 }
 
 function local_dominosdashboard_get_activities_completion(int $courseid, string $userids){
+    $activities = array();
+    if(empty($userids)){
+        return $activities;
+    }
     global $DB;
     $courseactivities = local_dominosdashboard_get_activities($courseid, " AND completion != 0 ");
-    $activities = array();
     foreach($courseactivities as $key => $activity){
         $activityInformation = local_dominos_dashboard_get_activity_completions($activityid = $key, $userids, $title = $activity);
         _log($activityInformation);
@@ -1002,4 +1005,54 @@ function local_dominosdashboard_get_last_month_key(array $columns){
         }
     }
     return -1; // it will throw an error
+}
+
+function local_dominosdashboard_make_all_historic_reports(){
+    $courses =  local_dominosdashboard_get_courses();
+    foreach($courses as $course){
+        echo "<h1>Información del curso {$course->fullname}</h1><br>";
+        local_dominosdashboard_make_historic_report($course->id);
+    }
+    
+}
+
+function local_dominosdashboard_make_historic_report(int $courseid){
+    global $DB;
+    $currenttime = time();
+    $course = $DB->get_record('course', array('id' => $courseid), 'id, shortname, fullname');
+    if($course == false){
+        return false;
+    }
+    // echo "<h4>Información completa del curso</h4>";
+    $course_information = local_dominosdashboard_get_course_information($course->id, true, $params = array());
+    local_dominosdashboard_insert_historic_record($course_information, $currenttime, $course);
+    // _print($course_information);
+    // echo "<h4>Iterando los indicadores</h4>";
+    foreach (local_dominosdashboard_get_indicators() as $indicator) {
+        // _log('indicator', $indicator);
+        foreach (local_dominosdashboard_get_catalogue($indicator) as $item) {
+            // _log('item', $item);
+            $params = array();
+            $params[$indicator] = $item;
+            // _print($params);
+            $course_information = local_dominosdashboard_get_course_information($courseid, false, $params);
+            // _log($course_information);
+            local_dominosdashboard_insert_historic_record($course_information, $currenttime, $course, $indicator, $item);
+        }
+    }
+}
+
+function local_dominosdashboard_insert_historic_record(stdClass $course_information, $currenttime, stdClass $course, $filterid = "", $filtertext = ""){
+    global $DB;
+    $record = new stdClass();
+    // $record->id             = ''; // autoincrement
+    $record->courseid       = $course->id;
+    $record->shortname      = $course->shortname;
+    $record->fullname       = $course->fullname;
+    $record->enrolled_users = $course_information->enrolled_users;
+    $record->approved_users = $course_information->approved_users;
+    $record->filterid       = $filterid;
+    $record->filtertext     = $filtertext;
+    $record->timecreated    = $currenttime;
+    return $DB->insert_record('dominos_historico', $record);
 }
