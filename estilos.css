@@ -75,6 +75,7 @@
     background-color: #d70c20;
     color: white;
     padding-bottom: 5px;
+    margin-bottom: 20px;
 }
 
 .numero {
@@ -112,4 +113,14 @@
 .txtt {
     color: #28a745!important;
     font-size: 67px;
+}
+
+/* Boton Dashboard */
+.bdash {
+    margin-top: 10px;
+}
+
+/* Tabla ranking */
+.rankingt {
+    background-color: #F2F2F2;
 }
