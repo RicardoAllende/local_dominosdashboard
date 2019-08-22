@@ -165,18 +165,18 @@ function local_dominosdashboard_get_kpi_catalogue(string $key){
 //     global $DB;
 //     $course = $DB->get_record('course', array('id' => $courseid));
 //     if(empty($course)){
-//         _log('No existe el curso');
+//         // _log('No existe el curso');
 //         die('no existe curso');
 //     }
 //     foreach (local_dominosdashboard_get_indicators() as $indicator) {
-//         _log('indicator', $indicator);
+//         // _log('indicator', $indicator);
 //         foreach (local_dominosdashboard_get_catalogue($indicator) as $item) {
-//             _log('item', $item);
+//             // _log('item', $item);
 //             _print("Indicador: " . $indicator, 'Buscando ' . $item);
 //             $params = array();
 //             $params[$indicator] = $item;
 //             $course_information = local_dominosdashboard_get_course_information($course->id, true, $params);
-//             _log($course_information);
+//             // _log($course_information);
 //             echo local_dominosdashboard_format_response($course_information);
 //             echo "<br><br><br>";
 //             _print($course_information);
@@ -284,7 +284,7 @@ function local_dominosdashboard_is_enrolled(int $courseid, int $userid){
 function local_dominosdashboard_get_enrolled_users_count(int $courseid, string $userids = ''){
     $email_provider = local_dominosdashboard_get_email_provider_to_allow();
     if(empty($userids)){
-        _log("Retornando default en local_dominosdashboard_get_enrolled_users_count porque no hay usuarios que tengan las características");
+        // _log("Retornando default en local_dominosdashboard_get_enrolled_users_count porque no hay usuarios que tengan las características");
         return 0; // default
     }else{
         $whereids = " AND ra.userid IN ({$userids})";
@@ -496,11 +496,10 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         }
         return $response;
     }
-    _log('Usuarios que cumplen con las características', $userids);
+    // _log('Usuarios que cumplen con las características', $userids);
     $num_users = count($userids);
     $userids = implode(',', $userids);
 
-    $response = new stdClass();
     $response->enrolled_users = local_dominosdashboard_get_enrolled_users_count($courseid, $userids);
     $response->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids);
     $response->not_viewed = local_dominosdashboard_get_not_viewed_users_in_course($courseid, $userids, $num_users);
@@ -533,18 +532,18 @@ function local_dominosdashboard_compare_kpi($courseid){
 function local_dominosdashboard_get_approved_users(int $courseid, string $userids = ''){
     $response = 0;
     if(empty($userids)){ // no users to search in query
-        _log('No se encuentran usuarios');
+        // _log('No se encuentran usuarios');
         return $response;
     }
     $completion_mode = get_config('local_dominosdashboard', "course_completion_" . $courseid);
-    // _log($completion_mode);
+    // // _log($completion_mode);
     $default = 0;
     if($completion_mode === false){ // missing configuration
-        _log("Missing configuration courseid", $courseid, 'completion mode returned false');
+        // _log("Missing configuration courseid", $courseid, 'completion mode returned false');
         return $response;
     }
     $query = "";
-    _log("Tipo de completado", $completion_mode);
+    // _log("Tipo de completado", $completion_mode);
     switch($completion_mode){
         case COMPLETION_DEFAULT:
             if(empty($userids)){
@@ -564,7 +563,7 @@ function local_dominosdashboard_get_approved_users(int $courseid, string $userid
             $grade_item = local_dominosdashboard_get_course_grade_item_id($courseid);
             $minimum_score = get_config('local_dominosdashboard', 'course_minimum_score_' . $courseid);
             if($grade_item === false || $minimum_score === false){ // Missing configuration
-                _log("Missing configuration courseid", $courseid, 'COMPLETION_DEFAULT_AND_GRADE');
+                // _log("Missing configuration courseid", $courseid, 'COMPLETION_DEFAULT_AND_GRADE');
                 return $response;
             }
             $query = "SELECT count(*) AS completions 
@@ -580,7 +579,7 @@ function local_dominosdashboard_get_approved_users(int $courseid, string $userid
             $grade_item = get_config('local_dominosdashboard', 'course_grade_activity_completion_' . $courseid);
             $minimum_score = get_config('local_dominosdashboard', 'course_minimum_score_' . $courseid);
             if($grade_item === false || $minimum_score === false){ // Missing configuration
-                _log("Missing configuration courseid", $courseid, 'COMPLETION_BY_GRADE');
+                // _log("Missing configuration courseid", $courseid, 'COMPLETION_BY_GRADE');
                 return $response;
             }
             $query = "SELECT count(*) AS completions FROM {grade_grades} AS gg WHERE
@@ -613,29 +612,29 @@ function local_dominosdashboard_get_approved_users(int $courseid, string $userid
             $query = "SELECT count(*) AS completions from {badge_issued} WHERE badgeid = {$completion_badge} {$whereids}";
         break;
         default: 
-            _log("method not allowed");
+            // _log("method not allowed");
             // $response->message = 'Completion not allowed';
             return $response;
         break;
     }
-    // _log("Consulta de curso finalizado", $query);
+    // // _log("Consulta de curso finalizado", $query);
     if(!empty($query)){
         global $DB;
         if($result = $DB->get_record_sql($query)){
             $response = $result->completions;
             return $response;
-            _log($result);
+            // _log($result);
             $response->enrolled_users = local_dominosdashboard_get_enrolled_users_count($courseid);
             $response->approved_users = $result->completions;
-            _log($response);
+            // _log($response);
             $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users, 2);
             $response->status = 'ok';
             return $response;
         }else{
-            _log("query returns false ", $query);
+            // _log("query returns false ", $query);
         }
     }
-    _log("Default response returned");
+    // _log("Default response returned");
     return $response;
 }
 
@@ -662,10 +661,10 @@ function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $p
     if(!empty($params)){
         global $DB;
         $indicators = local_dominosdashboard_get_indicators();
-        // _log('indicators', $indicators);
+        // // _log('indicators', $indicators);
         // $position = array_search();
         foreach($params as $key => $param){
-            // _log('$params as $key => $param', $key, $param);
+            // // _log('$params as $key => $param', $key, $param);
             if(array_search($key, $indicators) !== false){
                 $fieldid = get_config('local_dominosdashboard', "filtro_" . $key);
                 if($fieldid !== false){
@@ -684,7 +683,7 @@ function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $p
                         if(!empty($wheres)){
                             $wheres = " AND ( " . implode(" || ", $wheres) . " ) ";
                             $query = "SELECT DISTINCT userid FROM {user_info_data} WHERE fieldid = {$fieldid} " . $wheres;
-                            _log("Consulta de múltiples valores en un campo de usuario", $query);
+                            // _log("Consulta de múltiples valores en un campo de usuario", $query);
                             $newIds = $DB->get_fieldset_sql($query, $query_params);
                         }else{
                             $newIds = false;
@@ -697,22 +696,22 @@ function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $p
                         if(is_array($newIds)){
                             $allow_users[] = $newIds;
                         }else{
-                            _log("no existen usuarios con esta coincidencia",array('fieldid' => $fieldid, 'data' => $params[$key]));
+                            // _log("no existen usuarios con esta coincidencia",array('fieldid' => $fieldid, 'data' => $params[$key]));
                         }
                     }else{
-                        _log('no newIds', array('fieldid' => $fieldid, 'data' => $params[$key]));
+                        // _log('no newIds', array('fieldid' => $fieldid, 'data' => $params[$key]));
                         return array(); // Search returns empty
                     }
                 }else{
-                    _log('no fieldid');
+                    // _log('no fieldid');
                 }
             }else{
-                // _log('array_key_exists returns false');
+                // // _log('array_key_exists returns false');
             }
         }
     }
     $ids = array_unique($ids);
-    // _log('$allow_users', $allow_users);
+    // // _log('$allow_users', $allow_users);
     if($filter_active){
         if(count($allow_users) > 1){
             $allow_users = call_user_func_array('array_intersect', $allow_users);
@@ -937,7 +936,7 @@ function local_dominosdashboard_get_activities_completion(int $courseid, string 
     $courseactivities = local_dominosdashboard_get_activities($courseid, " AND completion != 0 ");
     foreach($courseactivities as $key => $activity){
         $activityInformation = local_dominos_dashboard_get_activity_completions($activityid = $key, $userids, $title = $activity);
-        _log($activityInformation);
+        // _log($activityInformation);
         if(empty($activities)){
             array_push($activities,
              $activityInformation);
@@ -996,11 +995,11 @@ function local_dominosdashboard_get_all_user_competencies(array $conditions = ar
 function local_dominosdashboard_get_last_month_key(array $columns){
     $meses = "12_DICIEMBRE,11_NOVIEMBRE,10_OCTUBRE,9_SEPTIEMBRE,8_AGOSTO,7_JULIO,6_JUNIO,5_MAYO,4_ABRIL,3_MARZO,2_FEBRERO,1_ENERO";
     $meses = explode(',', $meses);
-    _log('local_dominosdashboard_get_last_month_key', $columns);
+    // _log('local_dominosdashboard_get_last_month_key', $columns);
     foreach($meses as $mes){
         $search = array_search($mes, $columns);
         if($search !== false){
-            _log("El índice retornado es: ", $search);
+            // _log("El índice retornado es: ", $search);
             return $search;
         }
     }
@@ -1029,14 +1028,14 @@ function local_dominosdashboard_make_historic_report(int $courseid){
     // _print($course_information);
     // echo "<h4>Iterando los indicadores</h4>";
     foreach (local_dominosdashboard_get_indicators() as $indicator) {
-        // _log('indicator', $indicator);
+        // // _log('indicator', $indicator);
         foreach (local_dominosdashboard_get_catalogue($indicator) as $item) {
-            // _log('item', $item);
+            // // _log('item', $item);
             $params = array();
             $params[$indicator] = $item;
             // _print($params);
             $course_information = local_dominosdashboard_get_course_information($courseid, false, $params);
-            // _log($course_information);
+            // // _log($course_information);
             local_dominosdashboard_insert_historic_record($course_information, $currenttime, $course, $indicator, $item);
         }
     }

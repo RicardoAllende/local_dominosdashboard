@@ -49,31 +49,12 @@ $string['parent_category_desc'] = 'A partir de esta categoría se listarán los 
 $string['completion_mode'] = 'Modo de finalización';
 $string['completion_mode_desc'] = 'Elegir la forma en la que el curso debe estar finalizado';
 $string['kpi_relation'] = 'KPI';
-// $string['kpi_relation_desc'] = 'Elija los KPI con los que se comparará este curso, para seleccionar varios utilice ctrl';
 $string['kpi_relation_desc'] = 'Elija los cursos con los que se relacionará este KPI, para seleccionar varios utilice ctrl';
 $string['kpi_select'] = 'KPI';
 $string['kpi_select_desc'] = 'Seleccione el tipo de kpi que está subiendo';
-// $string['parent_category'] = 'Seleccione la categoría padre';
-// $string['categoria_padre_desc'] = 'A partir de esta categoría se listarán los cursos, si elige Misceláneos, se listarán todos los cursos';
-
 
 $string['filtro'] = 'Campo ';
 $string['filtro_desc'] = 'Campo de perfil de donde se obtendrá el catálogo ';
-
-$string['filtro_puestos'] = 'Campo de puestos';
-$string['filtro_puestos_desc'] = 'Campo de perfil donde se ubica el puestos';
-
-// $string['filtro_indicadores'] = 'In';
-// $string['filtro_indicadores_desc'] = 'A partir de esta categoría se listarán los cursos, si elige Misceláneos, se listarán todos los cursos';
-
-$string['filtro_regiones'] = 'Campo de regiones';
-$string['filtro_regiones_desc'] = 'Campo de perfil donde se ubican las regiones';
-
-$string['filtro_tiendas'] = 'Campo de tiendas';
-$string['filtro_tiendas_desc'] = 'Campo de perfil donde se ubican las tiendas';
-
-$string['filtro_entrenadores'] = 'Campo de entrenadores';
-$string['filtro_entrenadores_desc'] = 'Campo de perfil donde se ubican los entrenadores';
 
 $string['course_minimum_score'] = 'Calificación mínima aprobatoria';
 $string['course_minimum_score_desc'] = 'Ingrese la calificación mínima aprobatoria para aprobar el curso (Tome en cuenta la calificación máxima configurada)';
@@ -83,9 +64,6 @@ $string['course_grade_activity_completion_desc'] = 'Elija la actividad por la cu
 
 $string['badge_completion'] = 'Insignia necesaria para completar el curso';
 $string['badge_completion_desc'] = 'Elija la insignia que significa que el curso está terminado';
-
-// $string['course_attendance'] = 'Asistencia del curso';
-// $string['course_attendance_desc'] = 'Asistencia del curso en porcentaje (0-100)';
 
 $string['chart'] = 'Tipo de gráfica en inicio';
 $string['chart_desc'] = 'Elija el tipo de gráfica con el que se mostrará en el dashboard';
@@ -114,20 +92,14 @@ $string['allowed_email_admins_desc']   = 'Escriba el correo electrónico de los 
 $string['uploadkpis'] = 'Subir kpis';
 $string['uploadkpis_help'] = 'Usted debe agregar los archivos kpis con el formato adecuado
 
-Para dar formato al archivo, abra el archivo excel y seleccione la opción Guardar como (en windows es con la tecla F12), busque la pestaña herramientas (está cerca del botón Guardar)
+* Para dar formato al archivo, abra el archivo excel y seleccione la opción Guardar como (en windows es con la tecla F12), busque la pestaña herramientas (está cerca del botón Guardar)
 
-Dentro de herramientas dar clic a Opciones web y buscar la pestaña codificación. En la opción Guardar este documento como seleccione "Unicode" y después aceptar los cambios
+* Dentro de herramientas dar clic a Opciones web y buscar la pestaña codificación. En la opción Guardar este documento como seleccione "Unicode" y después aceptar los cambios
 
-Después de ello ubicarse en la hoja que posee el KPI y guardar como csv.
+* Después de ello ubicarse en la hoja que posee el KPI y guardar como csv.
 
-El paso final es limpiar las columnas iniciales que estén vacías y las columnas al inicio que no tengan valores y guardar como CSV.
+* El paso final es limpiar las columnas iniciales que estén vacías y las columnas al inicio que no tengan valores y guardar como CSV.
 
 ';
 
 $string['crontask_name'] = 'Creación de consultas para generación de históricos';
-// $string['uploadkpis_help'] = 'Users may be uploaded (and optionally enrolled in courses) via text file. The format of the file should be as follows:
-
-// * Each line of the file contains one record
-// * Each record is a series of data separated by commas (or other delimiters)
-// * The first record contains a list of fieldnames defining the format of the rest of the file
-// * Required fieldnames are username, password, firstname, lastname, email';

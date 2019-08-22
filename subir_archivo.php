@@ -76,6 +76,7 @@ if ($formdata = $mform->get_data()) {
     }, $columns);
     $kpi = $formdata->kpi;
     $cir->init();
+    $currenttime = time();
     switch ($kpi) {
         case KPI_OPS:
             /*
@@ -122,7 +123,7 @@ if ($formdata = $mform->get_data()) {
                     $record->nom_ccosto = $line[$columns_['NOMBRE']];
                     $record->original_time = "";
                     $record->distrital = $line[$columns_['DISTRITAL COACH']];
-                    $record->timecreated = time();
+                    $record->timecreated = $currenttime;
                     $DB->insert_record('dominos_kpis', $record);
                 }else{
                     // Llegando aquí el KPI ya está registrado
@@ -180,7 +181,7 @@ if ($formdata = $mform->get_data()) {
                     $record->nom_ccosto = $line[$columns_['Nombre_Tienda']];
                     $record->original_time = $line[$lastMonthColumn];
                     $record->distrital = $line[$columns_['Nombre del Distrital / Gerente de Operaciones']];
-                    $record->timecreated = time();
+                    $record->timecreated = $currenttime;
                     $DB->insert_record('dominos_kpis', $record);
                 }else{
                     // Llegando aquí el KPI ya está registrado
@@ -233,7 +234,7 @@ if ($formdata = $mform->get_data()) {
                     $record->nom_ccosto = $line[$columns_['NOM_CCOSTO']];
                     $record->original_time = $line[$columns_['FECHA']];
                     $record->distrital = $line[$columns_['GTE DTTO']];
-                    $record->timecreated = time();
+                    $record->timecreated = $currenttime;
                     $DB->insert_record('dominos_kpis', $record);
                 }else{
                     // Llegando aquí el KPI ya está registrado
