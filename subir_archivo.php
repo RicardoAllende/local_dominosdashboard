@@ -39,23 +39,7 @@ $returnurl = new moodle_url('/local/dominosdashboard/dashboard.php');
 
 $mform = new local_dominosdashboard_upload_kpis();
 if ($formdata = $mform->get_data()) {
-    // echo "<style>
-    // .dominosloader {
-    //     border: 16px solid #f3f3f3; /* Light grey */
-    //     border-top: 16px solid #3498db; /* Blue */
-    //     border-radius: 50%;
-    //     width: 120px;
-    //     height: 120px;
-    //     animation: dominosspin 2s linear infinite;
-    //   }
-      
-    //   @keyframes dominosspin {
-    //     0% { transform: rotate(0deg); }
-    //     100% { transform: rotate(360deg); }
-    // }</style>";
     echo $OUTPUT->header();
-    // echo "<image id='loading-csv-content' src='https://thomas.vanhoutte.be/miniblog/wp-content/uploads/spinningwheel.gif'>";
-    // echo "<div  id='loading-csv-content' class='dominosloader'></div>";
     
     $currentYear = $formdata->year; //date('Y');
     $iid = csv_import_reader::get_new_iid($pluginName);
@@ -249,15 +233,17 @@ if ($formdata = $mform->get_data()) {
             break;
     }
     unset($content);
-    // echo "<h2>Se terminó la carga del documento</h2>";
-    // echo "<script>
-    //         document.addEventListener('DOMContentLoaded', function() {
-    //             loader = document.getElementById('loading-csv-content');
-    //             if(loader != undefined){
-    //                 loader.style.display = 'none';
-    //             }
-    //         });
-    //     </script>";
+    echo $OUTPUT->heading("Su archivo ha sido procesado");
+    echo $OUTPUT->heading("Si desea subir más archivos, recargue la página");
+    echo "<div class='row'>";
+    echo "<div class='col-sm-6'>";
+    $route = $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php';
+    echo "<a class='btn btn-success text-center' style='text-align: center !important;' href='{$route}'>Recargar la página</a>";
+    echo "</div>";
+    echo "<div class='col-sm-6'>";
+    $route = $CFG->wwwroot . '/local/dominosdashboard/dashboard.php';
+    echo "<a class='btn btn-success text-center' style='text-align: center !important;' href='{$route}'>Ver tablero Domino's</a>";
+    echo "</div>";
     echo $OUTPUT->footer();
 
 } else {
