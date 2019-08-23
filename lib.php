@@ -651,7 +651,7 @@ function local_dominosdashboard_get_kpi_results($kpi, $params){
 
     switch($kpi){
         case KPI_OPS: // 1 // Aprobado, no aprobado y destacado
-            $query = "SELECT valor, COUNT(*) AS conteo FROM {dominos_kpis} WHERE kpi = 1 AND valor != '' {$andWhereSql} GROUP BY valor order by nu";
+            $query = "SELECT valor, COUNT(*) AS conteo FROM {dominos_kpis} WHERE kpi = 1 AND valor != '' {$andWhereSql} GROUP BY valor order by conteo";
             return $DB->get_records_sql_menu($query, $sqlParams);
             break;
         case KPI_HISTORICO: // 2 retorna el número de quejas
@@ -659,7 +659,7 @@ function local_dominosdashboard_get_kpi_results($kpi, $params){
             return $DB->get_field_sql($query, $sqlParams);
             break;
         case KPI_SCORCARD: // 3
-            $where = "SELECT AVG(valor) AS numero FROM {dominos_kpis} WHERE kpi = 2 AND valor != '' {$andWhereSql}";
+            $query = "SELECT AVG(valor) AS numero FROM {dominos_kpis} WHERE kpi = 2 AND valor != '' {$andWhereSql}";
             return $DB->get_field_sql($query, $sqlParams);
             break;
         default:
