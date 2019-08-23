@@ -30,39 +30,35 @@ require_once("$CFG->libdir/gradelib.php");
 require_once("$CFG->dirroot/grade/querylib.php");
 require_login();
 global $DB;
-$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/dashboard.php");
+$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/_Dashboard.php");
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 
 echo $OUTPUT->header();
-echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>";
 
 $courses = local_dominosdashboard_get_courses();
-
-// _print($course_elearning = local_dominosdashboard_get_courses_overview(LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO));
-// _print($classroom = local_dominosdashboard_get_courses_overview(LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS));
-// _print($comparison = local_dominosdashboard_get_courses_overview(LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON));
-
-$indicators = local_dominosdashboard_get_kpi_indicators();
 ?>
-<h2>En este momento los valores de los filtros están siendo tomados desde los kpis</h2>
 <div class="row">
     <form id="filter_form" method="post" action="services.php" class='col-sm-4'>
         <?php
+        foreach(local_dominosdashboard_get_kpi_indicators() as $indicator){
+            echo "<h3>Indicador: {$indicator}</h3>";
+            foreach(local_dominosdashboard_get_kpi_catalogue($indicator) as $itemkey =>$item){
+                if($indicator == 'tiendas'){
+                    echo "<label><input type=\"checkbox\" name=\"{$indicator}[]\" class=\"indicator_option indicator_{$indicator}\" data-indicator=\"{$indicator}\" value=\"{$itemkey}\">{$item}</label><br>";
+                }else{
+                    echo "<label><input type=\"checkbox\" name=\"{$indicator}[]\" class=\"indicator_option indicator_{$indicator}\" data-indicator=\"{$indicator}\" value=\"{$item}\">{$item}</label><br>";
+                }
+            }
+            echo "<span type=\"checkbox\" class=\"btn btn-info uncheck_indicators\" data-indicator=\"indicator_{$indicator}\" value=\"1\">Desmarcar todas</span>";
+            echo "<span type=\"checkbox\" class=\"btn btn-success check_indicators\" data-indicator=\"indicator_{$indicator}\" value=\"1\">Marcar todas</span><br>";
+        }
         echo "<br><select class='form-control course-selector' name='courseid'>";
         foreach($courses as $course){
             echo "<option value='{$course->id}'>{$course->id} -> {$course->fullname}</option>";
         }
         echo "</select>";
-        foreach($indicators as $indicator){
-            echo "<h3>Indicador: {$indicator}</h3>";
-            foreach(local_dominosdashboard_get_kpi_catalogue($indicator) as $item){
-                echo "<label><input type=\"checkbox\" name=\"{$indicator}[]\" class=\"indicator_option indicator_{$indicator}\" data-indicator=\"{$indicator}\" value=\"{$item}\">{$item}</label><br>";
-            }
-            echo "<span type=\"checkbox\" class=\"btn btn-info uncheck_indicators\" data-indicator=\"indicator_{$indicator}\" value=\"1\">Desmarcar todas</span>";
-            echo "<span type=\"checkbox\" class=\"btn btn-success check_indicators\" data-indicator=\"indicator_{$indicator}\" value=\"1\">Marcar todas</span><br>";
-        }
         ?>
         <input type="hidden" name="request_type" value="course_completion"><br><br>
         <span class="btn btn-info" onclick="obtenerGraficas()">Volver a simular obtención de gráficas</span>
@@ -70,7 +66,6 @@ $indicators = local_dominosdashboard_get_kpi_indicators();
     <div class="col-sm-8" id="local_dominosdashboard_content"></div>
     <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>
 </div>
-<?php echo local_dominosdashboard_get_ideales_as_js_script(); ?>
 <script>
     var indicator;
     var item;
@@ -82,8 +77,11 @@ $indicators = local_dominosdashboard_get_kpi_indicators();
                 $('.indicator_option').click(function(){
                     indicator = $(this).attr('data-indicator');
                     value = $(this).val();
+                    // console.log(indicator);
+                    // console.log(value);
                     obtenerGraficas();
                 });
+                // function 
                 $('.course-selector').change(function(){
                     obtenerGraficas();
                 });
@@ -122,8 +120,25 @@ $indicators = local_dominosdashboard_get_kpi_indicators();
             console.log(error);
             console.log(error2);
         });
+        // });
     }
 </script>
 <?php
+// echo local_dominosdashboard_format_response($course_elearning);
+// echo "<br><br><br>";
+// echo local_dominosdashboard_format_response($classroom);
+// echo "<br><br><br>";
+// echo local_dominosdashboard_format_response($comparison);
+// echo "<br><br><br>";
+
+// $result = array();
+// $result['status'] = $status;
+// $result['courses'] = $count;
+// $result['count'] = $data;
+// return json_encode($result);
+
+// _print('local_dominosdashboard_get_courses_overview(1)', $course_elearning);
+// _print('local_dominosdashboard_get_courses_overview(2)', $classroom);
+// _print('local_dominosdashboard_get_courses_overview(3)', $comparison);
 // Contenido del dashboard
 echo $OUTPUT->footer();

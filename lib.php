@@ -203,7 +203,7 @@ function local_dominosdashboard_get_catalogue(string $key){
     return $DB->get_fieldset_sql($query);
 }
 
-function local_dominosdashboard_get_kpi_catalogue(string $key, $kpi = ''){
+function local_dominosdashboard_get_kpi_catalogue(string $key, $kpi = '', array $params = array()){
     switch($kpi){
         case KPI_OPS: 
         case KPI_HISTORICO: 
@@ -223,7 +223,7 @@ function local_dominosdashboard_get_kpi_catalogue(string $key, $kpi = ''){
             $query = "SELECT distinct distrital, distrital as t1 FROM {dominos_kpis} where distrital != '' {$where}";
             break;
         case 'tiendas':
-            $query = "SELECT ccosto, nom_ccosto FROM mdl_dominos_kpis WHERE ccosto != '' {$where} GROUP BY ccosto";
+            $query = "SELECT ccosto, nom_ccosto FROM {dominos_kpis} WHERE ccosto != '' {$where} GROUP BY ccosto";
             break;
         default: 
             return [];
@@ -547,7 +547,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         $response->value = 0;
         if($get_all_course_information){
             $response->activities = [];
-            $response->kpi = [];
+            $response->kpi = local_dominosdashboard_compare_kpi($courseid, $params);
         }
         return $response;
     }
@@ -561,7 +561,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users, 2);
     $response->value = $response->percentage;
     if($get_all_course_information){
-        $response->kpi = local_dominosdashboard_compare_kpi($courseid);
+        $response->kpi = local_dominosdashboard_compare_kpi($courseid, $params);
         $response->activities = local_dominosdashboard_get_activities_completion($course->id, $userids);
     }
     return $response;
@@ -580,8 +580,104 @@ function local_dominosdashboard_get_not_viewed_users_in_course(int $courseid, st
     return 0;
 }
 
-function local_dominosdashboard_compare_kpi($courseid){
-    return random_int(0,100);
+function local_dominosdashboard_compare_kpi(int $courseid, array $params = array()){
+    $kpis = array();
+    foreach(local_dominosdashboard_get_KPIS() as $key => $kpi){
+        if($setting = get_config('local_dominosdashboard', 'kpi_' . $key)){
+            $courses = explode(',', $setting);
+            if(array_search($courseid, $courses) !== false){
+                $kpi_info = new stdClass();
+                $kpi_info->kpi_name = $kpi;
+                $kpi_info->value    = local_dominosdashboard_get_kpi_results($key, $params);
+                
+                array_push($kpis, $kpi_info);
+            }
+        }
+    }
+    return $kpis;
+}
+
+function local_dominosdashboard_get_kpi_results($kpi, $params){
+    global $DB;
+    
+    $allow_users = array();
+    $filter_active = false;
+    $conditions = array();
+    $sqlParams = array();
+    $andWhereSql = "";
+    if(!empty($params)){
+        $indicators = local_dominosdashboard_get_kpi_indicators();
+        foreach($params as $key => $param){
+            if(array_search($key, $indicators) !== false){
+                // DEFINE('DOMINOSDASHBOARD_INDICATORS_FOR_KPIS', 'regiones/distritos/tiendas');
+                switch($key){
+                    case 'regiones': 
+                        $field = "region";
+                    break;
+                    case 'distritos': 
+                        $field = "distrital";
+                    break;
+                    case 'tiendas': // Se espera que sea un entero
+                        $field = "ccosto";
+                    break;
+                    default: 
+                        continue; // Continuar con el siguiente parámetro, este no está dentro de los planeados
+                    break;
+                }
+                $data = $params[$key];
+                $filter_active = true;
+                if(is_string($data)){
+                    $condition .= " $field = ? ";
+                    array_push($conditions, $condition);
+                    array_push($sqlParams, $data);
+                }elseif(is_array($data)){
+                    $condition = array();
+                    foreach($data as $d){
+                        $c = " {$field} = ? ";
+                        array_push($condition, $c);
+                        array_push($sqlParams, $d);
+                    }
+                    if(!empty($condition)){
+                        $condition = implode(" OR ", $condition);
+                        array_push($conditions, $condition);
+                    }
+                }
+                if(!empty($conditions)){
+                    $andWhereSql = ' AND ' . implode(" AND ", $conditions);
+                }
+            }
+        }
+    }
+
+    switch($kpi){
+        case KPI_OPS: // 1 // Aprobado, no aprobado y destacado
+            $query = "SELECT valor, COUNT(*) AS conteo FROM {dominos_kpis} WHERE kpi = 1 AND valor != '' {$andWhereSql} GROUP BY valor order by nu";
+            return $DB->get_records_sql_menu($query, $sqlParams);
+            break;
+        case KPI_HISTORICO: // 2 retorna el número de quejas
+            $query = "SELECT AVG(valor) AS numero FROM {dominos_kpis} WHERE kpi = 2 AND valor != '' {$andWhereSql}";
+            return $DB->get_field_sql($query, $sqlParams);
+            break;
+        case KPI_SCORCARD: // 3
+            $where = "SELECT AVG(valor) AS numero FROM {dominos_kpis} WHERE kpi = 2 AND valor != '' {$andWhereSql}";
+            return $DB->get_field_sql($query, $sqlParams);
+            break;
+        default:
+            return "";
+        break;
+    }
+}
+
+function local_dominosdashboard_get_ideales_as_js_script(){
+    $ideal_cobertura = get_config('local_dominosdashboard', 'ideal_cobertura');
+    if($ideal_cobertura === false){
+        $ideal_cobertura = 94;
+    }
+    $ideal_rotacion  = get_config('local_dominosdashboard', 'ideal_rotacion');
+    if($ideal_rotacion === false){
+        $ideal_rotacion = 85;
+    }
+    return "<script> var ideal_cobertura = {$ideal_cobertura}; var ideal_rotacion = {$ideal_rotacion}; </script>";
 }
 
 function local_dominosdashboard_get_approved_users(int $courseid, string $userids = ''){
