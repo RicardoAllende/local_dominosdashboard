@@ -57,8 +57,13 @@ class local_dominosdashboard_upload_kpis extends moodleform {
         $mform->addElement('select', 'kpi', get_string('kpi_select', 'local_dominosdashboard'), $choices);
         $mform->setDefault('kpi', 0);
 
+        $mform->addElement('text', 'year', 'Año del kpi');
+        $mform->setDefault('year', date('Y'));
+        $mform->setType('year', PARAM_INT);
+
         $this->add_action_buttons(false, get_string('upload_kpi', 'local_dominosdashboard'));
         $mform->disabledIf('submitbutton', 'kpi', 'eq', 0);
+        $mform->disabledIf('year', 'kpi', 'eq', KPI_SCORCARD);
     }
 }
 

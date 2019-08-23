@@ -57,7 +57,7 @@ if ($formdata = $mform->get_data()) {
     // echo "<image id='loading-csv-content' src='https://thomas.vanhoutte.be/miniblog/wp-content/uploads/spinningwheel.gif'>";
     // echo "<div  id='loading-csv-content' class='dominosloader'></div>";
     
-    $currentYear = date('Y');
+    $currentYear = $formdata->year; //date('Y');
     $iid = csv_import_reader::get_new_iid($pluginName);
     $cir = new csv_import_reader($iid, $pluginName);
 
@@ -78,14 +78,14 @@ if ($formdata = $mform->get_data()) {
     $cir->init();
     $currenttime = time();
     switch ($kpi) {
-        case KPI_OPS:
+        case KPI_OPS: // 1
             /*
                 Columnas esperadas:
-                CC,NOMBRE,REGION ,DISTRITAL COACH,CALIFICACION,ESTATUS,# CRITICOS,DIA,SEMANA,MES,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, 
-                CC->ccosto,NOMBRE->nom_ccosto,REGION->region ,DISTRITAL COACH -> distrital,CALIFICACION -> calificacion,ESTATUS -> estatus,# CRITICOS,DIA->day,SEMANA->week,MES->month
-                CC,NOMBRE,REGION,DISTRITAL COACH,CALIFICACION,ESTATUS,DIA,SEMANA,MES
+                CC,NOMBRE,REGION ,DISTRITAL COACH,CALIFICACION,ESTATUS,# CRITICOS,DÍA,SEMANA,MES,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, 
+                CC->ccosto,NOMBRE->nom_ccosto,REGION->region ,DISTRITAL COACH -> distrital,CALIFICACION -> calificacion,ESTATUS -> estatus,# CRITICOS,DÍA->day,SEMANA->week,MES->month
+                CC,NOMBRE,REGION,DISTRITAL COACH,CALIFICACION,ESTATUS,DÍA,SEMANA,MES
             */
-            $requiredFields=explode(',',"CC,NOMBRE,REGION,DISTRITAL COACH,CALIFICACIÓN,ESTATUS,DIA,SEMANA,MES");
+            $requiredFields=explode(',',"CC,NOMBRE,REGION,DISTRITAL COACH,CALIFICACIÓN,ESTATUS,DÍA,SEMANA,MES");
             
             $count= 0;
             $hasRequiredColumns = true;
@@ -103,7 +103,7 @@ if ($formdata = $mform->get_data()) {
                     // _log("Estatus vacío en la línea", $line);
                     continue;
                 }
-                if( ! $DB->record_exists('dominos_kpis', array('day' => $line[$columns_['DIA']], 'ccosto' => $line[$columns_['CC']],
+                if( ! $DB->record_exists('dominos_kpis', array('day' => $line[$columns_['DÍA']], 'ccosto' => $line[$columns_['CC']],
                     'kpi' => KPI_OPS,
                     'region' => $line[$columns_['REGION']],
                     'distrital' => $line[$columns_['DISTRITAL COACH']],
@@ -114,14 +114,14 @@ if ($formdata = $mform->get_data()) {
                     $record->nombre = "AUDITORÍA ICA";
                     $record->valor = $line[$columns_['ESTATUS']];
                     $record->typevalue = "text";
-                    $record->day = $line[$columns_['DIA']];
+                    $record->day = $line[$columns_['DÍA']];
                     $record->week = $line[$columns_['SEMANA']];
-                    $record->month = $line[$columns_['MES']];
+                    $record->month = local_dominosdashboard_format_month_from_kpi($line[$columns_['MES']]);
                     $record->year = $currentYear;
                     $record->region = $line[$columns_['REGION']];
                     $record->ccosto = $line[$columns_['CC']];
                     $record->nom_ccosto = $line[$columns_['NOMBRE']];
-                    $record->original_time = "";
+                    $record->original_time = $record->day . ' ' . $record->year;
                     $record->distrital = $line[$columns_['DISTRITAL COACH']];
                     $record->timecreated = $currenttime;
                     $DB->insert_record('dominos_kpis', $record);
@@ -131,10 +131,10 @@ if ($formdata = $mform->get_data()) {
             }
         break;
 
-        case KPI_HISTORICO: // 
+        case KPI_HISTORICO: // 2
             /*
             Columnas esperadas
-            Regi�n / Raz�n social,No_Tienda,Nombre_Tienda,Nombre del Distrital / Gerente de Operaciones,1_ENERO,2_FEBRERO,3_MARZO,4_ABRIL,5_MAYO,6_JUNIO,7_JULIO,Total general
+            Región / Razón social,No_Tienda,Nombre_Tienda,Nombre del Distrital / Gerente de Operaciones,1_ENERO,2_FEBRERO,3_MARZO,4_ABRIL,5_MAYO,6_JUNIO,7_JULIO,Total general
             Región / Razón social,No_Tienda,Nombre_Tienda,Nombre del Distrital / Gerente de Operaciones,1_ENERO,2_FEBRERO,3_MARZO,4_ABRIL,5_MAYO,6_JUNIO,7_JULIO,Total general
             */
             // Región / Razón social,No_Tienda,Nombre_Tienda,Nombre del Distrital / Gerente de Operaciones,1_ENERO,2_FEBRERO,3_MARZO,4_ABRIL,5_MAYO,6_JUNIO,7_JULIO,8_AGOSTO,9_SEPTIEMBRE,10_OCTUBRE,11_NOVIEMBRE,12_DICIEMBRE,Total general
@@ -157,6 +157,7 @@ if ($formdata = $mform->get_data()) {
                     // _log("No se envía el mes", $line);
                     continue;
                 }
+                $monthColumn = local_dominosdashboard_get_last_month_name($columns);
                 if($line[$columns_['Región / Razón social']] == 'Total general'){
                     continue;
                 }
@@ -172,14 +173,14 @@ if ($formdata = $mform->get_data()) {
                     $record->nombre = 'NÚMERO DE QUEJAS';
                     $record->valor = $line[$lastMonthColumn];
                     $record->typevalue = 'number';
-                    // $record->day = $line[$columns_['DIA']];
-                    // $record->week = $line[$columns_['SEMANA']];
-                    $record->month = $line[$lastMonthColumn];
+                    $record->day = '';
+                    $record->week = '';
+                    $record->month = local_dominosdashboard_convert_month_name($monthColumn);
                     $record->year = $currentYear;
                     $record->region = $line[$columns_['Región / Razón social']];
                     $record->ccosto = $line[$columns_['No_Tienda']];
                     $record->nom_ccosto = $line[$columns_['Nombre_Tienda']];
-                    $record->original_time = $line[$lastMonthColumn];
+                    $record->original_time = $monthColumn . ' ' . $currentYear;
                     $record->distrital = $line[$columns_['Nombre del Distrital / Gerente de Operaciones']];
                     $record->timecreated = $currenttime;
                     $DB->insert_record('dominos_kpis', $record);
@@ -189,7 +190,7 @@ if ($formdata = $mform->get_data()) {
             }
         break;
 
-        case KPI_SCORCARD: // scorecard
+        case KPI_SCORCARD: // 3
             /*
             Columnas mostradas: REGION,GTE DTTO,CC,NOM_CCOSTO,AÑO,MES,INDICADOR,VALOR,FECHA,TIPO,Valor 1,,
             */
@@ -225,9 +226,9 @@ if ($formdata = $mform->get_data()) {
                     $record->nombre = $line[$columns_['INDICADOR']];
                     $record->valor = $line[$columns_['Valor 1']];
                     $record->typevalue = $line[$columns_['TIPO']];
-                    // $record->day = $line[$columns_['DIA']];
-                    // $record->week = $line[$columns_['SEMANA']];
-                    $record->month = $line[$columns_['MES']];
+                    $record->day = '';
+                    $record->week = '';
+                    $record->month = local_dominosdashboard_format_month_from_kpi($line[$columns_['MES']]);
                     $record->year = $line[$columns_['AÑO']];
                     $record->region = $line[$columns_['REGION']];
                     $record->ccosto = $line[$columns_['CC']];

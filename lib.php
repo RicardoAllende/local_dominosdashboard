@@ -51,6 +51,11 @@ function local_dominosdashboard_extend_navigation(global_navigation $nav) {
         );
         if(LOCALDOMINOSDASHBOARD_DEBUG){
             $node = $nav->add (
+                'Subir kpis en csv ' . get_string('pluginname', 'local_dominosdashboard'),
+                new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php' )
+            );
+            $node->showinflatnavigation = true;
+            $node = $nav->add (
                 'Configuración ' . get_string('pluginname', 'local_dominosdashboard'),
                 new moodle_url( $CFG->wwwroot . '/admin/settings.php?section=local_dominosdashboard' )
             );
@@ -74,9 +79,64 @@ function local_dominosdashboard_extend_navigation(global_navigation $nav) {
     }
 }
 
+/**
+ * Serve the files from the MYPLUGIN file areas
+ *
+ * @param stdClass $course the course object
+ * @param stdClass $cm the course module object
+ * @param stdClass $context the context
+ * @param string $filearea the name of the file area
+ * @param array $args extra arguments (itemid, path)
+ * @param bool $forcedownload whether or not force download
+ * @param array $options additional options affecting the file serving
+ * @return bool false if the file not found, just send the file otherwise and do not return anything
+ */
+function local_dominosdashboard_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+    // Check the contextlevel is as expected - if your plugin is a block, this becomes CONTEXT_BLOCK, etc.
+    // if ($context->contextlevel != CONTEXT_MODULE) {
+    //     return false; 
+    // }
+ 
+    // Make sure the filearea is one of those used by the plugin.
+    if ($filearea !== 'local_dominosdashboard') {
+        return false;
+    }
+ 
+    // Make sure the user is logged in and has access to the module (plugins that are not course modules should leave out the 'cm' part).
+    require_login($course, true, $cm);
+ 
+    // Check the relevant capabilities - these may vary depending on the filearea being accessed.
+    // if (!has_capability('mod/MYPLUGIN:view', $context)) {
+    //     return false;
+    // }
+ 
+    // Leave this line out if you set the itemid to null in make_pluginfile_url (set $itemid to 0 instead).
+    $itemid = array_shift($args); // The first item in the $args array.
+ 
+    // Use the itemid to retrieve any relevant data records and perform any security checks to see if the
+    // user really does have access to the file in question.
+ 
+    // Extract the filename / filepath from the $args array.
+    $filename = array_pop($args); // The last item in the $args array.
+    if (!$args) {
+        $filepath = '/'; // $args is empty => the path is '/'
+    } else {
+        $filepath = '/'.implode('/', $args).'/'; // $args contains elements of the filepath
+    }
+ 
+    // Retrieve the file from the Files API.
+    $fs = get_file_storage();
+    $file = $fs->get_file($context->id, 'local_dominosdashboard', $filearea, $itemid, $filepath, $filename);
+    if (!$file) {
+        return false; // The file does not exist.
+    }
+ 
+    // We can now send the file back to the browser - in this case with a cache lifetime of 1 day and no filtering. 
+    send_stored_file($file, 86400, 0, $forcedownload, $options);
+}
+
 DEFINE("LOCALDOMINOSDASHBOARD_CATEGORY_PARENT_NAME", "parent_category");
 DEFINE("LOCALDOMINOSDASHBOARD_DEBUG", true);
-DEFINE("LOCALDOMINOSDASHBOARD_DUMMY_RESPONSE", false);
 
 DEFINE("KPI_NA", 0);
 DEFINE("KPI_OPS", 1);
@@ -143,22 +203,33 @@ function local_dominosdashboard_get_catalogue(string $key){
     return $DB->get_fieldset_sql($query);
 }
 
-function local_dominosdashboard_get_kpi_catalogue(string $key){
+function local_dominosdashboard_get_kpi_catalogue(string $key, $kpi = ''){
+    switch($kpi){
+        case KPI_OPS: 
+        case KPI_HISTORICO: 
+        case KPI_SCORCARD: 
+            $where = " AND kpi = {$kpi} ";
+        break;
+        default: 
+            $where = '';
+        break;
+    }
+    global $DB;
     switch($key){
         case 'regiones':
-            $query = "SELECT distinct region FROM {dominos_kpis}";
-        break;
+            $query = "SELECT distinct region, region as t1 FROM {dominos_kpis} WHERE region != '' {$where}";
+            break;
         case 'distritos':
-            $query = "SELECT distinct distrital FROM {dominos_kpis}";
-
-        break;
+            $query = "SELECT distinct distrital, distrital as t1 FROM {dominos_kpis} where distrital != '' {$where}";
+            break;
         case 'tiendas':
-            $query = "SELECT distinct CONCAT(ccosto, '', nom_ccosto) FROM {dominos_kpis}";
-        break;
+            $query = "SELECT ccosto, nom_ccosto FROM mdl_dominos_kpis WHERE ccosto != '' {$where} GROUP BY ccosto";
+            break;
         default: 
             return [];
         break;
     }
+    return $DB->get_records_sql_menu($query);
 }
 
 // function local_dominosdashboard_get_course_all_catalogues($courseid){
@@ -461,22 +532,6 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     if($course === false){
         return false;
     }
-    $dummy_response = new stdClass();
-    $dummy_response->id = $courseid;
-    $dummy_response->key = 'course' . $courseid;
-    $dummy_response->chart = local_dominosdashboard_get_course_chart($courseid);
-    $dummy_response->color = local_dominosdashboard_get_course_color($courseid);
-    $dummy_response->title = $course->fullname;
-    $dummy_response->enrolled_users = 100;
-    $dummy_response->approved_users = random_int(0, 100);
-    $dummy_response->not_viewed = 2;
-    $dummy_response->percentage = $dummy_response->approved_users;
-    $dummy_response->value = $dummy_response->percentage;
-    $dummy_response->status = 'ok';
-    $dummy_response->kpi = random_int(0, 100);
-    if(LOCALDOMINOSDASHBOARD_DUMMY_RESPONSE){
-        return $dummy_response;
-    }
     $response = new stdClass();
     $response->key = 'course' . $courseid;
     $response->id = $courseid;
@@ -747,7 +802,7 @@ function local_dominosdashboard_get_indicators(){
 }
 
 function local_dominosdashboard_get_kpi_indicators(){
-    return explode('/', DOMINOSDASHBOARD_INDICATORS);
+    return explode('/', DOMINOSDASHBOARD_INDICATORS_FOR_KPIS);
 }
 
 function local_dominosdashboard_get_charts(){
@@ -980,11 +1035,7 @@ function local_dominosdashboard_get_all_user_competencies(array $conditions = ar
     global $DB;
     $competencies = $DB->get_records('competency', array(), '', 'id, shortname, shortname as title');
     foreach($competencies as $competency){
-        if(LOCALDOMINOSDASHBOARD_DUMMY_RESPONSE){
-            $competency->proficiency = random_int(0, 1000);
-        }else{
-            $competency->proficiency = $DB->count_records('competency_usercomp', array('competencyid' => $competency->id, 'proficiency' => 1));
-        }
+        $competency->proficiency = $DB->count_records('competency_usercomp', array('competencyid' => $competency->id, 'proficiency' => 1));
     }
     usort($competencies, function($a, $b){
         return $a->proficiency - $b->proficiency;
@@ -995,7 +1046,6 @@ function local_dominosdashboard_get_all_user_competencies(array $conditions = ar
 function local_dominosdashboard_get_last_month_key(array $columns){
     $meses = "12_DICIEMBRE,11_NOVIEMBRE,10_OCTUBRE,9_SEPTIEMBRE,8_AGOSTO,7_JULIO,6_JUNIO,5_MAYO,4_ABRIL,3_MARZO,2_FEBRERO,1_ENERO";
     $meses = explode(',', $meses);
-    // _log('local_dominosdashboard_get_last_month_key', $columns);
     foreach($meses as $mes){
         $search = array_search($mes, $columns);
         if($search !== false){
@@ -1004,6 +1054,75 @@ function local_dominosdashboard_get_last_month_key(array $columns){
         }
     }
     return -1; // it will throw an error
+}
+
+function local_dominosdashboard_get_last_month_name(array $columns){
+    $meses = "12_DICIEMBRE,11_NOVIEMBRE,10_OCTUBRE,9_SEPTIEMBRE,8_AGOSTO,7_JULIO,6_JUNIO,5_MAYO,4_ABRIL,3_MARZO,2_FEBRERO,1_ENERO";
+    $meses = explode(',', $meses);
+    foreach($meses as $mes){
+        $search = array_search($mes, $columns);
+        if($search !== false){
+            // _log("El índice retornado es: ", $search);
+            return $mes;
+        }
+    }
+    return -1; // it will throw an error
+}
+
+function local_dominosdashboard_convert_month_name(string $monthName){
+    $parts = explode('_', $monthName);
+    return $parts[0];
+}
+
+function local_dominosdashboard_format_month_from_kpi($m){
+    if(empty($m)){
+        return "";
+    }
+    if(is_int($m)){
+        if($m <= 13){ // de 1 a 12
+            return $m;
+        }
+    }
+    if(is_string($m)){
+        $m = strtoupper($m);
+        $meses = [
+            1 => 'ENERO',
+            2 => 'FEBRERO',
+            3 => 'MARZO',
+            4 => 'ABRIL',
+            5 => 'MAYO',
+            6 => 'JUNIO',
+            7 => 'JULIO',
+            8 => 'AGOSTO',
+            9 => 'SEPTIEMBRE',
+            10 => 'OCTUBRE',
+            11 => 'NOVIEMBRE',
+            12 => 'DICIEMBRE',
+        ];
+        $busqueda = array_search($m, $meses);
+        if($busqueda !== false){
+            return $busqueda;
+        }
+        $meses = [
+            1 => 'ENE',
+            2 => 'FEB',
+            3 => 'MAR',
+            4 => 'ABR',
+            5 => 'MAY',
+            6 => 'JUN',
+            7 => 'JUL',
+            8 => 'AGO',
+            9 => 'SEP',
+            10 => 'OCT',
+            11 => 'NOV',
+            12 => 'DIC',
+        ];
+        $busqueda = array_search($m, $meses);
+        if($busqueda !== false){
+            return $busqueda;
+        }
+    }
+    return $m;
 }
 
 function local_dominosdashboard_make_all_historic_reports(){
