@@ -110,10 +110,14 @@ $indicators = local_dominosdashboard_get_indicators();
             console.log(error);
         }
     });
+    var dateBegining;
+    var dateEnding;
     function obtenerGraficas(){
         console.log("Obteniendo gráficas");
         informacion = $('#filter_form').serializeArray();
-        $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize())
+        $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
+        dateBegining = Date.now();
+        $('#local_dominosdashboard_content').html('Cargando la información');
         $.ajax({
             type: "POST",
             url: "services.php",
@@ -121,6 +125,8 @@ $indicators = local_dominosdashboard_get_indicators();
             dataType: "json"
         })
         .done(function(data) {
+            dateEnding = Date.now();
+            console.log(`Tiempo de respuesta de API ${dateEnding - dateBegining} ms`);
             console.log("Petición correcta");
             console.log(data);
             $('#local_dominosdashboard_content').html(JSON.stringify(data).replace(/}/g, "}<br/>"));
