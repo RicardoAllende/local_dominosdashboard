@@ -40,6 +40,7 @@ $returnurl = new moodle_url('/local/dominosdashboard/dashboard.php');
 $mform = new local_dominosdashboard_upload_kpis();
 if ($formdata = $mform->get_data()) {
     echo $OUTPUT->header();
+    $tiempo_inicial = microtime(true);
     
     $currentYear = $formdata->year; //date('Y');
     $iid = csv_import_reader::get_new_iid($pluginName);
@@ -233,12 +234,17 @@ if ($formdata = $mform->get_data()) {
             break;
     }
     unset($content);
+    $tiempo_final = microtime(true);
+    $tiempo = $tiempo_final - $tiempo_inicial;
+    if(LOCALDOMINOSDASHBOARD_DEBUG){
+        echo $OUTPUT->heading("El tiempo de proceso del archivo fue de: " . $tiempo);
+    }
     echo $OUTPUT->heading("Su archivo ha sido procesado");
     echo $OUTPUT->heading("Si desea subir más archivos, recargue la página");
-    echo "<div class='row'>";
+    echo "<div class='row' style='text-align: center; padding: 5%;'>";
     echo "<div class='col-sm-6'>";
-    $route = $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php';
-    echo "<a class='btn btn-success text-center' style='text-align: center !important;' href='{$route}'>Recargar la página</a>";
+    // $route = $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php';
+    echo "<button class='btn btn-success text-center' style='text-align: center !important;' onclick='window.location.href = window.location.href'>Recargar la página</button>";
     echo "</div>";
     echo "<div class='col-sm-6'>";
     $route = $CFG->wwwroot . '/local/dominosdashboard/dashboard.php';
