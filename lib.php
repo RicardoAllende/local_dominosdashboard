@@ -167,7 +167,7 @@ DEFINE("COMPLETION_BY_AVG", 6);
 // DEFINE("COMPLETION_BY_ATTENDANCE", 5);
 
 DEFINE('DOMINOSDASHBOARD_INDICATORS', 'regiones/distritos/entrenadores/tiendas/puestos');
-DEFINE('DOMINOSDASHBOARD_INDICATORS_FOR_KPIS', 'regiones/distritos/tiendas');
+DEFINE('DOMINOSDASHBOARD_INDICATORS_FOR_KPIS', 'regiones/distritos/tiendas/periodos');
 DEFINE('DOMINOSDASHBOARD_CHARTS', 'bar/donut/chart3/chart4');
 
 
@@ -189,7 +189,7 @@ function local_dominosdashboard_relate_column_with_fields(array $columns, array 
     return $response;
 }
 
-function local_dominosdashboard_get_catalogue(string $key){
+function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql = '', array $query_params = array()){
     $indicators = local_dominosdashboard_get_indicators();
     if(array_search($key, $indicators) === false){
         return [];
@@ -199,11 +199,113 @@ function local_dominosdashboard_get_catalogue(string $key){
         return [];
     }
     global $DB;
-    $query = "SELECT distinct data FROM {user_info_data} where fieldid = {$fieldid}";
-    return $DB->get_fieldset_sql($query);
+    $query = "SELECT distinct data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql}";
+    if(!empty($andWhereSql)){
+        _log("La consulta es: ", $query);
+    }
+    $result = $DB->get_fieldset_sql($query, $query_params);
+    return $result;
+}
+
+function local_dominosdashboard_get_user_catalogues($params = array()){
+    $response = array();
+    $indicators = local_dominosdashboard_get_indicators();
+    $andWhereSql = "";
+    $query_params = array();
+    $conditions = array();
+    
+    global $DB;
+    if(!empty($params)){
+        foreach($params as $key => $param){
+            if(array_search($key, $indicators) !== false){
+                $fieldid = get_config('local_dominosdashboard', "filtro_" . $key);
+                if($fieldid !== false){
+                    $data = $params[$key];
+                    $filter_active = true;
+                    if(is_string($data) || is_numeric($data)){
+                        array_push($conditions, " (fieldid = {$fieldid} AND data = ?)");
+                        array_push($query_params, $data);
+                    }elseif(is_array($data)){
+                        $fieldConditions = array();
+                        foreach ($data as $d) {
+                            array_push($fieldConditions, " ? ");
+                            array_push($query_params, $d);
+                        }
+                        if(!empty($fieldConditions)){
+                            array_push($conditions, "(fieldid = {$fieldid} AND data in (" . implode(",", $fieldConditions) . "))");
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if(!empty($conditions)){
+        $andWhereSql = " AND userid IN ( SELECT DISTINCT userid FROM {user_info_data} WHERE " . implode(' OR ', $conditions) . ")";
+        _log('$andWhereSql', $andWhereSql, $query_params);
+    }
+
+    foreach($indicators as $indicator){
+        $response[$indicator] = local_dominosdashboard_get_catalogue($indicator, $andWhereSql, $query_params);
+    }
+    return $response;
+}
+
+function local_dominosdashboard_get_all_catalogues_for_kpi($kpi, $params = array()){
+    $indicators = array();
+    foreach(local_dominosdashboard_get_kpi_indicators() as $indicator){
+        $indicators[$indicator] = local_dominosdashboard_get_kpi_catalogue($indicator, $kpi, $params);
+    }
+    _log($indicators);
+    return $indicators;
 }
 
 function local_dominosdashboard_get_kpi_catalogue(string $key, $kpi = '', array $params = array()){
+    $conditions = array();
+    $sqlParams = array();
+    $andWhereSql = "";
+    if(!empty($params)){
+        $indicators = local_dominosdashboard_get_kpi_indicators();
+        foreach($params as $key => $param){
+            if(array_search($key, $indicators) !== false){
+                // DEFINE('DOMINOSDASHBOARD_INDICATORS_FOR_KPIS', 'regiones/distritos/tiendas');
+                switch($key){
+                    case 'regiones': 
+                        $field = "region";
+                    break;
+                    case 'distritos': 
+                        $field = "distrital";
+                    break;
+                    case 'tiendas': // Se espera que sea un entero
+                        $field = "ccosto";
+                    break;
+                    default: 
+                        continue; // Continuar con el siguiente parámetro, este no está dentro de los planeados
+                    break;
+                }
+                $data = $params[$key];
+                if(is_string($data) || is_numeric($data)){
+                    $condition .= " $field = ? ";
+                    array_push($conditions, $condition);
+                    array_push($sqlParams, $data);
+                }elseif(is_array($data)){
+                    $condition = array();
+                    foreach($data as $d){
+                        $c = " {$field} = ? ";
+                        array_push($condition, $c);
+                        array_push($sqlParams, $d);
+                    }
+                    if(!empty($condition)){
+                        $condition = implode(" OR ", $condition);
+                        array_push($conditions, $condition);
+                    }
+                }
+                if(!empty($conditions)){
+                    $andWhereSql = ' AND ' . implode(" AND ", $conditions);
+                }
+            }
+        }
+    }
+
     switch($kpi){
         case KPI_OPS: 
         case KPI_HISTORICO: 
@@ -217,13 +319,16 @@ function local_dominosdashboard_get_kpi_catalogue(string $key, $kpi = '', array 
     global $DB;
     switch($key){
         case 'regiones':
-            $query = "SELECT distinct region, region as t1 FROM {dominos_kpis} WHERE region != '' {$where}";
+            $query = "SELECT distinct region, region as t1 FROM {dominos_kpis} WHERE region != '' {$where} {$andWhereSql}";
             break;
         case 'distritos':
-            $query = "SELECT distinct distrital, distrital as t1 FROM {dominos_kpis} where distrital != '' {$where}";
+            $query = "SELECT distinct distrital, distrital as t1 FROM {dominos_kpis} where distrital != '' {$where} {$andWhereSql}";
             break;
         case 'tiendas':
-            $query = "SELECT ccosto, nom_ccosto FROM {dominos_kpis} WHERE ccosto != '' {$where} GROUP BY ccosto";
+            $query = "SELECT ccosto, nom_ccosto FROM {dominos_kpis} WHERE ccosto != '' {$where} {$andWhereSql} GROUP BY ccosto";
+            break;
+        case 'periodos':
+            $query = "SELECT distinct original_time, original_time as t1 FROM {dominos_kpis} WHERE original_time != '' {$where} {$andWhereSql}";
             break;
         default: 
             return [];
@@ -231,29 +336,6 @@ function local_dominosdashboard_get_kpi_catalogue(string $key, $kpi = '', array 
     }
     return $DB->get_records_sql_menu($query);
 }
-
-// function local_dominosdashboard_get_course_all_catalogues($courseid){
-//     global $DB;
-//     $course = $DB->get_record('course', array('id' => $courseid));
-//     if(empty($course)){
-//         // _log('No existe el curso');
-//         die('no existe curso');
-//     }
-//     foreach (local_dominosdashboard_get_indicators() as $indicator) {
-//         // _log('indicator', $indicator);
-//         foreach (local_dominosdashboard_get_catalogue($indicator) as $item) {
-//             // _log('item', $item);
-//             _print("Indicador: " . $indicator, 'Buscando ' . $item);
-//             $params = array();
-//             $params[$indicator] = $item;
-//             $course_information = local_dominosdashboard_get_course_information($course->id, true, $params);
-//             // _log($course_information);
-//             echo local_dominosdashboard_format_response($course_information);
-//             echo "<br><br><br>";
-//             _print($course_information);
-//         }
-//     }
-// }
 
 function local_dominosdashboard_get_completion_modes(){
     return [
@@ -600,8 +682,6 @@ function local_dominosdashboard_compare_kpi(int $courseid, array $params = array
 function local_dominosdashboard_get_kpi_results($kpi, $params){
     global $DB;
     
-    $allow_users = array();
-    $filter_active = false;
     $conditions = array();
     $sqlParams = array();
     $andWhereSql = "";
@@ -625,8 +705,7 @@ function local_dominosdashboard_get_kpi_results($kpi, $params){
                     break;
                 }
                 $data = $params[$key];
-                $filter_active = true;
-                if(is_string($data)){
+                if(is_string($data) || is_numeric($data)){
                     $condition .= " $field = ? ";
                     array_push($conditions, $condition);
                     array_push($sqlParams, $data);
@@ -821,7 +900,7 @@ function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $p
                 if($fieldid !== false){
                     $data = $params[$key];
                     $filter_active = true;
-                    if(is_string($data)){
+                    if(is_string($data) || is_numeric($data)){
                         // $newIds = 
                         $newIds = $DB->get_fieldset_select('user_info_data', 'distinct userid', ' fieldid = :fieldid AND data = :data ', array('fieldid' => $fieldid, 'data' => $params[$key]));
                     }elseif(is_array($data)){

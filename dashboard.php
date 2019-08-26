@@ -44,9 +44,9 @@ $courses = local_dominosdashboard_get_courses();
 // _print($classroom = local_dominosdashboard_get_courses_overview(LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS));
 // _print($comparison = local_dominosdashboard_get_courses_overview(LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON));
 
-$indicators = local_dominosdashboard_get_kpi_indicators();
+$indicators = local_dominosdashboard_get_indicators();
 ?>
-<h2>En este momento los valores de los filtros están siendo tomados desde los kpis</h2>
+<!-- <h2>En este momento los valores de los filtros están siendo tomados desde los kpis</h2> -->
 <div class="row">
     <form id="filter_form" method="post" action="services.php" class='col-sm-4'>
         <?php
@@ -55,10 +55,19 @@ $indicators = local_dominosdashboard_get_kpi_indicators();
             echo "<option value='{$course->id}'>{$course->id} -> {$course->fullname}</option>";
         }
         echo "</select>";
+        // echo "<br><select class='form-control kpi-selector' name='kpi'>";
+        // foreach(local_dominosdashboard_get_KPIS() as $key => $kpi){
+        //     echo "<option value='{$key}'>{$key} -> {$kpi}</option>";
+        // }
+        // echo "</select>";
         foreach($indicators as $indicator){
             echo "<h3>Indicador: {$indicator}</h3>";
-            foreach(local_dominosdashboard_get_kpi_catalogue($indicator) as $item){
-                echo "<label><input type=\"checkbox\" name=\"{$indicator}[]\" class=\"indicator_option indicator_{$indicator}\" data-indicator=\"{$indicator}\" value=\"{$item}\">{$item}</label><br>";
+            foreach(local_dominosdashboard_get_catalogue($indicator) as $item){
+                if(empty($item)){
+                    echo "<label><input type=\"checkbox\" name=\"{$indicator}[]\" class=\"indicator_option indicator_{$indicator}\" data-indicator=\"{$indicator}\" value=\"{$item}\">(vacío)</label><br>";
+                }else{
+                    echo "<label><input type=\"checkbox\" name=\"{$indicator}[]\" class=\"indicator_option indicator_{$indicator}\" data-indicator=\"{$indicator}\" value=\"{$item}\">{$item}</label><br>";
+                }
             }
             echo "<span type=\"checkbox\" class=\"btn btn-info uncheck_indicators\" data-indicator=\"indicator_{$indicator}\" value=\"1\">Desmarcar todas</span>";
             echo "<span type=\"checkbox\" class=\"btn btn-success check_indicators\" data-indicator=\"indicator_{$indicator}\" value=\"1\">Marcar todas</span><br>";
@@ -79,22 +88,17 @@ $indicators = local_dominosdashboard_get_kpi_indicators();
     document.addEventListener("DOMContentLoaded", function() {
         try{
             require(['jquery'], function($) {
-                $('.indicator_option').click(function(){
-                    indicator = $(this).attr('data-indicator');
-                    value = $(this).val();
-                    obtenerGraficas();
-                });
-                $('.course-selector').change(function(){
-                    obtenerGraficas();
-                });
+                $('.indicator_option').click(function(){obtenerGraficas()});
+                // $('.kpi-selector').change(obtenerFiltros());
+                $('.course-selector').change(function(){obtenerGraficas()});
                 $('.uncheck_indicators').click(function(){
-                    demark = $(this).attr('data-indicator');
-                    $('.' + demark).prop('checked', false);
+                    _id = $(this).attr('data-indicator');
+                    $('.' + _id).prop('checked', false);
                     obtenerGraficas();
                 });
                 $('.check_indicators').click(function(){
-                    demark = $(this).attr('data-indicator');
-                    $('.' + demark).prop('checked', true);
+                    _id = $(this).attr('data-indicator');
+                    $('.' + _id).prop('checked', true);
                     obtenerGraficas();
                 });
                 obtenerGraficas();
@@ -119,9 +123,40 @@ $indicators = local_dominosdashboard_get_kpi_indicators();
         })
         .done(function(data) {
             dateEnding = Date.now();
-            console.log(`Tiempo de respuesta de API ${dateEnding - dateBegining} ms`);
-            console.log("Petición correcta");
+            console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
+            // console.log("Petición correcta");
+            // console.log(data);
+            // $('#local_dominosdashboard_content').html(JSON.stringify(data).replace(/{/g, "<br/>{"));
+        })
+        .fail(function(error, error2) {
+            console.log(error);
+            console.log(error2);
+        });
+        obtenerFiltros();
+    }
+    function obtenerFiltros(){
+        console.log("Obteniendo filtros");
+        informacion = $('#filter_form').serializeArray();
+        dateBegining = Date.now();
+        for(var x = 0; x < informacion.length; x ++){
+            if(informacion[x].name == 'request_type') informacion[x].value = 'user_catalogues';
+        }
+        $.ajax({
+            type: "POST",
+            url: "services.php",
+            data: informacion,
+            dataType: "json"
+        })
+        .done(function(data) {
+            dateEnding = Date.now();
+            console.log(`Tiempo de respuesta al obtener filtros de API ${dateEnding - dateBegining} ms`);
+            // console.log("Petición correcta");
             console.log(data);
+            console.log('distritos', data.data.distritos.length);
+            console.log('entrenadores', data.data.entrenadores.length);
+            console.log('puestos', data.data.puestos.length);
+            console.log('regiones', data.data.regiones.length);
+            console.log('tiendas', data.data.tiendas.length);
             $('#local_dominosdashboard_content').html(JSON.stringify(data).replace(/{/g, "<br/>{"));
         })
         .fail(function(error, error2) {

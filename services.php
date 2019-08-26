@@ -36,7 +36,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
         // die($_POST['catalogue_name']);
             if(!empty($_POST['catalogue_name'])){
                 $catalogue_name = $_POST['catalogue_name'];
-                die(local_dominosdashboard_format_response(local_dominosdashboard_get_catalogue($catalogue_name)));
+                die(local_dominosdashboard_format_response(local_dominosdashboard_get_catalogue($catalogue_name, $_POST)));
             }else{
                 die(local_dominosdashboard_error_response('catalogue_name (string) not found'));
             }
@@ -58,7 +58,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
             }
             break;
         case 'competencies': 
-            die(local_dominos_dashboard_format_response(local_dominosdashboard_get_all_user_competencies($_POST)));
+            die(local_dominosdashboard_format_response(local_dominosdashboard_get_all_user_competencies($_POST)));
+            break;
+        case 'user_catalogues':
+            die(local_dominosdashboard_format_response(local_dominosdashboard_get_user_catalogues($_POST)));
+            break;
+        case 'kpi_catalogues': 
+            if(!empty($_POST['kpi'])){
+                $kpi = $_POST['kpi'];
+            }else{
+                $kpi = "";
+            }
+            die(local_dominosdashboard_format_response(local_dominosdashboard_get_all_catalogues_for_kpi($kpi, $_POST)));
             break;
         default:
             die(local_dominosdashboard_error_response("request_type not allowed"));
