@@ -31,13 +31,12 @@ require_once("$CFG->libdir/gradelib.php");
 require_once("$CFG->dirroot/grade/querylib.php");
 require_login();
 global $DB;
-$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/dashboard.php");
+$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/historicos.php");
 $PAGE->set_context($context_system);
 $PAGE->set_pagelayout('admin');
-$PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
+$PAGE->set_title('Históricos ' . get_string('pluginname', 'local_dominosdashboard'));
 
 echo $OUTPUT->header();
-// echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>";
 
 $courses = local_dominosdashboard_get_courses();
 

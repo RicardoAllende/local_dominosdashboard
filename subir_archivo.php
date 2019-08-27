@@ -29,7 +29,9 @@ require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/csvlib.class.php');
 
 $pluginName = 'local_dominosdashboard';
-$PAGE->set_context(context_system::instance());
+$context_system = context_system::instance();
+require_capability('local/dominosdashboard:view', $context_system);
+$PAGE->set_context($context_system);
 $PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/subir_archivo.php");
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', $pluginName));

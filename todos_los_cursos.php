@@ -24,14 +24,15 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
-// require_capability('local/dominosdashboard:view', context_system::instance());
+$context_system = context_system::instance();
+require_capability('local/dominosdashboard:view', $context_system);
 require_once(__DIR__ . '/lib.php');
 require_once("$CFG->libdir/gradelib.php");
 require_once("$CFG->dirroot/grade/querylib.php");
 require_login();
 global $DB;
 $PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/todos_los_cursos.php");
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context($context_system);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 

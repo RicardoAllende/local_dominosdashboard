@@ -23,17 +23,17 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-// defined('MOODLE_INTERNAL') || die();
-
 header("Content-Type: application/json");
 require_once(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/lib.php');
+$context_system = context_system::instance();
+if( ! has_capability('local/dominosdashboard:view', $context_system) ){
+    die(local_dominosdashboard_error_response("Usuario no autenticado"));
+}
 if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
-    // die(local_dominosdashboard_format_response($_POST));
     $request_type = $_POST['request_type'];
     switch($request_type){
         case 'catalogue':
-        // die($_POST['catalogue_name']);
             if(!empty($_POST['catalogue_name'])){
                 $catalogue_name = $_POST['catalogue_name'];
                 die(local_dominosdashboard_format_response(local_dominosdashboard_get_catalogue($catalogue_name, $_POST)));
@@ -44,7 +44,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
         case 'course_completion':
             if(!empty($_POST['courseid'])){
                 $courseid = $_POST['courseid'];
-                // _log("Parámetros enviados", $_POST);
                 die(local_dominosdashboard_format_response(local_dominosdashboard_get_course_information($courseid, $get_all_information = true,  $params = $_POST)));
             }else{
                 die(local_dominosdashboard_error_response("courseid (int) not found"));

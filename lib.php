@@ -1077,7 +1077,9 @@ function local_dominosdashboard_format_response($data, string $dataname = "data"
         $count = 1;
     }
     if(empty($data)){
-        $status = "No data found";
+        if($status == 'ok'){
+            $status = "No data found";
+        }
         $count = 0;
     }
     $result = array();
@@ -1088,11 +1090,17 @@ function local_dominosdashboard_format_response($data, string $dataname = "data"
 }
 
 function local_dominosdashboard_done_successfully($message = 'ok'){
-    return local_dominosdashboard_format_response(null, 'data', $message);
+    $result = new stdClass();
+    $result->status  = 'ok';
+    $result->message = $message;
+    return json_encode($result);
 }
 
 function local_dominosdashboard_error_response($message = 'error'){
-    return local_dominosdashboard_format_response(null, 'data', $message);
+    $result = new stdClass();
+    $result->status  = 'error';
+    $result->message = $message;
+    return json_encode($result);
 }
 
 function local_dominosdashboard_get_courses(bool $allCourses = false, $andWhereClause = ""){
