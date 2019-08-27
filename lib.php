@@ -46,28 +46,24 @@ function local_dominosdashboard_extend_navigation(global_navigation $nav) {
     if($has_capability){
         global $CFG;
         $node = $nav->add (
-            get_string('pluginname', 'local_dominosdashboard'),
+            'dashboard.php ' . get_string('pluginname', 'local_dominosdashboard'),
             new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/dashboard.php' )
         );
+        $node->showinflatnavigation = true;
+        $node = $nav->add (
+            'Configuraciones ' . get_string('pluginname', 'local_dominosdashboard'),
+            new moodle_url( $CFG->wwwroot . '/admin/settings.php?section=local_dominosdashboard' )
+        );
+        $node->showinflatnavigation = true;
+        $node = $nav->add (
+            'Subir kpis en csv ' . get_string('pluginname', 'local_dominosdashboard'),
+            new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php' )
+        );
+        $node->showinflatnavigation = true;
         if(LOCALDOMINOSDASHBOARD_DEBUG){
-            $node = $nav->add (
-                'Subir kpis en csv ' . get_string('pluginname', 'local_dominosdashboard'),
-                new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php' )
-            );
-            $node->showinflatnavigation = true;
-            $node = $nav->add (
-                'Configuración ' . get_string('pluginname', 'local_dominosdashboard'),
-                new moodle_url( $CFG->wwwroot . '/admin/settings.php?section=local_dominosdashboard' )
-            );
-            $node->showinflatnavigation = true;
             $node = $nav->add (
                 'Pruebachart.php ' . get_string('pluginname', 'local_dominosdashboard'),
                 new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/prueba_chart.php' )
-            );
-            $node->showinflatnavigation = true;
-            $node = $nav->add (
-                'Prueba de peticiones por curso ' . get_string('pluginname', 'local_dominosdashboard'),
-                new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/dashboard.php' )
             );
             $node->showinflatnavigation = true;
             $node = $nav->add (
@@ -206,10 +202,12 @@ function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql =
 
 function local_dominosdashboard_get_user_catalogues($params = array()){
     $response = array();
+    $returnOnly = $indicators = local_dominosdashboard_get_indicators();
     if(!empty($params['selected_filter'])){
-        $indicators = local_dominosdashboard_get_indicators($params['selected_filter']);
-    }else{
-        $indicators = local_dominosdashboard_get_indicators();
+        $returnOnly = local_dominosdashboard_get_indicators($params['selected_filter']);
+    }
+    if(empty($returnOnly)){
+        return [];
     }
     $andWhereSql = "";
     $query_params = array();
@@ -245,7 +243,7 @@ function local_dominosdashboard_get_user_catalogues($params = array()){
         // _log('$andWhereSql', $andWhereSql, $query_params);
     }
 
-    foreach($indicators as $indicator){
+    foreach($returnOnly as $indicator){
         $response[$indicator] = local_dominosdashboard_get_catalogue($indicator, $andWhereSql, $query_params);
     }
     return $response;

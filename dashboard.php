@@ -53,8 +53,7 @@ $indicators = local_dominosdashboard_get_indicators();
         echo "</select>";
         foreach($indicators as $indicator){
             echo "<h3>Indicador: {$indicator} </h3>";
-            echo "<div id='indicator_section_{$indicator}'>";
-            echo "</div>";
+            echo "<div id='indicator_section_{$indicator}'></div>";
         }
         ?>
         <span class="btn btn-info" onclick="obtenerGraficas()">Volver a simular obtención de gráficas</span>
@@ -71,29 +70,9 @@ $indicators = local_dominosdashboard_get_indicators();
     document.addEventListener("DOMContentLoaded", function() {
         try{
             require(['jquery'], function($) {
-                // $('.kpi-selector').change(obtenerFiltros());
                 $('.course-selector').change(function(){obtenerGraficas()});
-                $('.uncheck_indicators').click(function(){
-                    _id = $(this).attr('data-indicator');
-                    $('.' + _id).prop('checked', false);
-                    obtenerGraficas();
-                });
-                $('.check_indicators').click(function(){
-                    _id = $(this).attr('data-indicator');
-                    $('.' + _id).prop('checked', true);
-                    obtenerGraficas();
-                });
-                
-                $('.change_indicator_section').click(function(){
-                    _id = '#indicator_section_' + $(this).attr('data-indicator');
-                    var element = $(_id);
-                    if(element.is(":visible")){
-                        element.show();
-                    }else{
-                        element.hide();
-                    }
-                });
                 obtenerGraficas();
+                obtenerFiltros();
             });
         }catch(error){
             console.log(error);
@@ -130,7 +109,9 @@ $indicators = local_dominosdashboard_get_indicators();
             console.log(error);
             console.log(error2);
         });
-        obtenerFiltros(indicator);
+        if(indicator !== undefined){
+            obtenerFiltros(indicator);
+        }
     }
     function peticionFiltros(info){
         $.ajax({
@@ -147,6 +128,7 @@ $indicators = local_dominosdashboard_get_indicators();
             for (var index = 0; index < keys.length; index++) {
                 clave = keys[index]
                 var catalogo = data.data[clave];
+                console.log(clave, catalogo.length);
                 $('#indicator_section_' + clave).html('');
                 for(var j = 0; j < catalogo.length; j++){
                     var elementoDeCatalogo = catalogo[j];
