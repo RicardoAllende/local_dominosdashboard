@@ -1334,7 +1334,6 @@ function local_dominosdashboard_format_month_from_kpi($m){
 function local_dominosdashboard_make_all_historic_reports(){
     $courses =  local_dominosdashboard_get_courses();
     foreach($courses as $course){
-        echo "<h1>Información del curso {$course->fullname}</h1><br>";
         local_dominosdashboard_make_historic_report($course->id);
     }
     
@@ -1368,9 +1367,10 @@ function local_dominosdashboard_make_historic_report(int $courseid){
 
 function local_dominosdashboard_insert_historic_record(stdClass $course_information, $currenttime, stdClass $course, $filterid = "", $filtertext = ""){
     global $DB;
+    _log($course);
     $record = new stdClass();
     // $record->id             = ''; // autoincrement
-    $record->courseid       = $course->id;
+    $record->courseid       = intval($course->id);
     $record->shortname      = $course->shortname;
     $record->fullname       = $course->fullname;
     $record->enrolled_users = $course_information->enrolled_users;
@@ -1379,4 +1379,16 @@ function local_dominosdashboard_insert_historic_record(stdClass $course_informat
     $record->filtertext     = $filtertext;
     $record->timecreated    = $currenttime;
     return $DB->insert_record('dominos_historico', $record);
+}
+
+function local_dominosdashboard_get_historic_reports(int $courseid){
+    global $DB;
+    return $DB->get_records('dominos_historico', array('courseid' => $courseid));
+    // Pass: Subitus2019! ALTER TABLE mdl_dominos_historico CHANGE COLUMN course courseid BIGINT(10) NULL DEFAULT NULL AFTER id;
+}
+
+function local_dominosdashboard_get_historic_dates(int $courseid){
+    global $DB;
+    $query = "SELECT distinct DATE(FROM_UNIXTIME(timecreated)) FROM {dominos_historic} WHERE courseid = ?";
+    return $DB->get_recordset_sql($query, array($courseid));
 }
