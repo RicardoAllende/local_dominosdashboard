@@ -200,20 +200,21 @@ function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql =
     }
     global $DB;
     $query = "SELECT distinct data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql}";
-    if(!empty($andWhereSql)){
-        _log("La consulta es: ", $query);
-    }
     $result = $DB->get_fieldset_sql($query, $query_params);
     return $result;
 }
 
 function local_dominosdashboard_get_user_catalogues($params = array()){
     $response = array();
-    $indicators = local_dominosdashboard_get_indicators();
+    if(!empty($params['selected_filter'])){
+        $indicators = local_dominosdashboard_get_indicators($params['selected_filter']);
+    }else{
+        $indicators = local_dominosdashboard_get_indicators();
+    }
     $andWhereSql = "";
     $query_params = array();
     $conditions = array();
-    
+
     global $DB;
     if(!empty($params)){
         foreach($params as $key => $param){
@@ -241,7 +242,7 @@ function local_dominosdashboard_get_user_catalogues($params = array()){
     }
     if(!empty($conditions)){
         $andWhereSql = " AND userid IN ( SELECT DISTINCT userid FROM {user_info_data} WHERE " . implode(' OR ', $conditions) . ")";
-        _log('$andWhereSql', $andWhereSql, $query_params);
+        // _log('$andWhereSql', $andWhereSql, $query_params);
     }
 
     foreach($indicators as $indicator){
@@ -972,12 +973,36 @@ function local_dominosdashboard_get_gradable_items(int $courseid, int $hidden = 
     
 // }
 
-function local_dominosdashboard_get_indicators(){
-    return explode('/', DOMINOSDASHBOARD_INDICATORS);
+function local_dominosdashboard_get_indicators(string $from = ''){
+    $indicators = explode('/', DOMINOSDASHBOARD_INDICATORS);
+    if(!empty($from)){
+        $exists = array_search($from, $indicators);
+        if($exists !== false){
+            $exists++;
+            $filter = array();
+            for ($i=$exists; $i < count($indicators); $i++) { 
+                array_push($filter, $indicators[$i]);
+            }
+            $indicators = $filter;
+        }
+    }
+    return $indicators;
 }
 
-function local_dominosdashboard_get_kpi_indicators(){
-    return explode('/', DOMINOSDASHBOARD_INDICATORS_FOR_KPIS);
+function local_dominosdashboard_get_kpi_indicators(string $from = ''){
+    $indicators = explode('/', DOMINOSDASHBOARD_INDICATORS_FOR_KPIS);
+    if(!empty($from)){
+        $exists = array_search($from, $indicators);
+        if($exists !== false){
+            $exists++;
+            $filter = array();
+            for ($i=$exists; $i < count($indicators); $i++) { 
+                array_push($filter, $indicators[$i]);
+            }
+            $indicators = $filter;
+        }
+    }
+    return $indicators;
 }
 
 function local_dominosdashboard_get_charts(){
