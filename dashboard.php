@@ -49,6 +49,7 @@ $indicators = local_dominosdashboard_get_indicators();
 <!-- <h2>En este momento los valores de los filtros están siendo tomados desde los kpis</h2> -->
 <div class="row">
     <form id="filter_form" method="post" action="services.php" class='col-sm-4'>
+        <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br>
         <?php
         echo "<br><select class='form-control course-selector' name='courseid'>";
         foreach($courses as $course){
@@ -61,16 +62,19 @@ $indicators = local_dominosdashboard_get_indicators();
         // }
         // echo "</select>";
         foreach($indicators as $indicator){
-            echo "<h3>Indicador: {$indicator}</h3>";
-            foreach(local_dominosdashboard_get_catalogue($indicator) as $item){
-                if(empty($item)){
-                    echo "<label><input type=\"checkbox\" name=\"{$indicator}[]\" class=\"indicator_option indicator_{$indicator}\" data-indicator=\"{$indicator}\" value=\"{$item}\">(vacío)</label><br>";
-                }else{
-                    echo "<label><input type=\"checkbox\" name=\"{$indicator}[]\" class=\"indicator_option indicator_{$indicator}\" data-indicator=\"{$indicator}\" value=\"{$item}\">{$item}</label><br>";
-                }
-            }
-            echo "<span type=\"checkbox\" class=\"btn btn-info uncheck_indicators\" data-indicator=\"indicator_{$indicator}\" value=\"1\">Desmarcar todas</span>";
-            echo "<span type=\"checkbox\" class=\"btn btn-success check_indicators\" data-indicator=\"indicator_{$indicator}\" value=\"1\">Marcar todas</span><br>";
+            echo "<h3>Indicador: {$indicator} </h3>";
+            // echo "<p class='change_indicator_section' data-indicator=\"{$indicator}>Mostrar/ocultar esta sección</p>";
+            echo "<div id='indicator_section_{$indicator}'>";
+            // foreach(local_dominosdashboard_get_catalogue($indicator) as $item){
+            //     if(empty($item)){
+            //         echo "<label><input type=\"checkbox\" name=\"{$indicator}[]\" class=\"indicator_option indicator_{$indicator}\" data-indicator=\"{$indicator}\" value=\"{$item}\">(vacío)</label><br>";
+            //     }else{
+            //         echo "<label><input type=\"checkbox\" name=\"{$indicator}[]\" class=\"indicator_option indicator_{$indicator}\" data-indicator=\"{$indicator}\" value=\"{$item}\">{$item}</label><br>";
+            //     }
+            // }
+            // echo "<span type=\"checkbox\" class=\"btn btn-info uncheck_indicators\" data-indicator=\"indicator_{$indicator}\" value=\"1\">Desmarcar todas</span>";
+            // echo "<span type=\"checkbox\" class=\"btn btn-success check_indicators\" data-indicator=\"indicator_{$indicator}\" value=\"1\">Marcar todas</span><br>";
+            echo "</div>";
         }
         ?>
         <input type="hidden" name="request_type" value="course_completion"><br><br>
@@ -101,6 +105,16 @@ $indicators = local_dominosdashboard_get_indicators();
                     $('.' + _id).prop('checked', true);
                     obtenerGraficas();
                 });
+                
+                $('.change_indicator_section').click(function(){
+                    _id = '#indicator_section_' + $(this).attr('data-indicator');
+                    var element = $(_id);
+                    if(element.is(":visible")){
+                        element.show();
+                    }else{
+                        element.hide();
+                    }
+                });
                 obtenerGraficas();
             });
         }catch(error){
@@ -109,6 +123,11 @@ $indicators = local_dominosdashboard_get_indicators();
     });
     var dateBegining;
     var dateEnding;
+    function quitarFiltros(){
+        peticionFiltros({
+            request_type: 'user_catalogues'
+        });
+    }
     function obtenerGraficas(){
         console.log("Obteniendo gráficas");
         informacion = $('#filter_form').serializeArray();
@@ -126,13 +145,52 @@ $indicators = local_dominosdashboard_get_indicators();
             console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
             // console.log("Petición correcta");
             // console.log(data);
-            // $('#local_dominosdashboard_content').html(JSON.stringify(data).replace(/{/g, "<br/>{"));
+            $('#local_dominosdashboard_content').html(JSON.stringify(data).replace(/{/g, "<br/>{"));
         })
         .fail(function(error, error2) {
             console.log(error);
             console.log(error2);
         });
         obtenerFiltros();
+    }
+    function peticionFiltros(info){
+        $.ajax({
+            type: "POST",
+            url: "services.php",
+            data: info,
+            dataType: "json"
+        })
+        .done(function(data) {
+            dateEnding = Date.now();
+            console.log(`Tiempo de respuesta al obtener filtros de API ${dateEnding - dateBegining} ms`);
+            // console.log("Petición correcta");
+            console.log(data);
+            keys = Object.keys(data.data);
+            for (var index = 0; index < keys.length; index++) {
+                clave = keys[index]
+                var catalogo = data.data[clave];
+                // console.log(catalogo);
+                $('#indicator_section_' + clave).html('');
+                for(var j = 0; j < catalogo.length; j++){
+                    var elementoDeCatalogo = catalogo[j];
+                    console.log(elementoDeCatalogo);
+                    if(elementoDeCatalogo == ''){
+                        $('#indicator_section_' + clave).append(`<label><input type=\"checkbox\" name=\"${clave}[]\" 
+                        class=\"indicator_option indicator_${clave}\" data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\">(vacío)</label><br>`);
+                    }else{
+                        $('#indicator_section_' + clave).append(`<label><input type=\"checkbox\" name=\"${clave}[]\" 
+                        class=\"indicator_option indicator_${clave}\" data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\">${elementoDeCatalogo}</label><br>`);
+                        // $('#indicator_section_' + clave).append(`<label><input type=\"checkbox\"
+                        //  name=\"{$indicator}[]\" class=\"indicator_option indicator_{$indicator}\" data-indicator=\"{$indicator}\" value=\"{$item}\">(vacío)</label><br>`);
+                    }
+                }
+            }
+            $('.indicator_option').click(function(){obtenerGraficas()});
+        })
+        .fail(function(error, error2) {
+            console.log(error);
+            console.log(error2);
+        });
     }
     function obtenerFiltros(){
         console.log("Obteniendo filtros");
@@ -141,28 +199,7 @@ $indicators = local_dominosdashboard_get_indicators();
         for(var x = 0; x < informacion.length; x ++){
             if(informacion[x].name == 'request_type') informacion[x].value = 'user_catalogues';
         }
-        $.ajax({
-            type: "POST",
-            url: "services.php",
-            data: informacion,
-            dataType: "json"
-        })
-        .done(function(data) {
-            dateEnding = Date.now();
-            console.log(`Tiempo de respuesta al obtener filtros de API ${dateEnding - dateBegining} ms`);
-            // console.log("Petición correcta");
-            console.log(data);
-            console.log('distritos', data.data.distritos.length);
-            console.log('entrenadores', data.data.entrenadores.length);
-            console.log('puestos', data.data.puestos.length);
-            console.log('regiones', data.data.regiones.length);
-            console.log('tiendas', data.data.tiendas.length);
-            $('#local_dominosdashboard_content').html(JSON.stringify(data).replace(/{/g, "<br/>{"));
-        })
-        .fail(function(error, error2) {
-            console.log(error);
-            console.log(error2);
-        });
+        peticionFiltros(informacion);
     }
 </script>
 <?php
