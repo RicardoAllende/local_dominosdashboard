@@ -24,14 +24,15 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
-// require_capability('local/dominosdashboard:view', context_system::instance());
+$context_system = context_system::instance();
+require_capability('local/dominosdashboard:view', $context_system);
 require_once(__DIR__ . '/lib.php');
 require_once("$CFG->libdir/gradelib.php");
 require_once("$CFG->dirroot/grade/querylib.php");
 require_login();
 global $DB;
 $PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/_Dashboard.php");
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context($context_system);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 
@@ -101,10 +102,14 @@ $courses = local_dominosdashboard_get_courses();
             console.log(error);
         }
     });
+    var dateBegining;
+    var dateEnding;
     function obtenerGraficas(){
         console.log("Obteniendo gráficas");
         informacion = $('#filter_form').serializeArray();
-        $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize())
+        $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
+        dateBegining = Date.now();
+        $('#local_dominosdashboard_content').html('Cargando la información');
         $.ajax({
             type: "POST",
             url: "services.php",
@@ -112,6 +117,8 @@ $courses = local_dominosdashboard_get_courses();
             dataType: "json"
         })
         .done(function(data) {
+            dateEnding = Date.now();
+            console.log(`Tiempo de respuesta de API ${dateEnding - dateBegining} ms`);
             console.log("Petición correcta");
             console.log(data);
             $('#local_dominosdashboard_content').html(JSON.stringify(data).replace(/{/g, "<br/>{"));

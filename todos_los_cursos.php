@@ -24,28 +24,23 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
-// require_capability('local/dominosdashboard:view', context_system::instance());
+$context_system = context_system::instance();
+require_capability('local/dominosdashboard:view', $context_system);
 require_once(__DIR__ . '/lib.php');
 require_once("$CFG->libdir/gradelib.php");
 require_once("$CFG->dirroot/grade/querylib.php");
 require_login();
 global $DB;
 $PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/todos_los_cursos.php");
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context($context_system);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 
 echo $OUTPUT->header();
 echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>";
 
-// $courses = local_dominosdashboard_get_courses();
-
-// _print($course_elearning = local_dominosdashboard_get_courses_overview(LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO));
-// _print($classroom = local_dominosdashboard_get_courses_overview(LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS));
-// _print($comparison = local_dominosdashboard_get_courses_overview(LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON));
-
 $tabOptions = [
-    LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO => 'Campañas',
+    LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO => 'Programas de entrenamiento',
     LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS => 'Campañas',
     LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON => 'Comparación de kpis',
 ];
@@ -54,22 +49,19 @@ $indicators = local_dominosdashboard_get_indicators();
 ?>
 <div class="row">
     <form id="filter_form" method="post" action="services.php" class='col-sm-4'>
+        <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br>
         <?php
-        foreach($indicators as $indicator){
-            echo "<h3>Indicador: {$indicator}</h3>";
-            foreach(local_dominosdashboard_get_catalogue($indicator) as $item){
-                echo "<label><input type=\"checkbox\" name=\"{$indicator}[]\" class=\"indicator_option indicator_{$indicator}\" data-indicator=\"{$indicator}\" value=\"{$item}\">{$item}</label><br>";
-            }
-            echo "<span type=\"checkbox\" class=\"btn btn-info uncheck_indicators\" data-indicator=\"indicator_{$indicator}\" value=\"1\">Desmarcar todas</span>";
-            echo "<span type=\"checkbox\" class=\"btn btn-success check_indicators\" data-indicator=\"indicator_{$indicator}\" value=\"1\">Marcar todas</span><br>";
-        }
         echo "<br><select class='form-control tab-selector' name='type'>";
         foreach($tabOptions as $key => $option){
             echo "<option value='{$key}'>{$key} -> {$option}</option>";
         }
-        echo "</select>";
+        echo "</select><br>";
+        foreach($indicators as $indicator){
+            echo "<h3>Indicador: {$indicator} </h3>";
+            echo "<div id='indicator_section_{$indicator}'></div>";    
+        }
         ?>
-        <input type="hidden" name="request_type" value="course_list"><br><br>
+        <!-- <input type="hidden" name="request_type" value="course_list"><br><br> -->
         <span class="btn btn-info" onclick="obtenerGraficas()">Volver a simular obtención de gráficas</span>
     </form>
     <div class="col-sm-8" id="local_dominosdashboard_content"></div>
@@ -83,37 +75,29 @@ $indicators = local_dominosdashboard_get_indicators();
     document.addEventListener("DOMContentLoaded", function() {
         try{
             require(['jquery'], function($) {
-                $('.indicator_option').click(function(){
-                    indicator = $(this).attr('data-indicator');
-                    value = $(this).val();
-                    // console.log(indicator);
-                    // console.log(value);
-                    obtenerGraficas();
-                });
-                // function 
-                $('.tab-selector').change(function(){
-                    obtenerGraficas();
-                });
-                $('.uncheck_indicators').click(function(){
-                    demark = $(this).attr('data-indicator');
-                    $('.' + demark).prop('checked', false);
-                    obtenerGraficas();
-                });
-                $('.check_indicators').click(function(){
-                    demark = $(this).attr('data-indicator');
-                    $('.' + demark).prop('checked', true);
-                    obtenerGraficas();
-                });
+                $('.course-selector').change(function(){obtenerGraficas()});
+                $('.tab-selector').change(function(){ obtenerGraficas(); });
                 obtenerGraficas();
+                obtenerFiltros();
             });
         }catch(error){
             console.log(error);
         }
     });
-    function obtenerGraficas(){
+    var dateBegining;
+    var dateEnding;
+    function quitarFiltros(){
+        peticionFiltros({
+            request_type: 'user_catalogues'
+        });
+    }
+    function obtenerGraficas(indicator){
         console.log("Obteniendo gráficas");
         informacion = $('#filter_form').serializeArray();
-        $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize())
+        informacion.push({name: 'request_type', value: 'course_list'});
+        $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
+        dateBegining = Date.now();
+        $('#local_dominosdashboard_content').html('Cargando la información');
         $.ajax({
             type: "POST",
             url: "services.php",
@@ -121,34 +105,65 @@ $indicators = local_dominosdashboard_get_indicators();
             dataType: "json"
         })
         .done(function(data) {
-            console.log("Petición correcta");
-            console.log(data);
-            $('#local_dominosdashboard_content').html(JSON.stringify(data).replace(/}/g, "}<br/>"));
+            dateEnding = Date.now();
+            console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
+            // console.log("Petición correcta");
+            // console.log(data);
+            $('#local_dominosdashboard_content').html(JSON.stringify(data).replace(/{/g, "<br/>{"));
         })
         .fail(function(error, error2) {
-            console.log("Petición enviada", informacion);
             console.log(error);
             console.log(error2);
         });
-        // });
+        if(indicator !== undefined){
+            obtenerFiltros(indicator);
+        }
+    }
+    function peticionFiltros(info){
+        $.ajax({
+            type: "POST",
+            url: "services.php",
+            data: info,
+            dataType: "json"
+        })
+        .done(function(data) {
+            dateEnding = Date.now();
+            console.log(`Tiempo de respuesta al obtener filtros de API ${dateEnding - dateBegining} ms`);
+            console.log(data);
+            keys = Object.keys(data.data);
+            for (var index = 0; index < keys.length; index++) {
+                clave = keys[index]
+                var catalogo = data.data[clave];
+                $('#indicator_section_' + clave).html('');
+                console.log(clave, catalogo.length);
+                for(var j = 0; j < catalogo.length; j++){
+                    var elementoDeCatalogo = catalogo[j];
+                    if(elementoDeCatalogo == ''){
+                        $('#indicator_section_' + clave).append(`<label><input type=\"checkbox\" name=\"${clave}[]\" 
+                        class=\"indicator_option indicator_${clave}\" onclick="obtenerGraficas('${clave}')" data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\">(vacío)</label><br>`);
+                    }else{
+                        $('#indicator_section_' + clave).append(`<label><input type=\"checkbox\" name=\"${clave}[]\" 
+                        class=\"indicator_option indicator_${clave}\" onclick="obtenerGraficas('${clave}')" data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\">${elementoDeCatalogo}</label><br>`);
+                    }
+                }
+            }
+        })
+        .fail(function(error, error2) {
+            console.log(error);
+            console.log(error2);
+        });
+    }
+    function obtenerFiltros(indicator){
+        console.log("Obteniendo filtros");
+        informacion = $('#filter_form').serializeArray();
+        dateBegining = Date.now();
+        informacion.push({name: 'request_type', value: 'user_catalogues'});
+        if(indicator != undefined){
+            informacion.push({name: 'selected_filter', value: indicator});
+        }
+        peticionFiltros(informacion);
     }
 </script>
 <?php
-// echo local_dominosdashboard_format_response($course_elearning);
-// echo "<br><br><br>";
-// echo local_dominosdashboard_format_response($classroom);
-// echo "<br><br><br>";
-// echo local_dominosdashboard_format_response($comparison);
-// echo "<br><br><br>";
 
-// $result = array();
-// $result['status'] = $status;
-// $result['courses'] = $count;
-// $result['count'] = $data;
-// return json_encode($result);
-
-// _print('local_dominosdashboard_get_courses_overview(1)', $course_elearning);
-// _print('local_dominosdashboard_get_courses_overview(2)', $classroom);
-// _print('local_dominosdashboard_get_courses_overview(3)', $comparison);
-// Contenido del dashboard
 echo $OUTPUT->footer();

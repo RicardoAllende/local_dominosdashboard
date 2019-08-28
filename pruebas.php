@@ -61,8 +61,13 @@ foreach(local_dominosdashboard_get_KPIS() as $kpi_key => $kpi){
     foreach(local_dominosdashboard_get_kpi_indicators() as $indicator){
         $catalogue = local_dominosdashboard_get_kpi_catalogue($indicator, $kpi_key);
         $elements = count($catalogue);
-        echo "<h4>Indicador: {$indicator} regresó {$elements} elementos<h4>";
+        echo "<h4>Catálogo <<{$indicator}>> tiene {$elements} elementos<h4>";
     }
 }
+
+// foreach(local_dominosdashboard_get_courses() as $course){
+//     echo $OUTPUT->heading("Curso: " . $course->fullname);
+//     _print(local_dominosdashboard_get_historic_dates($course->id));
+// }
 
 echo $OUTPUT->footer();

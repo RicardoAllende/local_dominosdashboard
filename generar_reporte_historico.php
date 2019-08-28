@@ -27,24 +27,31 @@ require_once(__DIR__ . '/../../config.php');
 $context_system = context_system::instance();
 require_capability('local/dominosdashboard:view', $context_system);
 require_once(__DIR__ . '/lib.php');
-require_once("$CFG->libdir/gradelib.php");
-require_once("$CFG->dirroot/grade/querylib.php");
-require_login();
+require_once($CFG->libdir.'/formslib.php');
+// require_login();
 global $DB;
-$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/detalle_curso.php");
-$courseid = optional_param('courseid', 27, PARAM_INT);
+$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/generar_reporte_historico.php");
 $PAGE->set_context($context_system);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 
 echo $OUTPUT->header();
-$params = [
-    'puestos'       => 'Cajero de sucursal',
-    'regiones'      => 'Sur',
-    'tiendas'       => 'Perisur',
-    'entrenadores'  => 'Julián '
-];
-_print($params);
-$course_information = local_dominosdashboard_get_course_information(27, $all_information = true, $params);
-_print($course_information);
+
+class local_dominosdashboard_create_historic_report extends moodleform {
+    function definition () {
+        $mform = $this->_form;
+        $mform->addElement('header', 'settingsheader', "¿Desea crear reporte histórico ahora?");
+        $this->add_action_buttons(false, "Crear reporte histórico");
+    }
+}
+$mform = new local_dominosdashboard_create_historic_report();
+if ($formdata = $mform->get_data()) {
+    local_dominosdashboard_make_all_historic_reports();
+    echo $OUTPUT->heading("Reportes creados en: " . date('d-m-Y'));
+    $mform->display();
+}else{
+    $mform->display();
+}
+?>
+<?php
 echo $OUTPUT->footer();

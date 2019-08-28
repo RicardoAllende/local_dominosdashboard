@@ -28,7 +28,7 @@
         <TABLE NAME="dominos_historico" COMMENT="">
             <FIELDS>
                 <FIELD NAME="id"                TYPE="int"  LENGTH="10"     NOTNULL="true"  SEQUENCE="true" />
-                <FIELD NAME="course"            TYPE="int"  LENGTH="10"     NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="courseid"          TYPE="int"  LENGTH="10"     NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="shortname"         TYPE="char" LENGTH="255"    NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="fullname"          TYPE="char" LENGTH="255"    NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="enrolled_users"    TYPE="int"  LENGTH="9"      NOTNULL="false" SEQUENCE="false" />

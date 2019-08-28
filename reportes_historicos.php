@@ -31,20 +31,47 @@ require_once("$CFG->libdir/gradelib.php");
 require_once("$CFG->dirroot/grade/querylib.php");
 require_login();
 global $DB;
-$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/detalle_curso.php");
-$courseid = optional_param('courseid', 27, PARAM_INT);
+$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/reportes_historicos.php");
 $PAGE->set_context($context_system);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 
 echo $OUTPUT->header();
-$params = [
-    'puestos'       => 'Cajero de sucursal',
-    'regiones'      => 'Sur',
-    'tiendas'       => 'Perisur',
-    'entrenadores'  => 'Julián '
+echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>";
+
+$tabOptions = [
+    LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO => 'Programas de entrenamiento',
+    LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS => 'Campañas',
+    LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON => 'Comparación de kpis',
 ];
-_print($params);
-$course_information = local_dominosdashboard_get_course_information(27, $all_information = true, $params);
-_print($course_information);
+$courses    = local_dominosdashboard_get_courses();
+// $reports = local_dominosdashboard_get_historic_reports();
+foreach($courses as $course){
+?>
+
+<table class="table table-bordered">
+    <tr>
+        <td>Curso</td>
+        <td>Usuarios inscritos</td>
+        <td>Usuarios aprobados</td>
+        <td>Filtro</td>
+        <td>Texto</td>
+        <td>Fecha de creación</td>
+    </tr>
+    <?php 
+    foreach(local_dominosdashboard_get_historic_reports($course->id) as $report){
+        echo "<tr>
+                <td>{$report->fullname}</td>
+                <td>{$report->enrolled_users}</td>
+                <td>{$report->approved_users}</td>
+                <td>{$report->filterid}</td>
+                <td>{$report->filtertext}</td>
+                <td>{$report->fecha}</td>
+            </tr>";
+    }
+    ?>
+</table>
+
+<?php
+}
 echo $OUTPUT->footer();
