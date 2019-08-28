@@ -201,7 +201,7 @@ echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>"
 
 
 
-                                    <div class="chart_ bg-white m-2" id="chart1"></div>
+                                    <div class="bg-white m-2" id="chart"></div>
                                     <!--<img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">-->
                                     <div class="align-items-end">
                                         <!--<h5 class="card-title">Card title  style="background-color: chocolate; width: 100% !important; bottom: 0 !important;"</h5>-->
@@ -714,7 +714,8 @@ echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>"
             }
         });
     }
-</script>
+</script>     
+    <script src="app.js"></script>
 
 <?php
 echo $OUTPUT->footer();
