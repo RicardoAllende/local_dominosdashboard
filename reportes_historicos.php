@@ -66,7 +66,7 @@ foreach($courses as $course){
                 <td>{$report->approved_users}</td>
                 <td>{$report->filterid}</td>
                 <td>{$report->filtertext}</td>
-                <td>{$report->timecreated}</td>
+                <td>{$report->fecha}</td>
             </tr>";
     }
     ?>

@@ -46,7 +46,7 @@ function local_dominosdashboard_extend_navigation(global_navigation $nav) {
     if($has_capability){
         global $CFG;
         $node = $nav->add (
-            'dashboard.php ' . get_string('pluginname', 'local_dominosdashboard'),
+            get_string('pluginname', 'local_dominosdashboard'),
             new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/dashboard.php' )
         );
         $node->showinflatnavigation = true;
@@ -62,15 +62,15 @@ function local_dominosdashboard_extend_navigation(global_navigation $nav) {
         $node->showinflatnavigation = true;
         if(LOCALDOMINOSDASHBOARD_DEBUG){
             $node = $nav->add (
-                'Pruebachart.php ' . get_string('pluginname', 'local_dominosdashboard'),
-                new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/prueba_chart.php' )
+                'Directorio del plugin ' . get_string('pluginname', 'local_dominosdashboard'),
+                new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/' )
             );
             $node->showinflatnavigation = true;
-            $node = $nav->add (
-                'Prueba de peticiones por pestaña ' . get_string('pluginname', 'local_dominosdashboard'),
-                new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/todos_los_cursos.php' )
-            );
-            $node->showinflatnavigation = true;
+            // $node = $nav->add (
+            //     'Prueba de peticiones por pestaña ' . get_string('pluginname', 'local_dominosdashboard'),
+            //     new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/todos_los_cursos.php' )
+            // );
+            // $node->showinflatnavigation = true;
         }
     }
 }
@@ -619,6 +619,10 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     $response->chart = local_dominosdashboard_get_course_chart($courseid);
     $response->title = $course->fullname;
     $response->status = 'ok';
+    if($get_all_course_information){
+        $response->activities = [];
+        $response->kpi = local_dominosdashboard_get_kpi_info($courseid, $params);
+    }
     $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params);
     if($userids === false){
         $response->enrolled_users = 0;
@@ -626,13 +630,8 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         $response->not_viewed = 0;
         $response->percentage = 0;
         $response->value = 0;
-        if($get_all_course_information){
-            $response->activities = [];
-            $response->kpi = local_dominosdashboard_compare_kpi($courseid, $params);
-        }
         return $response;
     }
-    // _log('Usuarios que cumplen con las características', $userids);
     $num_users = count($userids);
     $userids = implode(',', $userids);
 
@@ -641,10 +640,6 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     $response->not_viewed = local_dominosdashboard_get_not_viewed_users_in_course($courseid, $userids, $num_users);
     $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users, 2);
     $response->value = $response->percentage;
-    if($get_all_course_information){
-        $response->kpi = local_dominosdashboard_compare_kpi($courseid, $params);
-        $response->activities = local_dominosdashboard_get_activities_completion($course->id, $userids);
-    }
     return $response;
 }
 
@@ -661,7 +656,7 @@ function local_dominosdashboard_get_not_viewed_users_in_course(int $courseid, st
     return 0;
 }
 
-function local_dominosdashboard_compare_kpi(int $courseid, array $params = array()){
+function local_dominosdashboard_get_kpi_info(int $courseid, array $params = array()){
     $kpis = array();
     foreach(local_dominosdashboard_get_KPIS() as $key => $kpi){
         if($setting = get_config('local_dominosdashboard', 'kpi_' . $key)){
@@ -674,6 +669,9 @@ function local_dominosdashboard_compare_kpi(int $courseid, array $params = array
                 array_push($kpis, $kpi_info);
             }
         }
+    }
+    if(count($kpis) == 1){
+        $kpis = $kpis[0];
     }
     return $kpis;
 }
@@ -1383,12 +1381,12 @@ function local_dominosdashboard_insert_historic_record(stdClass $course_informat
 
 function local_dominosdashboard_get_historic_reports(int $courseid){
     global $DB;
-    return $DB->get_records('dominos_historico', array('courseid' => $courseid));
+    return $DB->get_records('dominos_historico', array('courseid' => $courseid), '', '*, from_unixtime(timecreated) as fecha');
     // Pass: Subitus2019! ALTER TABLE mdl_dominos_historico CHANGE COLUMN course courseid BIGINT(10) NULL DEFAULT NULL AFTER id;
 }
 
 function local_dominosdashboard_get_historic_dates(int $courseid){
     global $DB;
-    $query = "SELECT distinct DATE(FROM_UNIXTIME(timecreated)) FROM {dominos_historic} WHERE courseid = ?";
+    $query = "SELECT distinct DATE(FROM_UNIXTIME(timecreated)) FROM {dominos_historico} WHERE courseid = ?";
     return $DB->get_recordset_sql($query, array($courseid));
 }
