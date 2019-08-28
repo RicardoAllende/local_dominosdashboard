@@ -637,6 +637,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
 
     $response->enrolled_users = local_dominosdashboard_get_enrolled_users_count($courseid, $userids);
     $response->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids);
+    $response->not_approved_users = $response->enrolled_users - $response->approved_users;
     $response->not_viewed = local_dominosdashboard_get_not_viewed_users_in_course($courseid, $userids, $num_users);
     $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users, 2);
     $response->value = $response->percentage;
@@ -664,6 +665,21 @@ function local_dominosdashboard_get_kpi_info(int $courseid, array $params = arra
             if(array_search($courseid, $courses) !== false){
                 $kpi_info = new stdClass();
                 $kpi_info->kpi_name = $kpi;
+                $kpi_info->kpi = $key;
+                switch($key){
+                    case KPI_OPS: // 1 // Aprobado, no aprobado y destacado
+                        $kpi_info->type = "CALIFICACION";
+                        break;
+                    case KPI_HISTORICO: // 2 retorna el número de quejas
+                        $kpi_info->type = "NUMERO DE QUEJAS";
+                        
+                        break;
+                    case KPI_SCORCARD: // 3
+                        $kpi_info->type = "ROTACION";
+                        break;
+                    default:
+                    break;
+                }
                 $kpi_info->value    = local_dominosdashboard_get_kpi_results($key, $params);
                 
                 array_push($kpis, $kpi_info);
