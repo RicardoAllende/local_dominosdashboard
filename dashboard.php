@@ -64,26 +64,28 @@ $indicators = local_dominosdashboard_get_indicators();
     <div class="col-sm-12" id="data_ob"></div>
     <div class="col-sm-12" id="data_card"></div>
     
-    <div class="titulog col-sm-12">
+    <div class="titulog col-sm-12 dominosdashboard-ranking">
         <h1 style="text-align: center;">Ranking de actividades</h1>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-6 dominosdashboard-ranking">
         <table frame="void" rules="rows" style="width:100%">
             <tr class="rankingt">
                 <th>#</th>
                 <th>Actividades</th>
                 <th>Aprobados</th>
             </tr>
-            <tr>
-                <td>1</td>
-                <td>Actividad 1</td>
-                <td>
-                    <div class="progress">
-                        <div class="progress-bar" style="width:90%">90</div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Actividad 1</td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar" style="width:90%">90</div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <!-- <tr>
                 <td>2</td>
                 <td>Actividad 2</td>
                 <td>
@@ -100,44 +102,28 @@ $indicators = local_dominosdashboard_get_indicators();
                         <div class="progress-bar" style="width:65%">65</div>
                     </div>
                 </td>
-            </tr>
+            </tr> -->
         </table>
     </div>
 
-    <div class="col-sm-6">
+    <div class="col-sm-6 dominosdashboard-ranking">
         <table frame="void" rules="rows" style="width:100%">
             <tr class="rankingt">
                 <th>#</th>
                 <th>Actividades</th>
                 <th>No Aprobados</th>
             </tr>
-            <tr>
-                <td>1</td>
-                <td>Actividad 1</td>
-                <td>
-                    <div class="progress">
-                        <div class="progress-bar bg-warning" style="width:30%">30</div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Actividad 2</td>
-                <td>
-                    <div class="progress">
-                        <div class="progress-bar bg-warning" style="width:20%">20</div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>Actividad 3</td>
-                <td>
-                    <div class="progress">
-                        <div class="progress-bar bg-warning" style="width:5%">5</div>
-                    </div>
-                </td>
-            </tr>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Actividad 1</td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar bg-warning" style="width:30%">30</div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
 
@@ -155,9 +141,9 @@ $indicators = local_dominosdashboard_get_indicators();
     var item;
     var serialized_form = "";
     var demark = "";
-    
     document.addEventListener("DOMContentLoaded", function() {
         try{
+            // $('.dominosdashboard-ranking').hide();
             require(['jquery'], function($) {
                 $('.course-selector').change(function(){obtenerGraficas()});
                 obtenerGraficas();

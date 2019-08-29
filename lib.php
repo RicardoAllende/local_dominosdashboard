@@ -1375,7 +1375,6 @@ function local_dominosdashboard_make_all_historic_reports(){
     foreach($courses as $course){
         local_dominosdashboard_make_historic_report($course->id);
     }
-    
 }
 
 function local_dominosdashboard_make_historic_report(int $courseid){
@@ -1385,20 +1384,13 @@ function local_dominosdashboard_make_historic_report(int $courseid){
     if($course == false){
         return false;
     }
-    // echo "<h4>Información completa del curso</h4>";
     $course_information = local_dominosdashboard_get_course_information($course->id, true, $params = array());
     local_dominosdashboard_insert_historic_record($course_information, $currenttime, $course);
-    // _print($course_information);
-    // echo "<h4>Iterando los indicadores</h4>";
     foreach (local_dominosdashboard_get_indicators() as $indicator) {
-        // // _log('indicator', $indicator);
         foreach (local_dominosdashboard_get_catalogue($indicator) as $item) {
-            // // _log('item', $item);
             $params = array();
             $params[$indicator] = $item;
-            // _print($params);
             $course_information = local_dominosdashboard_get_course_information($courseid, false, $params);
-            // // _log($course_information);
             local_dominosdashboard_insert_historic_record($course_information, $currenttime, $course, $indicator, $item);
         }
     }
