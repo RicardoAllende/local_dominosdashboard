@@ -607,6 +607,7 @@ function local_dominosdashboard_get_course_color(int $courseid){
     return "#006491";
 }
 
+define('LDD_D', TRUE);
 function local_dominosdashboard_get_course_information(int $courseid, bool $get_all_course_information = false, array $params = array()){
     global $DB;
     $course = $DB->get_record('course', array('id' => $courseid));
@@ -619,6 +620,19 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     $response->chart = local_dominosdashboard_get_course_chart($courseid);
     $response->title = $course->fullname;
     $response->status = 'ok';
+    if(defined(LDD_D)){
+        if($get_all_course_information){
+            $response->activities = [];
+            $response->kpi = local_dominosdashboard_get_kpi_info($courseid, $params);
+        }
+        $response->enrolled_users = random_int();
+        $response->approved_users = 0;
+        $response->not_viewed = 0;
+        $response->percentage = 0;
+        $response->not_approved_users = $response->enrolled_users - $response->approved_users;
+        $response->value = 0;
+        return $response;
+    }
     if($get_all_course_information){
         $response->activities = [];
         $response->kpi = local_dominosdashboard_get_kpi_info($courseid, $params);
