@@ -620,17 +620,18 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     $response->chart = local_dominosdashboard_get_course_chart($courseid);
     $response->title = $course->fullname;
     $response->status = 'ok';
-    if(defined(LDD_D)){
+    if(LDD_D){
         if($get_all_course_information){
             $response->activities = [];
             $response->kpi = local_dominosdashboard_get_kpi_info($courseid, $params);
         }
-        $response->enrolled_users = random_int();
-        $response->approved_users = 0;
-        $response->not_viewed = 0;
-        $response->percentage = 0;
+        $response->enrolled_users = random_int(0, 1000);
+        $response->approved_users = random_int(0, $response->enrolled_users);
+        $response->not_viewed = random_int(0, $response->enrolled_users - $response->approved_users);
+        $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users, 2);
         $response->not_approved_users = $response->enrolled_users - $response->approved_users;
-        $response->value = 0;
+        $response->value = $response->percentage;
+        _log('Respuesta con datos aleatorios ', $response);
         return $response;
     }
     if($get_all_course_information){
@@ -701,9 +702,6 @@ function local_dominosdashboard_get_kpi_info(int $courseid, array $params = arra
             }
         }
     }
-    if(count($kpis) == 1){
-        $kpis = $kpis[0];
-    }
     return $kpis;
 }
 
@@ -766,7 +764,7 @@ function local_dominosdashboard_get_kpi_results($kpi, $params){
             return $DB->get_field_sql($query, $sqlParams);
             break;
         case KPI_SCORCARD: // 3
-            $query = "SELECT AVG(valor) AS numero FROM {dominos_kpis} WHERE kpi = 2 AND valor != '' {$andWhereSql}";
+            $query = "SELECT AVG(valor) AS numero FROM {dominos_kpis} WHERE kpi = 3 AND valor != '' {$andWhereSql}";
             return $DB->get_field_sql($query, $sqlParams);
             break;
         default:

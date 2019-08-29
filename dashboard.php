@@ -189,15 +189,38 @@ $indicators = local_dominosdashboard_get_indicators();
         })
         .done(function(data) {
             console.log("Petición correcta");
-            imprimirInfo(data);
-            imprimirCards(data);
-            addChartc(data);
+            $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
+            // return;
+            informacion_del_curso = JSON.parse(JSON.stringify(data));
+            for (var index = 0; index < informacion_del_curso.data.kpi.length; index++) {
+                var kpi = informacion_del_curso.data.kpi[index];
+                /*
+                 DEFINE("KPI_OPS", 1);
+                 DEFINE("KPI_HISTORICO", 2); // quejas
+                 DEFINE("KPI_SCORCARD", 3); // % rotación
+                */
+                switch (kpi.kpi) {
+                    case 1: // OPS 
+                        imprimirCards(kpi);
+                        addChartc(kpi);
+                        break;
+                    case 2:
+                        
+                        break;
+                    case 3:
+                        
+                        break;
+                    default:
+                        break;
+                }
+                console.log(kpi);
+            }
+
 
             dateEnding = Date.now();
             console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
             // console.log("Petición correcta");
             // console.log(data);
-            $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
         })
         .fail(function(error, error2) {
             console.log(error);
@@ -253,37 +276,11 @@ $indicators = local_dominosdashboard_get_indicators();
     }
     
     
-
-    function imprimirInfo(data){
-        console.log("entra imprimir");
-        myJSON = JSON.parse(JSON.stringify(data));
-        console.log(myJSON);
-        /*var content = "";
-        for ( var element in myJSON.data ) {
-            if(myJSON.data.hasOwnProperty[element]){
-                var ele = myJSON.data[element]
-                for(var item in ele){
-                    content += item  +'<br>';
-                }
-               }
-            //content += element[title]  +'<br>';
-            
-            
-        }
-        $('#data_ob').html(content)*/
-        
-        //$('#data_ob').html('<p>'+myJSON.data.key+','+myJSON.data["approved_users"]+'</p>');
-        //$('#data_ob').html(myJSON.data["approved_users"]);
-        //$('#data_ob').html(JSON.stringify(data));
-        
-    }
-    
-    
     //KPIS
-    function imprimirCards(data){
+    function imprimirCards(kpi){
         //console.log("entra imprimir");
-        myJSON = JSON.parse(JSON.stringify(data));
-        console.log(myJSON);        
+        // myJSON = JSON.parse(JSON.stringify(data));
+        // console.log(myJSON);        
         document.getElementById("data_card").innerHTML = "<div class='col-sm-12 col-xl-6'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
 
@@ -318,33 +315,33 @@ $indicators = local_dominosdashboard_get_indicators();
                                         "</div>"+
                                     "</div>"+
                                 "</div>"+
-                            "</div>"
-    $('#apro').html(myJSON.data.kpi.value["Aprobado"]);//Aprobados
-    $('#no_apro').html(myJSON.data.kpi.value["No aprobado"]);//No Aprobados
-     
-    //---------------------------SUMA PARA SACAR EL TOTAL DE USUARIOS    
-    var a = myJSON.data.kpi.value["Aprobado"];
-    var b = myJSON.data.kpi.value["No aprobado"];    
-    var c = parseInt(a) + parseInt(b);
-    document.getElementById("tusuario").value = c;
-    //$('#chart').html(myJSON.status);//Chart
-    //$('#tusuario').html(myJSON.data["enrolled_users"]);//Total de usuarios
-    $('#titulo_grafica').html(myJSON.data["title"]);//Titulo grafica
+                            "</div>";
+        $('#apro').html(kpi.value["Aprobado"]);//Aprobados
+        $('#no_apro').html(kpi.value["No aprobado"]);//No Aprobados
+        
+        //---------------------------SUMA PARA SACAR EL TOTAL DE USUARIOS    
+        var a = kpi.value["Aprobado"];
+        var b = kpi.value["No aprobado"];    
+        var c = parseInt(a) + parseInt(b);
+        document.getElementById("tusuario").value = c;
+        //$('#chart').html(myJSON.status);//Chart
+        //$('#tusuario').html(myJSON.data["enrolled_users"]);//Total de usuarios
+        $('#titulo_grafica').html(kpi.kpi_name);//Titulo grafica
     } 
-    
+
     function imprimirRanking(data){
 
     }
     
-    function addChartc(data){
-    myJSON = JSON.parse(JSON.stringify(data));
+    function addChartc(kpi){
+    // myJSON = JSON.parse(JSON.stringify(data));
     //console.log(myJSON);
     var chartc = c3.generate({
         data: {
             columns: [
-                ['Aprobado', myJSON.data.kpi.value["Aprobado"]],
-                ['No Aprobado', myJSON.data.kpi.value["No aprobado"]],
-                ['Destacado', myJSON.data.kpi.value["Destacado"]]
+                ['Aprobado', kpi.value["Aprobado"]],
+                ['No Aprobado', kpi.value["No aprobado"]],
+                ['Destacado', kpi.value["Destacado"]]
             ],
             type: 'bar'
         },
