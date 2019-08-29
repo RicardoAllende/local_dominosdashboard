@@ -46,6 +46,7 @@ $indicators = local_dominosdashboard_get_indicators();
 <div class="row">
     <form id="filter_form" method="post" action="services.php" class='col-sm-4'>
         <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br>
+        <span class="btn btn-info" onclick="obtenerGraficas()">Volver a simular obtención de gráficas</span><br><br>
         <?php
         echo "<br><select class='form-control course-selector' name='courseid'>";
         foreach($courses as $course){
@@ -57,7 +58,6 @@ $indicators = local_dominosdashboard_get_indicators();
             echo "<div id='indicator_section_{$indicator}'></div>";
         }
         ?>
-        <span class="btn btn-info" onclick="obtenerGraficas()">Volver a simular obtención de gráficas</span>
     </form>
     <div class="col-sm-8" id="local_dominosdashboard_content"></div>    
     <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>

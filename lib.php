@@ -607,7 +607,7 @@ function local_dominosdashboard_get_course_color(int $courseid){
     return "#006491";
 }
 
-define('LDD_D', TRUE);
+define('LDD_D', true);
 function local_dominosdashboard_get_course_information(int $courseid, bool $get_all_course_information = false, array $params = array()){
     global $DB;
     $course = $DB->get_record('course', array('id' => $courseid));
@@ -622,7 +622,18 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     $response->status = 'ok';
     if(LDD_D){
         if($get_all_course_information){
-            $response->activities = [];
+            /* Actividades aleatorias */
+            $activities = array();
+            for($i = 0; $i < 6; $i++){
+                $key                = "module" . $i;
+                $title              = random_int(22,900) . " A " . $i;
+                $inProgress         = random_int(0, 200);
+                $completed          = $i * 12;
+                $completedWithFail  = random_int(0, 200);
+                array_push($activities, compact('key', 'title', 'inProgress', 'completed', 'completedWithFail'));
+            }
+            $response->activities = $activities;
+            /* Actividades aleatorias */
             $response->kpi = local_dominosdashboard_get_kpi_info($courseid, $params);
         }
         $response->enrolled_users = random_int(0, 1000);
@@ -631,15 +642,15 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users, 2);
         $response->not_approved_users = $response->enrolled_users - $response->approved_users;
         $response->value = $response->percentage;
-        _log('Respuesta con datos aleatorios ', $response);
         return $response;
     }
     if($get_all_course_information){
-        $response->activities = [];
+        $response->activities = local_dominosdashboard_get_activities_completion($courseid);
         $response->kpi = local_dominosdashboard_get_kpi_info($courseid, $params);
     }
     $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params);
     if($userids === false){
+        $response->activities = [];
         $response->enrolled_users = 0;
         $response->approved_users = 0;
         $response->not_viewed = 0;
@@ -1216,6 +1227,7 @@ function local_dominosdashboard_get_activities(int $courseid, string $andwhere =
 }
 
 function local_dominosdashboard_get_activities_completion(int $courseid, string $userids){
+
     $activities = array();
     if(empty($userids)){
         return $activities;
