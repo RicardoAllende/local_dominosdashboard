@@ -197,7 +197,6 @@ $indicators = local_dominosdashboard_get_indicators();
             console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
             // console.log("Petición correcta");
             // console.log(data);
-            // $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
             $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
         })
         .fail(function(error, error2) {
@@ -279,6 +278,8 @@ $indicators = local_dominosdashboard_get_indicators();
         
     }
     
+    
+    //KPIS
     function imprimirCards(data){
         //console.log("entra imprimir");
         myJSON = JSON.parse(JSON.stringify(data));
@@ -297,7 +298,7 @@ $indicators = local_dominosdashboard_get_indicators();
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body text-center'>"+
                                               "<p class='card-text text-warning text-center'>No Aprobados</p>"+
-                                              "<p class='card-text text-warning text-center'>213</p>"+
+                                              "<p class='card-text text-warning text-center' id='no_apro'></p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
@@ -318,12 +319,19 @@ $indicators = local_dominosdashboard_get_indicators();
                                     "</div>"+
                                 "</div>"+
                             "</div>"
-    //$('#apro').html(myJSON.data["approved_users"]);//Aprobados
+    $('#apro').html(myJSON.data.kpi.value["Aprobado"]);//Aprobados
+    $('#no_apro').html(myJSON.data.kpi.value["No aprobado"]);//No Aprobados
+     
+    //---------------------------SUMA PARA SACAR EL TOTAL DE USUARIOS    
+    var a = myJSON.data.kpi.value["Aprobado"];
+    var b = myJSON.data.kpi.value["No aprobado"];    
+    var c = parseInt(a) + parseInt(b);
+    document.getElementById("tusuario").value = c;
     //$('#chart').html(myJSON.status);//Chart
-    $('#tusuario').html(myJSON.data["enrolled_users"]);//Total de usuarios
+    //$('#tusuario').html(myJSON.data["enrolled_users"]);//Total de usuarios
     $('#titulo_grafica').html(myJSON.data["title"]);//Titulo grafica
     } 
-
+    
     function imprimirRanking(data){
 
     }
@@ -334,9 +342,9 @@ $indicators = local_dominosdashboard_get_indicators();
     var chartc = c3.generate({
         data: {
             columns: [
-                ['Aprobado', myJSON.data["enrolled_users"]],
-                ['No Aprobado', 130],
-                ['Destacado', 140]
+                ['Aprobado', myJSON.data.kpi.value["Aprobado"]],
+                ['No Aprobado', myJSON.data.kpi.value["No aprobado"]],
+                ['Destacado', myJSON.data.kpi.value["Destacado"]]
             ],
             type: 'bar'
         },
