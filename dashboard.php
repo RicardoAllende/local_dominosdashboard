@@ -84,11 +84,7 @@ $indicators = local_dominosdashboard_get_indicators();
             require(['jquery'], function($) {
                 $('.course-selector').change(function(){obtenerGraficas()});
                 obtenerGraficas();
-<<<<<<< HEAD
-                
-=======
                 obtenerFiltros();
->>>>>>> 17638fbf5549c4630c9263283597a4014820802d
             });
         }catch(error){
             console.log(error);
@@ -104,14 +100,10 @@ $indicators = local_dominosdashboard_get_indicators();
     function obtenerGraficas(indicator){
         console.log("Obteniendo gráficas");
         informacion = $('#filter_form').serializeArray();
-<<<<<<< HEAD
-        //$('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize())
-=======
         informacion.push({name: 'request_type', value: 'course_completion'});
         $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
         dateBegining = Date.now();
         $('#local_dominosdashboard_content').html('Cargando la información');
->>>>>>> 17638fbf5549c4630c9263283597a4014820802d
         $.ajax({
             type: "POST",
             url: "services.php",
@@ -119,22 +111,17 @@ $indicators = local_dominosdashboard_get_indicators();
             dataType: "json"
         })
         .done(function(data) {
-<<<<<<< HEAD
             console.log("Petición correcta");
             imprimirInfo(data);
             imprimirCards(data);
             addChartc(data);
-            //console.log(data);
-            //$('#local_dominosdashboard_content').html(JSON.stringify(data).replace(/{/g, "<br/>{"));
-        }) 
-=======
+
             dateEnding = Date.now();
             console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
             // console.log("Petición correcta");
             // console.log(data);
             $('#local_dominosdashboard_content').html(JSON.stringify(data).replace(/{/g, "<br/>{"));
         })
->>>>>>> 17638fbf5549c4630c9263283597a4014820802d
         .fail(function(error, error2) {
             console.log(error);
             console.log(error2);
@@ -179,13 +166,13 @@ $indicators = local_dominosdashboard_get_indicators();
     }
     function obtenerFiltros(indicator){
         console.log("Obteniendo filtros");
-        informacion = $('#filter_form').serializeArray();
+        info = $('#filter_form').serializeArray();
         dateBegining = Date.now();
-        informacion.push({name: 'request_type', value: 'user_catalogues'});
+        info.push({name: 'request_type', value: 'user_catalogues'});
         if(indicator != undefined){
-            informacion.push({name: 'selected_filter', value: indicator});
+            info.push({name: 'selected_filter', value: indicator});
         }
-        peticionFiltros(informacion);
+        peticionFiltros(info);
     }
     
     
