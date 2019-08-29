@@ -109,7 +109,7 @@ $indicators = local_dominosdashboard_get_indicators();
             console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
             // console.log("Petición correcta");
             // console.log(data);
-            $('#local_dominosdashboard_content').html(JSON.stringify(data).replace(/{/g, "<br/>{"));
+            $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
         })
         .fail(function(error, error2) {
             console.log(error);

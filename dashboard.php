@@ -64,6 +64,83 @@ $indicators = local_dominosdashboard_get_indicators();
     <div class="col-sm-12" id="data_ob"></div>
     <div class="col-sm-12" id="data_card"></div>
     
+    <div class="titulog col-sm-12">
+        <h1 style="text-align: center;">Ranking de actividades</h1>
+    </div>
+    <div class="col-sm-6">
+        <table frame="void" rules="rows" style="width:100%">
+            <tr class="rankingt">
+                <th>#</th>
+                <th>Actividades</th>
+                <th>Aprobados</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Actividad 1</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar" style="width:90%">90</div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Actividad 2</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar" style="width:70%">70</div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Actividad 3</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar" style="width:65%">65</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="col-sm-6">
+        <table frame="void" rules="rows" style="width:100%">
+            <tr class="rankingt">
+                <th>#</th>
+                <th>Actividades</th>
+                <th>No Aprobados</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Actividad 1</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar bg-warning" style="width:30%">30</div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Actividad 2</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar bg-warning" style="width:20%">20</div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Actividad 3</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar bg-warning" style="width:5%">5</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
 </div>
 <?php echo local_dominosdashboard_get_ideales_as_js_script(); ?>
 
@@ -120,7 +197,8 @@ $indicators = local_dominosdashboard_get_indicators();
             console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
             // console.log("Petición correcta");
             // console.log(data);
-            $('#local_dominosdashboard_content').html(JSON.stringify(data).replace(/{/g, "<br/>{"));
+            // $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
+            $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
         })
         .fail(function(error, error2) {
             console.log(error);
@@ -245,6 +323,10 @@ $indicators = local_dominosdashboard_get_indicators();
     $('#tusuario').html(myJSON.data["enrolled_users"]);//Total de usuarios
     $('#titulo_grafica').html(myJSON.data["title"]);//Titulo grafica
     } 
+
+    function imprimirRanking(data){
+
+    }
     
     function addChartc(data){
     myJSON = JSON.parse(JSON.stringify(data));
