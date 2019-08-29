@@ -629,6 +629,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         $response->approved_users = 0;
         $response->not_viewed = 0;
         $response->percentage = 0;
+        $response->not_approved_users = $response->enrolled_users - $response->approved_users;
         $response->value = 0;
         return $response;
     }
