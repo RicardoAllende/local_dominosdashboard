@@ -48,8 +48,9 @@ $tabOptions = [
 $indicators = local_dominosdashboard_get_indicators();
 ?>
 <div class="row">
-    <form id="filter_form" method="post" action="services.php" class='col-sm-4'>
-        <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br>
+    <form id="filter_form" method="post" action="services.php" class='col-sm-3'>
+        <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br>
+        <span class="btn btn-info" onclick="obtenerGraficas()">Volver a simular obtención de gráficas</span><br><br>
         <?php
         echo "<br><select class='form-control tab-selector' name='type'>";
         foreach($tabOptions as $key => $option){
@@ -62,27 +63,70 @@ $indicators = local_dominosdashboard_get_indicators();
         }
         ?>
         <!-- <input type="hidden" name="request_type" value="course_list"><br><br> -->
-        <span class="btn btn-info" onclick="obtenerGraficas()">Volver a simular obtención de gráficas</span>
     </form>
-    <div class="col-sm-8" id="local_dominosdashboard_content"></div>
+    <div class="col-sm-9" id="contenido_cursos">
+        <div class="">
+            <h1 align="center">Cruce de indicadores</h1>
+        </div>
+        <div>
+            <div class="row" id="contenedor_cursos">
+                <div class="col-sm-12 col-xl-12">
+                    <div class="card bg-faded border-0 m-2" id="">
+                        <!-- <div class="card-group">
+                            <div class="card border-0 m-2">
+                                <div class="card-body ">
+                                    <p class="card-text text-primary text-center">Aprobados</p>
+                                    <p class="card-text text-primary text-center">85%</p>
+                                </div>
+                            </div>
+                            <div class="card border-0 m-2">
+                                <div class="card-body text-center">
+                                    <p class="card-text text-warning text-center">No Aprobados</p>
+                                    <p class="card-text text-warning text-center">213</p>
+                                </div>
+                            </div>
+                            <div class="card border-0 m-2">
+                                <div class="card-body text-center ">
+                                    <p class="card-text text-success text-center">Total de usuarios</p>
+                                    <p class="card-text text-success text-center">1850</p>
+                                </div>
+                            </div>
+
+                        </div> -->
+                        
+
+
+                        <div class="bg-white m-2 chart_" id="chart"></div>
+                        <div class="align-items-end">
+                            <div class="fincard text-center">
+                                <a href="Grafica.html">Programa 0-90 vs % Rotación</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12" id="local_dominosdashboard_content"></div>
     <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>
 </div>
+<?php echo local_dominosdashboard_get_ideales_as_js_script(); ?>
+<link href="libs/c3.css" rel="stylesheet">
+<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="libs/c3.js"></script>
+<script src="dominosdashboard_scripts.js"></script>
 <script>
     var indicator;
     var item;
     var serialized_form = "";
     var demark = "";
     document.addEventListener("DOMContentLoaded", function() {
-        try{
-            require(['jquery'], function($) {
-                $('.course-selector').change(function(){obtenerGraficas()});
-                $('.tab-selector').change(function(){ obtenerGraficas(); });
-                obtenerGraficas();
-                obtenerFiltros();
-            });
-        }catch(error){
-            console.log(error);
-        }
+        require(['jquery'], function ($) {
+            $('.course-selector').change(function(){obtenerGraficas()});
+            $('.tab-selector').change(function(){ obtenerGraficas(); });
+            obtenerGraficas();
+            obtenerFiltros();
+        });
     });
     var dateBegining;
     var dateEnding;
@@ -105,6 +149,10 @@ $indicators = local_dominosdashboard_get_indicators();
             dataType: "json"
         })
         .done(function(data) {
+            listado_cursos = JSON.parse(JSON.stringify(data));
+            listado_cursos = listado_cursos.data;
+            generarGraficasTodosLosCursos('#contenedor_cursos', listado_cursos);
+            console.log('Listado de cursos', listado_cursos);
             dateEnding = Date.now();
             console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
             // console.log("Petición correcta");
@@ -163,6 +211,114 @@ $indicators = local_dominosdashboard_get_indicators();
         }
         peticionFiltros(informacion);
     }
+
+    function generarGraficasTodosLosCursos(_bindto, cursos) {
+        console.log('La información es: ', cursos);
+        if(Array.isArray(cursos)){
+            var aprobados = Array();
+            var nombres = Array();
+            var _ideal_cobertura = Array();
+            aprobados.push("Porcentaje de aprobación del curso");
+            _ideal_cobertura.push('Ideal de cobertura');
+            for (var i = 0; i < cursos.length; i++) {
+                _ideal_cobertura.push(ideal_cobertura);
+                var curso = cursos[i];
+                aprobados.push(curso.percentage);
+
+                divId = crearTarjetaParaGrafica(_bindto, curso);
+                console.log(divId);
+                crearGraficaDeBarras(divId, curso);
+            }
+            var chartz = c3.generate({
+                data: {
+                    columns: [
+                        aprobados,
+                        _ideal_cobertura,
+                    ],
+                    type: ''
+                },
+                bindto: '#chart',
+                tooltip: {
+                    format: {
+                        title: function (d) { return cursos[d].title; },
+                        value: function (value, ratio, id) {
+                            return value + " %";
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    // function generarGraficaPuntos()
+
+    function crearTarjetaParaGrafica(div, curso){
+        $(div).append(`<div class="col-sm-12 col-xl-6">
+                    <div class="card bg-gray border-0 m-2" id="">
+
+                        <div class="card-group">
+                            <div class="card border-0 m-2">
+                                <div class="card-body text-center">
+                                    <p class="card-text text-primary">Aprobados</p>
+                                    <p class="card-text text-primary">${curso.approved_users} (${curso.percentage} %)</p>
+                                </div>
+                            </div>
+                            <div class="card border-0 m-2">
+                                <div class="card-body text-center">
+                                    <p class="card-text text-warning">No Aprobados</p>
+                                    <p class="card-text text-warning">${curso.not_approved_users}</p>
+                                </div>
+                            </div>
+                            <div class="card border-0 m-2">
+                                <div class="card-body text-center">
+                                    <p class="card-text text-success">Total de usuarios inscritos</p>
+                                    <p class="card-text text-success">${curso.enrolled_users}</p>
+                                </div>
+                            </div>
+
+                        </div>
+                        
+                        
+
+
+                        <div class="chart_ bg-white m-2" id="chart_${curso.id}"></div>
+                        <!--<img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">-->
+                        <div class="align-items-end">
+                            <!--<h5 class="card-title">Card title  style="background-color: chocolate; width: 100% !important; bottom: 0 !important;"</h5>-->
+                            <div class="fincard text-center">
+                                <a href="detalle_curso?id=${curso.id}">${curso.title}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>`);
+        return "#chart_" + curso.id;
+    }
+
+    function crearGraficaDeBarras(_bindto, curso){
+        var chartc = c3.generate({
+                data: {
+                    columns: [
+                        ['Inscritos', curso.enrolled_users],
+                        ['Aprobados', curso.approved_users],
+                        ['No iniciaron el curso', curso.not_viewed]
+                    ],
+                    type: 'bar'
+                },
+                bindto: _bindto,
+                tooltip: {
+                    format: {
+                        title: function (d) { return 'Curso '; },
+                        // value: function (value, ratio, id) {
+                        //     var format = id === 'data1' ? d3.format(',') : d3.format('');
+                        //     return format(value);
+                        // }
+    
+                    }
+                }
+            });
+    }
+
+
 </script>
 <?php
 

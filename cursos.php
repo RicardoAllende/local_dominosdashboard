@@ -30,7 +30,7 @@ require_once("$CFG->libdir/gradelib.php");
 require_once("$CFG->dirroot/grade/querylib.php");
 // require_login();
 global $DB;
-$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/prueba_chart.php");
+$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/cursos.php");
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
@@ -264,8 +264,6 @@ echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>"
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-sm-12 col-xl-6">
                                 <div class="card bg-gray border-0 m-2" id="">
 
@@ -348,8 +346,6 @@ echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>"
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-sm-12 col-xl-6">
                                 <div class="card bg-gray border-0 m-2" id="">
 
@@ -711,38 +707,21 @@ echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>"
 <script src="dominosdashboard_scripts.js"></script>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // try {
+            // require(['jquery'], function ($) {
+                $('.dominosdashboard-ranking').hide();
+                $('.course-selector').change(function () { obtenerGraficas() });
+                obtenerGraficas();
+                obtenerFiltros();
+            // });
+        // } catch (error) {
+            // console.log(error);
+        // }
+    });
+    generarGraficaDePuntos(); // Puntos // Esta se utilizará
 
-    addCharta(); // Medio círculo
-    addChartb(); // Medio círculo igual
-    addChartc(); // Barras
-    addChartd(); // Barras igual
-    addChartz(); // Puntos // Esta se utilizará
-
-    function addChartc() {
-        var chartc = c3.generate({
-            data: {
-                columns: [
-                    ['Aprobado', 40],
-                    ['No Aprobado', 130],
-                    ['Destacado', 140]
-                ],
-                type: 'bar'
-            },
-            bindto: "#chart",
-            tooltip: {
-                format: {
-                    title: function (d) { return 'Curso '; },
-                    value: function (value, ratio, id) {
-                        var format = id === 'data1' ? d3.format(',') : d3.format('');
-                        return format(value);
-                    }
-
-                }
-            }
-        });
-    }
-
-    function addChartz() {
+    function generarGraficaDePuntos() {
         var chartz = c3.generate({
             data: {
                 columns: [
@@ -766,76 +745,6 @@ echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>"
         });
     }
 
-    function addCharta() {
-        var charta = c3.generate({
-            data: {
-                columns: [
-                    ['Aprobados', 30]
-
-                ],
-                colors: {
-                    Aprobados: '#0e4bef'
-                },
-                type: 'gauge'
-            },
-            bindto: "#chart3",
-            tooltip: {
-                format: {
-                    title: function (d) { return 'Aprobados '; },
-
-
-
-                }
-            }
-        });
-    }
-
-    function addChartb() {
-        var chartb = c3.generate({
-            data: {
-                columns: [
-                    ['No_Aprobados', 70]
-
-                ],
-                colors: {
-                    No_Aprobados: '#ffff00'
-                },
-                type: 'gauge'
-            },
-            bindto: "#chart4",
-            tooltip: {
-                format: {
-                    title: function (d) { return 'Aprobados '; },
-
-
-
-                }
-            }
-        });
-    }
-
-    function addChartd() {
-        var chartd = c3.generate({
-            data: {
-                columns: [
-                    ['Quejas', 30],
-                    ['Porcentaje', 130]
-                ],
-                type: 'bar'
-            },
-            bindto: "#chart5",
-            tooltip: {
-                format: {
-                    title: function (d) { return 'Quejas de servicio'; },
-                    value: function (value, ratio, id) {
-                        var format = id === 'data1' ? d3.format(',') : d3.format('');
-                        return format(value);
-                    }
-
-                }
-            }
-        });
-    }
 
 </script>
 <!-- <script src="app.js"></script> -->

@@ -98,6 +98,7 @@ $indicators = local_dominosdashboard_get_indicators();
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="libs/c3.js"></script>
 <link href="estilos.css" rel="stylesheet">
+<script src="dominosdashboard_scripts.js"></script>
 
 <script>
     var indicator;
@@ -315,24 +316,6 @@ $indicators = local_dominosdashboard_get_indicators();
                 }
             }
         });
-    }
-
-    function esVacio(_elemento){
-        if(_elemento === undefined){
-            return true;
-        }
-        if(_elemento === null){
-            return true;
-        }
-        if(Array.isArray(_elemento)){
-            if(_elemento.length == 0){
-                return true;
-            }
-        }
-        if(_elemento == ""){
-            return true;
-        }
-        return false;
     }
 
     //-----------------------------------Reporte de Casos Histórico por tiendas
