@@ -59,12 +59,12 @@ $indicators = local_dominosdashboard_get_indicators();
         }
         ?>
     </form>
-    <div class="col-sm-8" id="local_dominosdashboard_content"></div>    
+    <div class="col-sm-8" id="local_dominosdashboard_content"></div>
     <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>
     <div class="col-sm-12" id="data_ob"></div>
     <div class="col-sm-12" id="data_card"></div>
     <div class="col-sm-12" id="data_card2"></div>
-    
+
     <div class="titulog col-sm-12 dominosdashboard-ranking">
         <h1 style="text-align: center;">Ranking de actividades</h1>
     </div>
@@ -142,31 +142,31 @@ $indicators = local_dominosdashboard_get_indicators();
     var item;
     var serialized_form = "";
     var demark = "";
-    document.addEventListener("DOMContentLoaded", function() {
-        try{
+    document.addEventListener("DOMContentLoaded", function () {
+        try {
             // $('.dominosdashboard-ranking').hide();
-            require(['jquery'], function($) {
-                $('.course-selector').change(function(){obtenerGraficas()});
+            require(['jquery'], function ($) {
+                $('.course-selector').change(function () { obtenerGraficas() });
                 obtenerGraficas();
                 obtenerFiltros();
             });
-        }catch(error){
+        } catch (error) {
             console.log(error);
         }
     });
     var dateBegining;
     var dateEnding;
-    function quitarFiltros(){
+    function quitarFiltros() {
         peticionFiltros({
             request_type: 'user_catalogues'
         });
     }
     var _kpi;
     var _kpis;
-    function obtenerGraficas(indicator){
+    function obtenerGraficas(indicator) {
         console.log("Obteniendo gráficas");
         informacion = $('#filter_form').serializeArray();
-        informacion.push({name: 'request_type', value: 'course_completion'});
+        informacion.push({ name: 'request_type', value: 'course_completion' });
         $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
         dateBegining = Date.now();
         $('#local_dominosdashboard_content').html('Cargando la información');
@@ -176,128 +176,137 @@ $indicators = local_dominosdashboard_get_indicators();
             data: informacion,
             dataType: "json"
         })
-        .done(function(data) {
-            console.log("Petición correcta");
-            $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
-            // return;
-            informacion_del_curso = JSON.parse(JSON.stringify(data));
-            _kpis= informacion_del_curso.data.kpi;
-            for (var index = 0; index < informacion_del_curso.data.kpi.length; index++) {
-                _kpi = informacion_del_curso.data.kpi[index];
-                /*
-                 DEFINE("KPI_OPS", 1);
-                 DEFINE("KPI_HISTORICO", 2); // quejas
-                 DEFINE("KPI_SCORCARD", 3); // % rotación
-                */
-                switch (_kpi.kpi) {
+            .done(function (data) {
+                console.log("Petición correcta");
+                $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
+                // return;
+                informacion_del_curso = JSON.parse(JSON.stringify(data));
+                _kpis = informacion_del_curso.data.kpi;
+                for (var index = 0; index < informacion_del_curso.data.kpi.length; index++) {
+                    _kpi = informacion_del_curso.data.kpi[index];
+                    /*
+                     DEFINE("KPI_OPS", 1);
+                     DEFINE("KPI_HISTORICO", 2); // quejas
+                     DEFINE("KPI_SCORCARD", 3); // % rotación
+                    */
+                    switch (_kpi.kpi) {
+                        case 1: // OPS 
                     case 1: // OPS 
-                        imprimirCards(_kpi);
-                        addChartc(_kpi);
-                        imprimirCards2(_kpi);
-                        addChartc2(_kpi);
-                        break;
-                    case 2: //Reporte de Casos Histórico por tiendas
-                        break;
-                    case 3:
-                        
-                        break;
-                    default:
-                        break;
+                        case 1: // OPS 
+                    case 1: // OPS 
+                        case 1: // OPS 
+                    case 1: // OPS 
+                        case 1: // OPS 
+                    case 1: // OPS 
+                        case 1: // OPS 
+                            imprimirCards(_kpi);
+                            addChartc(_kpi);
+                            imprimirCards2(_kpi);
+                            addChartc2(_kpi);
+                            break;
+                        case 2: //Reporte de Casos Histórico por tiendas
+                            break;
+                        case 3:
+
+                            break;
+                        default:
+                            break;
+                    }
+                    console.log(_kpi);
                 }
-                console.log(_kpi);
-            }
 
 
-            dateEnding = Date.now();
-            console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
-            // console.log("Petición correcta");
-            // console.log(data);
-        })
-        .fail(function(error, error2) {
-            console.log(error);
-            console.log(error2);
-        });
-        if(indicator !== undefined){
+                dateEnding = Date.now();
+                console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
+                // console.log("Petición correcta");
+                // console.log(data);
+            })
+            .fail(function (error, error2) {
+                console.log(error);
+                console.log(error2);
+            });
+        if (indicator !== undefined) {
             obtenerFiltros(indicator);
         }
     }
-    function peticionFiltros(info){
+    function peticionFiltros(info) {
         $.ajax({
             type: "POST",
             url: "services.php",
             data: info,
             dataType: "json"
         })
-        .done(function(data) {
-            dateEnding = Date.now();
-            console.log(`Tiempo de respuesta al obtener filtros de API ${dateEnding - dateBegining} ms`);
-            console.log(data);
-            keys = Object.keys(data.data);
-            for (var index = 0; index < keys.length; index++) {
-                clave = keys[index]
-                var catalogo = data.data[clave];
-                console.log(clave, catalogo.length);
-                $('#indicator_section_' + clave).html('');
-                for(var j = 0; j < catalogo.length; j++){
-                    var elementoDeCatalogo = catalogo[j];
-                    if(elementoDeCatalogo == ''){
+            .done(function (data) {
+                dateEnding = Date.now();
+                console.log(`Tiempo de respuesta al obtener filtros de API ${dateEnding - dateBegining} ms`);
+                console.log(data);
+                keys = Object.keys(data.data);
+                for (var index = 0; index < keys.length; index++) {
+                    clave = keys[index]
+                    var catalogo = data.data[clave];
+                    console.log(clave, catalogo.length);
+                    $('#indicator_section_' + clave).html('');
+                    for (var j = 0; j < catalogo.length; j++) {
+                        var elementoDeCatalogo = catalogo[j];
+                        if(elementoDeCatalogo == ''){
                         $('#indicator_section_' + clave).append(`<label><input type=\"checkbox\" name=\"${clave}[]\" 
                         class=\"indicator_option indicator_${clave}\" onclick="obtenerGraficas('${clave}')" data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\">(vacío)</label><br>`);
                     }else{
                         $('#indicator_section_' + clave).append(`<label><input type=\"checkbox\" name=\"${clave}[]\" 
                         class=\"indicator_option indicator_${clave}\" onclick="obtenerGraficas('${clave}')" data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\">${elementoDeCatalogo}</label><br>`);
                     }
+                    }
                 }
-            }
-        })
-        .fail(function(error, error2) {
-            console.log(error);
-            console.log(error2);
-        });
+            })
+            .fail(function (error, error2) {
+                console.log(error);
+                console.log(error2);
+            });
     }
-    function obtenerFiltros(indicator){
+
+    function obtenerFiltros(indicator) {
         console.log("Obteniendo filtros");
         info = $('#filter_form').serializeArray();
         dateBegining = Date.now();
-        info.push({name: 'request_type', value: 'user_catalogues'});
-        if(indicator != undefined){
-            info.push({name: 'selected_filter', value: indicator});
+        info.push({ name: 'request_type', value: 'user_catalogues' });
+        if (indicator != undefined) {
+            info.push({ name: 'selected_filter', value: indicator });
         }
         peticionFiltros(info);
     }
-    
-    
+
+
     //--------------------------------------------------------------------------------------------------------------------------KPIS
     //---------------------------OPS MÉXICO W
-    function imprimirCards(kpi){
+    function imprimirCards(kpi) {
         //console.log("entra imprimir");
         // myJSON = JSON.parse(JSON.stringify(data));
         // console.log(myJSON);        
-        document.getElementById("data_card").innerHTML = "<div class='col-sm-12 col-xl-6'>"+
-                                "<div class='card bg-gray border-0 m-2'>"+
+        document.getElementById("data_card").innerHTML = "<div class='col-sm-12 col-xl-6'>" +
+            "<div class='card bg-gray border-0 m-2'>" +
 
 
-                                       "<div class='card-group'>"+
-                                          "<div class='card border-0 m-2'>"+
-                                            "<div class='card-body'>"+
-                                              "<p class='card-text text-primary text-center'>Aprobados</p>"+
-                                              "<p class='card-text text-primary text-center' id='apro'></p>"+
-                                            "</div>"+
-                                          "</div>"+
-                                          "<div class='card border-0 m-2'>"+
-                                            "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-warning text-center'>No Aprobados</p>"+
-                                              "<p class='card-text text-warning text-center' id='no_apro'></p>"+
-                                            "</div>"+
-                                          "</div>"+
-                                          "<div class='card border-0 m-2'>"+
-                                            "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-success text-center'>Destacado</p>"+
-                                              "<p class='card-text text-success text-center' id='des'></p>"+
-                                            "</div>"+
-                                          "</div>"+
+                "<div class='card-group'>"+
+                    "<div class='card border-0 m-2'>"+
+                    "<div class='card-body'>"+
+                        "<p class='card-text text-primary text-center'>Aprobados</p>"+
+                        "<p class='card-text text-primary text-center' id='apro'></p>"+
+                    "</div>"+
+                    "</div>"+
+                    "<div class='card border-0 m-2'>"+
+                    "<div class='card-body text-center'>"+
+                        "<p class='card-text text-warning text-center'>No Aprobados</p>"+
+                        "<p class='card-text text-warning text-center' id='no_apro'></p>"+
+                    "</div>"+
+                    "</div>"+
+                    "<div class='card border-0 m-2'>"+
+                    "<div class='card-body text-center'>"+
+                        "<p class='card-text text-success text-center'>Destacado</p>"+
+                        "<p class='card-text text-success text-center' id='des'></p>"+
+                    "</div>"+
+                    "</div>"+
 
-                                        "</div>"+
+                    "</div>"+
                                     "<div class='bg-white m-2' id='chart'></div>"+
                                    
                                     "<div class='align-items-end'>"+
@@ -307,12 +316,12 @@ $indicators = local_dominosdashboard_get_indicators();
                                         "</div>"+
                                     "</div>"+
                                 "</div>"+
-                            "</div>";
+            "</div>";
         $('#apro').html(kpi.value["Aprobado"]);//Aprobados
         $('#no_apro').html(kpi.value["No aprobado"]);//No Aprobados
         $('#des').html(_kpis[0].value["Destacado"]);//No Aprobados
-        
-        
+
+
         //---------------------------SUMA PARA SACAR EL TOTAL DE USUARIOS    
         /*var a = kpi.value["Aprobado"];
         var b = kpi.value["No aprobado"];    
@@ -321,9 +330,9 @@ $indicators = local_dominosdashboard_get_indicators();
         //$('#chart').html(myJSON.status);//Chart
         //$('#tusuario').html(myJSON.data["enrolled_users"]);//Total de usuarios
         $('#titulo_grafica').html(kpi.kpi_name);//Titulo grafica
-    }     
-    
-    function addChartc(kpi){
+    }
+
+    function addChartc(kpi) {
         // myJSON = JSON.parse(JSON.stringify(data));
         //console.log(myJSON);
         var chartc = c3.generate({
@@ -337,19 +346,19 @@ $indicators = local_dominosdashboard_get_indicators();
             },
             bindto: "#chart",
             tooltip: {
-            format: {
-                title: function (d) { return 'Curso '; },
-                value: function (value, ratio, id) {
-                    var format = id === 'data1' ? d3.format(',') : d3.format('');
-                    return format(value);
+                format: {
+                    title: function (d) { return 'Curso '; },
+                    value: function (value, ratio, id) {
+                        var format = id === 'data1' ? d3.format(',') : d3.format('');
+                        return format(value);
+                    }
                 }
             }
-        }
         });
     }
-    
-//-----------------------------------Reporte de Casos Histórico por tiendas
-function imprimirCards2(kpi){
+
+    //-----------------------------------Reporte de Casos Histórico por tiendas
+    function imprimirCards2(kpi) {
         //console.log("entra imprimir");
         // myJSON = JSON.parse(JSON.stringify(data));
         // console.log(myJSON);        
@@ -382,26 +391,26 @@ function imprimirCards2(kpi){
                                    
                                     "<div class='align-items-end'>"+
                                         
-                                        "<div class='fincard text-center'>"+
+                                    "<div class='fincard text-center'>"+
                                             "<a href='Grafica.html' id='titulo_grafica2'></a>"+
                                         "</div>"+
                                     "</div>"+
                                 "</div>"+
-                            "</div>";
+            "</div>";
         $('#apro2').html(kpi.value["Aprobado"]);//Aprobados
         $('#no_apro2').html(kpi.value["No aprobado"]);//No Aprobados
-        
+
         //---------------------------SUMA PARA SACAR EL TOTAL DE USUARIOS    
         var a = kpi.value["Aprobado"];
-        var b = kpi.value["No aprobado"];    
+        var b = kpi.value["No aprobado"];
         var c = parseInt(a) + parseInt(b);
         document.getElementById("tusuario2").value = c;
         //$('#chart').html(myJSON.status);//Chart
         //$('#tusuario').html(myJSON.data["enrolled_users"]);//Total de usuarios
         $('#titulo_grafica2').html(_kpis[1].kpi_name);//Titulo grafica
-    }     
-    
-    function addChartc2(kpi){
+    }
+
+    function addChartc2(kpi) {
         // myJSON = JSON.parse(JSON.stringify(data));
         //console.log(myJSON);
         var chartc = c3.generate({
@@ -427,10 +436,10 @@ function imprimirCards2(kpi){
         });
     }
 
-function imprimirRanking(data){
+    function imprimirRanking(data) {
 
-}
-    
+    }
+
 </script>
 
 
