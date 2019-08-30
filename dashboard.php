@@ -207,10 +207,10 @@ $indicators = local_dominosdashboard_get_indicators();
                     case 1: // OPS 
                         imprimirCards(_kpi);
                         addChartc(_kpi);
-                        break;
-                    case 2: //Reporte de Casos Histórico por tiendas
                         imprimirCards2(_kpi);
                         addChartc2(_kpi);
+                        break;
+                    case 2: //Reporte de Casos Histórico por tiendas
                         break;
                     case 3:
                         
@@ -338,30 +338,29 @@ $indicators = local_dominosdashboard_get_indicators();
     }     
     
     function addChartc(kpi){
-    // myJSON = JSON.parse(JSON.stringify(data));
-    //console.log(myJSON);
-    var chartc = c3.generate({
-        data: {
-            columns: [
-                ['Aprobado', kpi.value["Aprobado"]],
-                ['No Aprobado', kpi.value["No aprobado"]],
-                ['Destacado', kpi.value["Destacado"]]
-            ],
-            type: ''
-        },
-        bindto: "#chart",
-        tooltip: {
-        format: {
-            title: function (d) { return 'Curso '; },
-            value: function (value, ratio, id) {
-                var format = id === 'data1' ? d3.format(',') : d3.format('');
-                return format(value);
+        // myJSON = JSON.parse(JSON.stringify(data));
+        //console.log(myJSON);
+        var chartc = c3.generate({
+            data: {
+                columns: [
+                    ['Aprobado', kpi.value["Aprobado"]],
+                    ['No Aprobado', kpi.value["No aprobado"]],
+                    ['Destacado', kpi.value["Destacado"]]
+                ],
+                type: ''
+            },
+            bindto: "#chart",
+            tooltip: {
+            format: {
+                title: function (d) { return 'Curso '; },
+                value: function (value, ratio, id) {
+                    var format = id === 'data1' ? d3.format(',') : d3.format('');
+                    return format(value);
+                }
             }
-
         }
+        });
     }
-    });
-}
     
 //-----------------------------------Reporte de Casos Histórico por tiendas
 function imprimirCards2(kpi){
@@ -417,31 +416,31 @@ function imprimirCards2(kpi){
     }     
     
     function addChartc2(kpi){
-    // myJSON = JSON.parse(JSON.stringify(data));
-    //console.log(myJSON);
-    var chartc = c3.generate({
-        data: {
-            columns: [
-                ['Aprobado', kpi.value["Aprobado"]],
-                ['No Aprobado', kpi.value["No aprobado"]],
-                ['Destacado', kpi.value["Destacado"]]
-            ],
-            type: 'bar'
-        },
-        bindto: "#chart2",
-        tooltip: {
-        format: {
-            title: function (d) { return 'Curso '; },
-            value: function (value, ratio, id) {
-                var format = id === 'data1' ? d3.format(',') : d3.format('');
-                return format(value);
-            }
+        // myJSON = JSON.parse(JSON.stringify(data));
+        //console.log(myJSON);
+        var chartc = c3.generate({
+            data: {
+                columns: [
+                    ['Aprobado', kpi.value["Aprobado"]],
+                    ['No Aprobado', kpi.value["No aprobado"]],
+                    ['Destacado', kpi.value["Destacado"]],
+                ],
+                type: 'bar',
+            },
+            bindto: "#chart2",
+            tooltip: {
+                format: {
+                    title: function (d) { return 'Curso '; },
+                    value: function (value, ratio, id) {
+                        var format = id === 'data1' ? d3.format(',') : d3.format('');
+                        return format(value);
+                    }
 
-        }
+                }
+            }
+        });
     }
-    });
-}
-    
+
 function imprimirRanking(data){
 
 }
