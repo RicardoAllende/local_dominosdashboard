@@ -608,6 +608,7 @@ function local_dominosdashboard_get_course_color(int $courseid){
 }
 
 define('LDD_D', true);
+define('MAX_RANDOM_NUMBER', 500);
 function local_dominosdashboard_get_course_information(int $courseid, bool $get_all_course_information = false, array $params = array()){
     global $DB;
     $course = $DB->get_record('course', array('id' => $courseid));
@@ -621,27 +622,28 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     $response->title = $course->fullname;
     $response->status = 'ok';
     if(LDD_D){
+        $response->enrolled_users = random_int(100, MAX_RANDOM_NUMBER);
+        $response->approved_users = random_int(5, $response->enrolled_users);
+        $response->not_viewed = random_int(0, $response->enrolled_users - $response->approved_users);
+        $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users, 2);
+        $response->not_approved_users = $response->enrolled_users - $response->approved_users;
+        $response->value = $response->percentage;
         if($get_all_course_information){
             /* Actividades aleatorias */
             $activities = array();
             for($i = 0; $i < 6; $i++){
                 $key                = "module" . $i;
-                $title              = random_int(22,900) . " A " . $i;
-                $inProgress         = random_int(0, 200);
-                $completed          = $i * 12;
-                $completedWithFail  = random_int(0, 200);
+                $title              = random_int(22, 900) . " A " . $i;
+                $completed          = $response->enrolled_users - ($i * 10);
+                if($completed < 1){
+                    $completed = 1;
+                }
                 array_push($activities, compact('key', 'title', 'inProgress', 'completed', 'completedWithFail'));
             }
             $response->activities = $activities;
             /* Actividades aleatorias */
             $response->kpi = local_dominosdashboard_get_kpi_info($courseid, $params);
         }
-        $response->enrolled_users = random_int(0, 1000);
-        $response->approved_users = random_int(0, $response->enrolled_users);
-        $response->not_viewed = random_int(0, $response->enrolled_users - $response->approved_users);
-        $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users, 2);
-        $response->not_approved_users = $response->enrolled_users - $response->approved_users;
-        $response->value = $response->percentage;
         return $response;
     }
     if($get_all_course_information){
@@ -1255,9 +1257,9 @@ function local_dominosdashboard_get_activities_completion(int $courseid, string 
 function local_dominos_dashboard_get_activity_completions(int $activityid, string $userids = "", $title = ""){
     global $DB;
     $key = "module" . $activityid;
-    $inProgress         = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 0");
+    // $inProgress         = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 0");
     $completed          = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate IN (1,2)");
-    $completedWithFail  = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 3");
+    // $completedWithFail  = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 3");
     return compact('key', 'title', 'inProgress', 'completed', 'completedWithFail');
 }
 

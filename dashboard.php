@@ -65,66 +65,28 @@ $indicators = local_dominosdashboard_get_indicators();
     <div class="col-sm-12" id="data_card"></div>
     <div class="col-sm-12" id="data_card2"></div>
 
-    <div class="titulog col-sm-12 dominosdashboard-ranking">
+    <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
         <h1 style="text-align: center;">Ranking de actividades</h1>
     </div>
-    <div class="col-sm-6 dominosdashboard-ranking">
+    <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
         <table frame="void" rules="rows" style="width:100%">
             <tr class="rankingt">
                 <th>#</th>
                 <th>Actividades</th>
                 <th>Aprobados</th>
             </tr>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Actividad 1</td>
-                    <td>
-                        <div class="progress">
-                            <div class="progress-bar" style="width:90%">90</div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-            <!-- <tr>
-                <td>2</td>
-                <td>Actividad 2</td>
-                <td>
-                    <div class="progress">
-                        <div class="progress-bar" style="width:70%">70</div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>Actividad 3</td>
-                <td>
-                    <div class="progress">
-                        <div class="progress-bar" style="width:65%">65</div>
-                    </div>
-                </td>
-            </tr> -->
+            <tbody id="tbody-ranking-top"></tbody>
         </table>
     </div>
 
-    <div class="col-sm-6 dominosdashboard-ranking">
+    <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-bottom">
         <table frame="void" rules="rows" style="width:100%">
             <tr class="rankingt">
                 <th>#</th>
                 <th>Actividades</th>
                 <th>No Aprobados</th>
             </tr>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Actividad 1</td>
-                    <td>
-                        <div class="progress">
-                            <div class="progress-bar bg-warning" style="width:30%">30</div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
+            <tbody id="tbody-ranking-bottom"></tbody>
         </table>
     </div>
 
@@ -144,7 +106,7 @@ $indicators = local_dominosdashboard_get_indicators();
     var demark = "";
     document.addEventListener("DOMContentLoaded", function () {
         try {
-            // $('.dominosdashboard-ranking').hide();
+            $('.dominosdashboard-ranking').hide();
             require(['jquery'], function ($) {
                 $('.course-selector').change(function () { obtenerGraficas() });
                 obtenerGraficas();
@@ -216,6 +178,7 @@ $indicators = local_dominosdashboard_get_indicators();
                 }
 
 
+                imprimirRanking(informacion_del_curso.data);
                 dateEnding = Date.now();
                 console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
                 // console.log("Petición correcta");
@@ -282,31 +245,31 @@ $indicators = local_dominosdashboard_get_indicators();
         //console.log("entra imprimir");
         // myJSON = JSON.parse(JSON.stringify(data));
         // console.log(myJSON);        
-        document.getElementById("data_card").innerHTML = "<div class='col-sm-12 col-xl-6'>" +
-            "<div class='card bg-gray border-0 m-2'>" +
+                document.getElementById("data_card").innerHTML = "<div class='col-sm-12 col-xl-6'>" +
+                                "<div class='card bg-gray border-0 m-2'>" +
 
 
-                "<div class='card-group'>"+
-                    "<div class='card border-0 m-2'>"+
-                    "<div class='card-body'>"+
-                        "<p class='card-text text-primary text-center'>Aprobados</p>"+
-                        "<p class='card-text text-primary text-center' id='apro'></p>"+
-                    "</div>"+
-                    "</div>"+
-                    "<div class='card border-0 m-2'>"+
-                    "<div class='card-body text-center'>"+
-                        "<p class='card-text text-warning text-center'>No Aprobados</p>"+
-                        "<p class='card-text text-warning text-center' id='no_apro'></p>"+
-                    "</div>"+
-                    "</div>"+
-                    "<div class='card border-0 m-2'>"+
-                    "<div class='card-body text-center'>"+
-                        "<p class='card-text text-success text-center'>Destacado</p>"+
-                        "<p class='card-text text-success text-center' id='des'></p>"+
-                    "</div>"+
-                    "</div>"+
+                                       "<div class='card-group'>"+
+                                          "<div class='card border-0 m-2'>"+
+                                            "<div class='card-body'>"+
+                                              "<p class='card-text text-primary text-center'>Aprobados</p>"+
+                                              "<p class='card-text text-primary text-center' id='apro'></p>"+
+                                            "</div>"+
+                                          "</div>"+
+                                          "<div class='card border-0 m-2'>"+
+                                            "<div class='card-body text-center'>"+
+                                              "<p class='card-text text-warning text-center'>No Aprobados</p>"+
+                                              "<p class='card-text text-warning text-center' id='no_apro'></p>"+
+                                            "</div>"+
+                                          "</div>"+
+                                          "<div class='card border-0 m-2'>"+
+                                            "<div class='card-body text-center'>"+
+                                              "<p class='card-text text-success text-center'>Destacado</p>"+
+                                              "<p class='card-text text-success text-center' id='des'></p>"+
+                                            "</div>"+
+                                          "</div>"+
 
-                    "</div>"+
+                                        "</div>"+
                                     "<div class='bg-white m-2' id='chart'></div>"+
                                    
                                     "<div class='align-items-end'>"+
@@ -316,7 +279,7 @@ $indicators = local_dominosdashboard_get_indicators();
                                         "</div>"+
                                     "</div>"+
                                 "</div>"+
-            "</div>";
+                            "</div>";
         $('#apro').html(kpi.value["Aprobado"]);//Aprobados
         $('#no_apro').html(kpi.value["No aprobado"]);//No Aprobados
         $('#des').html(_kpis[0].value["Destacado"]);//No Aprobados
@@ -436,8 +399,96 @@ $indicators = local_dominosdashboard_get_indicators();
         });
     }
 
-    function imprimirRanking(data) {
+    ranking_top         = "#dominosdashboard-ranking-top";
+    ranking_bottom      = "#dominosdashboard-ranking-bottom";
+    ranking_top_body    = "#tbody-ranking-top";
+    ranking_bottom_body = "#tbody-ranking-bottom";
+    ranking_clase       = ".dominosdashboard-ranking";
+    ranking_titulo      = "#dominosdashboard-ranking-title";
 
+    function imprimirRanking(info) {
+        if(Array.isArray(info.activities)){
+            activities = info.activities;
+            num_activities = info.activities.length;
+            enrolled_users = parseInt(info.enrolled_users);
+            if(enrolled_users < 1){
+                return false;
+            }
+            
+            if(num_activities >= 6){ // Se muestran 2 rankings
+                $(ranking_titulo).show();
+                $(ranking_top).show();
+                $(ranking_bottom).show();
+                $(ranking_top_body).html('');
+                var contenido = "";
+                for(var i = 0; i < 3; i++){
+                    var elemento = activities[i];
+                    // console.log(elemento);
+                    percentage = Math.floor(elemento.completed / enrolled_users * 100);
+                    console.log(percentage);
+                    contenido += `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${elemento.title}</td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: ${percentage}%; background: #29B6F6; color: white; border-radius: 5px; text-align: center;">${percentage}%</div>
+                            </div>
+                        </td>
+                    </tr>`;
+                }
+                $(ranking_top_body).html(contenido);
+                $(ranking_bottom_body).html('');
+                var contenido = "";
+                // #FF6F00
+                for(var i = 1; i <= 3; i++){
+                    var elemento = activities[num_activities - i];
+                    console.log(percentage);
+                    notCompleted = enrolled_users - elemento.completed;
+                    percentage = Math.floor(notCompleted / enrolled_users * 100);
+                    contenido += `
+                    <tr>
+                        <td>${i}</td>
+                        <td>${elemento.title}</td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: ${percentage}%; background: #FF6F00; color: white;border-radius: 5px; text-align: center;">${percentage}%</div>
+                            </div>
+                        </td>
+                    </tr>`;
+                }
+                $(ranking_bottom_body).html(contenido);
+                return;
+            }else if(num_activities > 0){ // Sólo se muestra un ranking
+                $(ranking_titulo).show();
+                $(ranking_top).show();
+                $(ranking_top).removeClass("col-sm-6");
+                $(ranking_top).addClass("col-sm-12");
+                $(ranking_bottom).hide();
+                var contenido = "";
+                for(var i = 0; i < 3; i++){
+                    if(activities[i] == undefined){
+                        continue;
+                    }
+                    var elemento = activities[i];
+                    percentage = Math.floor(elemento.completed / enrolled_users * 100);
+                    console.log(percentage);
+                    contenido += `
+                    <tr>
+                        <td>${i}</td>
+                        <td>${elemento.title}</td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: ${percentage}%; background: #29B6F6; color: white; border-radius: 5px; text-align: center;">${percentage}%</div>
+                            </div>
+                        </td>
+                    </tr>`;
+                }
+                $(ranking_top_body).html(contenido);
+                return;
+            }
+            return;
+        }
     }
 
 </script>
