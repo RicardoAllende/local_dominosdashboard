@@ -100,6 +100,7 @@ $indicators = local_dominosdashboard_get_indicators();
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="libs/c3.js"></script>
 <link href="estilos.css" rel="stylesheet">
+<script src="dominosdashboard_scripts.js"></script>
 
 <script>
     var indicator;
@@ -128,7 +129,7 @@ $indicators = local_dominosdashboard_get_indicators();
     var _kpi;
     var _kpis;
     function obtenerGraficas(indicator) {
-        console.log("Obteniendo gráficas");
+        // console.log("Obteniendo gráficas");
         informacion = $('#filter_form').serializeArray();
         informacion.push({ name: 'request_type', value: 'course_completion' });
         $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
@@ -141,27 +142,21 @@ $indicators = local_dominosdashboard_get_indicators();
             dataType: "json"
         })
             .done(function (data) {
-                console.log("Petición correcta");
+                // console.log("Petición correcta");
                 $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
                 // return;
                 informacion_del_curso = JSON.parse(JSON.stringify(data));
                 _kpis = informacion_del_curso.data.kpi;
                 for (var index = 0; index < informacion_del_curso.data.kpi.length; index++) {
                     _kpi = informacion_del_curso.data.kpi[index];
+                    console.log('Id del kpi', _kpi.kpi);
+                    console.log('Valor del kpi ' + _kpi.kpi_name, _kpi.value);
                     /*
                      DEFINE("KPI_OPS", 1);
                      DEFINE("KPI_HISTORICO", 2); // quejas
                      DEFINE("KPI_SCORCARD", 3); // % rotación
                     */
                     switch (_kpi.kpi) {
-                        case 1: // OPS 
-                    case 1: // OPS 
-                        case 1: // OPS 
-                    case 1: // OPS 
-                        case 1: // OPS 
-                    case 1: // OPS 
-                        case 1: // OPS 
-                    case 1: // OPS 
                         case 1: // OPS 
                             imprimirCards(_kpi);
                             addChartc(_kpi);
@@ -178,7 +173,7 @@ $indicators = local_dominosdashboard_get_indicators();
                         default:
                             break;
                     }
-                    console.log(_kpi);
+                    // console.log(_kpi);
                 }
 
 
@@ -211,7 +206,7 @@ $indicators = local_dominosdashboard_get_indicators();
                 for (var index = 0; index < keys.length; index++) {
                     clave = keys[index]
                     var catalogo = data.data[clave];
-                    console.log(clave, catalogo.length);
+                    // console.log(clave, catalogo.length);
                     $('#indicator_section_' + clave).html('');
                     for (var j = 0; j < catalogo.length; j++) {
                         var elementoDeCatalogo = catalogo[j];
@@ -232,7 +227,7 @@ $indicators = local_dominosdashboard_get_indicators();
     }
 
     function obtenerFiltros(indicator) {
-        console.log("Obteniendo filtros");
+        // console.log("Obteniendo filtros");
         info = $('#filter_form').serializeArray();
         dateBegining = Date.now();
         info.push({ name: 'request_type', value: 'user_catalogues' });
@@ -297,6 +292,9 @@ $indicators = local_dominosdashboard_get_indicators();
     function addChartc(kpi) {
         // myJSON = JSON.parse(JSON.stringify(data));
         //console.log(myJSON);
+        if(esVacio(kpi.value)){
+            return false;
+        }
         var chartc = c3.generate({
             data: {
                 columns: [
@@ -377,6 +375,9 @@ $indicators = local_dominosdashboard_get_indicators();
     function addChartc2(kpi) {
         // myJSON = JSON.parse(JSON.stringify(data));
         //console.log(myJSON);
+        if(esVacio(kpi.value)){
+            return false;
+        }
         var chartc = c3.generate({
             data: {
                 columns: [
@@ -505,7 +506,7 @@ $indicators = local_dominosdashboard_get_indicators();
                     var elemento = activities[i];
                     // console.log(elemento);
                     percentage = Math.floor(elemento.completed / enrolled_users * 100);
-                    console.log(percentage);
+                    // console.log(percentage);
                     contenido += `
                     <tr>
                         <td>${i + 1}</td>
@@ -523,7 +524,7 @@ $indicators = local_dominosdashboard_get_indicators();
                 // #FF6F00
                 for(var i = 1; i <= 3; i++){
                     var elemento = activities[num_activities - i];
-                    console.log(percentage);
+                    // console.log(percentage);
                     notCompleted = enrolled_users - elemento.completed;
                     percentage = Math.floor(notCompleted / enrolled_users * 100);
                     contenido += `
@@ -552,7 +553,7 @@ $indicators = local_dominosdashboard_get_indicators();
                     }
                     var elemento = activities[i];
                     percentage = Math.floor(elemento.completed / enrolled_users * 100);
-                    console.log(percentage);
+                    // console.log(percentage);
                     contenido += `
                     <tr>
                         <td>${i}</td>
