@@ -65,6 +65,7 @@ $indicators = local_dominosdashboard_get_indicators();
     <div class="col-sm-12" id="data_card"></div>
     <div class="col-sm-12" id="data_card2"></div>
     <div class="col-sm-12" id="data_card3"></div>
+    <div class="col-sm-12" id="data_card4"></div>
     
 
     <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
@@ -157,9 +158,7 @@ $indicators = local_dominosdashboard_get_indicators();
                      DEFINE("KPI_SCORCARD", 3); // % rotación
                     */
                     switch (_kpi.kpi) {
-                        case 1: // OPS 
-                            imprimirCards(_kpi);
-                            addChartc(_kpi);
+                        case 1: // OPS                             
                             imprimirCards2(_kpi);
                             addChartc2(_kpi);
                             break;
@@ -167,7 +166,9 @@ $indicators = local_dominosdashboard_get_indicators();
                             imprimirCards3(_kpi);
                             addChartc3(_kpi);
                             break;
-                        case 3:
+                        case 3: //
+                            imprimirCards4(_kpi);
+                            addChartc4(_kpi);
 
                             break;
                         default:
@@ -238,90 +239,17 @@ $indicators = local_dominosdashboard_get_indicators();
     }
 
 
-    //----------------------------------------------------KPIS---------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------------KPIS----------------------------------------------------------------------------------------------------
     //---------------------------OPS MÉXICO W
-    function imprimirCards(kpi) {
-        //console.log("entra imprimir");
-        // myJSON = JSON.parse(JSON.stringify(data));
-        // console.log(myJSON);        
-                document.getElementById("data_card").innerHTML = "<div class='col-sm-12 col-xl-6'>" +
-                                "<div class='card bg-gray border-0 m-2'>" +
-
-
-                                       "<div class='card-group'>"+
-                                          "<div class='card border-0 m-2'>"+
-                                            "<div class='card-body'>"+
-                                              "<p class='card-text text-primary text-center'>Aprobados</p>"+
-                                              "<p class='card-text text-primary text-center' id='apro'></p>"+
-                                            "</div>"+
-                                          "</div>"+
-                                          "<div class='card border-0 m-2'>"+
-                                            "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-warning text-center'>No Aprobados</p>"+
-                                              "<p class='card-text text-warning text-center' id='no_apro'></p>"+
-                                            "</div>"+
-                                          "</div>"+
-                                          "<div class='card border-0 m-2'>"+
-                                            "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-success text-center'>Destacado</p>"+
-                                              "<p class='card-text text-success text-center' id='des'></p>"+
-                                            "</div>"+
-                                          "</div>"+
-
-                                        "</div>"+
-                                    "<div class='bg-white m-2' id='chart'></div>"+
-                                   
-                                    "<div class='align-items-end'>"+
-                                        
-                                        "<div class='fincard text-center'>"+
-                                            "<a href='Grafica.html' id='titulo_grafica'></a>"+
-                                        "</div>"+
-                                    "</div>"+
-                                "</div>"+
-                            "</div>";
-        $('#apro').html(kpi.value["Aprobado"]);//Aprobados
-        $('#no_apro').html(kpi.value["No aprobado"]);//No Aprobados
-        $('#des').html(kpi.value["Destacado"]);//Destacados
-
-        
-        //$('#chart').html(myJSON.status);//Chart
-        //$('#tusuario').html(myJSON.data["enrolled_users"]);//Total de usuarios
-        $('#titulo_grafica').html(kpi.kpi_name);//Titulo grafica
-    }
-
-    function addChartc(kpi) {
-        // myJSON = JSON.parse(JSON.stringify(data));
-        //console.log(myJSON);
-        if(esVacio(kpi.value)){
-            return false;
-        }
-        var chartc = c3.generate({
-            data: {
-                columns: [
-                    ['Aprobado', kpi.value["Aprobado"]],
-                    ['No Aprobado', kpi.value["No aprobado"]],
-                    ['Destacado', kpi.value["Destacado"]]
-                ],
-                type: 'bar'
-            },
-            bindto: "#chart",
-            tooltip: {
-                format: {
-                    title: function (d) { return 'KPI '; },
-                    value: function (value, ratio, id) {
-                        var format = id === 'data1' ? d3.format(',') : d3.format('');
-                        return format(value);
-                    }
-                }
-            }
-        });
-    }
-
-    //-----------------------------------
     function imprimirCards2(kpi) {
         //console.log("entra imprimir2");
         // myJSON = JSON.parse(JSON.stringify(data));
         // console.log(myJSON);        
+        var a = kpi.value["Aprobado"];
+        var b = kpi.value["No aprobado"];
+        var c = parseInt(a) + parseInt(b);
+        
+        
         document.getElementById("data_card2").innerHTML = "<div class='col-sm-12 col-xl-6'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
 
@@ -342,7 +270,7 @@ $indicators = local_dominosdashboard_get_indicators();
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body text-center'>"+
                                               "<p class='card-text text-success text-center'>Total de usuarios</p>"+
-                                              "<p class='card-text text-warning text-center' id='tusuario2'></p>"+
+                                              "<p class='card-text text-warning text-center' id='tusuario2'>"+c+"</p>"+
                                             "</div>"+
                                           "</div>"+
 
@@ -360,12 +288,8 @@ $indicators = local_dominosdashboard_get_indicators();
         $('#apro2').html(kpi.value["Aprobado"]);//Aprobados
         $('#no_apro2').html(kpi.value["No aprobado"]);//No Aprobados
 
-        //---------------------------SUMA PARA SACAR EL TOTAL DE USUARIOS    
-        var a = kpi.value["Aprobado"];
-        var b = kpi.value["No aprobado"];
-        var c = parseInt(a) + parseInt(b);
-        console.log(c);
-        //document.getElementById("tusuario2").value = "Johnny Bravo";
+          
+        
         
         //$('#chart').html(myJSON.status);//Chart
         //$('#tusuario').html(myJSON.data["enrolled_users"]);//Total de usuarios
@@ -405,7 +329,14 @@ $indicators = local_dominosdashboard_get_indicators();
     function imprimirCards3(kpi) {
         //console.log("entra imprimir2");
         // myJSON = JSON.parse(JSON.stringify(data));
-        // console.log(myJSON);        
+        // console.log(myJSON); 
+        var a = _kpis[0].value["Aprobado"];
+        var b = _kpis[0].value["No aprobado"];
+        var c = parseInt(a) + parseInt(b);
+        var d = parseInt(b) * 100;
+        var e = parseInt(d) / parseInt(c);
+        
+        
         document.getElementById("data_card3").innerHTML = "<div class='col-sm-12 col-xl-6'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
 
@@ -413,19 +344,19 @@ $indicators = local_dominosdashboard_get_indicators();
                                        "<div class='card-group'>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body'>"+
-                                              "<p class='card-text text-primary text-center'>Usuarios  inscritos</p>"+
+                                              "<p class='card-text text-primary text-center'>Aprobados</p>"+
                                               "<p class='card-text text-primary text-center' id='apro3'></p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-warning text-center'>Aprobados</p>"+
+                                              "<p class='card-text text-warning text-center'>No Aprobados</p>"+
                                               "<p class='card-text text-warning text-center' id='no_apro3'></p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-success text-center'>Total de usuarios</p>"+
+                                              "<p class='card-text text-success text-center'>No visto</p>"+
                                               "<p class='card-text text-warning text-center' id='tusuario3'></p>"+
                                             "</div>"+
                                           "</div>"+
@@ -441,9 +372,9 @@ $indicators = local_dominosdashboard_get_indicators();
                                     "</div>"+
                                 "</div>"+
             "</div>";
-        $('#apro3').html(informacion_del_curso.data.enrolled_users);//Inscritos
-        $('#no_apro3').html(informacion_del_curso.data.approved_users);//Aprobados
-        $('#tusuario3').html(informacion_del_curso.data.not_viewed);//Aprobados
+        $('#apro3').html(_kpis[0].value["Aprobado"]);//Aprobados
+        $('#no_apro3').html(_kpis[0].value["No aprobado"]);// No Aprobados
+        $('#tusuario3').html(informacion_del_curso.data.not_viewed);//No visto
 
        
         
@@ -455,19 +386,24 @@ $indicators = local_dominosdashboard_get_indicators();
     function addChartc3(kpi) {
         // myJSON = JSON.parse(JSON.stringify(data));
         //console.log(myJSON);
+        var a = _kpis[0].value["Aprobado"];
+        var b = _kpis[0].value["No aprobado"];
+        var c = parseInt(a) + parseInt(b);
+        var d = parseInt(b) * 100;
+        var e = parseInt(d) / parseInt(c);
+        var f = e.toFixed(2);
         var chartc = c3.generate({
             data: {
                 columns: [
-                    ['Aprobado', informacion_del_curso.data.enrolled_users],
-                    ['No Aprobado', informacion_del_curso.data.approved_users],
-                    ['Destacado', informacion_del_curso.data.not_viewed],
+                    ['No Aprobado',f],
+                    ['Promedio de no. de quejas', _kpi.value]
                 ],
                 type: 'bar',
             },
             bindto: "#chart3",
             tooltip: {
                 format: {
-                    title: function (d) { return 'KPI '; },
+                    title: function (d) { return 'Quejas '; },
                     value: function (value, ratio, id) {
                         var format = id === 'data1' ? d3.format(',') : d3.format('');
                         return format(value);
@@ -477,6 +413,89 @@ $indicators = local_dominosdashboard_get_indicators();
             }
         });
     }
+    
+//---------------------------------------------------------------------------------------------Scorcard RRHH
+    function imprimirCards4(kpi) {
+        //console.log("entra imprimir2");
+        // myJSON = JSON.parse(JSON.stringify(data));
+        // console.log(myJSON);        
+        document.getElementById("data_card4").innerHTML = "<div class='col-sm-12 col-xl-6'>"+
+                                "<div class='card bg-gray border-0 m-2'>"+
+
+
+                                       "<div class='card-group'>"+
+                                          "<div class='card border-0 m-2'>"+
+                                            "<div class='card-body'>"+
+                                              "<p class='card-text text-primary text-center'>Aprobados</p>"+
+                                              "<p class='card-text text-primary text-center' id='apro4'></p>"+
+                                            "</div>"+
+                                          "</div>"+
+                                          "<div class='card border-0 m-2'>"+
+                                            "<div class='card-body text-center'>"+
+                                              "<p class='card-text text-warning text-center'>No Aprobados</p>"+
+                                              "<p class='card-text text-warning text-center' id='no_apro4'></p>"+
+                                            "</div>"+
+                                          "</div>"+
+                                          "<div class='card border-0 m-2'>"+
+                                            "<div class='card-body text-center'>"+
+                                              "<p class='card-text text-success text-center'>No visto</p>"+
+                                              "<p class='card-text text-warning text-center' id='tusuario4'></p>"+
+                                            "</div>"+
+                                          "</div>"+
+
+                                        "</div>"+
+                                    "<div class='bg-white m-2' id='chart4'></div>"+
+                                   
+                                    "<div class='align-items-end'>"+
+                                        
+                                    "<div class='fincard text-center'>"+
+                                            "<a href='Grafica.html' id='titulo_grafica4'></a>"+
+                                        "</div>"+
+                                    "</div>"+
+                                "</div>"+
+            "</div>";
+        $('#apro4').html(_kpis[0].value["Aprobado"]);//Aprobados
+        $('#no_apro4').html(_kpis[0].value["No aprobado"]);//No Aprobados
+        $('#tusuario4').html(informacion_del_curso.data.not_viewed);//No visto
+
+       
+        
+        //$('#chart').html(myJSON.status);//Chart
+        //$('#tusuario').html(myJSON.data["enrolled_users"]);//Total de usuarios
+        $('#titulo_grafica4').html(kpi.kpi_name);//Titulo grafica
+    }
+    
+    function addChartc4(kpi) {
+        // myJSON = JSON.parse(JSON.stringify(data));
+        //console.log(myJSON);
+        var a = _kpis[0].value["Aprobado"];
+        var b = _kpis[0].value["No aprobado"];
+        var c = parseInt(a) + parseInt(b);
+        var d = parseInt(b) * 100;
+        var e = parseInt(d) / parseInt(c);
+        var f = e.toFixed(2);
+        var chartc = c3.generate({
+            data: {
+                columns: [
+                    ['No Aprobado', f],
+                    ['Promedio de rotación', _kpi.value]
+                ],
+                type: 'bar',
+            },
+            bindto: "#chart4",
+            tooltip: {
+                format: {
+                    title: function (d) { return 'Rotación '; },
+                    value: function (value, ratio, id) {
+                        var format = id === 'data1' ? d3.format(',') : d3.format('');
+                        return format(value);
+                    }
+
+                }
+            }
+        });
+    }
+    
     
 //---------------------------------------------------------------------------------------------------------------------------------------------
 
