@@ -44,7 +44,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
         case 'course_completion':
             if(!empty($_POST['courseid'])){
                 $courseid = $_POST['courseid'];
-                die(local_dominosdashboard_format_response(local_dominosdashboard_get_course_information($courseid, $get_all_information = true,  $params = $_POST)));
+                die(local_dominosdashboard_format_response(local_dominosdashboard_get_course_information($courseid, $get_kpis = true, $get_activities = true, $params = $_POST)));
             }else{
                 die(local_dominosdashboard_error_response("courseid (int) not found"));
             }

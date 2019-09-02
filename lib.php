@@ -577,33 +577,27 @@ function local_dominosdashboard_get_courses_with_filter(bool $allCourses = false
 function local_dominosdashboard_get_courses_overview(int $type, array $params = array(), bool $allCourses = false){
     $courses = local_dominosdashboard_get_courses_with_filter($allCourses, $type);
     $courses_in_order = array();
-    switch ($type) {
-        case LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS: // Cursos presenciales
-        case LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO: // Cursos en línea
-            foreach($courses as $course){
-                $course_information = local_dominosdashboard_get_course_information($course->id, false, $params);
-                if(empty($course_information)){
-                    continue;
-                }
-                if(empty($courses_in_order)){
-                    array_push($courses_in_order, $course_information);
-                }else{
-                    $max = count($courses_in_order) - 1;
-                    if($course_information->percentage > $courses_in_order[$max]->percentage){
-                        array_unshift($courses_in_order, $course_information);
-                    }else{
-                        array_push($courses_in_order, $course_information);
-                    }
-                }
+    foreach($courses as $course){
+        if($type == LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON){
+            $course_information = local_dominosdashboard_get_course_information($course->id, $kpis = true, $activities = false, $params);
+        }else{
+            $course_information = local_dominosdashboard_get_course_information($course->id, $kpis = false, $activities = false, $params);
+        }
+        if(empty($course_information)){
+            continue;
+        }
+        if(empty($courses_in_order)){
+            array_push($courses_in_order, $course_information);
+        }else{
+            $max = count($courses_in_order) - 1;
+            if($course_information->percentage > $courses_in_order[$max]->percentage){
+                array_unshift($courses_in_order, $course_information);
+            }else{
+                array_push($courses_in_order, $course_information);
             }
-            return $courses_in_order;
-            break;
-        case LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON: // Cruce de kpis
-        
-        default:
-            return array();
-            break;
+        }
     }
+    return $courses_in_order;
 }
 
 function local_dominosdashboard_get_course_chart(int $courseid){
@@ -622,7 +616,7 @@ function local_dominosdashboard_get_course_color(int $courseid){
 
 define('LDD_D', true);
 define('MAX_RANDOM_NUMBER', 500);
-function local_dominosdashboard_get_course_information(int $courseid, bool $get_all_course_information = false, array $params = array()){
+function local_dominosdashboard_get_course_information(int $courseid, bool $get_kpis = false, bool $get_activities = false, array $params = array()){
     global $DB;
     $course = $DB->get_record('course', array('id' => $courseid));
     if($course === false){
@@ -641,7 +635,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users, 2);
         $response->not_approved_users = $response->enrolled_users - $response->approved_users;
         $response->value = $response->percentage;
-        if($get_all_course_information){
+        if($get_activities){
             /* Actividades aleatorias */
             $activities = array();
             for($i = 0; $i < 6; $i++){
@@ -654,13 +648,16 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
                 array_push($activities, compact('key', 'title', 'inProgress', 'completed', 'completedWithFail'));
             }
             $response->activities = $activities;
-            /* Actividades aleatorias */
+        }
+        if($get_kpis){
             $response->kpi = local_dominosdashboard_get_kpi_info($courseid, $params);
         }
         return $response;
     }
-    if($get_all_course_information){
+    if($get_activities){
         $response->activities = local_dominosdashboard_get_activities_completion($courseid);
+    }
+    if($get_kpis){
         $response->kpi = local_dominosdashboard_get_kpi_info($courseid, $params);
     }
     $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params);
@@ -1405,13 +1402,13 @@ function local_dominosdashboard_make_historic_report(int $courseid){
     if($course == false){
         return false;
     }
-    $course_information = local_dominosdashboard_get_course_information($course->id, true, $params = array());
+    $course_information = local_dominosdashboard_get_course_information($course->id, $kpis = false, $activities = false, $params = array());
     local_dominosdashboard_insert_historic_record($course_information, $currenttime, $course);
     foreach (local_dominosdashboard_get_indicators() as $indicator) {
         foreach (local_dominosdashboard_get_catalogue($indicator) as $item) {
             $params = array();
             $params[$indicator] = $item;
-            $course_information = local_dominosdashboard_get_course_information($courseid, false, $params);
+            $course_information = local_dominosdashboard_get_course_information($courseid, $kpis = false, $activities = false, $params = array());
             local_dominosdashboard_insert_historic_record($course_information, $currenttime, $course, $indicator, $item);
         }
     }

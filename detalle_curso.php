@@ -38,13 +38,5 @@ $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 
 echo $OUTPUT->header();
-$params = [
-    'puestos'       => 'Cajero de sucursal',
-    'regiones'      => 'Sur',
-    'tiendas'       => 'Perisur',
-    'entrenadores'  => 'Julián '
-];
-_print($params);
-$course_information = local_dominosdashboard_get_course_information(27, $all_information = true, $params);
-_print($course_information);
+
 echo $OUTPUT->footer();
