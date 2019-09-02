@@ -145,6 +145,19 @@ DEFINE('LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO', 1);
 DEFINE('LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS', 2);
 DEFINE('LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON', 3);
 
+function local_dominosdashboard_get_course_tabs(){
+    return $tabOptions = [
+        LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO => 'Programas de entrenamiento',
+        LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS => 'Campañas',
+        LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON => 'Comparación de kpis',
+    ];
+}
+
+function local_dominosdashboard_get_course_tabs_as_js_script(){
+    $result = json_encode(local_dominosdashboard_get_course_tabs());
+    return "<script> var ldm_course_tabs = {$result}; </script>";
+}
+
 function local_dominosdashboard_get_KPIS(){
     return [
         // KPI_NA => "N/A", // No kpi

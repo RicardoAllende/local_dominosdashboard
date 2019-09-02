@@ -124,3 +124,8 @@
 .rankingt {
     background-color: #F2F2F2;
 }
+
+/* Clase text-center de otras versiones de bootstrap */
+.text-center{
+    text-align: center!important;
+}

@@ -39,11 +39,7 @@ $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 echo $OUTPUT->header();
 echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>";
 
-$tabOptions = [
-    LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO => 'Programas de entrenamiento',
-    LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS => 'Campañas',
-    LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON => 'Comparación de kpis',
-];
+$tabOptions = local_dominosdashboard_get_course_tabs();
 $courses    = local_dominosdashboard_get_courses();
 // $reports = local_dominosdashboard_get_historic_reports();
 foreach($courses as $course){

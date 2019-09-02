@@ -39,11 +39,7 @@ $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 echo $OUTPUT->header();
 echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>";
 
-$tabOptions = [
-    LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO => 'Programas de entrenamiento',
-    LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS => 'Campañas',
-    LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON => 'Comparación de kpis',
-];
+$tabOptions = local_dominosdashboard_get_course_tabs();
 
 $indicators = local_dominosdashboard_get_indicators();
 ?>
@@ -52,7 +48,7 @@ $indicators = local_dominosdashboard_get_indicators();
         <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br>
         <span class="btn btn-info" onclick="obtenerGraficas()">Volver a simular obtención de gráficas</span><br><br>
         <?php
-        echo "<br><select class='form-control tab-selector' name='type'>";
+        echo "<br><select class='form-control' id='tab-selector' name='type'>";
         foreach($tabOptions as $key => $option){
             echo "<option value='{$key}'>{$key} -> {$option}</option>";
         }
@@ -66,43 +62,12 @@ $indicators = local_dominosdashboard_get_indicators();
     </form>
     <div class="col-sm-9" id="contenido_cursos">
         <div class="">
-            <h1 align="center">Cruce de indicadores</h1>
+            <h1 class="text-center ldm_tab_name"></h1>
         </div>
         <div>
             <div class="row" id="contenedor_cursos">
                 <div class="col-sm-12 col-xl-12">
-                    <div class="card bg-faded border-0 m-2" id="">
-                        <!-- <div class="card-group">
-                            <div class="card border-0 m-2">
-                                <div class="card-body ">
-                                    <p class="card-text text-primary text-center">Aprobados</p>
-                                    <p class="card-text text-primary text-center">85%</p>
-                                </div>
-                            </div>
-                            <div class="card border-0 m-2">
-                                <div class="card-body text-center">
-                                    <p class="card-text text-warning text-center">No Aprobados</p>
-                                    <p class="card-text text-warning text-center">213</p>
-                                </div>
-                            </div>
-                            <div class="card border-0 m-2">
-                                <div class="card-body text-center ">
-                                    <p class="card-text text-success text-center">Total de usuarios</p>
-                                    <p class="card-text text-success text-center">1850</p>
-                                </div>
-                            </div>
-
-                        </div> -->
-                        
-
-
-                        <div class="bg-white m-2 chart_" id="chart"></div>
-                        <div class="align-items-end">
-                            <div class="fincard text-center">
-                                <a href="Grafica.html">Programa 0-90 vs % Rotación</a>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -110,7 +75,7 @@ $indicators = local_dominosdashboard_get_indicators();
     <div class="col-sm-12" id="local_dominosdashboard_content"></div>
     <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>
 </div>
-<?php echo local_dominosdashboard_get_ideales_as_js_script(); ?>
+<?php echo local_dominosdashboard_get_ideales_as_js_script(); echo local_dominosdashboard_get_course_tabs_as_js_script(); ?>
 <link href="libs/c3.css" rel="stylesheet">
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="libs/c3.js"></script>
@@ -123,7 +88,7 @@ $indicators = local_dominosdashboard_get_indicators();
     document.addEventListener("DOMContentLoaded", function() {
         require(['jquery'], function ($) {
             $('.course-selector').change(function(){obtenerGraficas()});
-            $('.tab-selector').change(function(){ obtenerGraficas(); });
+            $('#tab-selector').change(function(){ obtenerGraficas(); });
             obtenerGraficas();
             obtenerFiltros();
         });
@@ -142,6 +107,8 @@ $indicators = local_dominosdashboard_get_indicators();
         $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
         dateBegining = Date.now();
         $('#local_dominosdashboard_content').html('Cargando la información');
+        console.log('Valor de la pestaña', ldm_course_tabs[$('#tab-selector').val()]);
+        $('.ldm_tab_name').html(ldm_course_tabs[$('#tab-selector').val()]);
         $.ajax({
             type: "POST",
             url: "services.php",
@@ -220,39 +187,23 @@ $indicators = local_dominosdashboard_get_indicators();
             var _ideal_cobertura = Array();
             aprobados.push("Porcentaje de aprobación del curso");
             _ideal_cobertura.push('Ideal de cobertura');
+            $(_bindto).html('');
             for (var i = 0; i < cursos.length; i++) {
                 _ideal_cobertura.push(ideal_cobertura);
                 var curso = cursos[i];
                 aprobados.push(curso.percentage);
-
-                divId = crearTarjetaParaGrafica(_bindto, curso);
-                console.log(divId);
-                crearGraficaDeBarras(divId, curso);
+                crearTarjetaParaGrafica(_bindto, curso);
             }
-            var chartz = c3.generate({
-                data: {
-                    columns: [
-                        aprobados,
-                        _ideal_cobertura,
-                    ],
-                    type: ''
-                },
-                bindto: '#chart',
-                tooltip: {
-                    format: {
-                        title: function (d) { return cursos[d].title; },
-                        value: function (value, ratio, id) {
-                            return value + " %";
-                        }
-                    }
-                }
-            });
+            crearGraficaComparativaVariosCursos(_bindto, [aprobados, _ideal_cobertura], cursos);
+            return;
+            
         }
     }
 
     // function generarGraficaPuntos()
 
     function crearTarjetaParaGrafica(div, curso){
+        id_para_Grafica = "chart_" + curso.id;
         $(div).append(`<div class="col-sm-12 col-xl-6">
                     <div class="card bg-gray border-0 m-2" id="">
 
@@ -277,24 +228,47 @@ $indicators = local_dominosdashboard_get_indicators();
                             </div>
 
                         </div>
-                        
-                        
-
-
-                        <div class="chart_ bg-white m-2" id="chart_${curso.id}"></div>
-                        <!--<img class="card-img-top" src="img/graficos-p.jpg" alt="Card image cap">-->
+                        <div class="chart_ bg-white m-2" id="${id_para_Grafica}"></div>
                         <div class="align-items-end">
-                            <!--<h5 class="card-title">Card title  style="background-color: chocolate; width: 100% !important; bottom: 0 !important;"</h5>-->
                             <div class="fincard text-center">
                                 <a href="detalle_curso?id=${curso.id}">${curso.title}</a>
                             </div>
                         </div>
                     </div>
                 </div>`);
-        return "#chart_" + curso.id;
+        crearGraficaDeBarras('#' + id_para_Grafica, curso);
+    }
+
+    function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos){
+        div_id = "chart__" + $('#tab-selector').val();
+        $(_bindto).prepend(`
+                    <div class="card bg-faded border-0 m-2" id="">
+                        <div class="bg-white m-2" id="${div_id}"></div>
+                        <div class="align-items-end">
+                            <div class="fincard text-center">
+                                <a href="#">Comparativa</a>
+                            </div>
+                        </div>
+                    </div>`);
+        var chartz = c3.generate({
+            data: {
+                columns: info_grafica,
+                type: ''
+            },
+            bindto: '#' + div_id,
+            tooltip: {
+                format: {
+                    title: function (d) { return cursos[d].title; },
+                    value: function (value, ratio, id) {
+                        return value + " %";
+                    }
+                }
+            }
+        });
     }
 
     function crearGraficaDeBarras(_bindto, curso){
+        var nombre_columnas = ["Inscritos", "Aprobados", "No iniciaron el curso"];
         var chartc = c3.generate({
                 data: {
                     columns: [
@@ -307,12 +281,13 @@ $indicators = local_dominosdashboard_get_indicators();
                 bindto: _bindto,
                 tooltip: {
                     format: {
-                        title: function (d) { return 'Curso '; },
-                        // value: function (value, ratio, id) {
-                        //     var format = id === 'data1' ? d3.format(',') : d3.format('');
-                        //     return format(value);
-                        // }
-    
+                        title: function (d) {
+                            if(nombre_columnas[d] !== undefined){
+                                return nombre_columnas[d];
+                            }else{
+                                return "_";
+                            }
+                        },
                     }
                 }
             });
