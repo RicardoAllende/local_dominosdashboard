@@ -53,10 +53,11 @@ $indicators = local_dominosdashboard_get_indicators();
             echo "<option value='{$key}'>{$key} -> {$option}</option>";
         }
         echo "</select><br>";
-        foreach($indicators as $indicator){
-            echo "<h3>Indicador: {$indicator} </h3>";
-            echo "<div id='indicator_section_{$indicator}'></div>";    
-        }
+        echo "<div id='contenedor_filtros'></div>";
+        // foreach($indicators as $indicator){
+        //     echo "<h3>Indicador: {$indicator} </h3>";
+        //     echo "<div id='indicator_section_{$indicator}'></div>";    
+        // }
         ?>
         <!-- <input type="hidden" name="request_type" value="course_list"><br><br> -->
     </form>
@@ -107,7 +108,7 @@ $indicators = local_dominosdashboard_get_indicators();
         $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
         dateBegining = Date.now();
         $('#local_dominosdashboard_content').html('Cargando la información');
-        console.log('Valor de la pestaña', ldm_course_tabs[$('#tab-selector').val()]);
+        // console.log('Valor de la pestaña', ldm_course_tabs[$('#tab-selector').val()]);
         $('.ldm_tab_name').html(ldm_course_tabs[$('#tab-selector').val()]);
         $.ajax({
             type: "POST",
@@ -119,7 +120,7 @@ $indicators = local_dominosdashboard_get_indicators();
             listado_cursos = JSON.parse(JSON.stringify(data));
             listado_cursos = listado_cursos.data;
             generarGraficasTodosLosCursos('#contenedor_cursos', listado_cursos);
-            console.log('Listado de cursos', listado_cursos);
+            // console.log('Listado de cursos', listado_cursos);
             dateEnding = Date.now();
             console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
             // console.log("Petición correcta");
@@ -142,26 +143,67 @@ $indicators = local_dominosdashboard_get_indicators();
             dataType: "json"
         })
         .done(function(data) {
-            dateEnding = Date.now();
-            console.log(`Tiempo de respuesta al obtener filtros de API ${dateEnding - dateBegining} ms`);
             console.log(data);
             keys = Object.keys(data.data);
+            // div_selector = '#indicator_section_' + clave;
+            div_selector = '#contenedor_filtros';
+            crearElementos = esVacio($(div_selector).html());
             for (var index = 0; index < keys.length; index++) {
                 clave = keys[index]
                 var catalogo = data.data[clave];
-                $('#indicator_section_' + clave).html('');
+                heading_id = "indicatorheading" + clave;
+                collapse_id = "collapse_" + clave;
+                subfiltro_id = 'subfilter_id_' + clave;
                 console.log(clave, catalogo.length);
+                if(crearElementos){
+                    $(div_selector).append(`
+                        <div class="card">
+                            <div class="card-header cuerpo-filtro" id="${heading_id}">
+                                <h5 class="mb-0">
+                                    <input type="checkbox"><button class="btn btn-link collapsed texto-filtro"
+                                        data-toggle="collapse" data-target="#${collapse_id}" aria-expanded="false"
+                                        aria-controls="${collapse_id}">
+                                        ${clave}
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="${collapse_id}" class="collapse" aria-labelledby="${heading_id}" data-parent="#contenedor_filtros">
+                                <div class="card-body subgrupo-filtro" id='${subfiltro_id}'></div>
+                            </div>
+                        </div>`);                
+                // }else{
+                }
+                subfiltro_id = "#" + subfiltro_id;
+                $(subfiltro_id).html('');
+                // console.log($(subfiltro_id));
                 for(var j = 0; j < catalogo.length; j++){
                     var elementoDeCatalogo = catalogo[j];
-                    if(elementoDeCatalogo == ''){
-                        $('#indicator_section_' + clave).append(`<label><input type=\"checkbox\" name=\"${clave}[]\" 
-                        class=\"indicator_option indicator_${clave}\" onclick="obtenerGraficas('${clave}')" data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\">(vacío)</label><br>`);
-                    }else{
-                        $('#indicator_section_' + clave).append(`<label><input type=\"checkbox\" name=\"${clave}[]\" 
-                        class=\"indicator_option indicator_${clave}\" onclick="obtenerGraficas('${clave}')" data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\">${elementoDeCatalogo}</label><br>`);
-                    }
+                    $(subfiltro_id).append(`
+                                <label class="subfiltro" style='color: black;'><input type="checkbox" name="${clave}[]"
+                                class="indicator_option indicator_${clave}\" onclick="obtenerGraficas('${clave}')" 
+                                data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\"
+                                >
+                                 ${esVacio(elementoDeCatalogo) ? "(Vacío)" : elementoDeCatalogo}</label><br>
+                    `);
                 }
+                // if(crearElementos){
+                //     $(div_selector).append(`
+                //                 `);
+                // }
+                // continue;
+                // for(var j = 0; j < catalogo.length; j++){
+                //     var elementoDeCatalogo = catalogo[j];
+                //     if(elementoDeCatalogo == ''){
+                //         $('#indicator_section_' + clave).append(`<label><input type=\"checkbox\" name=\"${clave}[]\" 
+                //         class=\"indicator_option indicator_${clave}\" onclick="obtenerGraficas('${clave}')" data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\">(vacío)</label><br>`);
+                //     }else{
+                //         $('#indicator_section_' + clave).append(`<label><input type=\"checkbox\" name=\"${clave}[]\" 
+                //         class=\"indicator_option indicator_${clave}\" onclick="obtenerGraficas('${clave}')" data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\">${elementoDeCatalogo}</label><br>`);
+                //     }
+                // }
             }
+            dateEnding = Date.now();
+            console.log(`Tiempo de respuesta al obtener filtros de API ${dateEnding - dateBegining} ms`);
         })
         .fail(function(error, error2) {
             console.log(error);
@@ -180,7 +222,7 @@ $indicators = local_dominosdashboard_get_indicators();
     }
 
     function generarGraficasTodosLosCursos(_bindto, cursos) {
-        console.log('La información es: ', cursos);
+        // console.log('La información es: ', cursos);
         if(Array.isArray(cursos)){
             var aprobados = Array();
             var nombres = Array();
@@ -295,6 +337,7 @@ $indicators = local_dominosdashboard_get_indicators();
 
 
 </script>
+<link href="estilos.css" rel="stylesheet">
 <?php
 
 echo $OUTPUT->footer();
