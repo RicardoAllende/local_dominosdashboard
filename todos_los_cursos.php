@@ -53,13 +53,8 @@ $indicators = local_dominosdashboard_get_indicators();
             echo "<option value='{$key}'>{$key} -> {$option}</option>";
         }
         echo "</select><br>";
-        echo "<div id='contenedor_filtros'></div>";
-        // foreach($indicators as $indicator){
-        //     echo "<h3>Indicador: {$indicator} </h3>";
-        //     echo "<div id='indicator_section_{$indicator}'></div>";    
-        // }
         ?>
-        <!-- <input type="hidden" name="request_type" value="course_list"><br><br> -->
+        <div id='contenedor_filtros'></div>
     </form>
     <div class="col-sm-9" id="contenido_cursos">
         <div class="">
@@ -67,12 +62,10 @@ $indicators = local_dominosdashboard_get_indicators();
         </div>
         <div>
             <div class="row" id="contenedor_cursos">
-                <div class="col-sm-12 col-xl-12">
-                    
-                </div>
             </div>
         </div>
     </div>
+    <button onclick="imprimirGraficas()">Imprimir gráficas</button>
     <div class="col-sm-12" id="local_dominosdashboard_content"></div>
     <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>
 </div>
@@ -81,6 +74,8 @@ $indicators = local_dominosdashboard_get_indicators();
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="libs/c3.js"></script>
 <script src="dominosdashboard_scripts.js"></script>
+<script src="scripts/topdf.js"></script>
+<script src="scripts/saveSvgAsPng.js"></script>
 <script>
     var indicator;
     var item;
@@ -134,6 +129,16 @@ $indicators = local_dominosdashboard_get_indicators();
         if(indicator !== undefined){
             obtenerFiltros(indicator);
         }
+    }
+
+    function imprimirGraficas(){
+        var element = document.getElementById('contenedor_cursos');
+        html2pdf().from(element).set({
+            margin: 0,
+            filename: 'graficas.pdf',
+            html2canvas: { scale: 2 },
+            jsPDF: { orientation: 'portrait', unit: 'in', format: 'letter', compressPDF: true }
+        }).save();
     }
     function peticionFiltros(info){
         $.ajax({
