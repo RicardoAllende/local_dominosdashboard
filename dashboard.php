@@ -53,11 +53,12 @@ $indicators = local_dominosdashboard_get_indicators();
             echo "<option value='{$course->id}'>{$course->id} -> {$course->fullname}</option>";
         }
         echo "</select><br>";
-        foreach($indicators as $indicator){
-            echo "<h3>Indicador: {$indicator} </h3>";
-            echo "<div id='indicator_section_{$indicator}'></div>";
-        }
+        // foreach($indicators as $indicator){
+        //     echo "<h3>Indicador: {$indicator} </h3>";
+        //     echo "<div id='indicator_section_{$indicator}'></div>";
+        // }
         ?>
+        <div id='contenedor_filtros'></div>
     </form>
     <!--<div class="col-sm-8" id="local_dominosdashboard_content"></div>
     <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>-->
@@ -198,39 +199,65 @@ $indicators = local_dominosdashboard_get_indicators();
             obtenerFiltros(indicator);
         }
     }
-    function peticionFiltros(info) {
+    function peticionFiltros(info){
         $.ajax({
             type: "POST",
             url: "services.php",
             data: info,
             dataType: "json"
         })
-            .done(function (data) {
-                dateEnding = Date.now();
-                console.log(`Tiempo de respuesta al obtener filtros de API ${dateEnding - dateBegining} ms`);
-                console.log(data);
-                keys = Object.keys(data.data);
-                for (var index = 0; index < keys.length; index++) {
-                    clave = keys[index]
-                    var catalogo = data.data[clave];
-                    // console.log(clave, catalogo.length);
-                    $('#indicator_section_' + clave).html('');
-                    for (var j = 0; j < catalogo.length; j++) {
-                        var elementoDeCatalogo = catalogo[j];
-                        if(elementoDeCatalogo == ''){
-                        $('#indicator_section_' + clave).append(`<label><input type=\"checkbox\" name=\"${clave}[]\" 
-                        class=\"indicator_option indicator_${clave}\" onclick="obtenerGraficas('${clave}')" data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\">(vacío)</label><br>`);
-                    }else{
-                        $('#indicator_section_' + clave).append(`<label><input type=\"checkbox\" name=\"${clave}[]\" 
-                        class=\"indicator_option indicator_${clave}\" onclick="obtenerGraficas('${clave}')" data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\">${elementoDeCatalogo}</label><br>`);
-                    }
-                    }
+        .done(function(data) {
+            console.log(data);
+            keys = Object.keys(data.data);
+            // div_selector = '#indicator_section_' + clave;
+            div_selector = '#contenedor_filtros';
+            crearElementos = esVacio($(div_selector).html());
+            for (var index = 0; index < keys.length; index++) {
+                clave = keys[index]
+                var catalogo = data.data[clave];
+                heading_id = "indicatorheading" + clave;
+                collapse_id = "collapse_" + clave;
+                subfiltro_id = 'subfilter_id_' + clave;
+                console.log(clave, catalogo.length);
+                if(crearElementos){
+                    $(div_selector).append(`
+                        <div class="card">
+                            <div class="card-header cuerpo-filtro" id="${heading_id}">
+                                <h5 class="mb-0">
+                                    <input type="checkbox"><button class="btn btn-link collapsed texto-filtro"
+                                        data-toggle="collapse" style="color: white;" data-target="#${collapse_id}" aria-expanded="false"
+                                        aria-controls="${collapse_id}">
+                                        ${clave}
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="${collapse_id}" class="collapse" aria-labelledby="${heading_id}" data-parent="#contenedor_filtros">
+                                <div class="card-body subgrupo-filtro" id='${subfiltro_id}'></div>
+                            </div>
+                        </div>`);                
+                // }else{
                 }
-            })
-            .fail(function (error, error2) {
-                console.log(error);
-                console.log(error2);
-            });
+                subfiltro_id = "#" + subfiltro_id;
+                $(subfiltro_id).html('');
+                // console.log($(subfiltro_id));
+                for(var j = 0; j < catalogo.length; j++){
+                    var elementoDeCatalogo = catalogo[j];
+                    $(subfiltro_id).append(`
+                                <label class="subfiltro"><input type="checkbox" name="${clave}[]"
+                                class="indicator_option indicator_${clave}\" onclick="obtenerGraficas('${clave}')" 
+                                data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\"
+                                >
+                                 ${esVacio(elementoDeCatalogo) ? "(Vacío)" : elementoDeCatalogo}</label><br>
+                    `);
+                }
+            }
+            dateEnding = Date.now();
+            console.log(`Tiempo de respuesta al obtener filtros de API ${dateEnding - dateBegining} ms`);
+        })
+        .fail(function(error, error2) {
+            console.log(error);
+            console.log(error2);
+        });
     }
 
     function obtenerFiltros(indicator) {

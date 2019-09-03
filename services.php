@@ -36,7 +36,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
         case 'catalogue':
             if(!empty($_POST['catalogue_name'])){
                 $catalogue_name = $_POST['catalogue_name'];
-                die(local_dominosdashboard_format_response(local_dominosdashboard_get_catalogue($catalogue_name, $_POST)));
+                die(local_dominosdashboard_format_response(local_dominosdashboard_get_catalogue($catalogue_name, '', $_POST)));
             }else{
                 die(local_dominosdashboard_error_response('catalogue_name (string) not found'));
             }

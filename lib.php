@@ -296,7 +296,7 @@ function local_dominosdashboard_get_kpi_catalogue(string $key, $kpi = '', array 
                 }
                 $data = $params[$key];
                 if(is_string($data) || is_numeric($data)){
-                    $condition .= " $field = ? ";
+                    $condition = " $field = ? ";
                     array_push($conditions, $condition);
                     array_push($sqlParams, $data);
                 }elseif(is_array($data)){
@@ -391,8 +391,8 @@ function local_dominosdashboard_get_completed_activities_in_course(int $userid, 
     $context = context_course::instance($course->id);
 
     // // Get course completion data.
-    // $course = $DB->get_record('course', array('id' => $course->id));
-    // $info = new completion_info($course);
+    $course = $DB->get_record('course', array('id' => $course->id));
+    $info = new completion_info($course);
 
     // Load criteria to display.
     $completions = $course_completion_info->get_completions($userid);
@@ -429,9 +429,9 @@ function local_dominosdashboard_get_course_completion(int $userid, stdClass $cou
 
 }
 
-function local_dominosdashboard_get_module_grade(int $userid, int $moduleid){
+function local_dominosdashboard_get_module_grade(int $userid, int $moduleid, int $scale = 10){
     global $DB;
-    $grade = $default;
+    $grade = 0;
     $query = "SELECT grades.finalgrade as finalgrade, items.grademax as grademax FROM {grade_grades} grades JOIN {grade_items} items
     ON grades.itemid = items.id where items.itemtype = 'mod' AND grades.userid = {$userid} AND items.iteminstance = {$moduleid}";
     if($data = $DB->get_record_sql($query)){
@@ -509,16 +509,16 @@ function local_dominosdashboard_get_enrolled_users_ids(int $courseid){
 }
 
 function local_dominosdashboard_get_courses_with_filter(bool $allCourses = false, int $type){
-    $LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO = get_config('local_dominosdashboard', 'LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO');
-    if($LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO === false && $LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO == ''){
-        $LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO = "";
+    $LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS = get_config('local_dominosdashboard', 'LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS');
+    if($LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS === false && $LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS == ''){
+        $LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS = "";
     }
     switch ($type) {
         case LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO: // Cursos en línea
         # not in
-            $LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO = get_config('local_dominosdashboard', 'LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO');
-            if($LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO != ""){
-                $where = " AND id NOT IN ({$LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO}) ";
+            // $LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS = get_config('local_dominosdashboard', 'LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS');
+            if($LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS != ""){
+                $where = " AND id NOT IN ({$LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS}) ";
             }else{
                 $where = "";
             }
@@ -527,9 +527,9 @@ function local_dominosdashboard_get_courses_with_filter(bool $allCourses = false
         
         case LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS: // Cursos presenciales
         # where id in
-            $LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO = get_config('local_dominosdashboard', 'LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO');
-            if($LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO != ""){
-                $where = " AND id IN ({$LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO}) ";
+            // $LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS = get_config('local_dominosdashboard', 'LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS');
+            if($LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS != ""){
+                $where = " AND id IN ({$LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS}) ";
             }else{
                 return array();
                 $where = "";
@@ -552,6 +552,7 @@ function local_dominosdashboard_get_courses_with_filter(bool $allCourses = false
                 // $page->add($setting);
             }
             if(!empty($wherecourseidin)){
+                $wherecourseidin = array_unique($wherecourseidin);
                 $wherecourseidin = implode(',', $wherecourseidin);
                 $where = " AND id IN ({$wherecourseidin}) ";
                 return local_dominosdashboard_get_courses($allCourses, $where);
@@ -571,18 +572,80 @@ function local_dominosdashboard_get_courses_with_filter(bool $allCourses = false
     }
 }
 
+function local_dominosdashboard_get_kpi_overview(array $params = array(), bool $allCourses = false){
+    $kpis = local_dominosdashboard_get_KPIS();
+    $wherecourseidin = array();
+    $ids = array();
+    $configs = array();
+
+    foreach($kpis as $key => $kpi){
+        $name = 'kpi_' . $key;
+        if( $config = get_config('local_dominosdashboard', $name)){
+            if(empty($config)){
+                continue;
+            }
+            $configs[$key] = explode(',', $config);
+            $ids = array_merge($ids, explode(',', $config));
+        }
+    }
+    if(empty($ids)){
+        return array();
+    }
+    $ids = array_unique($ids);
+    $ids = implode(',', $ids);
+    $where = " AND id IN ({$ids}) ";
+    $courses = local_dominosdashboard_get_courses($allCourses, $where);
+    foreach($courses as $key => $course){
+        $courses[$key] = local_dominosdashboard_get_course_information($key, false, false, $params);
+    }
+    $response = array();
+    foreach($configs as $kpi => $config){
+        $kpi_status = new stdClass();
+        $kpi_courses = array();
+        foreach($config as $course_id){
+            array_push($kpi_courses, $courses[$course_id]);
+        }
+        switch($kpi){
+            case KPI_OPS: // 1 // Aprobado, no aprobado y destacado
+                $kpi_status->type = "CALIFICACION";
+                break;
+            case KPI_HISTORICO: // 2 retorna el número de quejas
+                $kpi_status->type = "NUMERO DE QUEJAS";
+                
+                break;
+            case KPI_SCORCARD: // 3
+                $kpi_status->type = "ROTACION";
+                break;
+        }
+        $kpi_status->name = $kpis[$kpi];
+        $kpi_status->id = $kpi;
+        $kpi_status->courses = $kpi_courses;
+        $kpi_status->status = local_dominosdashboard_get_kpi_results($kpi, $params);
+        array_push($response, $kpi_status);
+    }
+    return ['type' => 'kpi_list', 'result' => $response];
+    
+
+    if(!empty($wherecourseidin)){
+        $wherecourseidin = array_unique($wherecourseidin);
+        $wherecourseidin = implode(',', $wherecourseidin);
+        $where = " AND id IN ({$wherecourseidin}) ";
+        return local_dominosdashboard_get_courses($allCourses, $where);
+    }
+    return array();
+}
+
 /**
  * @return array
  */
 function local_dominosdashboard_get_courses_overview(int $type, array $params = array(), bool $allCourses = false){
+    if($type === LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON){
+        return local_dominosdashboard_get_kpi_overview($params, $allCourses);
+    }
     $courses = local_dominosdashboard_get_courses_with_filter($allCourses, $type);
     $courses_in_order = array();
     foreach($courses as $course){
-        if($type == LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARISON){
-            $course_information = local_dominosdashboard_get_course_information($course->id, $kpis = true, $activities = false, $params);
-        }else{
-            $course_information = local_dominosdashboard_get_course_information($course->id, $kpis = false, $activities = false, $params);
-        }
+        $course_information = local_dominosdashboard_get_course_information($course->id, $kpis = false, $activities = false, $params);        
         if(empty($course_information)){
             continue;
         }
@@ -597,7 +660,7 @@ function local_dominosdashboard_get_courses_overview(int $type, array $params = 
             }
         }
     }
-    return $courses_in_order;
+    return ['type' => 'course_list', 'result' => $courses_in_order];
 }
 
 function local_dominosdashboard_get_course_chart(int $courseid){
@@ -614,7 +677,7 @@ function local_dominosdashboard_get_course_color(int $courseid){
     return "#006491";
 }
 
-define('LDD_D', true);
+define('RETURN_RANDOM_DATA', true);
 define('MAX_RANDOM_NUMBER', 500);
 function local_dominosdashboard_get_course_information(int $courseid, bool $get_kpis = false, bool $get_activities = false, array $params = array()){
     global $DB;
@@ -628,7 +691,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     $response->chart = local_dominosdashboard_get_course_chart($courseid);
     $response->title = $course->fullname;
     $response->status = 'ok';
-    if(LDD_D){
+    if(RETURN_RANDOM_DATA){
         $response->enrolled_users = random_int(100, MAX_RANDOM_NUMBER);
         $response->approved_users = random_int(5, $response->enrolled_users);
         $response->not_viewed = random_int(0, $response->enrolled_users - $response->approved_users);
@@ -654,9 +717,6 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         }
         return $response;
     }
-    if($get_activities){
-        $response->activities = local_dominosdashboard_get_activities_completion($courseid);
-    }
     if($get_kpis){
         $response->kpi = local_dominosdashboard_get_kpi_info($courseid, $params);
     }
@@ -670,6 +730,9 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         $response->not_approved_users = $response->enrolled_users - $response->approved_users;
         $response->value = 0;
         return $response;
+    }
+    if($get_activities){
+        $response->activities = local_dominosdashboard_get_activities_completion($courseid, $userids);
     }
     $num_users = count($userids);
     $userids = implode(',', $userids);
@@ -755,7 +818,7 @@ function local_dominosdashboard_get_kpi_results($kpi, $params){
                 }
                 $data = $params[$key];
                 if(is_string($data) || is_numeric($data)){
-                    $condition .= " $field = ? ";
+                    $condition = " $field = ? ";
                     array_push($conditions, $condition);
                     array_push($sqlParams, $data);
                 }elseif(is_array($data)){
@@ -931,7 +994,7 @@ function local_dominosdashboard_percentage_of(int $number, int $total, int $deci
     }
 }
 
-function local_dominosdashboard_get_course_grade_item_id(int $courseid, array $params){
+function local_dominosdashboard_get_course_grade_item_id(int $courseid){
     global $DB;
     return $DB->get_field('grade_items', 'id', array('courseid' => $courseid, 'itemtype' => 'course'));
 }
@@ -1427,8 +1490,26 @@ function local_dominosdashboard_insert_historic_record(stdClass $course_informat
 }
 
 function local_dominosdashboard_get_historic_reports(int $courseid){
+    if(RETURN_RANDOM_DATA){
+        $response = array();
+        for($i = 0; $i < 10; $i++){
+            $temp = new stdClass();
+            $temp->id = $i;
+            $temp->courseid = $courseid;
+            $temp->shortname = "Curso " . $i;
+            $temp->fullname = "" . $i;
+            $temp->enrolled_users = random_int(0, MAX_RANDOM_NUMBER);
+            $temp->approved_users = random_int(0, $temp->enrolled_users);
+            // $temp->filterid = "";
+            // $temp->filtertext = "";
+            // $temp->timecreated = "";
+            $temp->fecha = date('d-m-Y');
+            array_push($response, $temp);
+        }
+        return $response;
+    }
     global $DB;
-    return $DB->get_records('dominos_historico', array('courseid' => $courseid), '', '*, from_unixtime(timecreated) as fecha');
+    return $DB->get_records('dominos_historico', array('courseid' => $courseid), ' fecha desc ', '*, from_unixtime(timecreated) as fecha' , $limitfrom = 0, $limintnum = 10);
     // Pass: Subitus2019! ALTER TABLE mdl_dominos_historico CHANGE COLUMN course courseid BIGINT(10) NULL DEFAULT NULL AFTER id;
 }
 

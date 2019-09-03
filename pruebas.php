@@ -56,14 +56,15 @@ echo $OUTPUT->header();
 //     _print('Actividades del curso ' . $course->fullname, local_dominosdashboard_get_activities_completion($course->id, "1,2,3,4,5,6"));
 // }
 
-foreach(local_dominosdashboard_get_KPIS() as $kpi_key => $kpi){
-    echo "<h1>Tipo de KPI {$kpi}<h1>";
-    foreach(local_dominosdashboard_get_kpi_indicators() as $indicator){
-        $catalogue = local_dominosdashboard_get_kpi_catalogue($indicator, $kpi_key);
-        $elements = count($catalogue);
-        echo "<h4>Catálogo <<{$indicator}>> tiene {$elements} elementos<h4>";
-    }
-}
+_print(local_dominosdashboard_get_historic_reports(1));
+// foreach(local_dominosdashboard_get_KPIS() as $kpi_key => $kpi){
+//     echo "<h1>Tipo de KPI {$kpi}<h1>";
+//     foreach(local_dominosdashboard_get_kpi_indicators() as $indicator){
+//         $catalogue = local_dominosdashboard_get_kpi_catalogue($indicator, $kpi_key);
+//         $elements = count($catalogue);
+//         echo "<h4>Catálogo <<{$indicator}>> tiene {$elements} elementos<h4>";
+//     }
+// }
 
 // foreach(local_dominosdashboard_get_courses() as $course){
 //     echo $OUTPUT->heading("Curso: " . $course->fullname);

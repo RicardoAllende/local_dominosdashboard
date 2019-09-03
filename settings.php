@@ -173,9 +173,9 @@ if ($hassiteconfig) {
 
             $page = new admin_settingpage($ldm_pluginname . 'coursetypestab', get_string('coursetypestab', $ldm_pluginname));
 
-            $name = $ldm_pluginname . '/' . 'LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO';
-            $title = get_string('LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO', $ldm_pluginname);
-            $description = get_string('LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO' . '_desc', $ldm_pluginname);
+            $name = $ldm_pluginname . '/' . 'LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS';
+            $title = get_string('LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS', $ldm_pluginname);
+            $description = get_string('LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS' . '_desc', $ldm_pluginname);
             $setting = new admin_setting_configmultiselect($name, $title, $description, array(), $courses_min);
             $page->add($setting);
 
