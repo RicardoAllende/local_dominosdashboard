@@ -95,7 +95,7 @@ $indicators = local_dominosdashboard_get_indicators();
     </div>
     
     
-    <button onclick="foto()">Imprimir texto</button>
+    <button onclick="window.print()">Imprimir texto</button>
     
 
     
@@ -597,28 +597,7 @@ $indicators = local_dominosdashboard_get_indicators();
         }
     }
     
-    function foto(){
-        var ventana = window.open(),
-    css = document.createElement("style"),
-    foo = document.querySelector("#data_card4"),
-    ajax = function(url, elem, callback){
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", url, true);
-        xhr.send();
-        xhr.addEventListener("load", function(){
-            if (this.status == 200){
-                elem.innerHTML = this.responseText;
-                callback();
-            }
-        }, false);
-    };
- 
-ajax("estilos.css", css, function(){
-    ventana.document.body.appendChild(css);
-    ventana.document.body.appendChild(foo);
-    ventana.print();
-});
-    }
+    
 
 </script>
 
