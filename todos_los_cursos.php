@@ -278,7 +278,7 @@ $indicators = local_dominosdashboard_get_indicators();
                         </div>
                     </div>
                 </div>`);
-        crearGraficaDeBarras('#' + id_para_Grafica, curso);
+        return crearGraficaDeCurso('#' + id_para_Grafica, curso);
     }
 
     function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos){
@@ -309,32 +309,44 @@ $indicators = local_dominosdashboard_get_indicators();
         });
     }
 
-    function crearGraficaDeBarras(_bindto, curso){
-        var nombre_columnas = ["Inscritos", "Aprobados", "No iniciaron el curso"];
-        var chartc = c3.generate({
-                data: {
-                    columns: [
-                        ['Inscritos', curso.enrolled_users],
-                        ['Aprobados', curso.approved_users],
-                        ['No iniciaron el curso', curso.not_viewed]
-                    ],
-                    type: 'bar'
-                },
-                bindto: _bindto,
-                tooltip: {
-                    format: {
-                        title: function (d) {
-                            if(nombre_columnas[d] !== undefined){
-                                return nombre_columnas[d];
-                            }else{
-                                return "_";
-                            }
-                        },
-                    }
+    function crearGraficaDeCurso(_bindto, curso){
+        switch(curso.chart){
+            case 'pie':
+            case 'bar':
+                _columns = [
+                    ['Inscritos', curso.enrolled_users],
+                    ['Aprobados', curso.approved_users],
+                    ['No iniciaron el curso', curso.not_viewed]
+                ];
+                var nombre_columnas = ["Inscritos", "Aprobados", "No iniciaron el curso"];
+            break;
+            case 'gauge':
+                _columns  = [ ['Aprobados', 30] ];
+                var nombre_columnas = ["Aprobados"];
+            break;
+            default: 
+                return;
+            break;
+        }
+        return c3.generate({
+            data: {
+                columns: _columns,
+                type: curso.chart,
+            },
+            bindto: _bindto,
+            tooltip: {
+                format: {
+                    title: function (d) { 
+                        if(nombre_columnas[d] !== undefined){
+                            return nombre_columnas[d];
+                        }else{
+                            return "_";
+                        }
+                    },
                 }
-            });
+            }
+        });
     }
-
 
 </script>
 <link href="estilos.css" rel="stylesheet">

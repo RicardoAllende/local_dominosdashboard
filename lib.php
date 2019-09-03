@@ -177,7 +177,7 @@ DEFINE("COMPLETION_BY_AVG", 6);
 
 DEFINE('DOMINOSDASHBOARD_INDICATORS', 'regiones/distritos/entrenadores/tiendas/puestos');
 DEFINE('DOMINOSDASHBOARD_INDICATORS_FOR_KPIS', 'regiones/distritos/tiendas/periodos');
-DEFINE('DOMINOSDASHBOARD_CHARTS', 'bar/donut/chart3/chart4');
+DEFINE('DOMINOSDASHBOARD_CHARTS', ['bar' => 'Barras', 'pie' => 'Pay', 'gauge' => 'Círculo']'bar/pie/gauge');
 
 
 function local_dominosdashboard_relate_column_with_fields(array $columns, array $requiredFields, bool &$hasRequiredColumns){
@@ -1060,11 +1060,7 @@ function local_dominosdashboard_get_kpi_indicators(string $from = ''){
 }
 
 function local_dominosdashboard_get_charts(){
-    $response = array();
-    foreach(explode('/', DOMINOSDASHBOARD_CHARTS) as $chart){
-        $response[$chart] = $chart;
-    }
-    return $response;
+    return DOMINOSDASHBOARD_CHARTS;
 }
 
 function local_dominosdashboard_get_profile_fields(){
