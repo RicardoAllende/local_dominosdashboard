@@ -53,10 +53,6 @@ $indicators = local_dominosdashboard_get_indicators();
             echo "<option value='{$course->id}'>{$course->id} -> {$course->fullname}</option>";
         }
         echo "</select><br>";
-        // foreach($indicators as $indicator){
-        //     echo "<h3>Indicador: {$indicator} </h3>";
-        //     echo "<div id='indicator_section_{$indicator}'></div>";
-        // }
         ?>
         <div id='contenedor_filtros'></div>
     </form>
