@@ -44,28 +44,28 @@ $courses = local_dominosdashboard_get_courses();
 $indicators = local_dominosdashboard_get_indicators();
 ?>
 <div class="row">
-    <form id="filter_form" method="post" action="services.php" class='col-sm-4'>
-        <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br>
+    <form id="filter_form" method="post" action="services.php" class='col-sm-3'>
+        <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br>
         <span class="btn btn-info" onclick="obtenerGraficas()">Volver a simular obtención de gráficas</span><br><br>
         <?php
         echo "<br><select class='form-control course-selector' name='courseid'>";
         foreach($courses as $course){
             echo "<option value='{$course->id}'>{$course->id} -> {$course->fullname}</option>";
         }
-        echo "</select>";
+        echo "</select><br>";
         foreach($indicators as $indicator){
             echo "<h3>Indicador: {$indicator} </h3>";
             echo "<div id='indicator_section_{$indicator}'></div>";
         }
         ?>
     </form>
-    <div class="col-sm-8" id="local_dominosdashboard_content"></div>
-    <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>
-    <div class="col-sm-12" id="data_ob"></div>
-    <div class="col-sm-12" id="data_card"></div>
-    <div class="col-sm-12" id="data_card2"></div>
-    <div class="col-sm-12" id="data_card3"></div>
-    <div class="col-sm-12" id="data_card4"></div>
+    <!--<div class="col-sm-8" id="local_dominosdashboard_content"></div>
+    <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>-->
+    
+    <div class="col-sm-12 col-xl-6" id="data_card2"></div>
+    <div class="col-sm-12 col-xl-6" id="data_card3"></div>    
+    <div class="col-sm-12 col-xl-6" id="data_card4"></div>
+    
     
 
     <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
