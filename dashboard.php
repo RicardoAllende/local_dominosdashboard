@@ -61,14 +61,13 @@ $indicators = local_dominosdashboard_get_indicators();
     </form>
     <!--<div class="col-sm-8" id="local_dominosdashboard_content"></div>
     <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>-->
-    
-    <div class="col-sm-12 col-xl-6" id="data_card2"></div>
-    <div class="col-sm-12 col-xl-6" id="data_card3"></div>    
-    <div class="col-sm-12 col-xl-6" id="data_card4"></div>
-    
-    
-
-    <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
+    <div class="row col-sm-9">
+    <div class="col-sm-6" id="data_card2"></div>
+    <div class="col-sm-6" id="data_card3"></div>    
+    <div class="col-sm-6" id="data_card4"></div>
+    </div>
+    <div class="row col-sm-9">
+        <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
         <h1 style="text-align: center;">Ranking de actividades</h1>
     </div>
     <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
@@ -93,6 +92,13 @@ $indicators = local_dominosdashboard_get_indicators();
         </table>
     </div>
 
+    </div>
+    
+    
+    <button onclick="foto()">Imprimir texto</button>
+    
+
+    
 </div>
 <?php echo local_dominosdashboard_get_ideales_as_js_script(); ?>
 
@@ -250,7 +256,7 @@ $indicators = local_dominosdashboard_get_indicators();
         var c = parseInt(a) + parseInt(b);
         
         
-        document.getElementById("data_card2").innerHTML = "<div class='col-sm-12 col-xl-6'>"+
+        document.getElementById("data_card2").innerHTML = "<div class='col-sm-12'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
 
 
@@ -337,7 +343,7 @@ $indicators = local_dominosdashboard_get_indicators();
         var e = parseInt(d) / parseInt(c);
         
         
-        document.getElementById("data_card3").innerHTML = "<div class='col-sm-12 col-xl-6'>"+
+        document.getElementById("data_card3").innerHTML = "<div class='col-sm-12'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
 
 
@@ -419,7 +425,7 @@ $indicators = local_dominosdashboard_get_indicators();
         //console.log("entra imprimir2");
         // myJSON = JSON.parse(JSON.stringify(data));
         // console.log(myJSON);        
-        document.getElementById("data_card4").innerHTML = "<div class='col-sm-12 col-xl-6'>"+
+        document.getElementById("data_card4").innerHTML = "<div class='col-sm-12'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
 
 
@@ -590,8 +596,33 @@ $indicators = local_dominosdashboard_get_indicators();
             return;
         }
     }
+    
+    function foto(){
+        var ventana = window.open(),
+    css = document.createElement("style"),
+    foo = document.querySelector("#data_card4"),
+    ajax = function(url, elem, callback){
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.send();
+        xhr.addEventListener("load", function(){
+            if (this.status == 200){
+                elem.innerHTML = this.responseText;
+                callback();
+            }
+        }, false);
+    };
+ 
+ajax("estilos.css", css, function(){
+    ventana.document.body.appendChild(css);
+    ventana.document.body.appendChild(foo);
+    ventana.print();
+});
+    }
 
 </script>
+
+
 
 
 

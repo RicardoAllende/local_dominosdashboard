@@ -69,6 +69,7 @@ $indicators = local_dominosdashboard_get_indicators();
     <div class="col-sm-12" id="local_dominosdashboard_content"></div>
     <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>
 </div>
+
 <?php echo local_dominosdashboard_get_ideales_as_js_script(); echo local_dominosdashboard_get_course_tabs_as_js_script(); ?>
 <link href="libs/c3.css" rel="stylesheet">
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
@@ -166,7 +167,7 @@ $indicators = local_dominosdashboard_get_indicators();
                             <div class="card-header cuerpo-filtro" id="${heading_id}">
                                 <h5 class="mb-0">
                                     <input type="checkbox"><button class="btn btn-link collapsed texto-filtro"
-                                        data-toggle="collapse" data-target="#${collapse_id}" aria-expanded="false"
+                                        data-toggle="collapse" style="color: white;" data-target="#${collapse_id}" aria-expanded="false"
                                         aria-controls="${collapse_id}">
                                         ${clave}
                                     </button>
@@ -184,7 +185,7 @@ $indicators = local_dominosdashboard_get_indicators();
                 for(var j = 0; j < catalogo.length; j++){
                     var elementoDeCatalogo = catalogo[j];
                     $(subfiltro_id).append(`
-                                <label class="subfiltro" style='color: black;'><input type="checkbox" name="${clave}[]"
+                                <label class="subfiltro"><input type="checkbox" name="${clave}[]"
                                 class="indicator_option indicator_${clave}\" onclick="obtenerGraficas('${clave}')" 
                                 data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\"
                                 >
