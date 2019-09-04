@@ -46,7 +46,7 @@ $indicators = local_dominosdashboard_get_indicators();
 <div class="row">
     <form id="filter_form" method="post" action="services.php" class='col-sm-3'>
         <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br>
-        <span class="btn btn-info" onclick="obtenerGraficas()">Volver a simular obtención de gráficas</span><br><br>
+        <span class="btn btn-info" onclick="obtenerInformacion()">Volver a simular obtención de gráficas</span><br><br>
         <?php
         echo "<br><select class='form-control course-selector' name='courseid'>";
         foreach($courses as $course){
@@ -68,7 +68,7 @@ $indicators = local_dominosdashboard_get_indicators();
             </div>
         </div>
         <div class="col-sm-6" id="data_card2"></div>
-        <div class="col-sm-6" id="data_card3"></div>    
+        <div class="col-sm-6" id="data_card3"></div>
         <div class="col-sm-6" id="data_card4"></div>
 
         <div class="col-sm-12 row" id="ranking_dm"></div>
@@ -76,7 +76,8 @@ $indicators = local_dominosdashboard_get_indicators();
         <button onclick="imprimir()">Imprimir texto</button>
         
 
-        
+
+
     </div>
 </div>
 <?php echo local_dominosdashboard_get_ideales_as_js_script(); ?>
@@ -97,8 +98,8 @@ $indicators = local_dominosdashboard_get_indicators();
         try {
             $('.dominosdashboard-ranking').hide();
             require(['jquery'], function ($) {
-                $('.course-selector').change(function () { obtenerGraficas() });
-                obtenerGraficas();
+                $('.course-selector').change(function () { obtenerInformacion() });
+                obtenerInformacion();
                 obtenerFiltros();
             });
         } catch (error) {
@@ -114,7 +115,7 @@ $indicators = local_dominosdashboard_get_indicators();
     }
     var _kpi;
     var _kpis;
-    function obtenerGraficas(indicator) {
+    function obtenerInformacion(indicator) {
         // console.log("Obteniendo gráficas");
         informacion = $('#filter_form').serializeArray();
         informacion.push({ name: 'request_type', value: 'course_completion' });
@@ -177,78 +178,6 @@ $indicators = local_dominosdashboard_get_indicators();
             obtenerFiltros(indicator);
         }
     }
-    function peticionFiltros(info){
-        $.ajax({
-            type: "POST",
-            url: "services.php",
-            data: info,
-            dataType: "json"
-        })
-        .done(function(data) {
-            console.log(data);
-            keys = Object.keys(data.data);
-            // div_selector = '#indicator_section_' + clave;
-            div_selector = '#contenedor_filtros';
-            crearElementos = esVacio($(div_selector).html());
-            for (var index = 0; index < keys.length; index++) {
-                clave = keys[index]
-                var catalogo = data.data[clave];
-                heading_id = "indicatorheading" + clave;
-                collapse_id = "collapse_" + clave;
-                subfiltro_id = 'subfilter_id_' + clave;
-                console.log(clave, catalogo.length);
-                if(crearElementos){
-                    $(div_selector).append(`
-                        <div class="card">
-                            <div class="card-header cuerpo-filtro" id="${heading_id}">
-                                <h5 class="mb-0">
-                                    <input type="checkbox"><button class="btn btn-link collapsed texto-filtro"
-                                        data-toggle="collapse" style="color: white;" data-target="#${collapse_id}" aria-expanded="false"
-                                        aria-controls="${collapse_id}">
-                                        ${clave}
-                                    </button>
-                                </h5>
-                            </div>
-                            <div id="${collapse_id}" class="collapse" aria-labelledby="${heading_id}" data-parent="#contenedor_filtros">
-                                <div class="card-body subgrupo-filtro" id='${subfiltro_id}'></div>
-                            </div>
-                        </div>`);                
-                // }else{
-                }
-                subfiltro_id = "#" + subfiltro_id;
-                $(subfiltro_id).html('');
-                // console.log($(subfiltro_id));
-                for(var j = 0; j < catalogo.length; j++){
-                    var elementoDeCatalogo = catalogo[j];
-                    $(subfiltro_id).append(`
-                                <label class="subfiltro"><input type="checkbox" name="${clave}[]"
-                                class="indicator_option indicator_${clave}\" onclick="obtenerGraficas('${clave}')" 
-                                data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\"
-                                >
-                                 ${esVacio(elementoDeCatalogo) ? "(Vacío)" : elementoDeCatalogo}</label><br>
-                    `);
-                }
-            }
-            dateEnding = Date.now();
-            console.log(`Tiempo de respuesta al obtener filtros de API ${dateEnding - dateBegining} ms`);
-        })
-        .fail(function(error, error2) {
-            console.log(error);
-            console.log(error2);
-        });
-    }
-
-    function obtenerFiltros(indicator) {
-        // console.log("Obteniendo filtros");
-        info = $('#filter_form').serializeArray();
-        dateBegining = Date.now();
-        info.push({ name: 'request_type', value: 'user_catalogues' });
-        if (indicator != undefined) {
-            info.push({ name: 'selected_filter', value: indicator });
-        }
-        peticionFiltros(info);
-    }
-
 
     //-------------------------------------------------------------------------------------------------------KPIS----------------------------------------------------------------------------------------------------
     //---------------------------OPS MÉXICO W
@@ -259,8 +188,8 @@ $indicators = local_dominosdashboard_get_indicators();
         var a = kpi.value["Aprobado"];
         var b = kpi.value["No aprobado"];
         var c = parseInt(a) + parseInt(b);
-        
-        
+
+
         document.getElementById("data_card2").innerHTML = "<div class='col-sm-12'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
 
@@ -299,9 +228,9 @@ $indicators = local_dominosdashboard_get_indicators();
         $('#apro2').html(kpi.value["Aprobado"]);//Aprobados
         $('#no_apro2').html(kpi.value["No aprobado"]);//No Aprobados
 
-          
-        
-        
+
+
+
         //$('#chart').html(myJSON.status);//Chart
         //$('#tusuario').html(myJSON.data["enrolled_users"]);//Total de usuarios
         $('#titulo_grafica2').html(kpi.kpi_name);//Titulo grafica
@@ -310,7 +239,7 @@ $indicators = local_dominosdashboard_get_indicators();
     function addChartc2(kpi) {
         // myJSON = JSON.parse(JSON.stringify(data));
         //console.log(myJSON);
-        if(esVacio(kpi.value)){
+        if (esVacio(kpi.value)) {
             return false;
         }
         var chartc = c3.generate({
@@ -335,8 +264,7 @@ $indicators = local_dominosdashboard_get_indicators();
             }
         });
     }
-    
-    //----------------------------------------------------------Reporte de Casos Histórico por tiendas
+
     function imprimirCards3(kpi) {
         //console.log("entra imprimir2");
         // myJSON = JSON.parse(JSON.stringify(data));
@@ -346,8 +274,8 @@ $indicators = local_dominosdashboard_get_indicators();
         var c = parseInt(a) + parseInt(b);
         var d = parseInt(b) * 100;
         var e = parseInt(d) / parseInt(c);
-        
-        
+
+
         document.getElementById("data_card3").innerHTML = "<div class='col-sm-12'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
 
@@ -387,13 +315,13 @@ $indicators = local_dominosdashboard_get_indicators();
         $('#no_apro3').html(_kpis[0].value["No aprobado"]);// No Aprobados
         $('#tusuario3').html(informacion_del_curso.data.not_viewed);//No visto
 
-       
-        
+
+
         //$('#chart').html(myJSON.status);//Chart
         //$('#tusuario').html(myJSON.data["enrolled_users"]);//Total de usuarios
         $('#titulo_grafica3').html(kpi.kpi_name);//Titulo grafica
     }
-    
+
     function addChartc3(kpi) {
         // myJSON = JSON.parse(JSON.stringify(data));
         //console.log(myJSON);
@@ -406,7 +334,7 @@ $indicators = local_dominosdashboard_get_indicators();
         var chartc = c3.generate({
             data: {
                 columns: [
-                    ['No Aprobado',f],
+                    ['No Aprobado', f],
                     ['Promedio de no. de quejas', _kpi.value]
                 ],
                 type: 'bar',
@@ -424,8 +352,7 @@ $indicators = local_dominosdashboard_get_indicators();
             }
         });
     }
-    
-    //---------------------------------------------------------------------------------------------Scorcard RRHH
+
     function imprimirCards4(kpi) {
         //console.log("entra imprimir2");
         // myJSON = JSON.parse(JSON.stringify(data));
@@ -469,13 +396,13 @@ $indicators = local_dominosdashboard_get_indicators();
         $('#no_apro4').html(_kpis[0].value["No aprobado"]);//No Aprobados
         $('#tusuario4').html(informacion_del_curso.data.not_viewed);//No visto
 
-       
-        
+
+
         //$('#chart').html(myJSON.status);//Chart
         //$('#tusuario').html(myJSON.data["enrolled_users"]);//Total de usuarios
         $('#titulo_grafica4').html(kpi.kpi_name);//Titulo grafica
     }
-    
+
     function addChartc4(kpi) {
         // myJSON = JSON.parse(JSON.stringify(data));
         //console.log(myJSON);
@@ -506,135 +433,6 @@ $indicators = local_dominosdashboard_get_indicators();
             }
         });
     }
-    
-    
-    //---------------------------------------------------------------------------------------------------------------------------------------------
-
-    function imprimirRanking(div, info) {
-        var colorTop = "#29B6F6";
-        var colorBottom = "#FF6F00";
-        ranking_top         = "#dominosdashboard-ranking-top";
-        ranking_bottom      = "#dominosdashboard-ranking-bottom";
-        ranking_top_body    = "#tbody-ranking-top";
-        ranking_bottom_body = "#tbody-ranking-bottom";
-        ranking_clase       = ".dominosdashboard-ranking";
-        ranking_titulo      = "#dominosdashboard-ranking-title";
-        $(div).html('');
-        if(Array.isArray(info.activities)){
-            activities = info.activities;
-            num_activities = info.activities.length;
-            enrolled_users = parseInt(info.enrolled_users);
-            if(enrolled_users < 1){
-                return false;
-            }
-            if(num_activities >= 6){ // Se muestran 2 rankings
-                $(div).append(`
-                        <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
-                            <h1 style="text-align: center;">Ranking de actividades</h1>
-                        </div>
-                        <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
-                            <table frame="void" rules="rows" style="width:100%">
-                                <tr class="rankingt">
-                                    <th>#</th>
-                                    <th>Actividades</th>
-                                    <th>Aprobados</th>
-                                </tr>
-                                <tbody id="tbody-ranking-top"></tbody>
-                            </table>
-                        </div>
-                        <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-bottom">
-                            <table frame="void" rules="rows" style="width:100%">
-                                <tr class="rankingt">
-                                    <th>#</th>
-                                    <th>Actividades</th>
-                                    <th>No Aprobados</th>
-                                </tr>
-                                <tbody id="tbody-ranking-bottom"></tbody>
-                            </table>
-                        </div>    
-                    `);
-                var contenido = "";
-                for(var i = 0; i < 3; i++){
-                    var elemento = activities[i];
-                    percentage = Math.floor(elemento.completed / enrolled_users * 100);
-                    contenido += `
-                    <tr>
-                        <td>${i + 1}</td>
-                        <td>${elemento.title}</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" style="width: ${percentage}%; background: ${colorTop}; color: white; border-radius: 5px; text-align: center;">${percentage}%</div>
-                            </div>
-                        </td>
-                    </tr>`;
-                }
-                $(ranking_top_body).html(contenido);
-                $(ranking_bottom_body).html('');
-                var contenido = "";
-                for(var i = 1; i <= 3; i++){
-                    var elemento = activities[num_activities - i];
-                    notCompleted = enrolled_users - elemento.completed;
-                    percentage = Math.floor(notCompleted / enrolled_users * 100);
-                    contenido += `
-                    <tr>
-                        <td>${i}</td>
-                        <td>${elemento.title}</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" style="width: ${percentage}%; background: ${colorBottom}; color: white;border-radius: 5px; text-align: center;">${percentage}%</div>
-                            </div>
-                        </td>
-                    </tr>`;
-                }
-                $(ranking_bottom_body).html(contenido);
-                return;
-            }else if(num_activities > 0){ // Sólo se muestra un ranking
-                $(div).append(`
-                        <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
-                            <h1 style="text-align: center;">Ranking de actividades</h1>
-                        </div>
-
-                        <div class="col-sm-8 offset-sm-4 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
-                            <table frame="void" rules="rows" style="width:100%">
-                                <tr class="rankingt">
-                                    <th>#</th>
-                                    <th>Actividades</th>
-                                    <th>Aprobados</th>
-                                </tr>
-                                <tbody id="tbody-ranking-top"></tbody>
-                            </table>
-                        </div>  
-                    `);
-                var contenido = "";
-                for(var i = 0; i < 3; i++){
-                    if(activities[i] == undefined){
-                        continue;
-                    }
-                    var elemento = activities[i];
-                    percentage = Math.floor(elemento.completed / enrolled_users * 100);
-                    contenido += `
-                    <tr>
-                        <td>${i}</td>
-                        <td>${elemento.title}</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" style="width: ${percentage}%; background: ${colorTop}; color: white; border-radius: 5px; text-align: center;">${percentage}%</div>
-                            </div>
-                        </td>
-                    </tr>`;
-                }
-                $(ranking_top_body).html(contenido);
-                return;
-            }
-            return;
-        }
-    }
-
-    function imprimir(){
-        window.print();
-    }
-    
-    
 
 </script>
 

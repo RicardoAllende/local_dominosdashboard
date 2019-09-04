@@ -324,3 +324,202 @@ function crearGraficaDeCursokpi(_bindto, curso, kpi){
         }
     });
 }
+
+function peticionFiltros(info){
+    $.ajax({
+        type: "POST",
+        url: "services.php",
+        data: info,
+        dataType: "json"
+    })
+    .done(function(data) {
+        console.log(data);
+        keys = Object.keys(data.data);
+        // div_selector = '#indicator_section_' + clave;
+        div_selector = '#contenedor_filtros';
+        crearElementos = esVacio($(div_selector).html());
+        for (var index = 0; index < keys.length; index++) {
+            clave = keys[index]
+            var catalogo = data.data[clave];
+            heading_id = "indicatorheading" + clave;
+            collapse_id = "collapse_" + clave;
+            subfiltro_id = 'subfilter_id_' + clave;
+            console.log(clave, catalogo.length);
+            if(crearElementos){
+                $(div_selector).append(`
+                    <div class="card">
+                        <div class="card-header cuerpo-filtro" id="${heading_id}">
+                            <h5 class="mb-0">
+                                <input type="checkbox"><button class="btn btn-link collapsed texto-filtro"
+                                    data-toggle="collapse" style="color: white;" data-target="#${collapse_id}" aria-expanded="false"
+                                    aria-controls="${collapse_id}">
+                                    ${clave}
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="${collapse_id}" class="collapse" aria-labelledby="${heading_id}" data-parent="#contenedor_filtros">
+                            <div class="card-body subgrupo-filtro" id='${subfiltro_id}'></div>
+                        </div>
+                    </div>`);                
+            // }else{
+            }
+            subfiltro_id = "#" + subfiltro_id;
+            $(subfiltro_id).html('');
+            // console.log($(subfiltro_id));
+            for(var j = 0; j < catalogo.length; j++){
+                var elementoDeCatalogo = catalogo[j];
+                $(subfiltro_id).append(`
+                            <label class="subfiltro"><input type="checkbox" name="${clave}[]"
+                            class="indicator_option indicator_${clave}\" onclick="obtenerInformacion('${clave}')" 
+                            data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\"
+                            >
+                             ${esVacio(elementoDeCatalogo) ? " (Vacío)" : elementoDeCatalogo}</label><br>
+                `);
+            }
+        }
+        dateEnding = Date.now();
+        console.log(`Tiempo de respuesta al obtener filtros de API ${dateEnding - dateBegining} ms`);
+    })
+    .fail(function(error, error2) {
+        console.log(error);
+        console.log(error2);
+    });
+}
+function obtenerFiltros(indicator) {
+    // console.log("Obteniendo filtros");
+    info = $('#filter_form').serializeArray();
+    dateBegining = Date.now();
+    info.push({ name: 'request_type', value: 'user_catalogues' });
+    if (indicator != undefined) {
+        info.push({ name: 'selected_filter', value: indicator });
+    }
+    peticionFiltros(info);
+}
+
+function imprimirRanking(div, info) {
+    var colorTop = "#29B6F6";
+    var colorBottom = "#FF6F00";
+    ranking_top         = "#dominosdashboard-ranking-top";
+    ranking_bottom      = "#dominosdashboard-ranking-bottom";
+    ranking_top_body    = "#tbody-ranking-top";
+    ranking_bottom_body = "#tbody-ranking-bottom";
+    ranking_clase       = ".dominosdashboard-ranking";
+    ranking_titulo      = "#dominosdashboard-ranking-title";
+    $(div).html('');
+    if(Array.isArray(info.activities)){
+        activities = info.activities;
+        num_activities = info.activities.length;
+        enrolled_users = parseInt(info.enrolled_users);
+        if(enrolled_users < 1){
+            return false;
+        }
+        if(num_activities >= 6){ // Se muestran 2 rankings
+            $(div).append(`
+                    <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
+                        <h1 style="text-align: center;">Ranking de actividades</h1>
+                    </div>
+                    <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
+                        <table frame="void" rules="rows" style="width:100%">
+                            <tr class="rankingt">
+                                <th>#</th>
+                                <th>Actividades</th>
+                                <th>Aprobados</th>
+                            </tr>
+                            <tbody id="tbody-ranking-top"></tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-bottom">
+                        <table frame="void" rules="rows" style="width:100%">
+                            <tr class="rankingt">
+                                <th>#</th>
+                                <th>Actividades</th>
+                                <th>No Aprobados</th>
+                            </tr>
+                            <tbody id="tbody-ranking-bottom"></tbody>
+                        </table>
+                    </div>    
+                `);
+            var contenido = "";
+            for(var i = 0; i < 3; i++){
+                var elemento = activities[i];
+                percentage = Math.floor(elemento.completed / enrolled_users * 100);
+                contenido += `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${elemento.title}</td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: ${percentage}%; background: ${colorTop}; color: white; border-radius: 5px; text-align: center;">${percentage}%</div>
+                        </div>
+                    </td>
+                </tr>`;
+            }
+            $(ranking_top_body).html(contenido);
+            $(ranking_bottom_body).html('');
+            var contenido = "";
+            for(var i = 1; i <= 3; i++){
+                var elemento = activities[num_activities - i];
+                notCompleted = enrolled_users - elemento.completed;
+                percentage = Math.floor(notCompleted / enrolled_users * 100);
+                contenido += `
+                <tr>
+                    <td>${i}</td>
+                    <td>${elemento.title}</td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: ${percentage}%; background: ${colorBottom}; color: white;border-radius: 5px; text-align: center;">${percentage}%</div>
+                        </div>
+                    </td>
+                </tr>`;
+            }
+            $(ranking_bottom_body).html(contenido);
+            return;
+        }else if(num_activities > 0){ // Sólo se muestra un ranking
+            $(div).append(`
+                    <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
+                        <h1 style="text-align: center;">Ranking de actividades</h1>
+                    </div>
+
+                    <div class="col-sm-8 offset-sm-4 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
+                        <table frame="void" rules="rows" style="width:100%">
+                            <tr class="rankingt">
+                                <th>#</th>
+                                <th>Actividades</th>
+                                <th>Aprobados</th>
+                            </tr>
+                            <tbody id="tbody-ranking-top"></tbody>
+                        </table>
+                    </div>  
+                `);
+            var contenido = "";
+            for(var i = 0; i < 3; i++){
+                if(activities[i] == undefined){
+                    continue;
+                }
+                var elemento = activities[i];
+                percentage = Math.floor(elemento.completed / enrolled_users * 100);
+                contenido += `
+                <tr>
+                    <td>${i}</td>
+                    <td>${elemento.title}</td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: ${percentage}%; background: ${colorTop}; color: white; border-radius: 5px; text-align: center;">${percentage}%</div>
+                        </div>
+                    </td>
+                </tr>`;
+            }
+            $(ranking_top_body).html(contenido);
+            return;
+        }
+        return;
+    }
+}
+
+// id = "data_card2";
+// var mywindow = window.open('', 'PRINT', 'height=768,width=1366');
+
+// mywindow.document.write('<html><head><title>' + document.title  + '</title><link src="estilos.css"><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">');
+// mywindow.document.write('</head><body>');
+// mywindow.document.write(document.getElementById(id).innerHTML);
+// mywindow.document.write('</body></html>');
