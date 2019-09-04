@@ -58,8 +58,8 @@ function crearGraficaDeCurso(_bindto, curso){
             var nombre_columnas = ["Aprobados"];
         break;
         default: 
+            $(_bindto).html('');
             return;
-        break;
     }
     return c3.generate({
         data: {
@@ -81,9 +81,17 @@ function crearGraficaDeCurso(_bindto, curso){
     });
 }
 
-function crearTarjetaParaGrafica(div, curso){
+function crearTarjetaParaGrafica(div, curso, claseDiv){
+    if(typeof claseDiv !== 'string'){
+        claseDiv = "col-sm-12 col-xl-6";
+    }
+    // if(divCompleto){
+    //     clase = "col-sm-12 col-xl-12";
+    // }else{
+    //     clase = "col-sm-12 col-xl-6";
+    // }
     id_para_Grafica = "chart_" + curso.id;
-    $(div).append(`<div class="col-sm-12 col-xl-6">
+    $(div).append(`<div class="${claseDiv}">
                 <div class="card bg-gray border-0 m-2" id="">
 
                     <div class="card-group">
@@ -161,7 +169,6 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                 aprobados.push("Porcentaje de aprobación del curso");
                 kpi = kpis[i];
                 cursos = kpi.courses;
-                // insertarTituloSeparador(_bindto, kpi.name);
                 switch(kpi.id){
                     case 1: // 
                         _destacado = Array();

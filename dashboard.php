@@ -59,6 +59,8 @@ $indicators = local_dominosdashboard_get_indicators();
     <!--<div class="col-sm-8" id="local_dominosdashboard_content"></div>
     <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>-->
     <div class="row col-sm-9" id="contenido_dashboard">
+        <div class="col-sm-12 col-xl-12 row" id="course_title"></div>
+        <!-- <div class="col-sm-12 col-xl-12 row" id="course_overview"></div> -->
         <div class="col-sm-12 col-xl-12" id="course_overview"></div>
         <div class="col-sm-12 col-xl-12">
             <div class="titulog col-sm-12">
@@ -157,10 +159,10 @@ $indicators = local_dominosdashboard_get_indicators();
                         default:
                             break;
                     }
-                    // console.log(_kpi);
                 }
-                insertarTituloSeparador('#course_overview', informacion_del_curso.data.title);
-                crearTarjetaParaGrafica('#course_overview', informacion_del_curso.data);
+                $('#course_title,#course_overview').html('');
+                insertarTituloSeparador('#course_title', informacion_del_curso.data.title);
+                crearTarjetaParaGrafica('#course_overview', informacion_del_curso.data, 'col-sm-12 col-xl-12');
 
 
                 imprimirRanking('#ranking_dm', informacion_del_curso.data);
