@@ -65,8 +65,8 @@ $indicators = local_dominosdashboard_get_indicators();
     </div>
     <div class="row col-sm-9">
         <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
-        <h1 style="text-align: center;">Ranking de actividades</h1>
-    </div>
+            <h1 style="text-align: center;">Ranking de actividades</h1>
+        </div>
     <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
         <table frame="void" rules="rows" style="width:100%">
             <tr class="rankingt">

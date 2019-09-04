@@ -848,13 +848,13 @@ function local_dominosdashboard_get_kpi_results($kpi, $params){
             return $result;
             break;
         case KPI_HISTORICO: // 2 retorna el número de quejas
-            $query = "SELECT AVG(valor) AS numero FROM {dominos_kpis} WHERE kpi = 2 AND valor != '' {$andWhereSql}";
+            $query = "SELECT ROUND(AVG(valor), 0) AS numero FROM {dominos_kpis} WHERE kpi = 2 AND valor != '' {$andWhereSql}";
             $result = $DB->get_field_sql($query, $sqlParams);
             if(empty($result)) return null;
             return $result;
             break;
         case KPI_SCORCARD: // 3
-            $query = "SELECT AVG(valor) AS numero FROM {dominos_kpis} WHERE kpi = 3 AND valor != '' {$andWhereSql}";
+            $query = "SELECT ROUND(AVG(valor), 2) AS numero FROM {dominos_kpis} WHERE kpi = 3 AND valor != '' {$andWhereSql}";
             $result = $DB->get_field_sql($query, $sqlParams);
             if(empty($result)) return null;
             return $result;

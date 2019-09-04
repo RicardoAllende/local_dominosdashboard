@@ -50,16 +50,13 @@ $indicators = local_dominosdashboard_get_indicators();
         <?php
         echo "<br><select class='form-control' id='tab-selector' name='type'>";
         foreach($tabOptions as $key => $option){
-            echo "<option value='{$key}'>{$key} -> {$option}</option>";
+            echo "<option value='{$key}'>{$key}. {$option}</option>";
         }
         echo "</select><br>";
         ?>
         <div id='contenedor_filtros'></div>
     </form>
     <div class="col-sm-9" id="contenido_cursos">
-        <div class="">
-            <h1 class="text-center ldm_tab_name"></h1>
-        </div>
         <div>
             <div class="row" id="contenedor_cursos">
             </div>
@@ -82,10 +79,12 @@ $indicators = local_dominosdashboard_get_indicators();
     var item;
     var serialized_form = "";
     var demark = "";
+    var tituloPestana = "";
     document.addEventListener("DOMContentLoaded", function() {
         require(['jquery'], function ($) {
             $('.course-selector').change(function(){obtenerGraficas()});
-            $('#tab-selector').change(function(){ obtenerGraficas(); });
+            tituloPestana = $('#tab-selector').children('option:selected').html();
+            $('#tab-selector').change(function(){ tituloPestana = $(this).children('option:selected').html(); obtenerGraficas(); });
             obtenerGraficas();
             obtenerFiltros();
         });
@@ -104,8 +103,6 @@ $indicators = local_dominosdashboard_get_indicators();
         $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
         dateBegining = Date.now();
         $('#local_dominosdashboard_content').html('Cargando la información');
-        // console.log('Valor de la pestaña', ldm_course_tabs[$('#tab-selector').val()]);
-        $('.ldm_tab_name').html(ldm_course_tabs[$('#tab-selector').val()]);
         $.ajax({
             type: "POST",
             url: "services.php",
@@ -118,9 +115,7 @@ $indicators = local_dominosdashboard_get_indicators();
             dateEnding = Date.now();
             $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
             console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
-            generarGraficasTodosLosCursos('#contenedor_cursos', respuesta);
-            // console.log("Petición correcta");
-            // console.log(data);
+            generarGraficasTodosLosCursos('#contenedor_cursos', respuesta, tituloPestana);
         })
         .fail(function(error, error2) {
             console.log(error);
@@ -148,9 +143,7 @@ $indicators = local_dominosdashboard_get_indicators();
             dataType: "json"
         })
         .done(function(data) {
-            console.log(data);
             keys = Object.keys(data.data);
-            // div_selector = '#indicator_section_' + clave;
             div_selector = '#contenedor_filtros';
             crearElementos = esVacio($(div_selector).html());
             for (var index = 0; index < keys.length; index++) {
@@ -180,7 +173,6 @@ $indicators = local_dominosdashboard_get_indicators();
                 }
                 subfiltro_id = "#" + subfiltro_id;
                 $(subfiltro_id).html('');
-                // console.log($(subfiltro_id));
                 for(var j = 0; j < catalogo.length; j++){
                     var elementoDeCatalogo = catalogo[j];
                     $(subfiltro_id).append(`
@@ -201,7 +193,6 @@ $indicators = local_dominosdashboard_get_indicators();
         });
     }
     function obtenerFiltros(indicator){
-        console.log("Obteniendo filtros");
         informacion = $('#filter_form').serializeArray();
         dateBegining = Date.now();
         informacion.push({name: 'request_type', value: 'user_catalogues'});
@@ -211,12 +202,8 @@ $indicators = local_dominosdashboard_get_indicators();
         peticionFiltros(informacion);
     }
 
-    function generarGraficasTodosLosCursos(_bindto, response) {
+    function generarGraficasTodosLosCursos(_bindto, response, titulo) {
         type = response.type;
-        console.log('Tipo de respuesta ', type);
-        // if(!(type != 'course_list' && type != 'kpi_list')){
-        //     return false;
-        // }
         if(type == 'course_list'){
             cursos = response.result;
             if(Array.isArray(cursos)){
@@ -226,80 +213,31 @@ $indicators = local_dominosdashboard_get_indicators();
                 aprobados.push("Porcentaje de aprobación del curso");
                 _ideal_cobertura.push('Ideal de cobertura');
                 $(_bindto).html('');
-
-                // switch(response.type){
-                //     case 'course_list':
-                //         for (var i = 0; i < cursos.length; i++) {
-                //             _ideal_cobertura.push(ideal_cobertura);
-                //             var curso = cursos[i];
-                //             aprobados.push(curso.percentage);
-                //             crearTarjetaParaGrafica(_bindto, curso);
-                //         }
-                //         crearGraficaComparativaVariosCursos(_bindto, [aprobados, _ideal_cobertura], cursos);
-                //         break;
-                //     case 'kpi_list':
-                //         kpi
-                //         for (var i = 0; i < cursos.length; i++) {
-                //             _ideal_cobertura.push(ideal_cobertura);
-                //             var curso = cursos[i];
-                //             aprobados.push(curso.percentage);
-                //             crearTarjetaParaGraficakpi(_bindto, curso);
-                //         }
-                //         crearGraficaComparativaVariosCursoskpi(_bindto, [aprobados, _ideal_cobertura], cursos);
-                //         return;
-                //         break;
-                //     default: 
-                //         console.log('Tipo no soportado');
-                //     break;
-                // }
-
                 for (var i = 0; i < cursos.length; i++) {
                     _ideal_cobertura.push(ideal_cobertura);
                     var curso = cursos[i];
                     aprobados.push(curso.percentage);
-                    // if(type == 'kpi_list')
+                }
+                crearGraficaComparativaVariosCursos(_bindto, [aprobados, _ideal_cobertura], cursos, titulo);
+                for (var i = 0; i < cursos.length; i++) {
+                    var curso = cursos[i];
                     crearTarjetaParaGrafica(_bindto, curso);
                 }
-                crearGraficaComparativaVariosCursos(_bindto, [aprobados, _ideal_cobertura], cursos);
             }
         }
         if(type == 'kpi_list'){
             kpis = response.result;
             if(Array.isArray(kpis)){
-                var aprobados = Array();
-                var _ideal_cobertura = Array();
-                
-                aprobados.push("Porcentaje de aprobación del curso");
-                /*
-                    DEFINE("KPI_OPS", 1);
-                    DEFINE("KPI_HISTORICO", 2); // quejas
-                    DEFINE("KPI_SCORCARD", 3); // % rotación
-                */
-                // if(kpi.id == 1){
-
-                // }
-                // _ideal_cobertura.push('KPI');
                 $(_bindto).html('');
-
                 for (var i = 0; i < kpis.length; i++) {
+                    var aprobados = Array();
+                    var _ideal_cobertura = Array();
+                    aprobados.push("Porcentaje de aprobación del curso");
                     kpi = kpis[i];
-                    console.log('kpi devuelto', kpi);
-                    // status = kpi.status;
-                    // if(esVacio(status)){
-                    //     console.log('status vacío');
-                    // }
-                    // console.log('el estado del kpi es: ', status);
                     cursos = kpi.courses;
+                    insertarTituloSeparador(_bindto, kpi.name);
                     switch(kpi.id){
                         case 1: // 
-                            /*
-                            "status": {
-                                "No aprobado": "18",
-                                "Destacado": "137",
-                                "Aprobado": "294"
-                            }
-                            */
-                            
                             _destacado = Array();
                             _aprobado = Array();
                             _noAprobado = Array();
@@ -312,136 +250,47 @@ $indicators = local_dominosdashboard_get_indicators();
                             noAprobado = parseInt(kpi.status["No aprobado"]);
 
                             _total = destacado + aprobado + noAprobado;
-                            console.log('Total del kpi', _total);
                             _aprobados = destacado + aprobado;
-                            console.log('Aprobados', _aprobados);
-                            resultado = _aprobados / _total * 100;
-                            console.log('Resultado', resultado);
+                            resultado = obtenerPorcentaje(_aprobados, _total);
                             __kpi = ["Aprobado-Destacado", resultado];
-                            console.log('Enviado como __kpi', "Aprobación ICA");
-                            
+                            destacado = obtenerPorcentaje(destacado, _total);
+                            aprobado = obtenerPorcentaje(aprobado, _total);
+                            noAprobado = obtenerPorcentaje(noAprobado, _total);
 
                             for(var j = 0; j < cursos.length; j++){
-                                curso = cursos[j];
                                 aprobados.push(curso.percentage);
                                 _destacado.push(destacado);
                                 _aprobado.push(aprobado);
                                 _noAprobado.push(noAprobado);
-                                crearTarjetaParaGraficakpi(_bindto, curso, __kpi);
                             }
-                            crearGraficaComparativaVariosCursos(_bindto, [aprobados, _destacado, _aprobado, _noAprobado], cursos);
+                            crearGraficaComparativaVariosCursos(_bindto, [aprobados, _destacado, _aprobado, _noAprobado], cursos, kpi.name);
 
+                            for(var j = 0; j < cursos.length; j++){
+                                curso = cursos[j];
+                                crearTarjetaParaGraficakpi(_bindto, curso, __kpi, kpi.id);
+                            }
 
                         break;
                         case 2:
-
-                        // "status": "1.9736842105263157" // Número de quejas
-                        break;
                         case 3:
+                            __kpi = [kpi.type, kpi.status];
+                            info_kpi = Array();
+                            info_kpi.push(kpi.type);
+                            for(var j = 0; j < cursos.length; j++){
+                                aprobados.push(curso.percentage);
+                                info_kpi.push(kpi.status);
+                                aprobados.push(curso.percentage);
+                            }
+                            crearGraficaComparativaVariosCursos(_bindto, [aprobados, info_kpi], cursos, kpi.name);
 
-                        // "status": "61.320020244023716" // porcentaje de rotación
+                            for(var j = 0; j < cursos.length; j++){
+                                curso = cursos[j];
+                                crearTarjetaParaGraficakpi(_bindto, curso, __kpi, kpi.id);
+                            }
                         break;
                     }
-                    return;
-                    var kpi = kpis[i];
-                    courses = kpi.courses;
-                    _ideal_cobertura.push(ideal_cobertura);
-                    aprobados.push(curso.percentage);
-                    // if(type == 'kpi_list')
-                    crearTarjetaParaGrafica(_bindto, curso);
-                    crearGraficaComparativaVariosCursos(_bindto, [aprobados, _destacado, _aprobado, _noAprobado], cursos);
                 }
             }
-        }
-        return;
-        if(Array.isArray(cursos)){
-            var aprobados = Array();
-            var nombres = Array();
-            var _ideal_cobertura = Array();
-            aprobados.push("Porcentaje de aprobación del curso");
-            _ideal_cobertura.push('Ideal de cobertura');
-            $(_bindto).html('');
-
-            switch(response.type){
-                case 'course_list':
-                    for (var i = 0; i < cursos.length; i++) {
-                        _ideal_cobertura.push(ideal_cobertura);
-                        var curso = cursos[i];
-                        aprobados.push(curso.percentage);
-                        crearTarjetaParaGrafica(_bindto, curso);
-                    }
-                    crearGraficaComparativaVariosCursos(_bindto, [aprobados, _ideal_cobertura], cursos);
-                    break;
-                case 'kpi_list':
-                    kpi
-                    for (var i = 0; i < cursos.length; i++) {
-                        _ideal_cobertura.push(ideal_cobertura);
-                        var curso = cursos[i];
-                        aprobados.push(curso.percentage);
-                        crearTarjetaParaGraficakpi(_bindto, curso);
-                    }
-                    crearGraficaComparativaVariosCursoskpi(_bindto, [aprobados, _ideal_cobertura], cursos);
-                    return;
-                    break;
-                default: 
-                    console.log('Tipo no soportado');
-                break;
-            }
-
-            // for (var i = 0; i < cursos.length; i++) {
-            //     _ideal_cobertura.push(ideal_cobertura);
-            //     var curso = cursos[i];
-            //     aprobados.push(curso.percentage);
-            //     // if(type == 'kpi_list')
-            //     crearTarjetaParaGrafica(_bindto, curso);
-            // }
-            // crearGraficaComparativaVariosCursos(_bindto, [aprobados, _ideal_cobertura], cursos);
-        }
-        return;
-        switch(response.type){
-            case 'course_list':
-                if(Array.isArray(cursos)){
-                    var aprobados = Array();
-                    var nombres = Array();
-                    var _ideal_cobertura = Array();
-                    aprobados.push("Porcentaje de aprobación del curso");
-                    _ideal_cobertura.push('Ideal de cobertura');
-                    $(_bindto).html('');
-                    for (var i = 0; i < cursos.length; i++) {
-                        _ideal_cobertura.push(ideal_cobertura);
-                        var curso = cursos[i];
-                        aprobados.push(curso.percentage);
-                        crearTarjetaParaGrafica(_bindto, curso);
-                    }
-                    crearGraficaComparativaVariosCursos(_bindto, [aprobados, _ideal_cobertura], cursos);
-                    // return;
-                }
-                break;
-            case 'kpi_list':
-                if(Array.isArray(cursos)){
-                    var aprobados = Array();
-                    var nombres = Array();
-                    var _ideal_cobertura = Array();
-                    aprobados.push("Porcentaje de aprobación del curso");
-                    _ideal_cobertura.push('Ideal de cobertura');
-                    _kpi_information.push();
-                    $(_bindto).html('');
-                    for (var i = 0; i < cursos.length; i++) {
-                        _ideal_cobertura.push(ideal_cobertura);
-                        var curso = cursos[i];
-                        aprobados.push(curso.percentage);
-                        crearTarjetaParaGrafica(_bindto, curso);
-                    }
-                    crearGraficaComparativaVariosCursos(_bindto, [aprobados, _ideal_cobertura], cursos);
-                    // return;
-                    
-                }    
-                // alert('Kpi, aún no soportado');
-                return;
-                break;
-            default: 
-                console.log('Tipo no soportado');
-            break;
         }
         return;
     }
@@ -483,14 +332,17 @@ $indicators = local_dominosdashboard_get_indicators();
         return crearGraficaDeCurso('#' + id_para_Grafica, curso);
     }
 
-    function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos){
+    function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titulo){
         div_id = "chart__" + $('#tab-selector').val();
-        $(_bindto).prepend(`
-                    <div class="card bg-faded border-0 m-2" id="">
-                        <div class="bg-white m-2" id="${div_id}"></div>
-                        <div class="align-items-end">
-                            <div class="fincard text-center">
-                                <a href="#">Comparativa</a>
+        insertarTituloSeparador(_bindto, titulo);
+        $(_bindto).append(`
+                    <div class="col-sm-12 col-xl-12">
+                        <div class="card bg-faded border-0 m-2" id="">
+                            <div class="bg-white m-2" id="${div_id}"></div>
+                            <div class="align-items-end">
+                                <div class="fincard text-center">
+                                    <a href="#">Comparativa</a>
+                                </div>
                             </div>
                         </div>
                     </div>`);
@@ -511,8 +363,17 @@ $indicators = local_dominosdashboard_get_indicators();
         });
     }
 
-    function crearTarjetaParaGraficakpi(div, curso, kpi){
-        id_para_Grafica = "chart_" + curso.id;
+    function insertarTituloSeparador(div, titulo){
+        $(div).append(`
+        <div class="col-sm-12 col-xl-12">
+            <div class="titulog col-sm-12">
+                <h1 class="text-center">${titulo}</h1>
+            </div>
+        </div>`);
+    }
+
+    function crearTarjetaParaGraficakpi(div, curso, kpi, id){
+        id_para_Grafica = "chart_" + id + '_' + curso.id;
         $(div).append(`<div class="col-sm-12 col-xl-6">
                     <div class="card bg-gray border-0 m-2" id="">
 
@@ -546,34 +407,6 @@ $indicators = local_dominosdashboard_get_indicators();
                     </div>
                 </div>`);
         return crearGraficaDeCursokpi('#' + id_para_Grafica, curso, kpi);
-    }
-
-    function crearGraficaComparativaVariosCursoskpi(_bindto, info_grafica, cursos, kpi){
-        div_id = "chart__" + $('#tab-selector').val();
-        $(_bindto).prepend(`
-                    <div class="card bg-faded border-0 m-2" id="">
-                        <div class="bg-white m-2" id="${div_id}"></div>
-                        <div class="align-items-end">
-                            <div class="fincard text-center">
-                                <a href="#">Comparativa</a>
-                            </div>
-                        </div>
-                    </div>`);
-        var chartz = c3.generate({
-            data: {
-                columns: info_grafica,
-                type: ''
-            },
-            bindto: '#' + div_id,
-            tooltip: {
-                format: {
-                    title: function (d) { return cursos[d].title; },
-                    value: function (value, ratio, id) {
-                        return value + " %";
-                    }
-                }
-            }
-        });
     }
 
     function crearGraficaDeCurso(_bindto, curso){
@@ -616,29 +449,7 @@ $indicators = local_dominosdashboard_get_indicators();
     }
 
     function crearGraficaDeCursokpi(_bindto, curso, kpi){
-        // switch(curso.chart){
-        //     case 'pie':
-        //     case 'bar':
-        //         _columns = [
-        //             ['Inscritos', curso.enrolled_users],
-        //             ['Aprobados', curso.approved_users],
-        //             ['No iniciaron el curso', curso.not_viewed],
-        //             kpi,
-        //         ];
-        //         var nombre_columnas = ["Inscritos", "Aprobados", "No iniciaron el curso"];
-        //     break;
-        //     case 'gauge':
-        //         _columns  = [ ['Aprobados', 30] ];
-        //         var nombre_columnas = ["Aprobados"];
-        //     break;
-        //     default: 
-        //         return;
-        //     break;
-        // }
         _columns = [
-            // ['Inscritos', curso.enrolled_users],
-            // ['Aprobados', curso.approved_users],
-            // ['No iniciaron el curso', curso.not_viewed],
             ['Porcentage de aprobación', curso.percentage],
             kpi,
         ];
