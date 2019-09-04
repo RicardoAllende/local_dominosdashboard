@@ -56,7 +56,8 @@ echo $OUTPUT->header();
 //     _print('Actividades del curso ' . $course->fullname, local_dominosdashboard_get_activities_completion($course->id, "1,2,3,4,5,6"));
 // }
 
-_print(local_dominosdashboard_get_historic_reports(1));
+local_dominosdashboard_make_all_historic_reports();
+
 // foreach(local_dominosdashboard_get_KPIS() as $kpi_key => $kpi){
 //     echo "<h1>Tipo de KPI {$kpi}<h1>";
 //     foreach(local_dominosdashboard_get_kpi_indicators() as $indicator){
