@@ -59,6 +59,7 @@ $indicators = local_dominosdashboard_get_indicators();
     <!--<div class="col-sm-8" id="local_dominosdashboard_content"></div>
     <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>-->
     <div class="row col-sm-9" id="contenido_dashboard">
+        <div class="col-sm-12 col-xl-12" id="course_overview"></div>
         <div class="col-sm-12 col-xl-12">
             <div class="titulog col-sm-12">
                 <h1 class="text-center">Cruce de indicadores</h1>
@@ -68,33 +69,8 @@ $indicators = local_dominosdashboard_get_indicators();
         <div class="col-sm-6" id="data_card3"></div>    
         <div class="col-sm-6" id="data_card4"></div>
 
-        <div class="row col-sm-9">
-            <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
-                <h1 style="text-align: center;">Ranking de actividades</h1>
-            </div>
+        <div class="col-sm-12 row" id="ranking_dm"></div>
 
-            <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
-                <table frame="void" rules="rows" style="width:100%">
-                    <tr class="rankingt">
-                        <th>#</th>
-                        <th>Actividades</th>
-                        <th>Aprobados</th>
-                    </tr>
-                    <tbody id="tbody-ranking-top"></tbody>
-                </table>
-            </div>
-
-            <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-bottom">
-                <table frame="void" rules="rows" style="width:100%">
-                    <tr class="rankingt">
-                        <th>#</th>
-                        <th>Actividades</th>
-                        <th>No Aprobados</th>
-                    </tr>
-                    <tbody id="tbody-ranking-bottom"></tbody>
-                </table>
-            </div>    
-        </div>
         <button onclick="window.print()">Imprimir texto</button>
         
 
@@ -183,13 +159,13 @@ $indicators = local_dominosdashboard_get_indicators();
                     }
                     // console.log(_kpi);
                 }
+                insertarTituloSeparador('#course_overview', informacion_del_curso.data.title);
+                crearTarjetaParaGrafica('#course_overview', informacion_del_curso.data);
 
 
-                imprimirRanking(informacion_del_curso.data);
+                imprimirRanking('#ranking_dm', informacion_del_curso.data);
                 dateEnding = Date.now();
                 console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
-                // console.log("Petición correcta");
-                // console.log(data);
             })
             .fail(function (error, error2) {
                 console.log(error);
@@ -532,16 +508,16 @@ $indicators = local_dominosdashboard_get_indicators();
     
     //---------------------------------------------------------------------------------------------------------------------------------------------
 
-    ranking_top         = "#dominosdashboard-ranking-top";
-    ranking_bottom      = "#dominosdashboard-ranking-bottom";
-    ranking_top_body    = "#tbody-ranking-top";
-    ranking_bottom_body = "#tbody-ranking-bottom";
-    ranking_clase       = ".dominosdashboard-ranking";
-    ranking_titulo      = "#dominosdashboard-ranking-title";
-
-    function imprimirRanking(info) {
+    function imprimirRanking(div, info) {
         var colorTop = "#29B6F6";
         var colorBottom = "#FF6F00";
+        ranking_top         = "#dominosdashboard-ranking-top";
+        ranking_bottom      = "#dominosdashboard-ranking-bottom";
+        ranking_top_body    = "#tbody-ranking-top";
+        ranking_bottom_body = "#tbody-ranking-bottom";
+        ranking_clase       = ".dominosdashboard-ranking";
+        ranking_titulo      = "#dominosdashboard-ranking-title";
+        $(div).html('');
         if(Array.isArray(info.activities)){
             activities = info.activities;
             num_activities = info.activities.length;
@@ -549,18 +525,36 @@ $indicators = local_dominosdashboard_get_indicators();
             if(enrolled_users < 1){
                 return false;
             }
-            
             if(num_activities >= 6){ // Se muestran 2 rankings
-                $(ranking_titulo).show();
-                $(ranking_top).show();
-                $(ranking_bottom).show();
-                $(ranking_top_body).html('');
+                $(div).append(`
+                        <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
+                            <h1 style="text-align: center;">Ranking de actividades</h1>
+                        </div>
+                        <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
+                            <table frame="void" rules="rows" style="width:100%">
+                                <tr class="rankingt">
+                                    <th>#</th>
+                                    <th>Actividades</th>
+                                    <th>Aprobados</th>
+                                </tr>
+                                <tbody id="tbody-ranking-top"></tbody>
+                            </table>
+                        </div>
+                        <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-bottom">
+                            <table frame="void" rules="rows" style="width:100%">
+                                <tr class="rankingt">
+                                    <th>#</th>
+                                    <th>Actividades</th>
+                                    <th>No Aprobados</th>
+                                </tr>
+                                <tbody id="tbody-ranking-bottom"></tbody>
+                            </table>
+                        </div>    
+                    `);
                 var contenido = "";
                 for(var i = 0; i < 3; i++){
                     var elemento = activities[i];
-                    // console.log(elemento);
                     percentage = Math.floor(elemento.completed / enrolled_users * 100);
-                    // console.log(percentage);
                     contenido += `
                     <tr>
                         <td>${i + 1}</td>
@@ -575,10 +569,8 @@ $indicators = local_dominosdashboard_get_indicators();
                 $(ranking_top_body).html(contenido);
                 $(ranking_bottom_body).html('');
                 var contenido = "";
-                // #FF6F00
                 for(var i = 1; i <= 3; i++){
                     var elemento = activities[num_activities - i];
-                    // console.log(percentage);
                     notCompleted = enrolled_users - elemento.completed;
                     percentage = Math.floor(notCompleted / enrolled_users * 100);
                     contenido += `
@@ -595,11 +587,22 @@ $indicators = local_dominosdashboard_get_indicators();
                 $(ranking_bottom_body).html(contenido);
                 return;
             }else if(num_activities > 0){ // Sólo se muestra un ranking
-                $(ranking_titulo).show();
-                $(ranking_top).show();
-                $(ranking_top).removeClass("col-sm-6");
-                $(ranking_top).addClass("col-sm-12");
-                $(ranking_bottom).hide();
+                $(div).append(`
+                        <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
+                            <h1 style="text-align: center;">Ranking de actividades</h1>
+                        </div>
+
+                        <div class="col-sm-8 offset-sm-4 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
+                            <table frame="void" rules="rows" style="width:100%">
+                                <tr class="rankingt">
+                                    <th>#</th>
+                                    <th>Actividades</th>
+                                    <th>Aprobados</th>
+                                </tr>
+                                <tbody id="tbody-ranking-top"></tbody>
+                            </table>
+                        </div>  
+                    `);
                 var contenido = "";
                 for(var i = 0; i < 3; i++){
                     if(activities[i] == undefined){
@@ -607,7 +610,6 @@ $indicators = local_dominosdashboard_get_indicators();
                     }
                     var elemento = activities[i];
                     percentage = Math.floor(elemento.completed / enrolled_users * 100);
-                    // console.log(percentage);
                     contenido += `
                     <tr>
                         <td>${i}</td>
