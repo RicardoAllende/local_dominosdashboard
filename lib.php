@@ -1489,7 +1489,7 @@ function local_dominosdashboard_insert_historic_record(stdClass $course_informat
     return $DB->insert_record('dominos_historico', $record);
 }
 
-function local_dominosdashboard_get_historic_reports(int $courseid){
+function local_dominosdashboard_get_historic_reports(int $courseid, $params = array()){
     if(RETURN_RANDOM_DATA){
         $response = array();
         for($i = 0; $i < 10; $i++){
@@ -1500,9 +1500,9 @@ function local_dominosdashboard_get_historic_reports(int $courseid){
             $temp->fullname = "" . $i;
             $temp->enrolled_users = random_int(0, MAX_RANDOM_NUMBER);
             $temp->approved_users = random_int(0, $temp->enrolled_users);
-            // $temp->filterid = "";
-            // $temp->filtertext = "";
-            // $temp->timecreated = "";
+            $temp->filterid = "";
+            $temp->filtertext = "";
+            $temp->timecreated = "";
             $temp->fecha = date('d-m-Y');
             array_push($response, $temp);
         }

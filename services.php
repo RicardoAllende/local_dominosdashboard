@@ -62,6 +62,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
         case 'user_catalogues':
             die(local_dominosdashboard_format_response(local_dominosdashboard_get_user_catalogues($_POST)));
             break;
+        case 'course_historics':
+            if(empty($_POST['courseid'])){
+                die(local_dominosdashboard_error_response("courseid (int) not found"));
+            }else{
+                die(local_dominosdashboard_format_response(local_dominosdashboard_get_historic_reports(intval($_POST['courseid']))));
+            }
+            break;
         case 'kpi_catalogues': 
             if(!empty($_POST['kpi'])){
                 $kpi = $_POST['kpi'];

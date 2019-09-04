@@ -62,7 +62,7 @@ $courses = local_dominosdashboard_get_courses();
         echo "</select>";
         ?>
         <input type="hidden" name="request_type" value="course_completion"><br><br>
-        <span class="btn btn-info" onclick="obtenerGraficas()">Volver a simular obtención de gráficas</span>
+        <span class="btn btn-info" onclick="obtenerInformacion()">Volver a simular obtención de gráficas</span>
     </form>
     <div class="col-sm-8" id="local_dominosdashboard_content"></div>
     <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>
@@ -80,23 +80,23 @@ $courses = local_dominosdashboard_get_courses();
                     value = $(this).val();
                     // console.log(indicator);
                     // console.log(value);
-                    obtenerGraficas();
+                    obtenerInformacion();
                 });
                 // function 
                 $('.course-selector').change(function(){
-                    obtenerGraficas();
+                    obtenerInformacion();
                 });
                 $('.uncheck_indicators').click(function(){
                     demark = $(this).attr('data-indicator');
                     $('.' + demark).prop('checked', false);
-                    obtenerGraficas();
+                    obtenerInformacion();
                 });
                 $('.check_indicators').click(function(){
                     demark = $(this).attr('data-indicator');
                     $('.' + demark).prop('checked', true);
-                    obtenerGraficas();
+                    obtenerInformacion();
                 });
-                obtenerGraficas();
+                obtenerInformacion();
             });
         }catch(error){
             console.log(error);
@@ -104,7 +104,7 @@ $courses = local_dominosdashboard_get_courses();
     });
     var dateBegining;
     var dateEnding;
-    function obtenerGraficas(){
+    function obtenerInformacion(){
         console.log("Obteniendo gráficas");
         informacion = $('#filter_form').serializeArray();
         $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
