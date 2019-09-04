@@ -258,6 +258,7 @@ $indicators = local_dominosdashboard_get_indicators();
                             noAprobado = obtenerPorcentaje(noAprobado, _total);
 
                             for(var j = 0; j < cursos.length; j++){
+                                curso = cursos[j];
                                 aprobados.push(curso.percentage);
                                 _destacado.push(destacado);
                                 _aprobado.push(aprobado);
@@ -361,15 +362,6 @@ $indicators = local_dominosdashboard_get_indicators();
                 }
             }
         });
-    }
-
-    function insertarTituloSeparador(div, titulo){
-        $(div).append(`
-        <div class="col-sm-12 col-xl-12">
-            <div class="titulog col-sm-12">
-                <h1 class="text-center">${titulo}</h1>
-            </div>
-        </div>`);
     }
 
     function crearTarjetaParaGraficakpi(div, curso, kpi, id){

@@ -58,8 +58,12 @@ $indicators = local_dominosdashboard_get_indicators();
     </form>
     <!--<div class="col-sm-8" id="local_dominosdashboard_content"></div>
     <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>-->
-    <div class="row col-sm-9">
-        <h1 style="text-align: center;">Cruce de indicadores</h1>
+    <div class="row col-sm-9" id="contenido_dashboard">
+        <div class="col-sm-12 col-xl-12">
+            <div class="titulog col-sm-12">
+                <h1 class="text-center">Cruce de indicadores</h1>
+            </div>
+        </div>
         <div class="col-sm-6" id="data_card2"></div>
         <div class="col-sm-6" id="data_card3"></div>    
         <div class="col-sm-6" id="data_card4"></div>

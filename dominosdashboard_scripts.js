@@ -32,3 +32,12 @@ function obtenerPorcentaje(percent, total, decimales) {
 
     return parseFloat((per / div * 100).toFixed(decimales));
 }
+
+function insertarTituloSeparador(div, titulo){
+    $(div).append(`
+    <div class="col-sm-12 col-xl-12">
+        <div class="titulog col-sm-12">
+            <h1 class="text-center">${titulo}</h1>
+        </div>
+    </div>`);
+}

@@ -79,6 +79,7 @@ $indicators = local_dominosdashboard_get_indicators();
 <script src="libs/c3.js"></script>
 <link href="estilos.css" rel="stylesheet">
 <link rel="stylesheet" href="estilos.css" type="text/css" media="all" />
+<link rel="stylesheet" href="estilos.css" type="text/css" media="print" />
 <script src="dominosdashboard_scripts.js"></script>
 
 <script>
