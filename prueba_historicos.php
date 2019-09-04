@@ -65,7 +65,7 @@ $indicators = local_dominosdashboard_get_indicators();
     <div class="col-sm-12" id="data_card2"></div>
     
     </div>
-    <button onclick="imprimir();">Imprimir</button>
+    
 
     
 
@@ -78,8 +78,8 @@ $indicators = local_dominosdashboard_get_indicators();
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="libs/c3.js"></script>
 <link href="estilos.css" rel="stylesheet">
-<link rel="stylesheet" href="estilos.css" type="text/css" media="all" />
-<link rel="stylesheet" href="estilos.css" type="text/css" media="print" />
+<link rel="stylesheet" href="estilos.css" type="text/css"/>
+<link href="estilos.css" rel="stylesheet" type="text/css" media="print" />
 <script src="dominosdashboard_scripts.js"></script>
 
 <script>
@@ -304,10 +304,7 @@ $indicators = local_dominosdashboard_get_indicators();
         });
     }
     
-    
-  function imprimir(){
-    window.print();
-  }  
+     
     
 
 </script>
