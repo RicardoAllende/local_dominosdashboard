@@ -536,6 +536,8 @@ $indicators = local_dominosdashboard_get_indicators();
     ranking_titulo      = "#dominosdashboard-ranking-title";
 
     function imprimirRanking(info) {
+        var colorTop = "#29B6F6";
+        var colorBottom = "#FF6F00";
         if(Array.isArray(info.activities)){
             activities = info.activities;
             num_activities = info.activities.length;
@@ -561,7 +563,7 @@ $indicators = local_dominosdashboard_get_indicators();
                         <td>${elemento.title}</td>
                         <td>
                             <div class="progress">
-                                <div class="progress-bar" style="width: ${percentage}%; background: #29B6F6; color: white; border-radius: 5px; text-align: center;">${percentage}%</div>
+                                <div class="progress-bar" style="width: ${percentage}%; background: ${colorTop}; color: white; border-radius: 5px; text-align: center;">${percentage}%</div>
                             </div>
                         </td>
                     </tr>`;
@@ -581,7 +583,7 @@ $indicators = local_dominosdashboard_get_indicators();
                         <td>${elemento.title}</td>
                         <td>
                             <div class="progress">
-                                <div class="progress-bar" style="width: ${percentage}%; background: #FF6F00; color: white;border-radius: 5px; text-align: center;">${percentage}%</div>
+                                <div class="progress-bar" style="width: ${percentage}%; background: ${colorBottom}; color: white;border-radius: 5px; text-align: center;">${percentage}%</div>
                             </div>
                         </td>
                     </tr>`;
@@ -608,7 +610,7 @@ $indicators = local_dominosdashboard_get_indicators();
                         <td>${elemento.title}</td>
                         <td>
                             <div class="progress">
-                                <div class="progress-bar" style="width: ${percentage}%; background: #29B6F6; color: white; border-radius: 5px; text-align: center;">${percentage}%</div>
+                                <div class="progress-bar" style="width: ${percentage}%; background: ${colorTop}; color: white; border-radius: 5px; text-align: center;">${percentage}%</div>
                             </div>
                         </td>
                     </tr>`;

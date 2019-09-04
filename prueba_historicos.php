@@ -31,7 +31,7 @@ require_once("$CFG->libdir/gradelib.php");
 require_once("$CFG->dirroot/grade/querylib.php");
 require_login();
 global $DB;
-$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/dashboard.php");
+$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/prueba_historico.php");
 $PAGE->set_context($context_system);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
