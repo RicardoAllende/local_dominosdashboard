@@ -190,7 +190,7 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                             _aprobado.push(aprobado);
                             _noAprobado.push(noAprobado);
                         }
-                        crearGraficaComparativaVariosCursos(_bindto, [aprobados, _destacado, _aprobado, _noAprobado], cursos, kpi.name);
+                        crearGraficaComparativaVariosCursos(_bindto, [aprobados, _destacado, _aprobado, _noAprobado], cursos, kpi.name, kpi.id);
 
                         for(var j = 0; j < cursos.length; j++){
                             curso = cursos[j];
@@ -206,9 +206,8 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                         for(var j = 0; j < cursos.length; j++){
                             aprobados.push(curso.percentage);
                             info_kpi.push(kpi.status);
-                            aprobados.push(curso.percentage);
                         }
-                        crearGraficaComparativaVariosCursos(_bindto, [aprobados, info_kpi], cursos, kpi.name);
+                        crearGraficaComparativaVariosCursos(_bindto, [aprobados, info_kpi], cursos, kpi.name, kpi.id);
 
                         for(var j = 0; j < cursos.length; j++){
                             curso = cursos[j];
@@ -222,8 +221,11 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
     return;
 }
 
-function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titulo){
+function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titulo, id){
     div_id = "chart__" + $('#tab-selector').val();
+    if(id != undefined){
+        div_id += id;
+    }
     insertarTituloSeparador(_bindto, titulo);
     $(_bindto).append(`
                 <div class="col-sm-12 col-xl-12">
