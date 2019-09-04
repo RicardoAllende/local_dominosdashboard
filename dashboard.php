@@ -59,14 +59,15 @@ $indicators = local_dominosdashboard_get_indicators();
     <!--<div class="col-sm-8" id="local_dominosdashboard_content"></div>
     <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>-->
     <div class="row col-sm-9">
+    <h1 style="text-align: center;">Cruce de indicadores</h1>
     <div class="col-sm-6" id="data_card2"></div>
     <div class="col-sm-6" id="data_card3"></div>    
     <div class="col-sm-6" id="data_card4"></div>
+    <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
+    <h1 style="text-align: center;">Ranking de actividades</h1>
     </div>
-    <div class="row col-sm-9">
-        <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
-        <h1 style="text-align: center;">Ranking de actividades</h1>
-    </div>
+    
+    
     <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
         <table frame="void" rules="rows" style="width:100%">
             <tr class="rankingt">

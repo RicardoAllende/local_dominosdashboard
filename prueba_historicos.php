@@ -65,7 +65,7 @@ $indicators = local_dominosdashboard_get_indicators();
     <div class="col-sm-12" id="data_card2"></div>
     
     </div>
-    <a href="javascript:imprSelec('data_card2')">Imprimir texto</a>
+    <button onclick="imprimir();">Imprimir</button>
 
     
 
@@ -283,9 +283,9 @@ $indicators = local_dominosdashboard_get_indicators();
         var chartc = c3.generate({
             data: {
                 columns: [
-                    ['Aprobados', 50, 50],
-                    ['No hecho', 30, 30],
-                    ['No aprobado', 23, 23],
+                    ['Aprobados', 50, 50, 46, 20, 14, 40, 38, 50, 66, 78],
+                    ['No hecho', 30, 30, 26, 62, 74, 20, 68, 10, 36, 68],
+                    ['No aprobado', 23, 23, 20, 30, 19, 30, 80, 20, 42, 71],
                 ],
                 type: '',
             },
@@ -304,22 +304,12 @@ $indicators = local_dominosdashboard_get_indicators();
     }
     
     
-
+  function imprimir(){
+    window.print();
+  }  
     
 
 </script>
-<script language="Javascript">
-	function imprSelec(nombre) {
-	  var ficha = document.getElementById(nombre);
-	  var ventimp = window.open(' ', 'popimpr');
-	  ventimp.document.write( ficha.innerHTML );
-	  ventimp.document.close();
-	  ventimp.print( );
-	  ventimp.close();
-	}
-	</script>
-
-
 
 
 <?php
