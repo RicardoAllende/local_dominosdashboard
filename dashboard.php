@@ -59,43 +59,43 @@ $indicators = local_dominosdashboard_get_indicators();
     <!--<div class="col-sm-8" id="local_dominosdashboard_content"></div>
     <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>-->
     <div class="row col-sm-9">
-    <div class="col-sm-6" id="data_card2"></div>
-    <div class="col-sm-6" id="data_card3"></div>    
-    <div class="col-sm-6" id="data_card4"></div>
-    </div>
-    <div class="row col-sm-9">
-        <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
-            <h1 style="text-align: center;">Ranking de actividades</h1>
+        <h1 style="text-align: center;">Cruce de indicadores</h1>
+        <div class="col-sm-6" id="data_card2"></div>
+        <div class="col-sm-6" id="data_card3"></div>    
+        <div class="col-sm-6" id="data_card4"></div>
+
+        <div class="row col-sm-9">
+            <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
+                <h1 style="text-align: center;">Ranking de actividades</h1>
+            </div>
+
+            <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
+                <table frame="void" rules="rows" style="width:100%">
+                    <tr class="rankingt">
+                        <th>#</th>
+                        <th>Actividades</th>
+                        <th>Aprobados</th>
+                    </tr>
+                    <tbody id="tbody-ranking-top"></tbody>
+                </table>
+            </div>
+
+            <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-bottom">
+                <table frame="void" rules="rows" style="width:100%">
+                    <tr class="rankingt">
+                        <th>#</th>
+                        <th>Actividades</th>
+                        <th>No Aprobados</th>
+                    </tr>
+                    <tbody id="tbody-ranking-bottom"></tbody>
+                </table>
+            </div>    
         </div>
-    <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
-        <table frame="void" rules="rows" style="width:100%">
-            <tr class="rankingt">
-                <th>#</th>
-                <th>Actividades</th>
-                <th>Aprobados</th>
-            </tr>
-            <tbody id="tbody-ranking-top"></tbody>
-        </table>
-    </div>
+        <button onclick="window.print()">Imprimir texto</button>
+        
 
-    <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-bottom">
-        <table frame="void" rules="rows" style="width:100%">
-            <tr class="rankingt">
-                <th>#</th>
-                <th>Actividades</th>
-                <th>No Aprobados</th>
-            </tr>
-            <tbody id="tbody-ranking-bottom"></tbody>
-        </table>
+        
     </div>
-
-    </div>
-    
-    
-    <button onclick="window.print()">Imprimir texto</button>
-    
-
-    
 </div>
 <?php echo local_dominosdashboard_get_ideales_as_js_script(); ?>
 
@@ -443,7 +443,7 @@ $indicators = local_dominosdashboard_get_indicators();
         });
     }
     
-//---------------------------------------------------------------------------------------------Scorcard RRHH
+    //---------------------------------------------------------------------------------------------Scorcard RRHH
     function imprimirCards4(kpi) {
         //console.log("entra imprimir2");
         // myJSON = JSON.parse(JSON.stringify(data));
@@ -526,7 +526,7 @@ $indicators = local_dominosdashboard_get_indicators();
     }
     
     
-//---------------------------------------------------------------------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------------------------------------------------------
 
     ranking_top         = "#dominosdashboard-ranking-top";
     ranking_bottom      = "#dominosdashboard-ranking-bottom";
