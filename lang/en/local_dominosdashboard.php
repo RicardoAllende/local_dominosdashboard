@@ -103,3 +103,5 @@ $string['uploadkpis_help'] = 'Usted debe agregar los archivos kpis con el format
 ';
 
 $string['crontask_name'] = 'Creación de consultas para generación de históricos';
+
+$string['course_details_title'] = 'Detalle del curso: ';
