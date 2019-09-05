@@ -56,7 +56,7 @@ $courses = local_dominosdashboard_get_courses();
     </form>
     <div class="row col-sm-9 row">
         <div class="col-sm-12">
-            <div id="data_card2"></div>
+            <div id="grafica_historico"></div>
         </div>
         <div class="col-sm-12" id="print_request" ></div>
     </div>
@@ -77,13 +77,15 @@ $courses = local_dominosdashboard_get_courses();
 <link href="estilos.css" rel="stylesheet" type="text/css" media="print" />
 <script src="dominosdashboard_scripts.js"></script>
 
+
+
 <script>
     var serialized_form = "";
     document.addEventListener("DOMContentLoaded", function () {
         try {
             $('.dominosdashboard-ranking').hide();
             require(['jquery'], function ($) {
-                agregarGraficaHistorico('#data_card2');
+                //agregarGraficaHistorico('#data_card2');
                 $('.course-selector').change(function () { obtenerInformacion(); });
                 obtenerInformacion();
                 obtenerFiltros();
@@ -116,8 +118,13 @@ $courses = local_dominosdashboard_get_courses();
         })
             .done(function (data) {
                 $('#print_request').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
+                info = JSON.parse(JSON.stringify(data));
+                info = info.data;
                 dateEnding = Date.now();
                 console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
+                historicos(info); 
+                
+                              
             })
             .fail(function (error, error2) {
                 console.log(error);
@@ -128,23 +135,33 @@ $courses = local_dominosdashboard_get_courses();
         }
     }
 
-    function agregarGraficaHistorico(_bindto) {
+    function historicos(info){                   
+        _aprobado = Array();
+        _noAprobado = Array();
+        _aprobado.push("Aprobados");
+        _noAprobado.push("No aprobado");        
+        for(var j = 0; j < info.length; j++){
+            infos = info[j];
+            _aprobado.push(infos.approved_users);
+            _noAprobado.push(infos.enrolled_users);                
+        }
         return c3.generate({
             data: {
-                columns: [
-                    ['Aprobados', 50, 50, 46, 20, 14, 40, 38, 50, 66, 78],
-                    ['No hecho', 30, 30, 26, 62, 74, 20, 68, 10, 36, 68],
-                    ['No aprobado', 23, 23, 20, 30, 19, 30, 80, 20, 42, 71],
-                ],
+                columns: [_aprobado,_noAprobado],
                 type: '',
             },
-            bindto: _bindto,
+            bindto: "#grafica_historico",
             tooltip: {
                 format: {
-                    title: function (d) { return 'KPI '; },
+                    title: function (d) { return 'Histórico '; },
                 }
             }
         });
+        //agregarGraficaHistorico(infos);
+        
+    }
+    
+    function agregarGraficaHistorico() {        
     }
 
 

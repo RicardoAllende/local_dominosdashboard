@@ -254,7 +254,7 @@ $indicators = local_dominosdashboard_get_indicators();
             bindto: "#chart2",
             tooltip: {
                 format: {
-                    title: function (d) { return 'KPI '; },
+                    title: function (d) { return 'Calificacion '; },
                     value: function (value, ratio, id) {
                         var format = id === 'data1' ? d3.format(',') : d3.format('');
                         return format(value);
