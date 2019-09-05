@@ -60,7 +60,7 @@ $courses = local_dominosdashboard_get_courses();
         </div>
         <div class="col-sm-12" id="print_request" ></div>
     </div>
-    <button onclick="imprimir();">Imprimir</button>
+    
 
 
 
@@ -73,7 +73,8 @@ $courses = local_dominosdashboard_get_courses();
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="libs/c3.js"></script>
 <link href="estilos.css" rel="stylesheet">
-<link rel="stylesheet" href="estilos.css" type="text/css" media="all" />
+<link rel="stylesheet" href="estilos.css" type="text/css"/>
+<link href="estilos.css" rel="stylesheet" type="text/css" media="print" />
 <script src="dominosdashboard_scripts.js"></script>
 
 <script>

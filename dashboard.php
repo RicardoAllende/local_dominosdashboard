@@ -73,7 +73,8 @@ $indicators = local_dominosdashboard_get_indicators();
 
         <div class="col-sm-12 row" id="ranking_dm"></div>
 
-        <button onclick="window.print()">Imprimir texto</button>
+        <button onclick="imprimir()">Imprimir texto</button>
+        
 
 
 
