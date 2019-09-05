@@ -44,27 +44,18 @@ echo $OUTPUT->header();
 <div class="row">
     <form id="filter_form" method="post" action="services.php" class='col-sm-3'>
         <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br>
-        <!-- <span class="btn btn-info" onclick="obtenerInformacion()">Volver a simular obtención de gráficas</span><br><br> -->
         <input type="hidden" name="courseid" value="<?php echo $course->id; ?>";>
         <div id='contenedor_filtros'></div>
     </form>
     <div class="row col-sm-9" id="contenido_dashboard">
         <div class="col-sm-12 col-xl-12 row" id="course_title"></div>
-        <!-- <div class="col-sm-12 col-xl-12 row" id="course_overview"></div> -->
         <div class="col-sm-12 col-xl-12" id="course_overview"></div>
-        <div class="col-sm-12 col-xl-12">
-            <div class="titulog col-sm-12">
-                <h1 class="text-center">Cruce de indicadores</h1>
-            </div>
-        </div>
-        <div class="col-sm-6" id="data_card2"></div>
-        <div class="col-sm-6" id="data_card3"></div>
-        <div class="col-sm-6" id="data_card4"></div>
+        <div class="col-sm-12 col-xl-12" id="indicators_title"></div>
+        <div class="col-sm-6" id="card_ops"></div>
+        <div class="col-sm-6" id="card_numero_de_quejas"></div>
+        <div class="col-sm-6" id="card_scorcard"></div>
 
         <div class="col-sm-12 row" id="ranking_dm"></div>
-
-        <button onclick="imprimir()">Imprimir texto</button>
-
     </div>
 </div>
 <?php echo local_dominosdashboard_get_ideales_as_js_script(); ?>
@@ -114,32 +105,29 @@ echo $OUTPUT->header();
                 $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
                 informacion_del_curso = JSON.parse(JSON.stringify(data));
                 _kpis = informacion_del_curso.data.kpi;
+                $('#indicators_title').html('');
+                if(informacion_del_curso.data.kpi.length > 0){ insertarTituloSeparador('#indicators_title', 'Cruce de indicadores'); }
                 for (var index = 0; index < informacion_del_curso.data.kpi.length; index++) {
                     _kpi = informacion_del_curso.data.kpi[index];
                     console.log('Id del kpi', _kpi.kpi);
                     console.log('Valor del kpi ' + _kpi.kpi_name, _kpi.value);
                     switch (_kpi.kpi) {
                         case 1: // ICA (normalmente regresa Destacado/Aprobado/No aprobado), OPS
-                            imprimirCards2(_kpi);
-                            // addChartc2(_kpi);
+                            imprimir_kpi_ops_ica_curso(_kpi);
                             break;
                         case 2: // Número de quejas, Reporte de Casos Histórico por tiendas
-                            imprimirCards3(_kpi);
-                            // addChartc3(_kpi);
+                            imprimir_kpi_reporte_casos_historico_curso(_kpi);
                             break;
                         case 3: // Porcentaje de rotación, scorcard
-                            imprimirCards4(_kpi);
-                            // addChartc4(_kpi);
-
+                            imprimir_kpi_scorcard_rotacion_curso(_kpi);
                             break;
                         default:
                             break;
                     }
                 }
                 $('#course_title,#course_overview').html('');
-                insertarTituloSeparador('#course_title', informacion_del_curso.data.title);
+                insertarTituloSeparador('#course_title', 'Curso ' + informacion_del_curso.data.title);
                 crearTarjetaParaGrafica('#course_overview', informacion_del_curso.data, 'col-sm-12 col-xl-12');
-
 
                 imprimirRanking('#ranking_dm', informacion_del_curso.data);
                 dateEnding = Date.now();
@@ -154,9 +142,7 @@ echo $OUTPUT->header();
         }
     }
 
-    //-------------------------------------------------------------------------------------------------------KPIS----------------------------------------------------------------------------------------------------
-    //---------------------------OPS MÉXICO W
-    function imprimirCards2(kpi) {
+    function imprimir_kpi_ops_ica_curso(kpi) {
         if (esVacio(kpi.value)) {
             return false;
         }
@@ -164,8 +150,7 @@ echo $OUTPUT->header();
         var b = kpi.value["No aprobado"];
         var c = parseInt(a) + parseInt(b);
 
-
-        document.getElementById("data_card2").innerHTML = "<div class='col-sm-12'>"+
+        document.getElementById("card_ops").innerHTML = "<div class='col-sm-12'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
 
 
@@ -228,23 +213,14 @@ echo $OUTPUT->header();
         });
     }
 
-    // function addChartc2(kpi) {
-    //     // myJSON = JSON.parse(JSON.stringify(data));
-    //     //console.log(myJSON);
-    // }
-
-    function imprimirCards3(kpi) {
-        //console.log("entra imprimir2");
-        // myJSON = JSON.parse(JSON.stringify(data));
-        // console.log(myJSON); 
+    function imprimir_kpi_reporte_casos_historico_curso(kpi) {
         var a = kpi.value["Aprobado"];
         var b = kpi.value["No aprobado"];
         var c = parseInt(a) + parseInt(b);
         var d = parseInt(b) * 100;
         var e = parseInt(d) / parseInt(c);
 
-
-        document.getElementById("data_card3").innerHTML = "<div class='col-sm-12'>"+
+        document.getElementById("card_numero_de_quejas").innerHTML = "<div class='col-sm-12'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
 
 
@@ -283,10 +259,6 @@ echo $OUTPUT->header();
         $('#no_apro3').html(kpi.value["No aprobado"]);// No Aprobados
         $('#tusuario3').html(informacion_del_curso.data.not_viewed);//No visto
 
-
-
-        //$('#chart').html(myJSON.status);//Chart
-        //$('#tusuario').html(myJSON.data["enrolled_users"]);//Total de usuarios
         $('#titulo_grafica3').html(kpi.kpi_name);//Titulo grafica
 
         var a = kpi.value["Aprobado"];
@@ -317,45 +289,9 @@ echo $OUTPUT->header();
         });
     }
 
-    // function addChartc3(kpi) {
-    //     // myJSON = JSON.parse(JSON.stringify(data));
-    //     //console.log(myJSON);
-    //     var a = kpi.value["Aprobado"];
-    //     var b = kpi.value["No aprobado"];
-    //     var c = parseInt(a) + parseInt(b);
-    //     var d = parseInt(b) * 100;
-    //     var e = parseInt(d) / parseInt(c);
-    //     var f = e.toFixed(2);
-    //     var chartc = c3.generate({
-    //         data: {
-    //             columns: [
-    //                 ['No Aprobado', f],
-    //                 ['Promedio de no. de quejas', _kpi.value]
-    //             ],
-    //             type: 'bar',
-    //         },
-    //         bindto: "#chart3",
-    //         tooltip: {
-    //             format: {
-    //                 title: function (d) { return 'Quejas '; },
-    //                 value: function (value, ratio, id) {
-    //                     var format = id === 'data1' ? d3.format(',') : d3.format('');
-    //                     return format(value);
-    //                 }
-
-    //             }
-    //         }
-    //     });
-    // }
-
-    function imprimirCards4(kpi) {
-        //console.log("entra imprimir2");
-        // myJSON = JSON.parse(JSON.stringify(data));
-        // console.log(myJSON);        
-        document.getElementById("data_card4").innerHTML = "<div class='col-sm-12'>"+
+    function imprimir_kpi_scorcard_rotacion_curso(kpi) {    
+        document.getElementById("card_scorcard").innerHTML = "<div class='col-sm-12'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
-
-
                                        "<div class='card-group'>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body'>"+
@@ -391,10 +327,6 @@ echo $OUTPUT->header();
         $('#no_apro4').html(kpi.value["No aprobado"]);//No Aprobados
         $('#tusuario4').html(informacion_del_curso.data.not_viewed);//No visto
 
-
-
-        //$('#chart').html(myJSON.status);//Chart
-        //$('#tusuario').html(myJSON.data["enrolled_users"]);//Total de usuarios
         $('#titulo_grafica4').html(kpi.kpi_name);//Titulo grafica
         var a = kpi.value["Aprobado"];
         var b = kpi.value["No aprobado"];
@@ -423,44 +355,7 @@ echo $OUTPUT->header();
             }
         });
     }
-
-    // function addChartc4(kpi) {
-    //     // myJSON = JSON.parse(JSON.stringify(data));
-    //     //console.log(myJSON);
-    //     var a = kpi.value["Aprobado"];
-    //     var b = kpi.value["No aprobado"];
-    //     var c = parseInt(a) + parseInt(b);
-    //     var d = parseInt(b) * 100;
-    //     var e = parseInt(d) / parseInt(c);
-    //     var f = e.toFixed(2);
-    //     var chartc = c3.generate({
-    //         data: {
-    //             columns: [
-    //                 ['No Aprobado', f],
-    //                 ['Promedio de rotación', _kpi.value]
-    //             ],
-    //             type: 'bar',
-    //         },
-    //         bindto: "#chart4",
-    //         tooltip: {
-    //             format: {
-    //                 title: function (d) { return 'Rotación '; },
-    //                 value: function (value, ratio, id) {
-    //                     var format = id === 'data1' ? d3.format(',') : d3.format('');
-    //                     return format(value);
-    //                 }
-
-    //             }
-    //         }
-    //     });
-    // }
-
 </script>
 
-
-
-
-
 <?php
-// Contenido del dashboard
 echo $OUTPUT->footer();
