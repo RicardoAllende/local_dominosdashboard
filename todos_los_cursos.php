@@ -71,8 +71,6 @@ $indicators = local_dominosdashboard_get_indicators();
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="libs/c3.js"></script>
 <script src="dominosdashboard_scripts.js"></script>
-<script src="scripts/topdf.js"></script>
-<script src="scripts/saveSvgAsPng.js"></script>
 <script>
     var indicator;
     var item;
