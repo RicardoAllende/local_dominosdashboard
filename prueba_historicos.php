@@ -56,9 +56,9 @@ $courses = local_dominosdashboard_get_courses();
     </form>
     <div class="row col-sm-9 row">
         <div class="col-sm-12">
-            <div id="grafica_historico"></div>
+            <div id="data_card"></div>
         </div>
-        <div class="col-sm-12" id="print_request" ></div>
+        <!--<div class="col-sm-12" id="print_request" ></div>-->
     </div>
     
 
@@ -135,16 +135,71 @@ $courses = local_dominosdashboard_get_courses();
         }
     }
 
-    function historicos(info){                   
+    function historicos(info){
+
+        sua = 0;
         _aprobado = Array();
+        _a = Array();        
         _noAprobado = Array();
         _aprobado.push("Aprobados");
         _noAprobado.push("No aprobado");        
         for(var j = 0; j < info.length; j++){
             infos = info[j];
             _aprobado.push(infos.approved_users);
+            _a.push(infos.approved_users);
             _noAprobado.push(infos.enrolled_users);                
         }
+
+        for(var i = 0; i < _a.length; i++){
+            sua += _a[i];                
+        }
+
+        var proma = sua/_a.length;
+        var noa = infos.enrolled_users - sua;
+        //console.log('Aqui viene la resta');
+        //console.log(sua);
+        //console.log(infos.enrolled_users);
+        //console.log(noa);
+        
+        
+        
+        document.getElementById("data_card").innerHTML = "<div class='col-sm-12'>"+
+                                "<div class='card bg-gray border-0 m-2'>"+
+
+
+                                       "<div class='card-group'>"+
+                                          "<div class='card border-0 m-2'>"+
+                                            "<div class='card-body'>"+
+                                              "<p class='card-text text-primary text-center'>Aprobados</p>"+
+                                              "<p class='card-text text-primary text-center' id=''>"+proma+"%</p>"+
+                                            "</div>"+
+                                          "</div>"+
+                                          "<div class='card border-0 m-2'>"+
+                                            "<div class='card-body text-center'>"+
+                                              "<p class='card-text text-warning text-center'>No Aprobados</p>"+
+                                              "<p class='card-text text-warning text-center' id=''>"+noa+"</p>"+
+                                            "</div>"+
+                                          "</div>"+
+                                          "<div class='card border-0 m-2'>"+
+                                            "<div class='card-body text-center'>"+
+                                              "<p class='card-text text-success text-center'>Total de usuarios</p>"+
+                                              "<p class='card-text text-warning text-center' id=''>"+infos.enrolled_users+"</p>"+
+                                            "</div>"+
+                                          "</div>"+
+
+                                        "</div>"+
+                                    "<div class='bg-white m-2' id='grafica_historico'></div>"+
+                                   
+                                    "<div class='align-items-end'>"+
+                                        
+                                    "<div class='fincard text-center'>"+
+                                            "<a href='Grafica.html' id=''>Históricos</a>"+
+                                        "</div>"+
+                                    "</div>"+
+                                "</div>"+
+            "</div>";
+        
+        
         return c3.generate({
             data: {
                 columns: [_aprobado,_noAprobado],
@@ -159,10 +214,7 @@ $courses = local_dominosdashboard_get_courses();
         });
         //agregarGraficaHistorico(infos);
         
-    }
-    
-    function agregarGraficaHistorico() {        
-    }
+    }   
 
 
     function imprimir() {

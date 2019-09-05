@@ -82,7 +82,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
             </div>
         </div>
     </div>
-    <div class="col-sm-12" id="local_dominosdashboard_content"></div>
+    
     <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>
 </div>
 
@@ -127,8 +127,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         console.log("Obteniendo gráficas");
         informacion = $('#filter_form').serializeArray();
         informacion.push({name: 'request_type', value: 'course_list'});
-        console.log('La información enviada al servicio es: ', informacion);
-        $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
+        
         dateBegining = Date.now();
         $('#local_dominosdashboard_content').html('Cargando la información');
         $.ajax({
