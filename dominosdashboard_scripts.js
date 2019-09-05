@@ -350,7 +350,7 @@ function peticionFiltros(info){
                     <div class="card">
                         <div class="card-header cuerpo-filtro" id="${heading_id}">
                             <h5 class="mb-0">
-                                <input type="checkbox"><button class="btn btn-link collapsed texto-filtro"
+                                <button class="btn btn-link collapsed texto-filtro"
                                     data-toggle="collapse" style="color: white;" data-target="#${collapse_id}" aria-expanded="false"
                                     aria-controls="${collapse_id}">
                                     ${clave}

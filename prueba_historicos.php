@@ -54,9 +54,13 @@ $courses = local_dominosdashboard_get_courses();
         ?>
         <div id='contenedor_filtros'></div>
     </form>
+    <div class="titulog col-sm-9">
+        <h1 style="text-align: center;">Histórico</h1>
+    </div>
     <div class="row col-sm-9 row">
         <div class="col-sm-12">
             <div id="data_card"></div>
+            <div id="data_card2"></div>
         </div>
         <!--<div class="col-sm-12" id="print_request" ></div>-->
     </div>
@@ -188,7 +192,7 @@ $courses = local_dominosdashboard_get_courses();
                                           "</div>"+
 
                                         "</div>"+
-                                    "<div class='bg-white m-2' id='grafica_historico'></div>"+
+                                    "<div class='bg-faded m-2' id='grafica_historico'></div>"+
                                    
                                     "<div class='align-items-end'>"+
                                         
@@ -198,7 +202,44 @@ $courses = local_dominosdashboard_get_courses();
                                     "</div>"+
                                 "</div>"+
             "</div>";
-        
+
+    //---------------------------------------Propuesta grafica-----------------------------------------------------------------------------------------------------------                                    
+    document.getElementById("data_card2").innerHTML = "<div class='col-sm-6'>"+
+                                "<div class='card bg-gray border-0 m-2'>"+
+
+
+                                       "<div class='card-group'>"+
+                                          "<div class='card border-0 m-2'>"+
+                                            "<div class='card-body'>"+
+                                              "<p class='card-text text-primary text-center'>Aprobados</p>"+
+                                              "<p class='card-text text-primary text-center' id=''></p>"+
+                                            "</div>"+
+                                          "</div>"+
+                                          "<div class='card border-0 m-2'>"+
+                                            "<div class='card-body text-center'>"+
+                                              "<p class='card-text text-warning text-center'>No Aprobados</p>"+
+                                              "<p class='card-text text-warning text-center' id=''></p>"+
+                                            "</div>"+
+                                          "</div>"+
+                                          "<div class='card border-0 m-2'>"+
+                                            "<div class='card-body text-center'>"+
+                                              "<p class='card-text text-success text-center'>Total de usuarios</p>"+
+                                              "<p class='card-text text-warning text-center' id=''></p>"+
+                                            "</div>"+
+                                          "</div>"+
+
+                                        "</div>"+
+                                    "<div class='bg-faded text-center m-2 noinfo' id=''>Sin información en la Base de Datos</div>"+
+                                   
+                                    "<div class='align-items-end'>"+
+                                        
+                                    "<div class='fincard text-center'>"+
+                                            "<a href='Grafica.html' id=''></a>"+
+                                        "</div>"+
+                                    "</div>"+
+                                "</div>"+
+            "</div>";
+    //------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
         
         return c3.generate({
             data: {
