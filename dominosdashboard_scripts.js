@@ -85,12 +85,11 @@ function crearTarjetaParaGrafica(div, curso, claseDiv){
     if(typeof claseDiv !== 'string'){
         claseDiv = "col-sm-12 col-xl-6";
     }
-    // if(divCompleto){
-    //     clase = "col-sm-12 col-xl-12";
-    // }else{
-    //     clase = "col-sm-12 col-xl-6";
-    // }
     id_para_Grafica = "chart_" + curso.id;
+    if(typeof currentTab != 'undefined'){
+        id_para_Grafica += '_' + currentTab;
+    }
+    console.log('id_para_Grafica', id_para_Grafica);
     $(div).append(`<div class="${claseDiv}">
                 <div class="card bg-gray border-0 m-2" id="">
 
@@ -229,7 +228,12 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
 }
 
 function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titulo, id){
-    div_id = "chart__" + $('#tab-selector').val();
+    div_id = "chart__";// + $('#tab-selector').val();
+    if(typeof currentTab != 'undefined'){
+        div_id += '_';
+        div_id += currentTab;
+    }
+    console.log('El id de los cursos varios es ', div_id);
     if(id != undefined){
         div_id += id;
     }

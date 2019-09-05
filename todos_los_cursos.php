@@ -27,8 +27,6 @@ require_once(__DIR__ . '/../../config.php');
 $context_system = context_system::instance();
 require_capability('local/dominosdashboard:view', $context_system);
 require_once(__DIR__ . '/lib.php');
-require_once("$CFG->libdir/gradelib.php");
-require_once("$CFG->dirroot/grade/querylib.php");
 require_login();
 global $DB;
 $PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/todos_los_cursos.php");
@@ -37,16 +35,14 @@ $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 
 echo $OUTPUT->header();
-echo "<script> var indicadores = '" . DOMINOSDASHBOARD_INDICATORS . "'</script>";
 
 $tabOptions = local_dominosdashboard_get_course_tabs();
 
-$indicators = local_dominosdashboard_get_indicators();
 ?>
 <div class="row">
     <form id="filter_form" method="post" action="services.php" class='col-sm-3'>
         <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br>
-        <span class="btn btn-info" onclick="obtenerInformacion()">Volver a simular obtención de gráficas</span><br><br>
+        <!-- <span class="btn btn-info" onclick="obtenerInformacion()">Volver a simular obtención de gráficas</span><br><br> -->
         <?php
         echo "<br><select class='form-control' id='tab-selector' name='type'>";
         foreach($tabOptions as $key => $option){
@@ -57,8 +53,32 @@ $indicators = local_dominosdashboard_get_indicators();
         <div id='contenedor_filtros'></div>
     </form>
     <div class="col-sm-9" id="contenido_cursos">
-        <div>
-            <div class="row" id="contenedor_cursos">
+        <div id="navbarSupportedContent">
+            <ul class="nav justify-content-center nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active dtag" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                        aria-controls="home" onclick="cambiarpestana(1)" aria-selected="true">Cruce de indicadores</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                        aria-controls="profile" onclick="cambiarpestana(2)" aria-selected="false">Programas de entrenamiento</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+                        aria-controls="contact" onclick="cambiarpestana(3)" aria-selected="false">Lanzamientos y campañas</a>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content row" id="myTabContent">
+            <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="" id="ldm_tab_1"></div>
+                <!-- <div class="" id="contenedor_cursos"></div> -->
+            </div>
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="" id="ldm_tab_2"></div>
+            </div>
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="" id="ldm_tab_3"></div>
             </div>
         </div>
     </div>
@@ -72,11 +92,21 @@ $indicators = local_dominosdashboard_get_indicators();
 <script src="libs/c3.js"></script>
 <script src="dominosdashboard_scripts.js"></script>
 <script>
+    var currentTab = 1;
     var indicator;
     var item;
     var serialized_form = "";
     var demark = "";
     var tituloPestana = "";
+    var tabsCursos = [false, false, false];
+    function cambiarpestana(id){
+        if(id != currentTab){
+            currentTab = id;
+            setTimeout(function() {
+                obtenerInformacion();
+            }, 500);
+        }
+    }
     document.addEventListener("DOMContentLoaded", function() {
         require(['jquery'], function ($) {
             $('.course-selector').change(function(){obtenerInformacion()});
@@ -107,12 +137,15 @@ $indicators = local_dominosdashboard_get_indicators();
             dataType: "json"
         })
         .done(function(data) {
+            console.log('Data obtenida', data);
             respuesta = JSON.parse(JSON.stringify(data));
             respuesta = respuesta.data;
+            console.log('Imprimiendo la respuesta', respuesta);
             dateEnding = Date.now();
             $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
             console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
-            generarGraficasTodosLosCursos('#contenedor_cursos', respuesta, tituloPestana);
+            render_div = "#ldm_tab_" + currentTab;
+            generarGraficasTodosLosCursos(render_div, respuesta, tituloPestana);
         })
         .fail(function(error, error2) {
             console.log(error);

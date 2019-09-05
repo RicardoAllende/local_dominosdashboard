@@ -50,7 +50,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
             }
             break;
         case 'course_list':
-            if(!empty($_POST['type'])){
+            if(isset($_POST['type'])){
                 die(local_dominosdashboard_format_response(local_dominosdashboard_get_courses_overview($_POST['type'], $_POST)));
             }else{
                 die(local_dominosdashboard_error_response('type (int) not found'));
