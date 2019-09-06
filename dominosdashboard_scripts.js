@@ -42,6 +42,46 @@ function insertarTituloSeparador(div, titulo){
     </div>`);
 }
 
+//Funcion para mostar la grafica sin informacion
+function insertarGraficaSinInfo(div, data){
+    $(div).append(`
+    <div class='col-sm-6 espacio'>"+
+                                "<div class='card bg-gray border-0 m-2'>"+
+
+
+                                       "<div class='card-group'>"+
+                                          "<div class='card border-0'>"+
+                                            "<div class='card-body'>"+
+                                              "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
+                                              "<p class='card-text text-primary text-center txtnum' id=''></p>"+
+                                            "</div>"+
+                                          "</div>"+
+                                          "<div class='card border-0 m-2'>"+
+                                            "<div class='card-body text-center'>"+
+                                              "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
+                                              "<p class='card-text text-warning text-center txtnum' id=''></p>"+
+                                            "</div>"+
+                                          "</div>"+
+                                          "<div class='card border-0 m-2'>"+
+                                            "<div class='card-body text-center'>"+
+                                              "<p class='card-text text-success text-center txti'>Total de usuarios</p>"+
+                                              "<p class='card-text text-warning text-center txtnum' id=''></p>"+
+                                            "</div>"+
+                                          "</div>"+
+
+                                        "</div>"+
+                                    "<div class='bg-faded text-center m-2 noinfo' id=''>Sin información en la Base de Datos</div>"+
+                                   
+                                    "<div class='align-items-end'>"+
+                                        
+                                    "<div class='fincard text-center'>"+
+                                            "<a href='Grafica.html' id=''></a>"+
+                                        "</div>"+
+                                    "</div>"+
+                                "</div>"+
+            "</div>"`);
+}
+
 function crearGraficaDeCurso(_bindto, curso){
     switch(curso.chart){
         case 'pie':
