@@ -110,7 +110,7 @@ $courses = local_dominosdashboard_get_courses();
         informacion = $('#filter_form').serializeArray();
         informacion.push({ name: 'request_type', value: 'course_historics' });
         console.log('Consulta al servicio retorna', informacion);
-        $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
+        // $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
         dateBegining = Date.now();
         // $('#print_request').html('Cargando la información');
         $.ajax({

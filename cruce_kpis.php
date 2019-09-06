@@ -65,7 +65,7 @@ $courses = local_dominosdashboard_get_courses();
         <span class="btn btn-info" onclick="obtenerInformacion()">Volver a simular obtención de gráficas</span>
     </form>
     <div class="col-sm-8" id="local_dominosdashboard_content"></div>
-    <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div>
+    <!-- <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div> -->
 </div>
 <script>
     var indicator;
@@ -107,7 +107,7 @@ $courses = local_dominosdashboard_get_courses();
     function obtenerInformacion(){
         console.log("Obteniendo gráficas");
         informacion = $('#filter_form').serializeArray();
-        $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
+        // $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
         dateBegining = Date.now();
         // $('#local_dominosdashboard_content').html('Cargando la información');
         $.ajax({

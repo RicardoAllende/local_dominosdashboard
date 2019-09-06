@@ -28,7 +28,7 @@ $context_system = context_system::instance();
 require_capability('local/dominosdashboard:view', $context_system);
 require_once(__DIR__ . '/lib.php');
 require_login();
-global $DB;
+
 $PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/dashboard.php");
 $PAGE->set_context($context_system);
 $PAGE->set_pagelayout('admin');
