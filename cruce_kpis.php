@@ -109,7 +109,7 @@ $courses = local_dominosdashboard_get_courses();
         informacion = $('#filter_form').serializeArray();
         $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
         dateBegining = Date.now();
-        $('#local_dominosdashboard_content').html('Cargando la información');
+        // $('#local_dominosdashboard_content').html('Cargando la información');
         $.ajax({
             type: "POST",
             url: "services.php",
@@ -121,7 +121,7 @@ $courses = local_dominosdashboard_get_courses();
             console.log(`Tiempo de respuesta de API ${dateEnding - dateBegining} ms`);
             console.log("Petición correcta");
             console.log(data);
-            $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
+            // $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
         })
         .fail(function(error, error2) {
             console.log(error);

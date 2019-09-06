@@ -29,7 +29,7 @@ require_capability('local/dominosdashboard:view', $context_system);
 require_once(__DIR__ . '/lib.php');
 require_login();
 global $DB;
-$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/dashboard.php");
+$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/prueba_iframe.php");
 $PAGE->set_context($context_system);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
@@ -37,7 +37,7 @@ $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 echo $OUTPUT->header();
 
 ?>
-<iframe src="dashboard_iframe.php" id="iframe_ldm" frameborder="0" style="width: 100%; overflow: hidden;"></iframe>
+<iframe src="inner.php" id="iframe_ldm" frameborder="0" style="width: 100%; overflow: hidden;"></iframe>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('region-main').style.width = "100%"
@@ -51,5 +51,4 @@ echo $OUTPUT->header();
     }
 </script>
 <?php
-
 echo $OUTPUT->footer();

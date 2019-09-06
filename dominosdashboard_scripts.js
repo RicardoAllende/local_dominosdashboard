@@ -354,11 +354,11 @@ function peticionFiltros(info){
                     <div class="card">
                         <div class="card-header cuerpo-filtro" id="${heading_id}">
                             <h5 class="mb-0">
-                                <button class="btn btn-link collapsed texto-filtro"
+                                <span class="btn btn-link collapsed texto-filtro"
                                     data-toggle="collapse" style="color: white;" data-target="#${collapse_id}" aria-expanded="false"
                                     aria-controls="${collapse_id}">
                                     ${clave}
-                                </button>
+                                </span>
                             </h5>
                         </div>
                         <div id="${collapse_id}" class="collapse" aria-labelledby="${heading_id}" data-parent="#contenedor_filtros">
@@ -519,11 +519,3 @@ function imprimirRanking(div, info) {
         return;
     }
 }
-
-// id = "data_card2";
-// var mywindow = window.open('', 'PRINT', 'height=768,width=1366');
-
-// mywindow.document.write('<html><head><title>' + document.title  + '</title><link src="estilos.css"><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">');
-// mywindow.document.write('</head><body>');
-// mywindow.document.write(document.getElementById(id).innerHTML);
-// mywindow.document.write('</body></html>');

@@ -94,7 +94,7 @@ echo $OUTPUT->header();
         informacion.push({ name: 'request_type', value: 'course_completion' });
         $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
         dateBegining = Date.now();
-        $('#local_dominosdashboard_content').html('Cargando la información');
+        // $('#local_dominosdashboard_content').html('Cargando la información');
         $.ajax({
             type: "POST",
             url: "services.php",
@@ -102,7 +102,7 @@ echo $OUTPUT->header();
             dataType: "json"
         })
             .done(function (data) {
-                $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
+                // $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
                 informacion_del_curso = JSON.parse(JSON.stringify(data));
                 _kpis = informacion_del_curso.data.kpi;
                 $('#indicators_title').html('');
