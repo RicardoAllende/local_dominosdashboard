@@ -7,8 +7,7 @@
 /* Texto que aparece al final de la card */
 .fincard {
     background-color: #016392;
-    padding-top: 10px;
-    margin-top: 10px;
+    padding-top: 10px;    
 }
 .fincard a {
     color: white;
@@ -143,4 +142,20 @@
     margin-bottom: 20px;
     margin-top: 20px;
     font-size: 30px;
+}
+
+/*Texto de las 3 card que aparecen dentro de la card */
+.txti {
+    margin: 5px;
+}
+
+/*Numeros de las 3 card que aparecen dentro de la card */
+.txtnum{
+    font-size: 20px;
+    padding-bottom: 15px;
+}
+
+/*Espacio entre cards */
+.espacio{
+    margin-bottom: 10px;
 }

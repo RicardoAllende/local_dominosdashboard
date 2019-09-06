@@ -150,32 +150,32 @@ echo $OUTPUT->header();
         var b = kpi.value["No aprobado"];
         var c = parseInt(a) + parseInt(b);
 
-        document.getElementById("card_ops").innerHTML = "<div class='col-sm-12'>"+
+        document.getElementById("card_ops").innerHTML = "<div class='col-sm-12 espacio'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
 
 
                                        "<div class='card-group'>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body'>"+
-                                              "<p class='card-text text-primary text-center'>Aprobados</p>"+
-                                              "<p class='card-text text-primary text-center' id='apro2'></p>"+
+                                              "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
+                                              "<p class='card-text text-primary text-center txtnum' id='apro2'></p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-warning text-center'>No Aprobados</p>"+
-                                              "<p class='card-text text-warning text-center' id='no_apro2'></p>"+
+                                              "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
+                                              "<p class='card-text text-warning text-center txtnum' id='no_apro2'></p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-success text-center'>Total de usuarios</p>"+
-                                              "<p class='card-text text-warning text-center' id='tusuario2'>"+c+"</p>"+
+                                              "<p class='card-text text-success text-center txti'>Total de usuarios</p>"+
+                                              "<p class='card-text text-warning text-center txtnum' id='tusuario2'>"+c+"</p>"+
                                             "</div>"+
                                           "</div>"+
 
                                         "</div>"+
-                                    "<div class='bg-white m-2' id='chart2'></div>"+
+                                    "<div class='bg-faded m-2' id='chart2'></div>"+
                                    
                                     "<div class='align-items-end'>"+
                                         
@@ -220,32 +220,32 @@ echo $OUTPUT->header();
         var d = parseInt(b) * 100;
         var e = parseInt(d) / parseInt(c);
 
-        document.getElementById("card_numero_de_quejas").innerHTML = "<div class='col-sm-12'>"+
+        document.getElementById("card_numero_de_quejas").innerHTML = "<div class='col-sm-12 espacio'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
 
 
                                        "<div class='card-group'>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body'>"+
-                                              "<p class='card-text text-primary text-center'>Aprobados</p>"+
-                                              "<p class='card-text text-primary text-center' id='apro3'></p>"+
+                                              "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
+                                              "<p class='card-text text-primary text-center txtnum' id='apro3'></p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-warning text-center'>No Aprobados</p>"+
-                                              "<p class='card-text text-warning text-center' id='no_apro3'></p>"+
+                                              "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
+                                              "<p class='card-text text-warning text-center txtnum'></p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-success text-center'>No visto</p>"+
-                                              "<p class='card-text text-warning text-center' id='tusuario3'></p>"+
+                                              "<p class='card-text text-success text-center txti'>No visto</p>"+
+                                              "<p class='card-text text-warning text-center txtnum' id='tusuario3'></p>"+
                                             "</div>"+
                                           "</div>"+
 
                                         "</div>"+
-                                    "<div class='bg-white m-2' id='chart3'></div>"+
+                                    "<div class='bg-faded m-2' id='chart3'></div>"+
                                    
                                     "<div class='align-items-end'>"+
                                         
@@ -290,30 +290,30 @@ echo $OUTPUT->header();
     }
 
     function imprimir_kpi_scorcard_rotacion_curso(kpi) {    
-        document.getElementById("card_scorcard").innerHTML = "<div class='col-sm-12'>"+
+        document.getElementById("card_scorcard").innerHTML = "<div class='col-sm-12 espacio'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
                                        "<div class='card-group'>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body'>"+
-                                              "<p class='card-text text-primary text-center'>Aprobados</p>"+
-                                              "<p class='card-text text-primary text-center' id='apro4'></p>"+
+                                              "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
+                                              "<p class='card-text text-primary text-center txtnum' id='apro4'></p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-warning text-center'>No Aprobados</p>"+
-                                              "<p class='card-text text-warning text-center' id='no_apro4'></p>"+
+                                              "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
+                                              "<p class='card-text text-warning text-center txtnum' id='no_apro4'></p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-success text-center'>No visto</p>"+
-                                              "<p class='card-text text-warning text-center' id='tusuario4'></p>"+
+                                              "<p class='card-text text-success text-center txti'>No visto</p>"+
+                                              "<p class='card-text text-warning text-center txtnum' id='tusuario4'></p>"+
                                             "</div>"+
                                           "</div>"+
 
                                         "</div>"+
-                                    "<div class='bg-white m-2' id='chart4'></div>"+
+                                    "<div class='bg-faded m-2' id='chart4'></div>"+
                                    
                                     "<div class='align-items-end'>"+
                                         

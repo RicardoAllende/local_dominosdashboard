@@ -167,27 +167,27 @@ $courses = local_dominosdashboard_get_courses();
         
         
         
-        document.getElementById("data_card").innerHTML = "<div class='col-sm-12'>"+
+        document.getElementById("data_card").innerHTML = "<div class='col-sm-12 espacio'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
 
 
                                        "<div class='card-group'>"+
                                           "<div class='card border-0 m-2'>"+
-                                            "<div class='card-body'>"+
+                                            "<div class='card-body' style='margin: 5px;'>"+
                                               "<p class='card-text text-primary text-center'>Aprobados</p>"+
-                                              "<p class='card-text text-primary text-center' id=''>"+proma+"%</p>"+
+                                              "<p class='card-text text-primary text-center' id='' style='font-size: 20px; padding-bottom: 15px;'>"+proma+"%</p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
-                                            "<div class='card-body text-center'>"+
+                                            "<div class='card-body text-center' style='margin: 5px;'>"+
                                               "<p class='card-text text-warning text-center'>No Aprobados</p>"+
-                                              "<p class='card-text text-warning text-center' id=''>"+noa+"</p>"+
+                                              "<p class='card-text text-warning text-center' id='' style='font-size: 20px;'>"+noa+"</p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
-                                            "<div class='card-body text-center'>"+
+                                            "<div class='card-body text-center' style='margin: 5px;'>"+
                                               "<p class='card-text text-success text-center'>Total de usuarios</p>"+
-                                              "<p class='card-text text-warning text-center' id=''>"+infos.enrolled_users+"</p>"+
+                                              "<p class='card-text text-warning text-center' id='' style='font-size: 20px;'>"+infos.enrolled_users+"</p>"+
                                             "</div>"+
                                           "</div>"+
 
@@ -204,27 +204,27 @@ $courses = local_dominosdashboard_get_courses();
             "</div>";
 
     //---------------------------------------Propuesta grafica-----------------------------------------------------------------------------------------------------------                                    
-    document.getElementById("data_card2").innerHTML = "<div class='col-sm-6'>"+
+    document.getElementById("data_card2").innerHTML = "<div class='col-sm-6 espacio'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
 
 
                                        "<div class='card-group'>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body'>"+
-                                              "<p class='card-text text-primary text-center'>Aprobados</p>"+
-                                              "<p class='card-text text-primary text-center' id=''></p>"+
+                                              "<p class='card-text text-primary text-center' style='margin: 5px;'>Aprobados</p>"+
+                                              "<p class='card-text text-primary text-center' id='' style='font-size: 20px; padding-bottom: 15px;'></p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-warning text-center'>No Aprobados</p>"+
-                                              "<p class='card-text text-warning text-center' id=''></p>"+
+                                              "<p class='card-text text-warning text-center' style='margin: 5px;'>No Aprobados</p>"+
+                                              "<p class='card-text text-warning text-center' id='' style='font-size: 20px; padding-bottom: 15px;'></p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-success text-center'>Total de usuarios</p>"+
-                                              "<p class='card-text text-warning text-center' id=''></p>"+
+                                              "<p class='card-text text-success text-center' style='margin: 5px;'>Total de usuarios</p>"+
+                                              "<p class='card-text text-warning text-center' id='' style='font-size: 20px; padding-bottom: 15px;'></p>"+
                                             "</div>"+
                                           "</div>"+
 

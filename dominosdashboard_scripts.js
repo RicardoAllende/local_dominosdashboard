@@ -90,31 +90,31 @@ function crearTarjetaParaGrafica(div, curso, claseDiv){
         id_para_Grafica += '_' + currentTab;
     }
     console.log('id_para_Grafica', id_para_Grafica);
-    $(div).append(`<div class="${claseDiv}">
+    $(div).append(`<div class="${claseDiv} espacio">
                 <div class="card bg-gray border-0 m-2" id="">
 
                     <div class="card-group">
                         <div class="card border-0 m-2">
                             <div class="card-body text-center">
-                                <p class="card-text text-primary">Aprobados</p>
-                                <p class="card-text text-primary">${curso.approved_users} (${curso.percentage} %)</p>
+                                <p class="card-text text-primary txti">Aprobados</p>
+                                <p class="card-text text-primary txtnum">${curso.approved_users} (${curso.percentage} %)</p>
                             </div>
                         </div>
                         <div class="card border-0 m-2">
                             <div class="card-body text-center">
-                                <p class="card-text text-warning">No Aprobados</p>
-                                <p class="card-text text-warning">${curso.not_approved_users}</p>
+                                <p class="card-text text-warning txti">No Aprobados</p>
+                                <p class="card-text text-warning txtnum">${curso.not_approved_users}</p>
                             </div>
                         </div>
                         <div class="card border-0 m-2">
                             <div class="card-body text-center">
-                                <p class="card-text text-success">Total de usuarios inscritos</p>
-                                <p class="card-text text-success">${curso.enrolled_users}</p>
+                                <p class="card-text text-success txti">Total de usuarios inscritos</p>
+                                <p class="card-text text-success txtnum">${curso.enrolled_users}</p>
                             </div>
                         </div>
 
                     </div>
-                    <div class="chart_ bg-white m-2" id="${id_para_Grafica}"></div>
+                    <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>
                     <div class="align-items-end">
                         <div class="fincard text-center">
                             <a href="detalle_curso?id=${curso.id}">${curso.title}</a>
@@ -268,31 +268,31 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
 
 function crearTarjetaParaGraficakpi(div, curso, kpi, id){
     id_para_Grafica = "chart_" + id + '_' + curso.id;
-    $(div).append(`<div class="col-sm-12 col-xl-6">
+    $(div).append(`<div class="col-sm-12 col-xl-6 espacio">
                 <div class="card bg-gray border-0 m-2" id="">
 
                     <div class="card-group">
                         <div class="card border-0 m-2">
                             <div class="card-body text-center">
-                                <p class="card-text text-primary">Aprobados</p>
-                                <p class="card-text text-primary">${curso.approved_users} (${curso.percentage} %)</p>
+                                <p class="card-text text-primary txti">Aprobados</p>
+                                <p class="card-text text-primary txtnum">${curso.approved_users} (${curso.percentage} %)</p>
                             </div>
                         </div>
                         <div class="card border-0 m-2">
                             <div class="card-body text-center">
-                                <p class="card-text text-warning">No Aprobados</p>
-                                <p class="card-text text-warning">${curso.not_approved_users}</p>
+                                <p class="card-text text-warning txti">No Aprobados</p>
+                                <p class="card-text text-warning txtnum">${curso.not_approved_users}</p>
                             </div>
                         </div>
                         <div class="card border-0 m-2">
                             <div class="card-body text-center">
-                                <p class="card-text text-success">Total de usuarios inscritos</p>
-                                <p class="card-text text-success">${curso.enrolled_users}</p>
+                                <p class="card-text text-success txti">Total de usuarios inscritos</p>
+                                <p class="card-text text-success txtnum">${curso.enrolled_users}</p>
                             </div>
                         </div>
 
                     </div>
-                    <div class="chart_ bg-white m-2" id="${id_para_Grafica}"></div>
+                    <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>
                     <div class="align-items-end">
                         <div class="fincard text-center">
                             <a href="detalle_curso?id=${curso.id}">${curso.title}</a>
