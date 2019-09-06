@@ -173,20 +173,20 @@ $courses = local_dominosdashboard_get_courses();
                                        "<div class='card-group'>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body' style='margin: 5px;'>"+
-                                              "<p class='card-text text-primary text-center'>Aprobados</p>"+
-                                              "<p class='card-text text-primary text-center' id='' style='font-size: 20px; padding-bottom: 15px;'>"+proma+"%</p>"+
+                                              "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
+                                              "<p class='card-text text-primary text-center txtnum' id=''>"+proma+"%</p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body text-center' style='margin: 5px;'>"+
-                                              "<p class='card-text text-warning text-center'>No Aprobados</p>"+
-                                              "<p class='card-text text-warning text-center' id='' style='font-size: 20px;'>"+noa+"</p>"+
+                                              "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
+                                              "<p class='card-text text-warning text-center txtnum' id=''>"+noa+"</p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body text-center' style='margin: 5px;'>"+
-                                              "<p class='card-text text-success text-center'>Total de usuarios</p>"+
-                                              "<p class='card-text text-warning text-center' id='' style='font-size: 20px;'>"+infos.enrolled_users+"</p>"+
+                                              "<p class='card-text text-success text-center txti'>Total de usuarios</p>"+
+                                              "<p class='card-text text-warning text-center txtnum' id=''>"+infos.enrolled_users+"</p>"+
                                             "</div>"+
                                           "</div>"+
 
@@ -208,22 +208,22 @@ $courses = local_dominosdashboard_get_courses();
 
 
                                        "<div class='card-group'>"+
-                                          "<div class='card border-0 m-2'>"+
+                                          "<div class='card border-0'>"+
                                             "<div class='card-body'>"+
-                                              "<p class='card-text text-primary text-center' style='margin: 5px;'>Aprobados</p>"+
-                                              "<p class='card-text text-primary text-center' id='' style='font-size: 20px; padding-bottom: 15px;'></p>"+
+                                              "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
+                                              "<p class='card-text text-primary text-center txtnum' id=''></p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-warning text-center' style='margin: 5px;'>No Aprobados</p>"+
-                                              "<p class='card-text text-warning text-center' id='' style='font-size: 20px; padding-bottom: 15px;'></p>"+
+                                              "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
+                                              "<p class='card-text text-warning text-center txtnum' id=''></p>"+
                                             "</div>"+
                                           "</div>"+
                                           "<div class='card border-0 m-2'>"+
                                             "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-success text-center' style='margin: 5px;'>Total de usuarios</p>"+
-                                              "<p class='card-text text-warning text-center' id='' style='font-size: 20px; padding-bottom: 15px;'></p>"+
+                                              "<p class='card-text text-success text-center txti'>Total de usuarios</p>"+
+                                              "<p class='card-text text-warning text-center txtnum' id=''></p>"+
                                             "</div>"+
                                           "</div>"+
 
