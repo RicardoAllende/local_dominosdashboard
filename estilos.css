@@ -156,8 +156,12 @@
     padding-bottom: 15px;
 }
 
-/*Espacio entre cards */
+/*Espacio entre cards*/
 .espacio{
     margin-bottom: 10px;
 }
 
+/* Espacio que se hace entre la grafica y los 3 elementos dentro de la card */
+.esp {
+    margin-bottom: 0px;
+}
