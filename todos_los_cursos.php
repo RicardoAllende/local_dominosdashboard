@@ -129,7 +129,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         informacion.push({name: 'request_type', value: 'course_list'});
         
         dateBegining = Date.now();
-        $('#local_dominosdashboard_content').html('Cargando la información');
+        // $('#local_dominosdashboard_content').html('Cargando la información');
         $.ajax({
             type: "POST",
             url: "services.php",
@@ -142,7 +142,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
             respuesta = respuesta.data;
             console.log('Imprimiendo la respuesta', respuesta);
             dateEnding = Date.now();
-            $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
+            // $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
             console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
             render_div = "#ldm_tab_" + currentTab;
             generarGraficasTodosLosCursos(render_div, respuesta, tituloPestana);

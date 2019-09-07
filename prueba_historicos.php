@@ -62,7 +62,6 @@ $courses = local_dominosdashboard_get_courses();
             <div id="data_card"></div>
             <div id="data_card2"></div>
         </div>
-        <!--<div class="col-sm-12" id="print_request" ></div>-->
     </div>
     
 
@@ -111,9 +110,9 @@ $courses = local_dominosdashboard_get_courses();
         informacion = $('#filter_form').serializeArray();
         informacion.push({ name: 'request_type', value: 'course_historics' });
         console.log('Consulta al servicio retorna', informacion);
-        $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
+        // $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
         dateBegining = Date.now();
-        $('#print_request').html('Cargando la información');
+        // $('#print_request').html('Cargando la información');
         $.ajax({
             type: "POST",
             url: "services.php",
@@ -121,7 +120,7 @@ $courses = local_dominosdashboard_get_courses();
             dataType: "json"
         })
             .done(function (data) {
-                $('#print_request').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
+                // $('#print_request').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
                 info = JSON.parse(JSON.stringify(data));
                 info = info.data;
                 dateEnding = Date.now();
