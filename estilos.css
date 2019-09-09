@@ -137,11 +137,9 @@
 
 /* Texto para la card cuando no haya informacion*/
 .noinfo {
-    color: black;
-    padding-bottom: 5px;
-    margin-bottom: 20px;
-    margin-top: 20px;
+    color: black;    
     font-size: 30px;
+    height: 500px;
 }
 
 /*Texto de las 3 card que aparecen dentro de la card */
@@ -164,4 +162,11 @@
 /* Espacio que se hace entre la grafica y los 3 elementos dentro de la card */
 .esp {
     margin-bottom: 0px;
+}
+
+/* Margen del row */
+.espr {
+    margin-left: 0px;
+    margin-right: 0px;
+    background: #f7efef;    
 }

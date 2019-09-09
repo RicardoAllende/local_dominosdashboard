@@ -43,43 +43,40 @@ function insertarTituloSeparador(div, titulo){
 }
 
 //Funcion para mostar la grafica sin informacion
-function insertarGraficaSinInfo(div, data){
+function insertarGraficaSinInfo(div){
     $(div).append(`
-    <div class='col-sm-6 espacio'>"+
-                                "<div class='card bg-gray border-0 m-2'>"+
-
-
-                                       "<div class='card-group'>"+
-                                          "<div class='card border-0'>"+
-                                            "<div class='card-body'>"+
-                                              "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
-                                              "<p class='card-text text-primary text-center txtnum' id=''></p>"+
-                                            "</div>"+
-                                          "</div>"+
-                                          "<div class='card border-0 m-2'>"+
-                                            "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
-                                              "<p class='card-text text-warning text-center txtnum' id=''></p>"+
-                                            "</div>"+
-                                          "</div>"+
-                                          "<div class='card border-0 m-2'>"+
-                                            "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-success text-center txti'>Total de usuarios</p>"+
-                                              "<p class='card-text text-warning text-center txtnum' id=''></p>"+
-                                            "</div>"+
-                                          "</div>"+
-
-                                        "</div>"+
-                                    "<div class='bg-faded text-center m-2 noinfo' id=''>Sin información en la Base de Datos</div>"+
-                                   
-                                    "<div class='align-items-end'>"+
-                                        
-                                    "<div class='fincard text-center'>"+
-                                            "<a href='Grafica.html' id=''></a>"+
-                                        "</div>"+
-                                    "</div>"+
-                                "</div>"+
-            "</div>"`);
+    <div class='col-sm-6 espacio'>
+            <div class='card bg-gray border-0 m-2'>
+                <div class='card esp'>
+                <div class='row espr'>
+                    <div class='border-0 col-sm-4'>
+                        <div class='card-body'>
+                            <p class='card-text text-primary text-center txti'>Aprobados</p>
+                            <p class='card-text text-primary text-center txtnum' id=''></p>
+                        </div>
+                    </div>
+                    <div class='border-0 col-sm-4'>
+                        <div class='card-body text-center'>
+                            <p class='card-text text-warning text-center txti'>No Aprobados</p>
+                            <p class='card-text text-warning text-center txtnum' id=''></p>
+                        </div>
+                    </div>
+                    <div class='border-0 col-sm-4'>
+                        <div class='card-body text-center'>
+                            <p class='card-text text-success text-center txti'>Total de usuarios</p>
+                            <p class='card-text text-warning text-center txtnum' id=''></p>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                    <div class='bg-faded text-center noinfo' id=''>Sin información en la Base de Datos</div>                                   
+                    <div class='align-items-end'>                                        
+                    <div class='fincard text-center'>
+                        <a href='' id=''></a>
+                    </div>
+                </div>
+            </div>
+    </div>`);
 }
 
 function crearGraficaDeCurso(_bindto, curso){
@@ -131,28 +128,28 @@ function crearTarjetaParaGrafica(div, curso, claseDiv){
     }
     console.log('id_para_Grafica', id_para_Grafica);
     $(div).append(`<div class="${claseDiv} espacio">
-                <div class="card bg-gray border-0 m-2" id="">
-
-                    <div class="card-group">
-                        <div class="card border-0 m-2">
+                <div class="card bg-gray border-0 m-2">
+                    <div class="card esp">
+                    <div class="row espr">
+                        <div class="border-0 col-sm-4">
                             <div class="card-body text-center">
                                 <p class="card-text text-primary txti">Aprobados</p>
                                 <p class="card-text text-primary txtnum">${curso.approved_users} (${curso.percentage} %)</p>
                             </div>
                         </div>
-                        <div class="card border-0 m-2">
+                        <div class="border-0 col-sm-4">
                             <div class="card-body text-center">
                                 <p class="card-text text-warning txti">No Aprobados</p>
                                 <p class="card-text text-warning txtnum">${curso.not_approved_users}</p>
                             </div>
                         </div>
-                        <div class="card border-0 m-2">
+                        <div class="border-0 col-sm-4">
                             <div class="card-body text-center">
                                 <p class="card-text text-success txti">Total de usuarios inscritos</p>
                                 <p class="card-text text-success txtnum">${curso.enrolled_users}</p>
                             </div>
                         </div>
-
+                        </div>
                     </div>
                     <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>
                     <div class="align-items-end">

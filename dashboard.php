@@ -36,8 +36,14 @@ $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 
 echo $OUTPUT->header();
 
+
 ?>
 <iframe src="dashboard_iframe.php" id="iframe_ldm" frameborder="0" style="width: 100%; overflow: hidden;"></iframe>
+<div>
+        <center>
+        <button onclick="imprimir();">Imprimir</button>
+        </center>
+</div>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('region-main').style.width = "100%";
@@ -49,6 +55,10 @@ echo $OUTPUT->header();
         size = document.getElementById(frame_id).contentWindow.document.body.offsetHeight + 'px';
         document.getElementById(frame_id).style.height = size;
     }
+    function imprimir() {
+        window.print();
+    }
+
 </script>
 <?php
 
