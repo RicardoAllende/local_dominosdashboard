@@ -63,6 +63,11 @@ $courses = local_dominosdashboard_get_courses();
             <div id="data_card2"></div>
         </div>
     </div>
+    <div>
+        <center>
+        <button onclick="imprimir();">Imprimir</button>
+        </center>
+    </div>
     
 
 
