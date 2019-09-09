@@ -38,11 +38,10 @@ echo $OUTPUT->header();
 
 
 ?>
+<link href="estilos.css" rel="stylesheet">
 <iframe src="dashboard_iframe.php" id="iframe_ldm" frameborder="0" style="width: 100%; overflow: hidden;"></iframe>
-<div>
-        <center>
-        <button onclick="imprimir();">Imprimir</button>
-        </center>
+<div class="btnimprimir">
+    <button class="btn btn-primary" onclick="imprimir();">Imprimir</button>       
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
