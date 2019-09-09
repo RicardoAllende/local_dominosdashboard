@@ -154,7 +154,7 @@ function crearTarjetaParaGrafica(div, curso, claseDiv){
                     <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>
                     <div class="align-items-end">
                         <div class="fincard text-center">
-                            <a href="detalle_curso?id=${curso.id}">${curso.title}</a>
+                            <a href="detalle_curso_iframe.php?id=${curso.id}">${curso.title}</a>
                         </div>
                     </div>
                 </div>
@@ -333,7 +333,7 @@ function crearTarjetaParaGraficakpi(div, curso, kpi, id){
                     <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>
                     <div class="align-items-end">
                         <div class="fincard text-center">
-                            <a href="detalle_curso?id=${curso.id}">${curso.title}</a>
+                            <a href="detalle_curso_iframe.php?id=${curso.id}">${curso.title}</a>
                         </div>
                     </div>
                 </div>

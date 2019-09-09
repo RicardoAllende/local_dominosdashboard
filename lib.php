@@ -621,7 +621,7 @@ function local_dominosdashboard_get_course_color(int $courseid){
     return "#006491";
 }
 
-define('RETURN_RANDOM_DATA', true);
+define('RETURN_RANDOM_DATA', false);
 define('MAX_RANDOM_NUMBER', 500);
 function local_dominosdashboard_get_course_information(int $courseid, bool $get_kpis = false, bool $get_activities = false, array $params = array()){
     global $DB;

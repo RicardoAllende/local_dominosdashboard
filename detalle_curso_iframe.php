@@ -49,8 +49,9 @@ $PAGE->set_context($context_system);
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
 </head>
 <body>    
-    <div class="row">
+    <div class="row" style="max-width: 100%;">
         <form id="filter_form" method="post" action="services.php" class='col-sm-3'>
+            <a class="btn btn-success" href="dashboard_iframe.php">Volver al dashboard</a><br><br>
             <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br>
             <input type="hidden" name="courseid" value="<?php echo $course->id; ?>";>
             <div id='contenedor_filtros'></div>
