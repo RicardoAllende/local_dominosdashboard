@@ -40,9 +40,9 @@ echo $OUTPUT->header();
 <iframe src="dashboard_iframe.php" id="iframe_ldm" frameborder="0" style="width: 100%; overflow: hidden;"></iframe>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById('region-main').style.width = "100%"
+        document.getElementById('region-main').style.width = "100%";
         require(['jquery'], function ($) {
-            setTimeout(() => { iResize('iframe_ldm'); }, 1000);
+            setTimeout(function() { iResize('iframe_ldm'); }, 1000);
         });
     });
     function iResize(frame_id) {
