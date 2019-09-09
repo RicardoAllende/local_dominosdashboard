@@ -140,6 +140,7 @@
     color: black;    
     font-size: 30px;
     height: 500px;
+    line-height: 450px;
 }
 
 /*Texto de las 3 card que aparecen dentro de la card */
@@ -168,7 +169,7 @@
 .espr {
     margin-left: 0px;
     margin-right: 0px;
-    background: #f7efef;    
+    background: #fbfbfb;    
 }
 
 /* Boton imprimir */

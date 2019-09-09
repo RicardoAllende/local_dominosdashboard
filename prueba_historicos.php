@@ -63,11 +63,7 @@ $courses = local_dominosdashboard_get_courses();
             <div id="data_card2"></div>
         </div>
     </div>
-    <div>
-        <center>
-        <button onclick="imprimir();">Imprimir</button>
-        </center>
-    </div>
+    
     
 
 
@@ -149,13 +145,13 @@ $courses = local_dominosdashboard_get_courses();
         _aprobado = Array();
         _a = Array();        
         _noAprobado = Array();
-        _aprobado.push("Aprobados");
-        _noAprobado.push("No aprobado");        
+        //_aprobado.push("Aprobados");
+        //_noAprobado.push("No aprobado");        
         for(var j = 0; j < info.length; j++){
             infos = info[j];
-            _aprobado.push(infos.approved_users);
+            //_aprobado.push(infos.approved_users);
             _a.push(infos.approved_users);
-            _noAprobado.push(infos.enrolled_users);                
+            //_noAprobado.push(infos.enrolled_users);                
         }
 
         for(var i = 0; i < _a.length; i++){
@@ -224,13 +220,7 @@ $courses = local_dominosdashboard_get_courses();
         });
         //agregarGraficaHistorico(infos);
         
-    }   
-
-
-    function imprimir() {
-        window.print();
-    }
-
+    }    
 
 </script>
 
