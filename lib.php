@@ -677,11 +677,11 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         $response->value = 0;
         return $response;
     }
+    $num_users = count($userids);
+    $userids = implode(',', $userids);
     if($get_activities){
         $response->activities = local_dominosdashboard_get_activities_completion($courseid, $userids);
     }
-    $num_users = count($userids);
-    $userids = implode(',', $userids);
 
     $response->enrolled_users = local_dominosdashboard_get_enrolled_users_count($courseid, $userids);
     $response->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids);

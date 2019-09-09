@@ -114,17 +114,17 @@ $PAGE->set_context($context_system);
                     if(informacion_del_curso.data.kpi.length > 0){ insertarTituloSeparador('#indicators_title', 'Cruce de indicadores'); }
                     for (var index = 0; index < informacion_del_curso.data.kpi.length; index++) {
                         _kpi = informacion_del_curso.data.kpi[index];
-                        console.log('Id del kpi', _kpi.kpi);
-                        console.log('Valor del kpi ' + _kpi.kpi_name, _kpi.value);
+                        // console.log('Id del kpi', _kpi.kpi);
+                        // console.log('Valor del kpi ' + _kpi.kpi_name, _kpi.value);
                         switch (_kpi.kpi) {
                             case 1: // ICA (normalmente regresa Destacado/Aprobado/No aprobado), OPS
-                                imprimir_kpi_ops_ica_curso(_kpi);
+                                imprimir_kpi_ops_ica_curso(_kpi, (100 - informacion_del_curso.data.percentage));
                                 break;
                             case 2: // Número de quejas, Reporte de Casos Histórico por tiendas
-                                imprimir_kpi_reporte_casos_historico_curso(_kpi);
+                                imprimir_kpi_reporte_casos_historico_curso(_kpi, (100 - informacion_del_curso.data.percentage));
                                 break;
                             case 3: // Porcentaje de rotación, scorcard
-                                imprimir_kpi_scorcard_rotacion_curso(_kpi);
+                                imprimir_kpi_scorcard_rotacion_curso(_kpi, (100 - informacion_del_curso.data.percentage));
                                 break;
                             default:
                                 break;
@@ -151,11 +151,11 @@ $PAGE->set_context($context_system);
             if (esVacio(kpi.value)) {
                 insertarGraficaSinInfo("#card_ops");
             }else{
-            var a = kpi.value["Aprobado"];
-            var b = kpi.value["No aprobado"];
-            var c = parseInt(a) + parseInt(b);
+                var a = obtenerDefaultEnNull(kpi.value["Aprobado"]);
+                var b = obtenerDefaultEnNull(kpi.value["No aprobado"]);
+                var c = parseInt(a) + parseInt(b);
 
-            document.getElementById("card_ops").innerHTML = "<div class='col-sm-12 espacio'>"+
+                document.getElementById("card_ops").innerHTML = "<div class='col-sm-12 espacio'>"+
                                     "<div class='card bg-gray border-0 m-2'>"+
 
 
@@ -185,186 +185,186 @@ $PAGE->set_context($context_system);
                                         "<div class='align-items-end'>"+
                                             
                                         "<div class='fincard text-center'>"+
-                                                "<a href='Grafica.html' id='titulo_grafica2'></a>"+
+                                                "<a href='#' id='titulo_grafica2'></a>"+
                                             "</div>"+
                                         "</div>"+
                                     "</div>"+
-                "</div>";
-            $('#apro2').html(kpi.value["Aprobado"]);//Aprobados
-            $('#no_apro2').html(kpi.value["No aprobado"]);//No Aprobados
+                    "</div>";
+                $('#apro2').html(obtenerDefaultEnNull(kpi.value["Aprobado"]));//Aprobados
+                $('#no_apro2').html(obtenerDefaultEnNull(kpi.value["No aprobado"]));//No Aprobados
 
-            $('#titulo_grafica2').html(kpi.kpi_name);//Titulo grafica
-            
-            var chartc = c3.generate({
-                data: {
-                    columns: [
-                        ['Aprobado', kpi.value["Aprobado"]],
-                        ['No Aprobado', kpi.value["No aprobado"]],
-                        ['Destacado', kpi.value["Destacado"]],
-                    ],
-                    type: 'pie',
-                },
-                bindto: "#chart2",
-                tooltip: {
-                    format: {
-                        title: function (d) { return 'Calificacion '; },
-                        value: function (value, ratio, id) {
-                            var format = id === 'data1' ? d3.format(',') : d3.format('');
-                            return format(value);
+                $('#titulo_grafica2').html(kpi.kpi_name);//Titulo grafica
+                
+                var chartc = c3.generate({
+                    data: {
+                        columns: [
+                            ['Aprobado', obtenerDefaultEnNull(kpi.value["Aprobado"])],
+                            ['No Aprobado', obtenerDefaultEnNull(kpi.value["No aprobado"])],
+                            ['Destacado', obtenerDefaultEnNull(kpi.value["Destacado"])],
+                        ],
+                        type: 'pie',
+                    },
+                    bindto: "#chart2",
+                    tooltip: {
+                        format: {
+                            title: function (d) { return 'Calificacion '; },
+                            value: function (value, ratio, id) {
+                                var format = id === 'data1' ? d3.format(',') : d3.format('');
+                                return format(value);
+                            }
+
                         }
-
                     }
-                }
-            });
+                });
             }
         }
 
-        function imprimir_kpi_reporte_casos_historico_curso(kpi) {
-            if(kpi != 0){
-            var a = kpi.value["Aprobado"];
-            var b = kpi.value["No aprobado"];
-            var c = parseInt(a) + parseInt(b);
-            var d = parseInt(b) * 100;
-            var e = parseInt(d) / parseInt(c);
+        function imprimir_kpi_reporte_casos_historico_curso(kpi, not_approved) {
+            if(!esVacio(kpi)){
+                var a = obtenerDefaultEnNull(kpi.value["Aprobado"]);
+                var b = obtenerDefaultEnNull(kpi.value["No aprobado"]);
+                var c = parseInt(a) + parseInt(b);
+                var d = parseInt(b) * 100;
+                var e = parseInt(d) / parseInt(c);
 
-            document.getElementById("card_numero_de_quejas").innerHTML = "<div class='col-sm-12 espacio'>"+
-                                    "<div class='card bg-gray border-0 m-2'>"+
+                document.getElementById("card_numero_de_quejas").innerHTML = "<div class='col-sm-12 espacio'>"+
+                                        "<div class='card bg-gray border-0 m-2'>"+
 
 
-                                        "<div class='card-group'>"+
-                                            "<div class='card border-0 m-2'>"+
-                                                "<div class='card-body'>"+
-                                                "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
-                                                "<p class='card-text text-primary text-center txtnum' id='apro3'></p>"+
+                                            // "<div class='card-group'>"+
+                                            //     "<div class='card border-0 m-2'>"+
+                                            //         "<div class='card-body'>"+
+                                            //         "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
+                                            //         "<p class='card-text text-primary text-center txtnum' id='apro3'></p>"+
+                                            //         "</div>"+
+                                            //     "</div>"+
+                                            //     "<div class='card border-0 m-2'>"+
+                                            //         "<div class='card-body text-center'>"+
+                                            //         "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
+                                            //         "<p class='card-text text-warning text-center txtnum'></p>"+
+                                            //         "</div>"+
+                                            //     "</div>"+
+                                            //     "<div class='card border-0 m-2'>"+
+                                            //         "<div class='card-body text-center'>"+
+                                            //         "<p class='card-text text-success text-center txti'>No visto</p>"+
+                                            //         "<p class='card-text text-warning text-center txtnum' id='tusuario3'></p>"+
+                                            //         "</div>"+
+                                            //     "</div>"+
+
+                                            // "</div>"+
+                                            "<div class='bg-faded m-2' id='chart3'></div>"+
+                                        
+                                            "<div class='align-items-end'>"+
+                                                
+                                            "<div class='fincard text-center'>"+
+                                                    "<a href='#' id='titulo_grafica3'></a>"+
                                                 "</div>"+
-                                            "</div>"+
-                                            "<div class='card border-0 m-2'>"+
-                                                "<div class='card-body text-center'>"+
-                                                "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
-                                                "<p class='card-text text-warning text-center txtnum'></p>"+
-                                                "</div>"+
-                                            "</div>"+
-                                            "<div class='card border-0 m-2'>"+
-                                                "<div class='card-body text-center'>"+
-                                                "<p class='card-text text-success text-center txti'>No visto</p>"+
-                                                "<p class='card-text text-warning text-center txtnum' id='tusuario3'></p>"+
-                                                "</div>"+
-                                            "</div>"+
-
-                                            "</div>"+
-                                        "<div class='bg-faded m-2' id='chart3'></div>"+
-                                    
-                                        "<div class='align-items-end'>"+
-                                            
-                                        "<div class='fincard text-center'>"+
-                                                "<a href='Grafica.html' id='titulo_grafica3'></a>"+
                                             "</div>"+
                                         "</div>"+
-                                    "</div>"+
-                "</div>";
-            $('#apro3').html(kpi.value["Aprobado"]);//Aprobados
-            $('#no_apro3').html(kpi.value["No aprobado"]);// No Aprobados
-            $('#tusuario3').html(informacion_del_curso.data.not_viewed);//No visto
+                    "</div>";
+                $('#apro3').html(obtenerDefaultEnNull(kpi.value["Aprobado"]));//Aprobados
+                $('#no_apro3').html(obtenerDefaultEnNull(kpi.value["No aprobado"]));// No Aprobados
+                $('#tusuario3').html(obtenerDefaultEnNull(informacion_del_curso.data.not_viewed));//No visto
 
-            $('#titulo_grafica3').html(kpi.kpi_name);//Titulo grafica
+                $('#titulo_grafica3').html(kpi.kpi_name);//Titulo grafica
 
-            var a = kpi.value["Aprobado"];
-            var b = kpi.value["No aprobado"];
-            var c = parseInt(a) + parseInt(b);
-            var d = parseInt(b) * 100;
-            var e = parseInt(d) / parseInt(c);
-            var f = e.toFixed(2);
-            var chartc = c3.generate({
-                data: {
-                    columns: [
-                        ['No Aprobado', f],
-                        ['Promedio de no. de quejas', _kpi.value]
-                    ],
-                    type: 'bar',
-                },
-                bindto: "#chart3",
-                tooltip: {
-                    format: {
-                        title: function (d) { return 'Quejas '; },
-                        value: function (value, ratio, id) {
-                            var format = id === 'data1' ? d3.format(',') : d3.format('');
-                            return format(value);
+                // var a = obtenerDefaultEnNull(kpi.value["Aprobado"]);
+                // var b = obtenerDefaultEnNull(kpi.value["No aprobado"]);
+                // var c = parseInt(a) + parseInt(b);
+                // var d = parseInt(b) * 100;
+                // var e = parseInt(d) / parseInt(c);
+                // var f = e.toFixed(2);
+                var chartc = c3.generate({
+                    data: {
+                        columns: [
+                            ['No Aprobado', not_approved],
+                            ['Promedio de no. de quejas', _kpi.value]
+                        ],
+                        type: 'bar',
+                    },
+                    bindto: "#chart3",
+                    tooltip: {
+                        format: {
+                            title: function (d) { return 'Quejas '; },
+                            value: function (value, ratio, id) {
+                                var format = id === 'data1' ? d3.format(',') : d3.format('');
+                                return format(value);
+                            }
+
                         }
-
                     }
-                }
-            });
+                });
             }else{
                 insertarGraficaSinInfo("#card_numero_de_quejas")
             }
         }
 
-        function imprimir_kpi_scorcard_rotacion_curso(kpi) {
-            if(kpi != 0){    
-            document.getElementById("card_scorcard").innerHTML = "<div class='col-sm-12 espacio'>"+
-                                    "<div class='card bg-gray border-0 m-2'>"+
-                                        "<div class='card-group'>"+
-                                            "<div class='card border-0 m-2'>"+
-                                                "<div class='card-body'>"+
-                                                "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
-                                                "<p class='card-text text-primary text-center txtnum' id='apro4'></p>"+
-                                                "</div>"+
-                                            "</div>"+
-                                            "<div class='card border-0 m-2'>"+
-                                                "<div class='card-body text-center'>"+
-                                                "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
-                                                "<p class='card-text text-warning text-center txtnum' id='no_apro4'></p>"+
-                                                "</div>"+
-                                            "</div>"+
-                                            "<div class='card border-0 m-2'>"+
-                                                "<div class='card-body text-center'>"+
-                                                "<p class='card-text text-success text-center txti'>No visto</p>"+
-                                                "<p class='card-text text-warning text-center txtnum' id='tusuario4'></p>"+
-                                                "</div>"+
-                                            "</div>"+
+        function imprimir_kpi_scorcard_rotacion_curso(kpi, not_approved) {
+            if(!esVacio(kpi.value)){  
+                document.getElementById("card_scorcard").innerHTML = "<div class='col-sm-12 espacio'>"+
+                                        "<div class='card bg-gray border-0 m-2'>"+
+                                            // "<div class='card-group'>"+
+                                            //     "<div class='card border-0 m-2'>"+
+                                            //         "<div class='card-body'>"+
+                                            //         "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
+                                            //         "<p class='card-text text-primary text-center txtnum' id='apro4'></p>"+
+                                            //         "</div>"+
+                                            //     "</div>"+
+                                            //     "<div class='card border-0 m-2'>"+
+                                            //         "<div class='card-body text-center'>"+
+                                            //         "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
+                                            //         "<p class='card-text text-warning text-center txtnum' id='no_apro4'></p>"+
+                                            //         "</div>"+
+                                            //     "</div>"+
+                                            //     "<div class='card border-0 m-2'>"+
+                                            //         "<div class='card-body text-center'>"+
+                                            //         "<p class='card-text text-success text-center txti'>No visto</p>"+
+                                            //         "<p class='card-text text-warning text-center txtnum' id='tusuario4'></p>"+
+                                            //         "</div>"+
+                                            //     "</div>"+
 
-                                            "</div>"+
-                                        "<div class='bg-faded m-2' id='chart4'></div>"+
-                                    
-                                        "<div class='align-items-end'>"+
-                                            
-                                        "<div class='fincard text-center'>"+
-                                                "<a href='Grafica.html' id='titulo_grafica4'></a>"+
+                                            // "</div>"+
+                                            "<div class='bg-faded m-2' id='chart4'></div>"+
+                                        
+                                            "<div class='align-items-end'>"+
+                                                
+                                            "<div class='fincard text-center'>"+
+                                                    "<a href='#' id='titulo_grafica4'></a>"+
+                                                "</div>"+
                                             "</div>"+
                                         "</div>"+
-                                    "</div>"+
-                "</div>";
-            $('#apro4').html(kpi.value["Aprobado"]);//Aprobados
-            $('#no_apro4').html(kpi.value["No aprobado"]);//No Aprobados
-            $('#tusuario4').html(informacion_del_curso.data.not_viewed);//No visto
+                    "</div>";
+                // $('#apro4').html(kpi.value["Aprobado"]);//Aprobados
+                // $('#no_apro4').html(kpi.value["No aprobado"]);//No Aprobados
+                // $('#tusuario4').html(informacion_del_curso.data.not_viewed);//No visto
 
-            $('#titulo_grafica4').html(kpi.kpi_name);//Titulo grafica
-            var a = kpi.value["Aprobado"];
-            var b = kpi.value["No aprobado"];
-            var c = parseInt(a) + parseInt(b);
-            var d = parseInt(b) * 100;
-            var e = parseInt(d) / parseInt(c);
-            var f = e.toFixed(2);
-            var chartc = c3.generate({
-                data: {
-                    columns: [
-                        ['No Aprobado', f],
-                        ['Promedio de rotación', _kpi.value]
-                    ],
-                    type: 'bar',
-                },
-                bindto: "#chart4",
-                tooltip: {
-                    format: {
-                        title: function (d) { return 'Rotación '; },
-                        value: function (value, ratio, id) {
-                            var format = id === 'data1' ? d3.format(',') : d3.format('');
-                            return format(value);
+                $('#titulo_grafica4').html(kpi.kpi_name);//Titulo grafica
+                // var a = kpi.value["Aprobado"];
+                // var b = kpi.value["No aprobado"];
+                // var c = parseInt(a) + parseInt(b);
+                // var d = parseInt(b) * 100;
+                // var e = parseInt(d) / parseInt(c);
+                // var f = e.toFixed(2);
+                var chartc = c3.generate({
+                    data: {
+                        columns: [
+                            ['No Aprobado', not_approved],
+                            ['Promedio de rotación', _kpi.value]
+                        ],
+                        type: 'bar',
+                    },
+                    bindto: "#chart4",
+                    tooltip: {
+                        format: {
+                            title: function (d) { return 'Rotación '; },
+                            value: function (value, ratio, id) {
+                                var format = id === 'data1' ? d3.format(',') : d3.format('');
+                                return format(value);
+                            }
+
                         }
-
                     }
-                }
-            });
+                });
             }else{
                 insertarGraficaSinInfo("#card_scorcard")
             }

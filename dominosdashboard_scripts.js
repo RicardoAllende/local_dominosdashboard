@@ -42,9 +42,17 @@ function insertarTituloSeparador(div, titulo){
     </div>`);
 }
 
+function obtenerDefaultEnNull(valor, porDefault){
+    if(esVacio(porDefault)) porDefault = 0;
+    if(esVacio(valor)){
+        return porDefault;
+    }
+    return valor;
+}
+
 //Funcion para mostar la grafica sin informacion
 function insertarGraficaSinInfo(div){
-    $(div).append(`
+    $(div).html(`
     <div class='col-sm-6 espacio'>
             <div class='card bg-gray border-0 m-2'>
                 <div class='card esp'>
