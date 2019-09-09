@@ -170,3 +170,8 @@
     margin-right: 0px;
     background: #f7efef;    
 }
+
+/* Boton imprimir */
+.btnimprimir{
+    text-align: center;
+}

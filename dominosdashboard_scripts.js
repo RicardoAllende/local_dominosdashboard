@@ -308,26 +308,27 @@ function crearTarjetaParaGraficakpi(div, curso, kpi, id){
     $(div).append(`<div class="col-sm-12 col-xl-6 espacio">
                 <div class="card bg-gray border-0 m-2" id="">
 
-                    <div class="card-group">
-                        <div class="card border-0 m-2">
+                    <div class="card esp">
+                    <div class="row espr">
+                        <div class="border-0 col-sm-4">
                             <div class="card-body text-center">
                                 <p class="card-text text-primary txti">Aprobados</p>
                                 <p class="card-text text-primary txtnum">${curso.approved_users} (${curso.percentage} %)</p>
                             </div>
                         </div>
-                        <div class="card border-0 m-2">
+                        <div class="border-0 col-sm-4">
                             <div class="card-body text-center">
                                 <p class="card-text text-warning txti">No Aprobados</p>
                                 <p class="card-text text-warning txtnum">${curso.not_approved_users}</p>
                             </div>
                         </div>
-                        <div class="card border-0 m-2">
+                        <div class="border-0 col-sm-4">
                             <div class="card-body text-center">
                                 <p class="card-text text-success txti">Total de usuarios inscritos</p>
                                 <p class="card-text text-success txtnum">${curso.enrolled_users}</p>
                             </div>
                         </div>
-
+                        </div>
                     </div>
                     <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>
                     <div class="align-items-end">
