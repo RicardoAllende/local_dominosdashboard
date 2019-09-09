@@ -149,8 +149,8 @@ $PAGE->set_context($context_system);
 
         function imprimir_kpi_ops_ica_curso(kpi) {
             if (esVacio(kpi.value)) {
-                return false;
-            }
+                insertarGraficaSinInfo("#card_ops");
+            }else{
             var a = kpi.value["Aprobado"];
             var b = kpi.value["No aprobado"];
             var c = parseInt(a) + parseInt(b);
@@ -216,9 +216,11 @@ $PAGE->set_context($context_system);
                     }
                 }
             });
+            }
         }
 
         function imprimir_kpi_reporte_casos_historico_curso(kpi) {
+            if(kpi != 0){
             var a = kpi.value["Aprobado"];
             var b = kpi.value["No aprobado"];
             var c = parseInt(a) + parseInt(b);
@@ -292,9 +294,13 @@ $PAGE->set_context($context_system);
                     }
                 }
             });
+            }else{
+                insertarGraficaSinInfo("#card_numero_de_quejas")
+            }
         }
 
-        function imprimir_kpi_scorcard_rotacion_curso(kpi) {    
+        function imprimir_kpi_scorcard_rotacion_curso(kpi) {
+            if(kpi != 0){    
             document.getElementById("card_scorcard").innerHTML = "<div class='col-sm-12 espacio'>"+
                                     "<div class='card bg-gray border-0 m-2'>"+
                                         "<div class='card-group'>"+
@@ -359,6 +365,9 @@ $PAGE->set_context($context_system);
                     }
                 }
             });
+            }else{
+                insertarGraficaSinInfo("#card_scorcard")
+            }
         }
     </script>
 </body>
