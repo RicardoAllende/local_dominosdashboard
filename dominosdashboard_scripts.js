@@ -265,7 +265,7 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
 }
 
 function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titulo, id){
-    div_id = "chart__";// + $('#tab-selector').val();
+    div_id = "chart__";
     if(typeof currentTab != 'undefined'){
         div_id += '_';
         div_id += currentTab;

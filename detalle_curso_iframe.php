@@ -69,6 +69,8 @@ $PAGE->set_context($context_system);
     <?php echo local_dominosdashboard_get_ideales_as_js_script(); ?>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
     <link href="libs/c3.css" rel="stylesheet">
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="libs/c3.js"></script>
@@ -77,16 +79,10 @@ $PAGE->set_context($context_system);
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            try {
-                $('.dominosdashboard-ranking').hide();
-                require(['jquery'], function ($) {
-                    $('.course-selector').change(function () { obtenerInformacion() });
-                    obtenerInformacion();
-                    obtenerFiltros();
-                });
-            } catch (error) {
-                console.log(error);
-            }
+            $('.dominosdashboard-ranking').hide();
+            $('.course-selector').change(function () { obtenerInformacion() });
+            obtenerInformacion();
+            obtenerFiltros();
         });
         var dateBegining;
         var dateEnding;

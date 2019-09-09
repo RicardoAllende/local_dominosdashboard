@@ -52,13 +52,6 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     <div class="row" style="max-width: 100%;">
         <form id="filter_form" method="post" action="services.php" class='col-sm-3'>
             <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br>
-            <?php
-            echo "<br><select class='form-control' id='tab-selector' name='type'>";
-            foreach($tabOptions as $key => $option){
-                echo "<option value='{$key}'>{$key}. {$option}</option>";
-            }
-            echo "</select><br>";
-            ?>
             <div id='contenedor_filtros'></div>
         </form>
         <div class="col-sm-9" id="contenido_cursos">
@@ -66,15 +59,15 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 <ul class="nav justify-content-center nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active dtag" id="home-tab" data-toggle="tab" href="#home" role="tab"
-                            aria-controls="home" onclick="cambiarpestana(1)" aria-selected="true">Cruce de indicadores</a>
+                            aria-controls="home" onclick="cambiarpestana(1)" aria-selected="true">Programas de entrenamiento</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                            aria-controls="profile" onclick="cambiarpestana(2)" aria-selected="false">Programas de entrenamiento</a>
+                            aria-controls="profile" onclick="cambiarpestana(2)" aria-selected="false">Lanzamientos y campañas</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
-                            aria-controls="contact" onclick="cambiarpestana(3)" aria-selected="false">Lanzamientos y campañas</a>
+                            aria-controls="contact" onclick="cambiarpestana(3)" aria-selected="false">Cruce de indicadores</a>
                     </li>
                 </ul>
             </div>
@@ -98,6 +91,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     <?php echo local_dominosdashboard_get_ideales_as_js_script(); echo local_dominosdashboard_get_course_tabs_as_js_script(); ?>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script> -->
+    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
     <link href="libs/c3.css" rel="stylesheet">
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
@@ -114,19 +108,25 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         function cambiarpestana(id){
             if(id != currentTab){
                 currentTab = id;
+                tituloPestana = pestanas[id];
                 setTimeout(function() {
                     obtenerInformacion();
                 }, 500);
             }
         }
+        pestanas = [
+            '',
+            'Programas de entrenamiento',
+            'Lanzamientos y campañas',
+            'Cruce de indicadores'
+        ]
         document.addEventListener("DOMContentLoaded", function() {
-            // require(['jquery'], function ($) {
                 $('.course-selector').change(function(){obtenerInformacion()});
-                tituloPestana = $('#tab-selector').children('option:selected').html();
-                $('#tab-selector').change(function(){ tituloPestana = $(this).children('option:selected').html(); obtenerInformacion(); });
+                tituloPestana = pestanas[1];
+                // tituloPestana = $('#tab-selector').children('option:selected').html();
+                // $('#tab-selector').change(function(){ tituloPestana = $(this).children('option:selected').html(); obtenerInformacion(); });
                 obtenerInformacion();
                 obtenerFiltros();
-            // });
         });
         var dateBegining;
         var dateEnding;
@@ -139,6 +139,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
             console.log("Obteniendo gráficas");
             informacion = $('#filter_form').serializeArray();
             informacion.push({name: 'request_type', value: 'course_list'});
+            informacion.push({name: 'type', value: currentTab});
             console.log('La información enviada al servicio es: ', informacion);
             // $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
             dateBegining = Date.now();
