@@ -164,14 +164,13 @@ $courses = local_dominosdashboard_get_courses();
         //console.log(infos.enrolled_users);
         //console.log(noa);
         
-        
-        
-        document.getElementById("data_card").innerHTML = "<div class='col-sm-12 espacio'>"+
+        if(_aprobado != 0 && _noAprobado != 0){
+            document.getElementById("data_card").innerHTML = "<div class='col-sm-12 espacio'>"+
                                 "<div class='card bg-gray border-0 m-2'>"+
 
                                     
                                     "<div class='card esp'>"+
-                                        "<div class='row'>"+
+                                        "<div class='row espr'>"+
                                           "<div class='border-0 col-sm-4'>"+
                                             "<div class='card-body'>"+
                                               "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
@@ -202,44 +201,9 @@ $courses = local_dominosdashboard_get_courses();
                                     "</div>"+
                                 "</div>"+
             "</div>";
-
-    //---------------------------------------Propuesta grafica-----------------------------------------------------------------------------------------------------------                                    
-    document.getElementById("data_card2").innerHTML = "<div class='col-sm-6 espacio'>"+
-                                "<div class='card bg-gray border-0 m-2'>"+
-
-
-                                       "<div class='card-group'>"+
-                                          "<div class='card border-0'>"+
-                                            "<div class='card-body'>"+
-                                              "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
-                                              "<p class='card-text text-primary text-center txtnum' id=''></p>"+
-                                            "</div>"+
-                                          "</div>"+
-                                          "<div class='card border-0 m-2'>"+
-                                            "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
-                                              "<p class='card-text text-warning text-center txtnum' id=''></p>"+
-                                            "</div>"+
-                                          "</div>"+
-                                          "<div class='card border-0 m-2'>"+
-                                            "<div class='card-body text-center'>"+
-                                              "<p class='card-text text-success text-center txti'>Total de usuarios</p>"+
-                                              "<p class='card-text text-warning text-center txtnum' id=''></p>"+
-                                            "</div>"+
-                                          "</div>"+
-
-                                        "</div>"+
-                                    "<div class='bg-faded text-center m-2 noinfo' id=''>Sin información en la Base de Datos</div>"+
-                                   
-                                    "<div class='align-items-end'>"+
-                                        
-                                    "<div class='fincard text-center'>"+
-                                            "<a href='Grafica.html' id=''></a>"+
-                                        "</div>"+
-                                    "</div>"+
-                                "</div>"+
-            "</div>";
-    //------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
+        }else{
+            insertarGraficaSinInfo("#data_card");            
+        }  
         
         return c3.generate({
             data: {
