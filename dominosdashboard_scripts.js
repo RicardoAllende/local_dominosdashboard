@@ -45,7 +45,7 @@ function insertarTituloSeparador(div, titulo){
 //Funcion para mostar la grafica sin informacion
 function insertarGraficaSinInfo(div){
     $(div).append(`
-    <div class='col-sm-6 espacio'>
+    <div class='col-sm-12 espacio'>
             <div class='card bg-gray border-0 m-2'>
                 <div class='card esp'>
                 <div class='row espr'>
@@ -69,8 +69,8 @@ function insertarGraficaSinInfo(div){
                         </div>
                     </div>
                     </div>
-                    <div class='bg-faded text-center noinfo' id=''>Sin información en la Base de Datos</div>                                   
-                    <div class='align-items-end'>                                        
+                    <div class='bg-faded text-center noinfo' id=''>Sin información en la Base de Datos</div>
+                    <div class='align-items-end'>
                     <div class='fincard text-center'>
                         <a href='' id=''></a>
                     </div>
@@ -94,7 +94,7 @@ function crearGraficaDeCurso(_bindto, curso){
             _columns  = [ ['Aprobados', 30] ];
             var nombre_columnas = ["Aprobados"];
         break;
-        default: 
+        default:
             $(_bindto).html('');
             return;
     }
@@ -106,7 +106,7 @@ function crearGraficaDeCurso(_bindto, curso){
         bindto: _bindto,
         tooltip: {
             format: {
-                title: function (d) { 
+                title: function (d) {
                     if(nombre_columnas[d] !== undefined){
                         return nombre_columnas[d];
                     }else{
@@ -206,14 +206,14 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                 kpi = kpis[i];
                 cursos = kpi.courses;
                 switch(kpi.id){
-                    case 1: // 
+                    case 1: //
                         _destacado = Array();
                         _aprobado = Array();
                         _noAprobado = Array();
                         _destacado.push("Destacado");
                         _aprobado.push("Aprobado");
                         _noAprobado.push("No aprobado");
-                        
+
                         destacado = parseInt(kpi.status["Destacado"]);
                         aprobado = parseInt(kpi.status["Aprobado"]);
                         noAprobado = parseInt(kpi.status["No aprobado"]);
@@ -355,7 +355,7 @@ function crearGraficaDeCursokpi(_bindto, curso, kpi){
         bindto: _bindto,
         tooltip: {
             format: {
-                title: function (d) { 
+                title: function (d) {
                     if(nombre_columnas[d] !== undefined){
                         return nombre_columnas[d];
                     }else{
@@ -402,7 +402,7 @@ function peticionFiltros(info){
                         <div id="${collapse_id}" class="collapse" aria-labelledby="${heading_id}" data-parent="#contenedor_filtros">
                             <div class="card-body subgrupo-filtro" id='${subfiltro_id}'></div>
                         </div>
-                    </div>`);                
+                    </div>`);
             // }else{
             }
             subfiltro_id = "#" + subfiltro_id;
@@ -412,7 +412,7 @@ function peticionFiltros(info){
                 var elementoDeCatalogo = catalogo[j];
                 $(subfiltro_id).append(`
                             <label class="subfiltro"><input type="checkbox" name="${clave}[]"
-                            class="indicator_option indicator_${clave}\" onclick="obtenerInformacion('${clave}')" 
+                            class="indicator_option indicator_${clave}\" onclick="obtenerInformacion('${clave}')"
                             data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\"
                             >
                              ${esVacio(elementoDeCatalogo) ? " (Vacío)" : elementoDeCatalogo}</label><br>
@@ -479,7 +479,7 @@ function imprimirRanking(div, info) {
                             </tr>
                             <tbody id="tbody-ranking-bottom"></tbody>
                         </table>
-                    </div>    
+                    </div>
                 `);
             var contenido = "";
             for(var i = 0; i < 3; i++){
@@ -531,7 +531,7 @@ function imprimirRanking(div, info) {
                             </tr>
                             <tbody id="tbody-ranking-top"></tbody>
                         </table>
-                    </div>  
+                    </div>
                 `);
             var contenido = "";
             for(var i = 0; i < 3; i++){
