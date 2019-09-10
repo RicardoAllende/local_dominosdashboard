@@ -47,7 +47,7 @@ echo $OUTPUT->header();
     document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('region-main').style.width = "100%";
         require(['jquery'], function ($) {
-            setInterval(function() { iResize('iframe_ldm'); }, 1000);
+            setInterval(function() { iResize('iframe_ldm'); }, 100);
         });
     });
     function iResize(frame_id) {

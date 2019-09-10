@@ -42,6 +42,9 @@ $PAGE->set_context($context_system);
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -83,6 +86,9 @@ $PAGE->set_context($context_system);
     <script src="dominosdashboard_scripts.js"></script>
 
     <script>
+        var isCourseLoading = false;
+        var isFilterLoading = false;
+        var trabajoPendiente = false;
         document.addEventListener("DOMContentLoaded", function () {
             $('.dominosdashboard-ranking').hide();
             $('.course-selector').change(function () { obtenerInformacion() });
@@ -99,6 +105,12 @@ $PAGE->set_context($context_system);
         var _kpi;
         var _kpis;
         function obtenerInformacion(indicator) {
+            if(isCourseLoading){
+                trabajoPendiente = false;
+                console.log('Cargando contenido de cursos, no debe procesar más peticiones por el momento');
+                return;
+            }
+            isCourseLoading = !isCourseLoading;
             informacion = $('#filter_form').serializeArray();
             informacion.push({ name: 'request_type', value: 'course_completion' });
             // $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
@@ -111,6 +123,7 @@ $PAGE->set_context($context_system);
                 dataType: "json"
             })
                 .done(function (data) {
+                    isCourseLoading = false;
                     // $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
                     informacion_del_curso = JSON.parse(JSON.stringify(data));
                     _kpis = informacion_del_curso.data.kpi;
@@ -143,6 +156,7 @@ $PAGE->set_context($context_system);
                     console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
                 })
                 .fail(function (error, error2) {
+                    isCourseLoading = false;
                     console.log(error);
                     console.log(error2);
                 });

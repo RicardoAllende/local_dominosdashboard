@@ -1506,3 +1506,7 @@ function local_dominosdashboard_get_historic_dates(int $courseid){
     $query = "SELECT distinct DATE(FROM_UNIXTIME(timecreated)) FROM {dominos_historico} WHERE courseid = ?";
     return $DB->get_recordset_sql($query, array($courseid));
 }
+
+function local_dominosdashboard_get_course_comparison(int $courseid){
+    
+}
