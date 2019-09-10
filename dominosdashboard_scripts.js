@@ -47,34 +47,35 @@ function insertarGraficaSinInfo(div){
     $(div).append(`
     <div class='col-sm-6 espacio'>
             <div class='card bg-gray border-0 m-2'>
+            <div class='align-items-end'>                                        
+                    <div class='fincard text-center'>
+                        <a href='' id=''></a>
+                    </div>
+                </div>
                 <div class='card esp'>
                 <div class='row espr'>
                     <div class='border-0 col-sm-4'>
                         <div class='card-body'>
-                            <p class='card-text text-primary text-center txti'>Aprobados</p>
+                            <p class='card-text text-primary text-center txti'></p>
                             <p class='card-text text-primary text-center txtnum' id=''></p>
                         </div>
                     </div>
                     <div class='border-0 col-sm-4'>
                         <div class='card-body text-center'>
-                            <p class='card-text text-warning text-center txti'>No Aprobados</p>
+                            <p class='card-text text-warning text-center txti'></p>
                             <p class='card-text text-warning text-center txtnum' id=''></p>
                         </div>
                     </div>
                     <div class='border-0 col-sm-4'>
                         <div class='card-body text-center'>
-                            <p class='card-text text-success text-center txti'>Total de usuarios</p>
+                            <p class='card-text text-success text-center txti'></p>
                             <p class='card-text text-warning text-center txtnum' id=''></p>
                         </div>
                         </div>
                     </div>
                     </div>
                     <div class='bg-faded text-center noinfo' id=''>Sin información en la Base de Datos</div>                                   
-                    <div class='align-items-end'>                                        
-                    <div class='fincard text-center'>
-                        <a href='' id=''></a>
-                    </div>
-                </div>
+                    
             </div>
     </div>`);
 }
@@ -129,6 +130,11 @@ function crearTarjetaParaGrafica(div, curso, claseDiv){
     console.log('id_para_Grafica', id_para_Grafica);
     $(div).append(`<div class="${claseDiv} espacio">
                 <div class="card bg-gray border-0 m-2">
+                <div class="align-items-end">
+                        <div class="fincard text-center">
+                            <a href="detalle_curso_iframe.php?id=${curso.id}">${curso.title}</a>
+                        </div>
+                    </div>
                     <div class="card esp">
                     <div class="row espr">
                         <div class="border-0 col-sm-4">
@@ -151,12 +157,7 @@ function crearTarjetaParaGrafica(div, curso, claseDiv){
                         </div>
                         </div>
                     </div>
-                    <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>
-                    <div class="align-items-end">
-                        <div class="fincard text-center">
-                            <a href="detalle_curso_iframe.php?id=${curso.id}">${curso.title}</a>
-                        </div>
-                    </div>
+                    <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>                    
                 </div>
             </div>`);
     return crearGraficaDeCurso('#' + id_para_Grafica, curso);
@@ -278,12 +279,12 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     $(_bindto).append(`
                 <div class="col-sm-12 col-xl-12">
                     <div class="card bg-faded border-0 m-2" id="">
-                        <div class="bg-white m-2" id="${div_id}"></div>
-                        <div class="align-items-end">
+                    <div class="align-items-end">
                             <div class="fincard text-center">
                                 <a href="#">Comparativa</a>
                             </div>
                         </div>
+                        <div class="bg-white m-2" id="${div_id}"></div>                        
                     </div>
                 </div>`);
     var chartz = c3.generate({
@@ -307,7 +308,11 @@ function crearTarjetaParaGraficakpi(div, curso, kpi, id){
     id_para_Grafica = "chart_" + id + '_' + curso.id;
     $(div).append(`<div class="col-sm-12 col-xl-6 espacio">
                 <div class="card bg-gray border-0 m-2" id="">
-
+                <div class="align-items-end">
+                        <div class="fincard text-center">
+                            <a href="detalle_curso_iframe.php?id=${curso.id}">${curso.title}</a>
+                        </div>
+                    </div>
                     <div class="card esp">
                     <div class="row espr">
                         <div class="border-0 col-sm-4">
@@ -330,12 +335,7 @@ function crearTarjetaParaGraficakpi(div, curso, kpi, id){
                         </div>
                         </div>
                     </div>
-                    <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>
-                    <div class="align-items-end">
-                        <div class="fincard text-center">
-                            <a href="detalle_curso_iframe.php?id=${curso.id}">${curso.title}</a>
-                        </div>
-                    </div>
+                    <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>                    
                 </div>
             </div>`);
     return crearGraficaDeCursokpi('#' + id_para_Grafica, curso, kpi);
