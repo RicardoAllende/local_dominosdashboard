@@ -593,17 +593,18 @@ function local_dominosdashboard_get_courses_overview(int $type, array $params = 
         if(empty($course_information)){
             continue;
         }
-        if(empty($courses_in_order)){
+        // if(empty($courses_in_order)){
             array_push($courses_in_order, $course_information);
-        }else{
-            $max = count($courses_in_order) - 1;
-            if($course_information->percentage > $courses_in_order[$max]->percentage){
-                array_unshift($courses_in_order, $course_information);
-            }else{
-                array_push($courses_in_order, $course_information);
-            }
-        }
+        // }else{
+        //     $max = count($courses_in_order) - 1;
+        //     if($course_information->percentage > $courses_in_order[$max]->percentage){
+        //         array_unshift($courses_in_order, $course_information);
+        //     }else{
+        //         array_push($courses_in_order, $course_information);
+        //     }
+        // }
     }
+    usort($courses_in_order, function ($a, $b) {return $a->percentage < $b->percentage;});
     return ['type' => 'course_list', 'result' => $courses_in_order];
 }
 
@@ -1260,18 +1261,22 @@ function local_dominosdashboard_get_activities_completion(int $courseid, string 
     foreach($courseactivities as $key => $activity){
         $activityInformation = local_dominos_dashboard_get_activity_completions($activityid = $key, $userids, $title = $activity);
         // _log($activityInformation);
-        if(empty($activities)){
-            array_push($activities,
-             $activityInformation);
-        }else{
-            $max = count($activities) - 1;
-            if($activityInformation['completed'] > $activities[$max]['completed']){
-                array_unshift($activities, $activityInformation);
-            }else{
-                array_push($activities, $activityInformation);
-            }
-        }
+        // if(empty($activities)){
+            array_push($activities, $activityInformation);
+        // }else{
+        //     $max = count($activities) - 1;
+        //     if($activityInformation['completed'] > $activities[$max]['completed']){
+        //         $temp = $activities[$max];
+        //         $activities[$max] = $activityInformation;
+        //         // $activities[$max]
+        //         array_push($activities, $temp);
+        //     }else{
+        //         array_push($activities, $activityInformation);
+        //     }
+        // }
     }
+    usort($activities, function ($a, $b) {return $a['completed'] < $b['completed'];});
+    // $activities = array_
     return $activities;
 }
 
