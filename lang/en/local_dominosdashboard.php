@@ -49,7 +49,7 @@ $string['parent_category_desc'] = 'A partir de esta categoría se listarán los 
 $string['completion_mode'] = 'Modo de finalización';
 $string['completion_mode_desc'] = 'Elegir la forma en la que el curso debe estar finalizado';
 $string['kpi_relation'] = 'KPI';
-$string['kpi_relation_desc'] = 'Elija los cursos con los que se relacionará este KPI, para seleccionar varios utilice ctrl';
+$string['kpi_relation_desc'] = 'Seleccione los cursos con los que se relacionará este KPI, para seleccionar varios utilice ctrl';
 $string['kpi_select'] = 'KPI';
 $string['kpi_select_desc'] = 'Seleccione el tipo de kpi que está subiendo';
 
@@ -60,24 +60,24 @@ $string['course_minimum_score'] = 'Calificación mínima aprobatoria';
 $string['course_minimum_score_desc'] = 'Ingrese la calificación mínima aprobatoria para aprobar el curso (Tome en cuenta la calificación máxima configurada)';
 
 $string['course_grade_activity_completion'] = 'Actividad ';
-$string['course_grade_activity_completion_desc'] = 'Elija la actividad por la cual el curso está terminado';
+$string['course_grade_activity_completion_desc'] = 'Seleccione la actividad por la cual el curso está terminado';
 
 $string['badge_completion'] = 'Insignia necesaria para completar el curso';
-$string['badge_completion_desc'] = 'Elija la insignia que significa que el curso está terminado';
+$string['badge_completion_desc'] = 'Seleccione la insignia que significa que el curso está terminado';
 
 $string['chart'] = 'Tipo de gráfica en inicio';
-$string['chart_desc'] = 'Elija el tipo de gráfica con el que se mostrará en el dashboard';
+$string['chart_desc'] = 'Seleccione el tipo de gráfica con el que se mostrará en el dashboard';
 
 $string['course_main_chart_color'] = 'Color principal de gráfica en inicio';
-$string['course_main_chart_color_desc'] = 'Elija el color principal que tendrá la gráfica con el que se mostrará este curso en el dashboard';
+$string['course_main_chart_color_desc'] = 'Seleccione el color principal que tendrá la gráfica con el que se mostrará este curso en el dashboard';
 
-$string['LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO'] = 'Elija los programas de entrenamiento';
+$string['LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO'] = 'Seleccione los programas de entrenamiento';
 $string['LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO_desc'] = 'Presione la tecla ctrl para seleccionar múltiples elementos';
 
-$string['LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS'] = 'Elija los cursos no presenciales';
-$string['LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS_desc'] = 'Presione la tecla ctrl para seleccionar múltiples elementos';
+$string['LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS'] = 'Seleccione los cursos de la pestaña <<Lanzamientos y campañas>>';
+$string['LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS_desc'] = 'Presione la tecla ctrl para seleccionar múltiples elementos, los cursos que no seleccione aparecerán en la pestaña <<Programas de entrenamiento>>';
 
-$string['excluded_courses'] = 'Elija los cursos para excluir en los reportes';
+$string['excluded_courses'] = 'Seleccione los cursos para excluir en los reportes';
 $string['excluded_courses_desc'] = 'Presione la tecla ctrl para seleccionar múltiples elementos';
 
 $string['course_completion_activity'] = 'Actividad que finaliza el curso';

@@ -60,18 +60,6 @@ function local_dominosdashboard_extend_navigation(global_navigation $nav) {
             new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php' )
         );
         $node->showinflatnavigation = true;
-        if(LOCALDOMINOSDASHBOARD_DEBUG){
-            $node = $nav->add (
-                'Directorio del plugin ' . get_string('pluginname', 'local_dominosdashboard'),
-                new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/' )
-            );
-            $node->showinflatnavigation = true;
-            // $node = $nav->add (
-            //     'Prueba de peticiones por pestaña ' . get_string('pluginname', 'local_dominosdashboard'),
-            //     new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/todos_los_cursos.php' )
-            // );
-            // $node->showinflatnavigation = true;
-        }
     }
 }
 
