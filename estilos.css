@@ -176,3 +176,20 @@
 .btnimprimir{
     text-align: center;
 }
+
+/* Texto en mayúsculas para indicador */
+.indicator_option {
+    text-transform: uppercase;
+}
+
+.texto-filtro {
+    text-transform: uppercase;
+}
+
+#contenedor_fechas {
+    padding: 2%;
+}
+
+#navbarSupportedContent {
+    padding-bottom: 1%;
+}

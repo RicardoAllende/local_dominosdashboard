@@ -54,6 +54,10 @@ $PAGE->set_context($context_system);
             <a class="btn btn-success" href="dashboard_iframe.php">Volver al dashboard</a><br><br>
             <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br>
             <input type="hidden" name="courseid" value="<?php echo $course->id; ?>";>
+            <div id="contenedor_fechas">
+                <label for="fecha_inicial">Desde <input type="date" class="form-control" name="fecha_inicial" id="fecha_inicial"></label> 
+                <label for="fecha_final">Hasta <input type="date" class="form-control" name="fecha_final" id="fecha_final"></label>
+            </div>
             <div id='contenedor_filtros'></div>
         </form>
         <div class="row col-sm-9" id="contenido_dashboard">
@@ -264,7 +268,6 @@ $PAGE->set_context($context_system);
                     "</div>";
                 $('#apro3').html(obtenerDefaultEnNull(kpi.value["Aprobado"]));//Aprobados
                 $('#no_apro3').html(obtenerDefaultEnNull(kpi.value["No aprobado"]));// No Aprobados
-                $('#tusuario3').html(obtenerDefaultEnNull(informacion_del_curso.data.not_viewed));//No visto
 
                 $('#titulo_grafica3').html(kpi.kpi_name);//Titulo grafica
 
@@ -336,7 +339,6 @@ $PAGE->set_context($context_system);
                     "</div>";
                 // $('#apro4').html(kpi.value["Aprobado"]);//Aprobados
                 // $('#no_apro4').html(kpi.value["No aprobado"]);//No Aprobados
-                // $('#tusuario4').html(informacion_del_curso.data.not_viewed);//No visto
 
                 $('#titulo_grafica4').html(kpi.kpi_name);//Titulo grafica
                 // var a = kpi.value["Aprobado"];

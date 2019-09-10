@@ -52,6 +52,10 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     <div class="row" style="max-width: 100%;">
         <form id="filter_form" method="post" action="services.php" class='col-sm-3'>
             <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br>
+            <div id="contenedor_fechas">
+                <label for="fecha_inicial">Desde <input type="date" class="form-control" name="fecha_inicial" id="fecha_inicial"></label> 
+                <label for="fecha_final">Hasta <input type="date" class="form-control" name="fecha_final" id="fecha_final"></label>
+            </div>
             <div id='contenedor_filtros'></div>
         </form>
         <div class="col-sm-9" id="contenido_cursos">

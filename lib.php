@@ -296,7 +296,7 @@ function local_dominosdashboard_get_kpi_catalogue(string $key, $kpi = '', array 
 function local_dominosdashboard_get_completion_modes(){
     return [
         COMPLETION_DEFAULT => "Finalizado/No finalizado (seguimiento de finalización configurado)",
-        COMPLETION_DEFAULT_AND_GRADE => "Finalizado/No finalizado más calificación (por ponderación en curso pero no establecida para finalización de curso)",
+        // COMPLETION_DEFAULT_AND_GRADE => "Finalizado/No finalizado más calificación (por ponderación en curso pero no establecida para finalización de curso)",
         COMPLETION_BY_GRADE => "Calificación de una actividad",
         COMPLETION_BY_BADGE => "Obtención de una insignia",
         COMPLETION_BY_ACTIVITY => "Finalización de una actividad",
@@ -390,10 +390,9 @@ function local_dominosdashboard_is_enrolled(int $courseid, int $userid){
     return is_enrolled(context_course::instance($courseid), $userid);    
 }
 
-function local_dominosdashboard_get_enrolled_users_count(int $courseid, string $userids = ''){
+function local_dominosdashboard_get_enrolled_users_count(int $courseid, string $userids = '', string $fecha_inicial, string $fecha_final){ //
     $email_provider = local_dominosdashboard_get_email_provider_to_allow();
     if(empty($userids)){
-        // _log("Retornando default en local_dominosdashboard_get_enrolled_users_count porque no hay usuarios que tengan las características");
         return 0; // default
     }else{
         $whereids = " AND ra.userid IN ({$userids})";
@@ -615,11 +614,18 @@ function local_dominosdashboard_get_course_chart(int $courseid){
     return "bar";
 }
 
-function local_dominosdashboard_get_course_color(int $courseid){
-    if($response = get_config('local_dominosdashboard', 'course_main_chart_color_' . $courseid)){
-        return $response;
-    }
-    return "#006491";
+// function local_dominosdashboard_get_course_color(int $courseid){
+//     if($response = get_config('local_dominosdashboard', 'course_main_chart_color_' . $courseid)){
+//         return $response;
+//     }
+//     return "#006491";
+// }
+
+function local_dominosdashboard_get_date_add_days(int $days = 1){
+    $date = new DateTime(date('Y-m-d'));
+
+    $date->modify("+{$days} day");
+    return $date->format('Y-m-d');
 }
 
 define('RETURN_RANDOM_DATA', false);
@@ -636,10 +642,25 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     $response->chart = local_dominosdashboard_get_course_chart($courseid);
     $response->title = $course->fullname;
     $response->status = 'ok';
+    $fecha_inicial = "";
+    $fecha_final = "";
+    $filtros_fecha = "";
+    if(!empty($params)){
+        if(array_key_exists('fecha_inicial', $params)){
+            if(!empty($params['fecha_inicial'])){
+                $fecha_inicial = $params['fecha_inicial'];
+            }
+        }
+        if(array_key_exists('fecha_final', $params)){
+            if(!empty($params['fecha_final'])){
+                $fecha_inicial = $params['fecha_final'];
+            }
+        }
+    }
+    
     if(RETURN_RANDOM_DATA){
         $response->enrolled_users = random_int(100, MAX_RANDOM_NUMBER);
         $response->approved_users = random_int(5, $response->enrolled_users);
-        $response->not_viewed = random_int(0, $response->enrolled_users - $response->approved_users);
         $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users, 2);
         $response->not_approved_users = $response->enrolled_users - $response->approved_users;
         $response->value = $response->percentage;
@@ -672,7 +693,6 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         $response->activities = [];
         $response->enrolled_users = 0;
         $response->approved_users = 0;
-        $response->not_viewed = 0;
         $response->percentage = 0;
         $response->not_approved_users = $response->enrolled_users - $response->approved_users;
         $response->value = 0;
@@ -681,29 +701,15 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     $num_users = count($userids);
     $userids = implode(',', $userids);
     if($get_activities){
-        $response->activities = local_dominosdashboard_get_activities_completion($courseid, $userids);
+        $response->activities = local_dominosdashboard_get_activities_completion($courseid, $userids, $fecha_inicial, $fecha_final); //
     }
 
-    $response->enrolled_users = local_dominosdashboard_get_enrolled_users_count($courseid, $userids);
-    $response->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids);
+    $response->enrolled_users = local_dominosdashboard_get_enrolled_users_count($courseid, $userids, $fecha_inicial, $fecha_final); //
+    $response->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids, $fecha_inicial, $fecha_final); //
     $response->not_approved_users = $response->enrolled_users - $response->approved_users;
-    $response->not_viewed = local_dominosdashboard_get_not_viewed_users_in_course($courseid, $userids, $num_users);
     $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users, 2);
     $response->value = $response->percentage;
     return $response;
-}
-
-function local_dominosdashboard_get_not_viewed_users_in_course(int $courseid, string $userids, int $num_users){
-    global $DB;
-    if(empty($userids)){
-        return 0;
-    }
-    $query = "SELECT count(distinct userid) FROM {logstore_standard_log} WHERE target = 'course' AND action = 'viewed' AND courseid = {$courseid} AND userid IN ({$userids})";
-    $count = $DB->count_records_sql($query);
-    if(is_numeric($count)){
-        return $num_users - $count;
-    }
-    return 0;
 }
 
 function local_dominosdashboard_get_kpi_info(int $courseid, array $params = array()){
@@ -824,7 +830,7 @@ function local_dominosdashboard_get_ideales_as_js_script(){
     return "<script> var ideal_cobertura = {$ideal_cobertura}; var ideal_rotacion = {$ideal_rotacion}; </script>";
 }
 
-function local_dominosdashboard_get_approved_users(int $courseid, string $userids = ''){
+function local_dominosdashboard_get_approved_users(int $courseid, string $userids = '', string $fecha_inicial, string $fecha_final){ //
     $response = 0;
     if(empty($userids)){ // no users to search in query
         // _log('No se encuentran usuarios');
@@ -846,25 +852,49 @@ function local_dominosdashboard_get_approved_users(int $courseid, string $userid
             }else{
                 $whereids = " AND p.userid IN ({$userids})";
             }
+            $campo_fecha = "p.timecompleted";
+            if(empty($fecha_inicial) && empty($fecha_final)){ // las 2 vacías
+                $filtro_fecha = ""; // No se aplica filtro
+            }elseif(empty($fecha_inicial) && !empty($fecha_final)){ // solamente fecha_inicial
+                $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) > {$fecha_inicial}";
+                // $filtro_fecha .= $campo_fecha . ' ';
+            }elseif(!empty($fecha_inicial) && empty($fecha_final)){ // solamente fecha_final
+                $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) < {$fecha_inicial}";
+            }elseif(!empty($fecha_inicial) && !empty($fecha_final)){ // ambas requeridas
+                $filtro_fecha = " AND (FROM_UNIXTIME({$campo_fecha}) BETWEEN {$fecha_inicial} AND {$fecha_final})";
+            }
             $query = "SELECT count(*) AS completions FROM {course_completions} AS p
-            WHERE p.course = {$courseid} AND p.timecompleted IS NOT NULL {$whereids} ";
+            WHERE p.course = {$courseid} AND p.timecompleted IS NOT NULL {$whereids} {$filtro_fecha} ";
         break;
-        case COMPLETION_DEFAULT_AND_GRADE:
-            if(empty($userids)){
-                $whereids = "";
-            }else{
-                $whereids = " AND p.userid IN ({$userids})";
-            }
-            $grade_item = local_dominosdashboard_get_course_grade_item_id($courseid);
-            $minimum_score = get_config('local_dominosdashboard', 'course_minimum_score_' . $courseid);
-            if($grade_item === false || $minimum_score === false){ // Missing configuration
-                // _log("Missing configuration courseid", $courseid, 'COMPLETION_DEFAULT_AND_GRADE');
-                return $response;
-            }
-            $query = "SELECT count(*) AS completions 
-            FROM {grade_grades} AS gg JOIN {user} AS user ON user.id = gg.userid WHERE gg.itemid = {$grade_item} AND final_grade >= {$minimum_score} AND user.id IN 
-            (SELECT u.id FROM {course_completions} AS p WHERE p.course = {$courseid} AND p.timecompleted IS NOT NULL {$whereids})";
-        break;
+        // case COMPLETION_DEFAULT_AND_GRADE:
+        //     if(empty($userids)){
+        //         $whereids = "";
+        //     }else{
+        //         $whereids = " AND p.userid IN ({$userids})";
+        //     }
+        //     $grade_item = local_dominosdashboard_get_course_grade_item_id($courseid);
+        //     $minimum_score = get_config('local_dominosdashboard', 'course_minimum_score_' . $courseid);
+        //     if($grade_item === false || $minimum_score === false){ // Missing configuration
+        //         // _log("Missing configuration courseid", $courseid, 'COMPLETION_DEFAULT_AND_GRADE');
+        //         return $response;
+        //     }
+        //     $campo_fecha = " p.timecompleted ";
+        //     if($aplicar_filtro_fecha){
+        //         if(empty($fecha_inicial) && empty($fecha_final)){ // las 2 vacías
+        //             $filtro_fecha = ""; // No se aplica filtro
+        //         }elseif(empty($fecha_inicial) && !empty($fecha_final)){ // solamente fecha_inicial
+        //             $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) > {$fecha_inicial}";
+        //             // $filtro_fecha .= $campo_fecha . ' ';
+        //         }elseif(!empty($fecha_inicial) && empty($fecha_final)){ // solamente fecha_final
+        //             $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) < {$fecha_inicial}";
+        //         }elseif(!empty($fecha_inicial) && !empty($fecha_final)){ // ambas requeridas
+        //             $filtro_fecha = " AND (FROM_UNIXTIME({$campo_fecha}) BETWEEN {$fecha_inicial} AND {$fecha_final})";
+        //         }
+        //     }
+        //     $query = "SELECT count(*) AS completions 
+        //     FROM {grade_grades} AS gg JOIN {user} AS user ON user.id = gg.userid WHERE gg.itemid = {$grade_item} AND final_grade >= {$minimum_score} AND user.id IN 
+        //     (SELECT u.id FROM {course_completions} AS p WHERE p.course = {$courseid} AND p.timecompleted IS NOT NULL {$whereids})";
+        // break;
         case COMPLETION_BY_GRADE:
             if(empty($userids)){
                 $whereids = "";
@@ -877,8 +907,19 @@ function local_dominosdashboard_get_approved_users(int $courseid, string $userid
                 // _log("Missing configuration courseid", $courseid, 'COMPLETION_BY_GRADE');
                 return $response;
             }
+            $campo_fecha = "gg.timemodified";
+            if(empty($fecha_inicial) && empty($fecha_final)){ // las 2 vacías
+                $filtro_fecha = ""; // No se aplica filtro
+            }elseif(empty($fecha_inicial) && !empty($fecha_final)){ // solamente fecha_inicial
+                $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) > {$fecha_inicial}";
+                // $filtro_fecha .= $campo_fecha . ' ';
+            }elseif(!empty($fecha_inicial) && empty($fecha_final)){ // solamente fecha_final
+                $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) < {$fecha_inicial}";
+            }elseif(!empty($fecha_inicial) && !empty($fecha_final)){ // ambas requeridas
+                $filtro_fecha = " AND (FROM_UNIXTIME({$campo_fecha}) BETWEEN {$fecha_inicial} AND {$fecha_final})";
+            }
             $query = "SELECT count(*) AS completions FROM {grade_grades} AS gg WHERE
-             gg.itemid = {$grade_item} AND final_grade >= {$minimum_score} {$whereids}";
+             gg.itemid = {$grade_item} AND final_grade >= {$minimum_score} {$whereids} {$filtro_fecha}";
         break;
         // case COMPLETION_BY_AVG:
         //     $query = "Query COMPLETION_BY_AVG";
@@ -891,8 +932,19 @@ function local_dominosdashboard_get_approved_users(int $courseid, string $userid
             }
             $completion_activity = get_config('local_dominosdashboard', 'course_completion_activity_' . $courseid);
             /* completionstate 0 => 'In Progress' 1 => 'Completed' 2 => 'Completed with Pass' completionstate = 3 => 'Completed with Fail' */
+            $campo_fecha = "timemodified";
+            if(empty($fecha_inicial) && empty($fecha_final)){ // las 2 vacías
+                $filtro_fecha = ""; // No se aplica filtro
+            }elseif(empty($fecha_inicial) && !empty($fecha_final)){ // solamente fecha_inicial
+                $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) > {$fecha_inicial}";
+                // $filtro_fecha .= $campo_fecha . ' ';
+            }elseif(!empty($fecha_inicial) && empty($fecha_final)){ // solamente fecha_final
+                $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) < {$fecha_inicial}";
+            }elseif(!empty($fecha_inicial) && !empty($fecha_final)){ // ambas requeridas
+                $filtro_fecha = " AND (FROM_UNIXTIME({$campo_fecha}) BETWEEN {$fecha_inicial} AND {$fecha_final})";
+            }
             $query = "SELECT count(*) AS completions from {course_modules_completion} WHERE
-             coursemoduleid = {$completion_activity} AND completionstate IN (1,2) $whereids";
+             coursemoduleid = {$completion_activity} AND completionstate IN (1,2) $whereids {$filtro_fecha}";
         break;
         case COMPLETION_BY_BADGE:
             // Obtener los id de usuarios inscritos en el curso
@@ -904,32 +956,31 @@ function local_dominosdashboard_get_approved_users(int $courseid, string $userid
             }else{
                 $whereids = " AND userid IN ({$userids})";
             }
-            $query = "SELECT count(*) AS completions from {badge_issued} WHERE badgeid = {$completion_badge} {$whereids}";
+            $campo_fecha = "dateissued";
+            if(empty($fecha_inicial) && empty($fecha_final)){ // las 2 vacías
+                $filtro_fecha = ""; // No se aplica filtro
+            }elseif(empty($fecha_inicial) && !empty($fecha_final)){ // solamente fecha_inicial
+                $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) > {$fecha_inicial}";
+                // $filtro_fecha .= $campo_fecha . ' ';
+            }elseif(!empty($fecha_inicial) && empty($fecha_final)){ // solamente fecha_final
+                $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) < {$fecha_inicial}";
+            }elseif(!empty($fecha_inicial) && !empty($fecha_final)){ // ambas requeridas
+                $filtro_fecha = " AND (FROM_UNIXTIME({$campo_fecha}) BETWEEN {$fecha_inicial} AND {$fecha_final})";
+            }
+        $query = "SELECT count(*) AS completions from {badge_issued} WHERE badgeid = {$completion_badge} {$whereids} {$filtro_fecha}";
         break;
         default: 
-            // _log("method not allowed");
             // $response->message = 'Completion not allowed';
             return $response;
         break;
     }
-    // // _log("Consulta de curso finalizado", $query);
     if(!empty($query)){
         global $DB;
         if($result = $DB->get_record_sql($query)){
             $response = $result->completions;
             return $response;
-            // _log($result);
-            $response->enrolled_users = local_dominosdashboard_get_enrolled_users_count($courseid);
-            $response->approved_users = $result->completions;
-            // _log($response);
-            $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users, 2);
-            $response->status = 'ok';
-            return $response;
-        }else{
-            // _log("query returns false ", $query);
         }
     }
-    // _log("Default response returned");
     return $response;
 }
 
@@ -1250,7 +1301,7 @@ function local_dominosdashboard_get_activities(int $courseid, string $andwhere =
     return $DB->get_records_sql_menu($query);
 }
 
-function local_dominosdashboard_get_activities_completion(int $courseid, string $userids){
+function local_dominosdashboard_get_activities_completion(int $courseid, string $userids, string $fecha_inicial, string $fecha_final){
 
     $activities = array();
     if(empty($userids)){
@@ -1259,32 +1310,30 @@ function local_dominosdashboard_get_activities_completion(int $courseid, string 
     global $DB;
     $courseactivities = local_dominosdashboard_get_activities($courseid, " AND completion != 0 ");
     foreach($courseactivities as $key => $activity){
-        $activityInformation = local_dominos_dashboard_get_activity_completions($activityid = $key, $userids, $title = $activity);
-        // _log($activityInformation);
-        // if(empty($activities)){
-            array_push($activities, $activityInformation);
-        // }else{
-        //     $max = count($activities) - 1;
-        //     if($activityInformation['completed'] > $activities[$max]['completed']){
-        //         $temp = $activities[$max];
-        //         $activities[$max] = $activityInformation;
-        //         // $activities[$max]
-        //         array_push($activities, $temp);
-        //     }else{
-        //         array_push($activities, $activityInformation);
-        //     }
-        // }
+        $activityInformation = local_dominos_dashboard_get_activity_completions($activityid = $key, $userids, $title = $activity, $fecha_inicial, $fecha_final);
+        array_push($activities, $activityInformation);
     }
     usort($activities, function ($a, $b) {return $a['completed'] < $b['completed'];});
-    // $activities = array_
     return $activities;
 }
 
-function local_dominos_dashboard_get_activity_completions(int $activityid, string $userids = "", $title = ""){
+function local_dominos_dashboard_get_activity_completions(int $activityid, string $userids = "", $title = "", string $fecha_inicial, string $fecha_final){
+    $campo_fecha = "timemodified";
+    $filtro_fecha = "";
+    if(empty($fecha_inicial) && empty($fecha_final)){ // las 2 vacías
+        $filtro_fecha = ""; // No se aplica filtro
+    }elseif(empty($fecha_inicial) && !empty($fecha_final)){ // solamente fecha_inicial
+        $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) > {$fecha_inicial}";
+        // $filtro_fecha .= $campo_fecha . ' ';
+    }elseif(!empty($fecha_inicial) && empty($fecha_final)){ // solamente fecha_final
+        $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) < {$fecha_inicial}";
+    }elseif(!empty($fecha_inicial) && !empty($fecha_final)){ // ambas requeridas
+        $filtro_fecha = " AND (FROM_UNIXTIME({$campo_fecha}) BETWEEN {$fecha_inicial} AND {$fecha_final})";
+    }
     global $DB;
     $key = "module" . $activityid;
     // $inProgress         = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 0");
-    $completed          = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate IN (1,2)");
+    $completed          = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate IN (1,2) {$filtro_fecha}");
     // $completedWithFail  = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 3");
     return compact('key', 'title', 'inProgress', 'completed', 'completedWithFail');
 }

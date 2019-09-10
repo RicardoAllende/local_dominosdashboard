@@ -94,7 +94,6 @@ function crearGraficaDeCurso(_bindto, curso){
             _columns = [
                 ['Inscritos', curso.enrolled_users],
                 ['Aprobados', curso.approved_users],
-                ['No iniciaron el curso', curso.not_viewed]
             ];
             var nombre_columnas = ["Inscritos", "Aprobados", "No iniciaron el curso"];
         break;
