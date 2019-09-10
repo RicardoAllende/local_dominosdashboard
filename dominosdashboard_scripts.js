@@ -82,12 +82,7 @@ function insertarGraficaSinInfo(div){
                         </div>
                     </div>
                     </div>
-                    <div class='bg-faded text-center noinfo' id=''>Sin información en la Base de Datos</div>
-                    <div class='align-items-end'>
-                    <div class='fincard text-center'>
-                        <a href='' id=''></a>
-                    </div>
-                </div>
+                    <div class='bg-faded text-center noinfo' id=''>Sin información en la Base de Datos</div>                    
             </div>
     </div>`);
 }
