@@ -197,7 +197,7 @@ $courses = local_dominosdashboard_get_courses();
                                     "<div class='align-items-end'>"+
                                         
                                     "<div class='fincard text-center'>"+
-                                            "<a href='Grafica.html' id=''>Históricos</a>"+
+                                            "<a href='#' id=''>Históricos</a>"+
                                         "</div>"+
                                     "</div>"+
                                 "</div>"+
