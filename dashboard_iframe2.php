@@ -41,25 +41,17 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
-    <link href="estilos.css" rel="stylesheet">
 </head>
 <body>
     
     <div class="row" style="max-width: 100%;">
         <form id="filter_form" method="post" action="services.php" class='col-sm-3'>
             <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br>
-            <div id="contenedor_fechas">
-                <label for="fecha_inicial">Desde <input type="date" class="form-control" name="fecha_inicial" id="fecha_inicial"></label> 
-                <label for="fecha_final">Hasta <input type="date" class="form-control" name="fecha_final" id="fecha_final"></label>
-            </div>
             <div id='contenedor_filtros'></div>
         </form>
         <div class="col-sm-9" id="contenido_cursos">
@@ -67,33 +59,36 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 <ul class="nav justify-content-center nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active dtag" id="home-tab" data-toggle="tab" href="#home" role="tab"
-                            aria-controls="home" onclick="cambiarpestana(1)" aria-selected="true">Programas de entrenamiento</a>
+                            aria-controls="home" onclick="cambiarpestana(1);" aria-selected="true">Programas de entrenamiento</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                            aria-controls="profile" onclick="cambiarpestana(2)" aria-selected="false">Lanzamientos y campañas</a>
+                            aria-controls="profile" onclick="cambiarpestana(2);" aria-selected="false">Lanzamientos y campañas</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
-                            aria-controls="contact" onclick="cambiarpestana(3)" aria-selected="false">Cruce de indicadores</a>
+                            aria-controls="contact" onclick="cambiarpestana(3);" aria-selected="false">Cruce de indicadores</a>
                     </li>
                 </ul>
             </div>
             <div class="tab-content row" id="myTabContent">
-                <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">                       
+                        
                     <div class="" id="ldm_tab_1"></div>
+                        
                     <!-- <div class="" id="contenedor_cursos"></div> -->
                 </div>
-                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                    <div class="" id="ldm_tab_2"></div>
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">                                            
+                    <div class="" id="ldm_tab_2"></div>                       
                 </div>
-                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                    <div class="" id="ldm_tab_3"></div>
+                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">                        
+                    <div class="" id="ldm_tab_3"></div>                        
                 </div>
             </div>
         </div>
         <div id="loader"></div>
         <div class="col-sm-12" id="local_dominosdashboard_content"></div>
+        
         <!-- <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div> -->
     </div>
     
@@ -107,9 +102,6 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     <script src="libs/c3.js"></script>
     <script src="dominosdashboard_scripts.js"></script>
     <script>
-        var isCourseLoading = false;
-        var isFilterLoading = false;
-        var trabajoPendiente = false;
         var currentTab = 1;
         var indicator;
         var item;
@@ -117,6 +109,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         var demark = "";
         var tituloPestana = "";
         var tabsCursos = [false, false, false];
+       
         function cambiarpestana(id){
             if(id != currentTab){
                 hidePage("ldm_tab_" + id);
@@ -148,25 +141,13 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 request_type: 'user_catalogues'
             });
         }
-        function rehacerPeticion(){
-            trabajoPendiente = true;
-            setTimeout(function() {
-                
-            }, 2000);
-        }
-        // function reObtenerInformacion(){
-
-        // }
         function obtenerInformacion(indicator){
-            if(isCourseLoading){
-                console.log('Cargando contenido de cursos, no debe procesar más peticiones por el momento');
-                return;
-            }
-            isCourseLoading = !isCourseLoading;
             console.log("Obteniendo gráficas");
             informacion = $('#filter_form').serializeArray();
             informacion.push({name: 'request_type', value: 'course_list'});
             informacion.push({name: 'type', value: currentTab});
+            console.log('La información enviada al servicio es: ', informacion);
+            // $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
             dateBegining = Date.now();
             // $('#local_dominosdashboard_content').html('Cargando la información');
             $.ajax({
@@ -176,7 +157,6 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 dataType: "json"
             })
             .done(function(data) {
-                isCourseLoading = false;
                 console.log('Data obtenida', data);
                 respuesta = JSON.parse(JSON.stringify(data));
                 respuesta = respuesta.data;
@@ -194,7 +174,6 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 },1000)
             })
             .fail(function(error, error2) {
-                isCourseLoading = false;
                 console.log(error);
                 console.log(error2);
             });
@@ -204,5 +183,6 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         }
         
     </script>
+    <link href="estilos.css" rel="stylesheet">
 </body>
 </html>
