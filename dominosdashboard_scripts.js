@@ -408,7 +408,6 @@ function peticionFiltros(info){
                                     aria-controls="${collapse_id}">
                                     ${clave}
                                 </span>
-                                <span style="color: white;">Comparar</span>
                             </h5>
                         </div>
                         <div id="${collapse_id}" class="collapse" aria-labelledby="${heading_id}" data-parent="#contenedor_filtros">
@@ -588,4 +587,60 @@ function imprimirRanking(div, info) {
         }
         return;
     }
+}
+
+/**
+ * @param _bindto string selector con sintaxis jquery donde se imprimirán las gráficas
+ */
+function imprimirGraficaComparativaDentroDeCurso(_bindto, informacion){
+    // if(!esVacio(informacion.comparative)){
+        claves = Object.keys(informacion.comparatives);
+        for(var iterador = 0; iterador < claves.length; iterador++){
+            clave = claves[iterador];
+            comparative = informacion.comparatives[clave]; // Nombre de la comparativa
+            inscritos = Array();
+            aprobados = Array();
+            nombres = Array();
+            inscritos.push('Inscritos');
+            aprobados.push('Aprobados');
+            // nombres
+            // datos_comparativos.push(clave);
+            for(var j = 0; j < comparative; j++){
+                datos_a_comparar = comparative[j];
+                inscritos.push(datos_a_comparar.enrolled_users);
+                aprobados.push(datos_a_comparar.approved_users);
+                nombres.push(datos_a_comparar.name);
+            }
+            console.log(inscritos);
+            console.log(aprobados);
+            console.log(nombres);
+            // var chart = c3.generate({
+            //     data: {
+            //         columns: [
+            //             ['data1', 300, 350, 300, 0, 0, 0],
+            //             ['data2', 30, 50, 30, 80, 70, 90],
+            //             ['data3', 130, 100, 140, 200, 150, 50]
+            //         ],
+            //         types: {
+            //             data1: 'area',
+            //             data2: 'area-spline',
+            //             data3: 'area-spline',
+            //         }
+            //     },
+            //     bindto: _bindto,
+            // });
+            // console.log()
+        }
+    // }else{
+    //     $(_bindto).html('');
+    // }
+}
+
+function imprimirDIV(contenido) {
+    var ficha = document.getElementById(contenido);
+    var ventanaImpresion = window.open(' ', 'popUp');
+    ventanaImpresion.document.write('<link href="libs/c3.css" rel="stylesheet"><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous"><link href="estilos.css" rel="stylesheet">' + ficha.innerHTML);
+    ventanaImpresion.document.close();
+    ventanaImpresion.print();
+    ventanaImpresion.close();
 }

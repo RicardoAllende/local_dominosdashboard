@@ -49,6 +49,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
+    <link href="estilos.css" rel="stylesheet">
 </head>
 <body>
     
@@ -203,6 +204,5 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         }
         
     </script>
-    <link href="estilos.css" rel="stylesheet">
 </body>
 </html>
