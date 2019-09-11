@@ -41,6 +41,9 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -52,6 +55,10 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     <div class="row" style="max-width: 100%;">
         <form id="filter_form" method="post" action="services.php" class='col-sm-3'>
             <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br>
+            <div id="contenedor_fechas">
+                <label for="fecha_inicial">Desde <input type="date" class="form-control" name="fecha_inicial" id="fecha_inicial"></label> 
+                <label for="fecha_final">Hasta <input type="date" class="form-control" name="fecha_final" id="fecha_final"></label>
+            </div>
             <div id='contenedor_filtros'></div>
         </form>
         <div class="col-sm-9" id="contenido_cursos">
@@ -98,6 +105,9 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     <script src="libs/c3.js"></script>
     <script src="dominosdashboard_scripts.js"></script>
     <script>
+        var isCourseLoading = false;
+        var isFilterLoading = false;
+        var trabajoPendiente = false;
         var currentTab = 1;
         var indicator;
         var item;
@@ -135,13 +145,25 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 request_type: 'user_catalogues'
             });
         }
+        function rehacerPeticion(){
+            trabajoPendiente = true;
+            setTimeout(function() {
+                
+            }, 2000);
+        }
+        // function reObtenerInformacion(){
+
+        // }
         function obtenerInformacion(indicator){
+            if(isCourseLoading){
+                console.log('Cargando contenido de cursos, no debe procesar más peticiones por el momento');
+                return;
+            }
+            isCourseLoading = !isCourseLoading;
             console.log("Obteniendo gráficas");
             informacion = $('#filter_form').serializeArray();
             informacion.push({name: 'request_type', value: 'course_list'});
             informacion.push({name: 'type', value: currentTab});
-            console.log('La información enviada al servicio es: ', informacion);
-            // $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
             dateBegining = Date.now();
             // $('#local_dominosdashboard_content').html('Cargando la información');
             $.ajax({
@@ -151,6 +173,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 dataType: "json"
             })
             .done(function(data) {
+                isCourseLoading = false;
                 console.log('Data obtenida', data);
                 respuesta = JSON.parse(JSON.stringify(data));
                 respuesta = respuesta.data;
@@ -162,6 +185,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 generarGraficasTodosLosCursos(render_div, respuesta, tituloPestana);
             })
             .fail(function(error, error2) {
+                isCourseLoading = false;
                 console.log(error);
                 console.log(error2);
             });

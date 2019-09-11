@@ -83,11 +83,11 @@ if ($hassiteconfig) {
                 $setting = new admin_setting_configselect($name, $title, $description, null, $charts);
                 $page->add($setting);
 
-                $name = $ldm_pluginname . '/course_main_chart_color_' . $course->id;
-                $title = get_string('course_main_chart_color', $ldm_pluginname);
-                $description = get_string('course_main_chart_color' . '_desc', $ldm_pluginname);        
-                $setting = new admin_setting_configcolourpicker($name, $title, $description, '');
-                $page->add($setting);
+                // $name = $ldm_pluginname . '/course_main_chart_color_' . $course->id;
+                // $title = get_string('course_main_chart_color', $ldm_pluginname);
+                // $description = get_string('course_main_chart_color' . '_desc', $ldm_pluginname);        
+                // $setting = new admin_setting_configcolourpicker($name, $title, $description, '');
+                // $page->add($setting);
                 
                 $gradable_items = local_dominosdashboard_get_gradable_items($course->id);
                 $config_name = 'course_grade_activity_completion_' . $course->id;

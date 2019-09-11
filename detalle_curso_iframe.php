@@ -42,6 +42,9 @@ $PAGE->set_context($context_system);
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -54,6 +57,10 @@ $PAGE->set_context($context_system);
             <a class="btn btn-success" href="dashboard_iframe.php">Volver al dashboard</a><br><br>
             <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br>
             <input type="hidden" name="courseid" value="<?php echo $course->id; ?>";>
+            <div id="contenedor_fechas">
+                <label for="fecha_inicial">Desde <input type="date" class="form-control" name="fecha_inicial" id="fecha_inicial"></label> 
+                <label for="fecha_final">Hasta <input type="date" class="form-control" name="fecha_final" id="fecha_final"></label>
+            </div>
             <div id='contenedor_filtros'></div>
         </form>
         <div class="row col-sm-9" id="contenido_dashboard">
@@ -79,6 +86,9 @@ $PAGE->set_context($context_system);
     <script src="dominosdashboard_scripts.js"></script>
 
     <script>
+        var isCourseLoading = false;
+        var isFilterLoading = false;
+        var trabajoPendiente = false;
         document.addEventListener("DOMContentLoaded", function () {
             $('.dominosdashboard-ranking').hide();
             $('.course-selector').change(function () { obtenerInformacion() });
@@ -95,6 +105,12 @@ $PAGE->set_context($context_system);
         var _kpi;
         var _kpis;
         function obtenerInformacion(indicator) {
+            if(isCourseLoading){
+                trabajoPendiente = false;
+                console.log('Cargando contenido de cursos, no debe procesar más peticiones por el momento');
+                return;
+            }
+            isCourseLoading = !isCourseLoading;
             informacion = $('#filter_form').serializeArray();
             informacion.push({ name: 'request_type', value: 'course_completion' });
             // $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
@@ -107,6 +123,7 @@ $PAGE->set_context($context_system);
                 dataType: "json"
             })
                 .done(function (data) {
+                    isCourseLoading = false;
                     // $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
                     informacion_del_curso = JSON.parse(JSON.stringify(data));
                     _kpis = informacion_del_curso.data.kpi;
@@ -139,6 +156,7 @@ $PAGE->set_context($context_system);
                     console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
                 })
                 .fail(function (error, error2) {
+                    isCourseLoading = false;
                     console.log(error);
                     console.log(error2);
                 });
@@ -264,7 +282,6 @@ $PAGE->set_context($context_system);
                     "</div>";
                 $('#apro3').html(obtenerDefaultEnNull(kpi.value["Aprobado"]));//Aprobados
                 $('#no_apro3').html(obtenerDefaultEnNull(kpi.value["No aprobado"]));// No Aprobados
-                $('#tusuario3').html(obtenerDefaultEnNull(informacion_del_curso.data.not_viewed));//No visto
 
                 $('#titulo_grafica3').html(kpi.kpi_name);//Titulo grafica
 
@@ -336,7 +353,6 @@ $PAGE->set_context($context_system);
                     "</div>";
                 // $('#apro4').html(kpi.value["Aprobado"]);//Aprobados
                 // $('#no_apro4').html(kpi.value["No aprobado"]);//No Aprobados
-                // $('#tusuario4').html(informacion_del_curso.data.not_viewed);//No visto
 
                 $('#titulo_grafica4').html(kpi.kpi_name);//Titulo grafica
                 // var a = kpi.value["Aprobado"];

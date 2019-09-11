@@ -88,13 +88,13 @@ function insertarGraficaSinInfo(div){
 }
 
 function crearGraficaDeCurso(_bindto, curso){
+    console.log('Probable error', curso);
     switch(curso.chart){
         case 'pie':
         case 'bar':
             _columns = [
                 ['Inscritos', curso.enrolled_users],
                 ['Aprobados', curso.approved_users],
-                ['No iniciaron el curso', curso.not_viewed]
             ];
             var nombre_columnas = ["Inscritos", "Aprobados", "No iniciaron el curso"];
         break;
@@ -134,7 +134,6 @@ function crearTarjetaParaGrafica(div, curso, claseDiv){
     if(typeof currentTab != 'undefined'){
         id_para_Grafica += '_' + currentTab;
     }
-    console.log('id_para_Grafica', id_para_Grafica);
     $(div).append(`<div class="${claseDiv} espacio">
                 <div class="card bg-gray border-0 m-2">
                 <div class="align-items-end">
@@ -278,7 +277,6 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
         div_id += '_';
         div_id += currentTab;
     }
-    console.log('El id de los cursos varios es ', div_id);
     if(id != undefined){
         div_id += id;
     }
@@ -375,6 +373,11 @@ function crearGraficaDeCursokpi(_bindto, curso, kpi){
 }
 
 function peticionFiltros(info){
+    if(isFilterLoading){
+        console.log('Cargando contenido de cursos, no debe procesar más peticiones por el momento');
+        return;
+    }
+    isFilterLoading = !isFilterLoading;
     $.ajax({
         type: "POST",
         url: "services.php",
@@ -382,6 +385,7 @@ function peticionFiltros(info){
         dataType: "json"
     })
     .done(function(data) {
+        isFilterLoading = false;
         console.log(data);
         keys = Object.keys(data.data);
         // div_selector = '#indicator_section_' + clave;
@@ -404,6 +408,7 @@ function peticionFiltros(info){
                                     aria-controls="${collapse_id}">
                                     ${clave}
                                 </span>
+                                <span style="color: white;">Comparar</span>
                             </h5>
                         </div>
                         <div id="${collapse_id}" class="collapse" aria-labelledby="${heading_id}" data-parent="#contenedor_filtros">
@@ -430,6 +435,7 @@ function peticionFiltros(info){
         console.log(`Tiempo de respuesta al obtener filtros de API ${dateEnding - dateBegining} ms`);
     })
     .fail(function(error, error2) {
+        isFilterLoading = false;
         console.log(error);
         console.log(error2);
     });
