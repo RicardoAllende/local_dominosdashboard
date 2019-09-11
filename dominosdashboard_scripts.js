@@ -595,45 +595,67 @@ function imprimirRanking(div, info) {
 function imprimirGraficaComparativaDentroDeCurso(_bindto, informacion){
     // if(!esVacio(informacion.comparative)){
         claves = Object.keys(informacion.comparatives);
+        nombres = Array();
         for(var iterador = 0; iterador < claves.length; iterador++){
             clave = claves[iterador];
             comparative = informacion.comparatives[clave]; // Nombre de la comparativa
             inscritos = Array();
             aprobados = Array();
-            nombres = Array();
-            inscritos.push('Inscritos');
-            aprobados.push('Aprobados');
+            _nombres = Array();
+            columns = Array();
+            // inscritos.push('Inscritos');
+            // aprobados.push('Aprobados');
             // nombres
             // datos_comparativos.push(clave);
-            for(var j = 0; j < comparative; j++){
+            id_para_Grafica = 'ldm_comparativa_' + clave;
+            $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa por ${clave}</h4><div id="${id_para_Grafica}"></div></div>`);
+            id_para_Grafica = '#' + id_para_Grafica;
+            for(var j = 0; j < comparative.length; j++){
+
                 datos_a_comparar = comparative[j];
-                inscritos.push(datos_a_comparar.enrolled_users);
-                aprobados.push(datos_a_comparar.approved_users);
-                nombres.push(datos_a_comparar.name);
+                // columns.push([datos_a_comparar.name, Math.floor((Math.random() * 100) + 1)]);
+                columns.push([datos_a_comparar.name, datos_a_comparar.percentage]);
+                // inscritos.push(datos_a_comparar.enrolled_users);
+                // aprobados.push(datos_a_comparar.approved_users);
+                // _nombres.push(datos_a_comparar.name);
             }
             console.log(inscritos);
             console.log(aprobados);
-            console.log(nombres);
-            // var chart = c3.generate({
-            //     data: {
-            //         columns: [
-            //             ['data1', 300, 350, 300, 0, 0, 0],
-            //             ['data2', 30, 50, 30, 80, 70, 90],
-            //             ['data3', 130, 100, 140, 200, 150, 50]
-            //         ],
-            //         types: {
-            //             data1: 'area',
-            //             data2: 'area-spline',
-            //             data3: 'area-spline',
-            //         }
-            //     },
-            //     bindto: _bindto,
-            // });
+            console.log(_nombres);
+            // nombres[clave] = _nombres;
+            data = {
+                columns: columns,
+                type: 'bar',
+                // types: {
+                //     Inscritos: 'area-spline',
+                //     Aprobados: 'area-spline',
+                // }
+            };
+            crearGraficaComparativaPorFiltro(id_para_Grafica, data, _nombres)
             // console.log()
         }
     // }else{
     //     $(_bindto).html('');
     // }
+}
+
+function crearGraficaComparativaPorFiltro(_bindto, data, nombres){
+    var chart = c3.generate({
+        data: data,
+        bindto: _bindto,
+        tooltip: {
+            format: {
+                title: function (d) {
+                    console.log('Nombres en tooltip', nombres);
+                    if(typeof nombres[d] !== 'undefined'){
+                        return nombres[d];
+                    }else{
+                        return "terminó antes";
+                    }
+                },
+            }
+        }
+    });
 }
 
 function imprimirDIV(contenido) {

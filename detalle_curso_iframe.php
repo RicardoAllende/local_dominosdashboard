@@ -42,9 +42,6 @@ $PAGE->set_context($context_system);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -71,6 +68,7 @@ $PAGE->set_context($context_system);
             <div class="col-sm-6" id="card_numero_de_quejas"></div>
             <div class="col-sm-6" id="card_scorcard"></div>
 
+            <div class="col-sm-12" id="ldm_comparativas"></div>
             <div class="col-sm-12 row" id="ranking_dm"></div>
         </div>
     </div>
@@ -150,6 +148,7 @@ $PAGE->set_context($context_system);
                     $('#course_title,#course_overview').html('');
                     insertarTituloSeparador('#course_title', 'Curso ' + informacion_del_curso.data.title);
                     crearTarjetaParaGrafica('#course_overview', informacion_del_curso.data, 'col-sm-12 col-xl-12');
+                    imprimirGraficaComparativaDentroDeCurso('#ldm_comparativas', informacion_del_curso.data);
 
                     imprimirRanking('#ranking_dm', informacion_del_curso.data);
                     dateEnding = Date.now();
