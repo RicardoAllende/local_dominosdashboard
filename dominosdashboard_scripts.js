@@ -269,7 +269,7 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
             }
         }
     }
-    return;
+    return true;
 }
 
 function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titulo, id){
@@ -444,6 +444,25 @@ function obtenerFiltros(indicator) {
     }
     peticionFiltros(info);
 }
+
+//LOADER
+var myVar;
+
+function myFunction() {
+  myVar = setTimeout(showPage, 900);
+}
+
+function showPage(id_div) {
+  document.getElementById("loader").style.display = "none";
+  document.getElementById(id_div).style.display = "block";
+}
+
+function hidePage(id_div){
+  document.getElementById("loader").style.display = "block";
+  document.getElementById(id_div).style.display = "none";
+}
+
+//------
 
 function imprimirRanking(div, info) {
     var colorTop = "#29B6F6";

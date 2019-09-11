@@ -39,10 +39,12 @@ echo $OUTPUT->header();
 
 ?>
 <link href="estilos.css" rel="stylesheet">
-<iframe src="dashboard_iframe.php" id="iframe_ldm" frameborder="0" style="width: 100%; overflow: hidden;"></iframe>
+
+<iframe src="dashboard_iframe2.php" id="iframe_ldm" frameborder="0" style="width: 100%; overflow: hidden;"></iframe>
 <div class="btnimprimir">
     <button class="btn btn-primary" onclick="imprimir();">Imprimir</button>       
 </div>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('region-main').style.width = "100%";
@@ -59,6 +61,7 @@ echo $OUTPUT->header();
     }
 
 </script>
+
 <?php
 
 echo $OUTPUT->footer();
