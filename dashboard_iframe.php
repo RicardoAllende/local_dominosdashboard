@@ -91,6 +91,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 </div>
             </div>
         </div>
+        <div id="loader"></div>
         <div class="col-sm-12" id="local_dominosdashboard_content"></div>
         <!-- <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div> -->
     </div>
@@ -117,6 +118,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         var tabsCursos = [false, false, false];
         function cambiarpestana(id){
             if(id != currentTab){
+                hidePage("ldm_tab_" + id);
                 currentTab = id;
                 tituloPestana = pestanas[id];
                 setTimeout(function() {
@@ -182,7 +184,13 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 // $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
                 console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
                 render_div = "#ldm_tab_" + currentTab;
-                generarGraficasTodosLosCursos(render_div, respuesta, tituloPestana);
+                var cosa = generarGraficasTodosLosCursos(render_div, respuesta, tituloPestana);
+                setTimeout(function(){
+                    console.log(cosa);
+                    if(cosa == true){
+                        showPage("ldm_tab_" + currentTab);
+                    }
+                },1000)
             })
             .fail(function(error, error2) {
                 isCourseLoading = false;
