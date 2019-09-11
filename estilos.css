@@ -177,7 +177,6 @@
     text-align: center;
 }
 
-<<<<<<< HEAD
 /* Estilos del loader */
 #loader {
     position: absolute;
@@ -229,7 +228,6 @@
     display: none;
     text-align: center;
   }
-=======
 /* Texto en mayúsculas para indicador */
 .indicator_option {
     text-transform: uppercase;
@@ -246,4 +244,3 @@
 #navbarSupportedContent {
     padding-bottom: 1%;
 }
->>>>>>> 2ef2da7e732b78f90a9a610410104e12293bf148
