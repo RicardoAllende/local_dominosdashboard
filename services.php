@@ -45,7 +45,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
         case 'course_completion':
             if(!empty($_POST['courseid'])){
                 $courseid = $_POST['courseid'];
-                die(local_dominosdashboard_format_response(local_dominosdashboard_get_course_information($courseid, $get_kpis = true, $get_activities = true, $params = $_POST)));
+                die(local_dominosdashboard_format_response(local_dominosdashboard_get_course_information($courseid, $get_kpis = true, $get_activities = true, $params = $_POST, true)));
             }else{
                 die(local_dominosdashboard_error_response("courseid (int) not found"));
             }
@@ -77,6 +77,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
                 $kpi = "";
             }
             die(local_dominosdashboard_format_response(local_dominosdashboard_get_all_catalogues_for_kpi($kpi, $_POST)));
+            break;
+        case 'course_comparative':
+            if(!empty($_POST['courseid'])){
+                if(isset($_POST['selected_filter'])){
+                    $courseid = $_POST['courseid'];
+                    die(local_dominosdashboard_format_response(local_dominosdashboard_get_course_comparative($courseid, $params = $_POST)));
+                }else{
+                    die(local_dominosdashboard_error_response("selected_filter (string) not found"));                
+                }
+            }else{
+                die(local_dominosdashboard_error_response("courseid (int) not found"));
+            }
             break;
         default:
             die(local_dominosdashboard_error_response("request_type not allowed"));

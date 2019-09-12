@@ -171,7 +171,6 @@ function crearTarjetaParaGrafica(div, curso, claseDiv){
 
 function obtenerFiltros(indicator){
     informacion = $('#filter_form').serializeArray();
-    dateBegining = Date.now();
     informacion.push({name: 'request_type', value: 'user_catalogues'});
     if(indicator != undefined){
         informacion.push({name: 'selected_filter', value: indicator});
@@ -378,6 +377,10 @@ function peticionFiltros(info){
         return;
     }
     isFilterLoading = !isFilterLoading;
+    dateBeginingFiltros = Date.now();
+    if(typeof muestraComparativas != 'boolean'){
+        muestraComparativas = false;
+    }
     $.ajax({
         type: "POST",
         url: "services.php",
@@ -404,10 +407,11 @@ function peticionFiltros(info){
                         <div class="card-header cuerpo-filtro" id="${heading_id}">
                             <h5 class="mb-0">
                                 <span class="btn btn-link collapsed texto-filtro"
-                                    data-toggle="collapse" style="color: white;" data-target="#${collapse_id}" aria-expanded="false"
+                                    data-toggle="collapse" style="color: white; text-transform: uppercase;" data-target="#${collapse_id}" aria-expanded="false"
                                     aria-controls="${collapse_id}">
                                     ${clave}
                                 </span>
+                                ${muestraComparativas ? `<span class="btn btn-link text-right texto-filtro" onclick="compararFiltros('${clave}')" style="color: white;">Comparar</span>` : ``}
                             </h5>
                         </div>
                         <div id="${collapse_id}" class="collapse" aria-labelledby="${heading_id}" data-parent="#contenedor_filtros">
@@ -423,7 +427,7 @@ function peticionFiltros(info){
                 var elementoDeCatalogo = catalogo[j];
                 $(subfiltro_id).append(`
                             <label class="subfiltro"><input type="checkbox" name="${clave}[]"
-                            class="indicator_option indicator_${clave}\" onclick="loaderFiltro(),obtenerInformacion('${clave}')"
+                            class="indicator_option text-uppercase indicator_${clave}\" onclick="loaderFiltro(),obtenerInformacion('${clave}')"
                             data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\"
                             >
                              ${esVacio(elementoDeCatalogo) ? " (Vacío)" : elementoDeCatalogo}</label><br>
@@ -609,51 +613,23 @@ function imprimirRanking(div, info) {
     }
 }
 
-/**
- * @param _bindto string selector con sintaxis jquery donde se imprimirán las gráficas
- */
-function imprimirGraficaComparativaDentroDeCurso(_bindto, informacion){
-    // if(!esVacio(informacion.comparative)){
-        claves = Object.keys(informacion.comparatives);
-        for(var iterador = 0; iterador < claves.length; iterador++){
-            clave = claves[iterador];
-            comparative = informacion.comparatives[clave]; // Nombre de la comparativa
-            inscritos = Array();
-            aprobados = Array();
-            nombres = Array();
-            inscritos.push('Inscritos');
-            aprobados.push('Aprobados');
-            // nombres
-            // datos_comparativos.push(clave);
-            for(var j = 0; j < comparative; j++){
-                datos_a_comparar = comparative[j];
-                inscritos.push(datos_a_comparar.enrolled_users);
-                aprobados.push(datos_a_comparar.approved_users);
-                nombres.push(datos_a_comparar.name);
-            }
-            console.log(inscritos);
-            console.log(aprobados);
-            console.log(nombres);
-            // var chart = c3.generate({
-            //     data: {
-            //         columns: [
-            //             ['data1', 300, 350, 300, 0, 0, 0],
-            //             ['data2', 30, 50, 30, 80, 70, 90],
-            //             ['data3', 130, 100, 140, 200, 150, 50]
-            //         ],
-            //         types: {
-            //             data1: 'area',
-            //             data2: 'area-spline',
-            //             data3: 'area-spline',
-            //         }
-            //     },
-            //     bindto: _bindto,
-            // });
-            // console.log()
-        }
-    // }else{
-    //     $(_bindto).html('');
-    // }
+function crearGraficaComparativaPorFiltro(_bindto, data){
+    var chart = c3.generate({
+        data: data,
+        bindto: _bindto,
+        // tooltip: {
+        //     format: {
+        //         // title: function (d) {
+        //         //     console.log('Nombres en tooltip', nombres);
+        //         //     if(typeof nombres[d] !== 'undefined'){
+        //         //         return nombres[d];
+        //         //     }else{
+        //         //         return "terminó antes";
+        //         //     }
+        //         // },
+        //     }
+        // }
+    });
 }
 
 function imprimirDIV(contenido) {

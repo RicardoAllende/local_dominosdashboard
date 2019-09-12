@@ -41,19 +41,17 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
     <link href="estilos.css" rel="stylesheet">
 </head>
 <body>
     
-    <div class="row" style="max-width: 100%;">
+    <div class="row" style="max-width: 100%; min-height: 300px;">
         <form id="filter_form" method="post" action="services.php" class='col-sm-3'>
             <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br>
             <div id="contenedor_fechas">
@@ -105,8 +103,10 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     <link href="libs/c3.css" rel="stylesheet">
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="libs/c3.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="dominosdashboard_scripts.js"></script>
     <script>
+        var muestraComparativas = false;
         var isCourseLoading = false;
         var isFilterLoading = false;
         var trabajoPendiente = false;
@@ -182,7 +182,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 console.log('Imprimiendo la respuesta', respuesta);
                 dateEnding = Date.now();
                 // $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
-                console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
+                console.log(`Tiempo de respuesta de API al obtener json para listado de cursos ${dateEnding - dateBegining} ms`);
                 render_div = "#ldm_tab_" + currentTab;
                 var cosa = generarGraficasTodosLosCursos(render_div, respuesta, tituloPestana);
                 setTimeout(function(){

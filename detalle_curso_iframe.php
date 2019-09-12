@@ -42,14 +42,13 @@ $PAGE->set_context($context_system);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
+    <link href="estilos.css" rel="stylesheet">
 </head>
 <body onload="loaderGeneral()">    
     <div class="row" style="max-width: 100%;">
@@ -73,6 +72,7 @@ $PAGE->set_context($context_system);
             <div class="col-sm-6" id="card_scorcard"></div>
 
             <div class="col-sm-12 row" id="ranking_dm"></div>
+            <div class="col-sm-12" id="ldm_comparativas"></div>
         </div>
     </div>
     <?php echo local_dominosdashboard_get_ideales_as_js_script(); ?>
@@ -83,13 +83,15 @@ $PAGE->set_context($context_system);
     <link href="libs/c3.css" rel="stylesheet">
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="libs/c3.js"></script>
-    <link href="estilos.css" rel="stylesheet">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="dominosdashboard_scripts.js"></script>
 
     <script>
+        var muestraComparativas = true;
         var isCourseLoading = false;
         var isFilterLoading = false;
         var trabajoPendiente = false;
+        var comparativa;
         document.addEventListener("DOMContentLoaded", function () {
             $('.dominosdashboard-ranking').hide();
             $('.course-selector').change(function () { obtenerInformacion() });
@@ -386,6 +388,53 @@ $PAGE->set_context($context_system);
             }else{
                 insertarGraficaSinInfo("#card_scorcard")
             }
+        }
+
+        /**
+         * @param _bindto string selector con sintaxis jquery donde se imprimirán las gráficas
+         */
+        function imprimirComparativaFiltrosDeCurso(_bindto, informacion){
+            if(!esVacio(informacion.comparative)){
+                comparative = informacion.comparative;
+                columns = Array();
+                id_para_Grafica = 'ldm_comparativa_' + informacion.key;
+                $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
+                id_para_Grafica = '#' + id_para_Grafica;
+                for(var j = 0; j < comparative.length; j++){
+                    datos_a_comparar = comparative[j];
+                    columns.push([datos_a_comparar.name, datos_a_comparar.percentage]);
+                }
+                data = { columns: columns, type: 'bar'};
+                crearGraficaComparativaPorFiltro(id_para_Grafica, data);
+            }else{
+                console.log('Error de imprimirComparativaFiltrosDeCurso', informacion);
+                $(_bindto).html('');
+            }
+        }
+
+        function compararFiltros(filtro_seleccionado){
+            informacion = $('#filter_form').serializeArray();
+            informacion.push({ name: 'request_type', value: 'course_comparative' });
+            informacion.push({ name: 'selected_filter', value: filtro_seleccionado });
+            dateBeginingComparacion = Date.now();
+            $.ajax({
+                type: "POST",
+                url: "services.php",
+                data: informacion,
+                dataType: "json"
+            })
+                .done(function (response) {
+                    comparativa = JSON.parse(JSON.stringify(response));
+                    console.log('Información para crear comparativa: ', comparativa);
+                    imprimirComparativaFiltrosDeCurso('#ldm_comparativas', comparativa.data);
+                    dateEnding = Date.now();
+                    console.log(`Tiempo de respuesta de API al obtener json para comparativas ${dateEnding - dateBeginingComparacion} ms`);
+                })
+                .fail(function (error, error2) {
+                    // isCourseLoading = false;
+                    console.log(error);
+                    console.log(error2);
+                });
         }
     </script>
 </body>
