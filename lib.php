@@ -154,18 +154,25 @@ function local_dominosdashboard_get_user_catalogues($params = array()){
     if(empty($returnOnly)){
         return [];
     }
-    $andWhereSql = "";
+    
+    $conditions = local_dominosdashboard_get_wheresql_for_user_catalogues($params, $indicators);
+    foreach($returnOnly as $indicator){
+        $response[$indicator] = local_dominosdashboard_get_catalogue($indicator, $conditions->sql, $conditions->params);
+    }
+    return $response;
+}
+
+function local_dominosdashboard_get_wheresql_for_user_catalogues(array $params, $indicators){
     $query_params = array();
     $conditions = array();
-
-    global $DB;
+    $andWhereSql = "";
+    $response = new stdClass();
     if(!empty($params)){
         foreach($params as $key => $param){
             if(array_search($key, $indicators) !== false){
                 $fieldid = get_config('local_dominosdashboard', "filtro_" . $key);
                 if($fieldid !== false){
                     $data = $params[$key];
-                    $filter_active = true;
                     if(is_string($data) || is_numeric($data)){
                         array_push($conditions, " (fieldid = {$fieldid} AND data = ?)");
                         array_push($query_params, $data);
@@ -185,12 +192,9 @@ function local_dominosdashboard_get_user_catalogues($params = array()){
     }
     if(!empty($conditions)){
         $andWhereSql = " AND userid IN ( SELECT DISTINCT userid FROM {user_info_data} WHERE " . implode(' OR ', $conditions) . ")";
-        // _log('$andWhereSql', $andWhereSql, $query_params);
     }
-
-    foreach($returnOnly as $indicator){
-        $response[$indicator] = local_dominosdashboard_get_catalogue($indicator, $andWhereSql, $query_params);
-    }
+    $response->sql = $andWhereSql;
+    $response->params = $query_params;
     return $response;
 }
 
@@ -398,6 +402,42 @@ function local_dominosdashboard_get_enrolled_users_count(int $courseid, string $
     AND ra.userid IN(SELECT id from {user} WHERE deleted = 0 AND suspended = 0 {$where} {$whereids})
     AND ra.roleid IN (5) # default student role";
     global $DB;
+    if($result = $DB->get_record_sql($query)){
+        return intval($result->learners);
+    }
+    return 0; // default
+}
+
+function local_dominosdashboard_get_enrolled_users_count_2(int $courseid, string $userids = '', string $fecha_inicial, string $fecha_final){ //
+    $email_provider = local_dominosdashboard_get_email_provider_to_allow();
+    if(empty($userids)){
+        return 0; // default
+    }else{
+        $whereids = " AND ra.userid IN ({$userids})";
+    }
+    if(!empty($email_provider)){
+        $where = " AND email LIKE '{$email_provider}'"; 
+    }else{
+        $where = ""; 
+    }
+    global $DB;
+    $enrolment_types = $DB->get_records('enrol', array('courseid' => $courseid));
+    $query = "SELECT COUNT(DISTINCT ra.userid) AS learners
+    FROM {course} AS c
+    LEFT JOIN {context} AS ctx ON c.id = ctx.instanceid
+    JOIN {role_assignments} AS ra ON ra.contextid = ctx.id
+    WHERE c.id = {$courseid}
+    AND ra.userid IN(SELECT id from {user} WHERE deleted = 0 AND suspended = 0 {$where} {$whereids})
+    AND ra.roleid IN (5) # default student role";
+    
+    // Consulta desde el plugin
+    "SELECT distinct u.id FROM {user} u
+    JOIN (SELECT DISTINCT _user.id FROM {user} _user
+    JOIN {user_enrolments} ej1_ue ON ej1_ue.userid = _user.id
+    JOIN {enrol} _enrol ON (_enrol.id = ej1_ue.enrolid AND _enrol.courseid = :ej1_courseid)
+    WHERE 1 = 1 AND _user.deleted = 0) je ON je.id = u.id
+    WHERE u.deleted = 0 ORDER BY u.lastname, u.firstname, u.id";
+
     if($result = $DB->get_record_sql($query)){
         return intval($result->learners);
     }
@@ -624,16 +664,14 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     $fecha_inicial = "";
     $fecha_final = "";
     $filtros_fecha = "";
-    if(!empty($params)){
-        if(array_key_exists('fecha_inicial', $params)){
-            if(!empty($params['fecha_inicial'])){
-                $fecha_inicial = $params['fecha_inicial'];
-            }
+    if(array_key_exists('fecha_inicial', $params)){
+        if(!empty($params['fecha_inicial'])){
+            $fecha_inicial = $params['fecha_inicial'];
         }
-        if(array_key_exists('fecha_final', $params)){
-            if(!empty($params['fecha_final'])){
-                $fecha_inicial = $params['fecha_final'];
-            }
+    }
+    if(array_key_exists('fecha_final', $params)){
+        if(!empty($params['fecha_final'])){
+            $fecha_final = $params['fecha_final'];
         }
     }
     
@@ -668,34 +706,6 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         $response->kpi = local_dominosdashboard_get_kpi_info($courseid, $params);
     }
     $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params);
-    if($get_comparative){
-        _log('Mostrando comparativa');
-        $_params = $params;
-        unset($_params['selected_filter']); // Para regresar todos los filtros
-        $catalogues = local_dominosdashboard_get_user_catalogues($_params);
-        $all_comparatives = array();
-        foreach($catalogues as $key => $catalogue){
-            $comparative = array();
-            foreach($catalogue as $catalogue_item){
-                $item_to_compare = new stdClass();
-                $item_to_compare->name = $catalogue_item;
-                $_params[$key] = [$catalogue_item];
-                $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $_params, true);                
-                if(empty($userids)){
-                    $item_to_compare->enrolled_users = 0;
-                    $item_to_compare->approved_users = 0;
-                    $item_to_compare->percentage = local_dominosdashboard_percentage_of($item_to_compare->enrolled_users, $item_to_compare->approved_users);                    
-                }else{
-                    $item_to_compare->enrolled_users = local_dominosdashboard_get_enrolled_users_count($courseid, $userids, $fecha_inicial, $fecha_final); //
-                    $item_to_compare->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids, $fecha_inicial, $fecha_final); //
-                    $item_to_compare->percentage = local_dominosdashboard_percentage_of($item_to_compare->enrolled_users, $item_to_compare->approved_users);
-                }
-                array_push($comparative, $item_to_compare);
-            }
-            $all_comparatives[$key] = $comparative;
-        }
-        $response->comparatives = $all_comparatives;
-    }
     if($userids === false){
         $response->activities = [];
         $response->enrolled_users = 0;
@@ -705,7 +715,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         $response->value = 0;
         return $response;
     }
-    $num_users = count($userids);
+    // $num_users = count($userids);
     $userids = implode(',', $userids);
     if($get_activities){
         $response->activities = local_dominosdashboard_get_activities_completion($courseid, $userids, $fecha_inicial, $fecha_final); //
@@ -716,6 +726,59 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     $response->not_approved_users = $response->enrolled_users - $response->approved_users;
     $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users);
     $response->value = $response->percentage;
+    return $response;
+}
+
+function local_dominosdashboard_get_course_comparative(int $courseid, array $params){
+    $response = new stdClass();
+    global $DB;
+    $course = $DB->get_record('course', array('id' => $courseid), 'id, shortname, fullname');
+    $response->title = $course->fullname;
+    $response->key = 'course_' . $course->id;
+    $response->id = $course->id;
+    $response->shortname = $course->shortname;
+    $response->fullname = $course->fullname;
+    $indicators = local_dominosdashboard_get_indicators();
+    $conditions = local_dominosdashboard_get_wheresql_for_user_catalogues($params, $indicators);
+    if($course === false){
+        return array();
+    }
+    $fecha_final = $fecha_inicial = "";
+    if(array_key_exists('fecha_inicial', $params)){
+        if(!empty($params['fecha_inicial'])){
+            $fecha_inicial = $params['fecha_inicial'];
+        }
+    }
+    if(array_key_exists('fecha_final', $params)){
+        if(!empty($params['fecha_final'])){
+            $fecha_final = $params['fecha_final'];
+        }
+    }
+    $indicator = $params['selected_filter'];
+    if(isset($params[$indicator])){
+        _log('Se tienen parámetros');
+    }
+    $catalogue = local_dominosdashboard_get_catalogue($indicator, $conditions->sql, $conditions->params);
+    $key = $indicator;
+    $comparative = array();
+    foreach($catalogue as $catalogue_item){
+        $item_to_compare = new stdClass();
+        $item_to_compare->name = $catalogue_item;
+        $params[$key] = [$catalogue_item];
+        $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params, true);                
+        if(empty($userids)){
+            $item_to_compare->enrolled_users = 0;
+            $item_to_compare->approved_users = 0;
+            $item_to_compare->percentage = local_dominosdashboard_percentage_of($item_to_compare->enrolled_users, $item_to_compare->approved_users);                    
+        }else{
+            $item_to_compare->enrolled_users = local_dominosdashboard_get_enrolled_users_count($courseid, $userids, $fecha_inicial, $fecha_final); //
+            $item_to_compare->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids, $fecha_inicial, $fecha_final); //
+            $item_to_compare->percentage = local_dominosdashboard_percentage_of($item_to_compare->enrolled_users, $item_to_compare->approved_users);
+        }
+        array_push($comparative, $item_to_compare);
+    }
+    $response->comparative = $comparative;
+    $response->filter = $indicator;
     return $response;
 }
 

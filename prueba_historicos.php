@@ -125,7 +125,7 @@ $courses = local_dominosdashboard_get_courses();
                 info = JSON.parse(JSON.stringify(data));
                 info = info.data;
                 dateEnding = Date.now();
-                console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
+                console.log(`Tiempo de respuesta de API al obtener json para gráficas históricas ${dateEnding - dateBegining} ms`);
                 historicos(info); 
                 
                               

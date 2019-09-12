@@ -51,9 +51,15 @@ echo $OUTPUT->header();
         });
     });
     function iResize(frame_id) {
-        size = document.getElementById(frame_id).contentWindow.document.body.offsetHeight + 'px';
-        document.getElementById(frame_id).style.height = size;
+        element = document.getElementById(frame_id);
+        if(element != null){
+            if(element.contentWindow.document.body.offsetHeight != null){
+                size = element.contentWindow.document.body.offsetHeight + 'px';
+                document.getElementById(frame_id).style.height = size;
+            }
+        }
     }
+
     function imprimir() {
         window.print();
     }
