@@ -150,8 +150,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         }
         function rehacerPeticion(){
             trabajoPendiente = true;
-            setTimeout(function() {
-                
+            setTimeout(function() {                
             }, 2000);
         }
         // function reObtenerInformacion(){
