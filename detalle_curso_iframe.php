@@ -46,7 +46,9 @@ $PAGE->set_context($context_system);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
+    <link href="estilos.css" rel="stylesheet">
 </head>
 <body>    
     <div class="row" style="max-width: 100%; min-height: 300px;">
@@ -80,7 +82,7 @@ $PAGE->set_context($context_system);
     <link href="libs/c3.css" rel="stylesheet">
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="libs/c3.js"></script>
-    <link href="estilos.css" rel="stylesheet">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="dominosdashboard_scripts.js"></script>
 
     <script>
@@ -88,6 +90,7 @@ $PAGE->set_context($context_system);
         var isCourseLoading = false;
         var isFilterLoading = false;
         var trabajoPendiente = false;
+        var comparativa;
         document.addEventListener("DOMContentLoaded", function () {
             $('.dominosdashboard-ranking').hide();
             $('.course-selector').change(function () { obtenerInformacion() });
@@ -390,74 +393,28 @@ $PAGE->set_context($context_system);
          */
         function imprimirComparativaFiltrosDeCurso(_bindto, informacion){
             if(!esVacio(informacion.comparative)){
-                // claves = Object.keys(informacion.comparative);
-                // nombres = Array();
-                // for(var iterador = 0; iterador < claves.length; iterador++){
-                    // clave = claves[iterador];
-                    comparative = informacion.comparative;
-                    columns = Array();
-                    id_para_Grafica = 'ldm_comparativa_' + informacion.key;
-                    $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
-                    id_para_Grafica = '#' + id_para_Grafica;
-                    for(var j = 0; j < comparative.length; j++){
-                        datos_a_comparar = comparative[j];
-                        columns.push([datos_a_comparar.name, datos_a_comparar.percentage]);
-                    }
-                    // console.log(inscritos);
-                    // console.log(aprobados);
-                    // console.log(_nombres);
-                    data = { columns: columns, type: 'bar'};
-                    crearGraficaComparativaPorFiltro(id_para_Grafica, data)
-                // }
+                comparative = informacion.comparative;
+                columns = Array();
+                id_para_Grafica = 'ldm_comparativa_' + informacion.key;
+                $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
+                id_para_Grafica = '#' + id_para_Grafica;
+                for(var j = 0; j < comparative.length; j++){
+                    datos_a_comparar = comparative[j];
+                    columns.push([datos_a_comparar.name, datos_a_comparar.percentage]);
+                }
+                data = { columns: columns, type: 'bar'};
+                crearGraficaComparativaPorFiltro(id_para_Grafica, data);
             }else{
                 console.log('Error de imprimirComparativaFiltrosDeCurso', informacion);
-                alert('Es vacío informacion.comparative');
-                // $(_bindto).html('');
+                $(_bindto).html('');
             }
-            // // if(!esVacio(informacion.comparative)){
-            //     claves = Object.keys(informacion.comparative);
-            //     nombres = Array();
-            //     // for(var iterador = 0; iterador < claves.length; iterador++){
-            //         clave = claves[iterador];
-            //         comparative = informacion.comparative[clave]; // Nombre de la comparativa
-            //         // inscritos = Array();
-            //         // aprobados = Array();
-            //         // _nombres = Array();
-            //         columns = Array();
-            //         id_para_Grafica = 'ldm_comparativa_' + clave;
-            //         $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa por ${clave}</h4><div id="${id_para_Grafica}"></div></div>`);
-            //         id_para_Grafica = '#' + id_para_Grafica;
-            //         for(var j = 0; j < comparative.length; j++){
-            //             datos_a_comparar = comparative[j];
-            //             columns.push([datos_a_comparar.name, datos_a_comparar.percentage]);
-            //         }
-            //         console.log(inscritos);
-            //         console.log(aprobados);
-            //         console.log(_nombres);
-            //         data = {
-            //             columns: columns,
-            //             type: 'bar',
-            //         };
-            //         crearGraficaComparativaPorFiltro(id_para_Grafica, data, _nombres)
-            //     // }
-            // // }else{
-            // //     $(_bindto).html('');
-            // // }
         }
 
-        var comparativa;
         function compararFiltros(filtro_seleccionado){
-            // if(isCourseLoading){
-            //     trabajoPendiente = false;
-            //     console.log('Cargando contenido de cursos, no debe procesar más peticiones por el momento');
-            //     return;
-            // }
-            // isCourseLoading = !isCourseLoading;
             informacion = $('#filter_form').serializeArray();
             informacion.push({ name: 'request_type', value: 'course_comparative' });
             informacion.push({ name: 'selected_filter', value: filtro_seleccionado });
             dateBeginingComparacion = Date.now();
-            // $('#local_dominosdashboard_content').html('Cargando la información');
             $.ajax({
                 type: "POST",
                 url: "services.php",

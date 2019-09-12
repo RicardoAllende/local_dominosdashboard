@@ -45,6 +45,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
     <link href="estilos.css" rel="stylesheet">
 </head>
@@ -102,6 +103,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     <link href="libs/c3.css" rel="stylesheet">
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="libs/c3.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="dominosdashboard_scripts.js"></script>
     <script>
         var muestraComparativas = false;
