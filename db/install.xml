@@ -5,21 +5,15 @@
     <TABLES>
         <TABLE NAME="dominos_kpis" COMMENT="">
             <FIELDS>
-                <FIELD NAME="id"            TYPE="int"   LENGTH="10"  NOTNULL="true"   SEQUENCE="true" />
-                <FIELD NAME="kpi"           TYPE="char"   LENGTH="10" NOTNULL="false"    SEQUENCE="false" />
+                <FIELD NAME="id"            TYPE="int"   LENGTH="10"  NOTNULL="true"   SEQUENCE="true"  />
+                <FIELD NAME="kpi"           TYPE="char"  LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="nombre"        TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="valor"         TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="typevalue"     TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="day"           TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="week"          TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="month"         TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="year"          TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="region"        TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="fecha"         TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="mes"           TYPE="char"  LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="ano"           TYPE="char"  LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="ccosto"        TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="nom_ccosto"    TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="original_time" TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="distrital"     TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="timecreated"   TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="creacion"      TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" />
