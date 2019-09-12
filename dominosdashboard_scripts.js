@@ -423,7 +423,7 @@ function peticionFiltros(info){
                 var elementoDeCatalogo = catalogo[j];
                 $(subfiltro_id).append(`
                             <label class="subfiltro"><input type="checkbox" name="${clave}[]"
-                            class="indicator_option indicator_${clave}\" onclick="obtenerInformacion('${clave}')"
+                            class="indicator_option indicator_${clave}\" onclick="loaderFiltro(),obtenerInformacion('${clave}')"
                             data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\"
                             >
                              ${esVacio(elementoDeCatalogo) ? " (Vacío)" : elementoDeCatalogo}</label><br>
@@ -432,6 +432,9 @@ function peticionFiltros(info){
         }
         dateEnding = Date.now();
         console.log(`Tiempo de respuesta al obtener filtros de API ${dateEnding - dateBegining} ms`);
+        setTimeout(function(){            
+            showPage_filtro("contenido_dashboard");
+        },1000)
     })
     .fail(function(error, error2) {
         isFilterLoading = false;
@@ -450,10 +453,10 @@ function obtenerFiltros(indicator) {
     peticionFiltros(info);
 }
 
-//LOADER
+//Funcion de loader general
 var myVar;
 
-function myFunction() {
+function loaderGeneral() {
   myVar = setTimeout(showPage, 900);
 }
 
@@ -463,6 +466,23 @@ function showPage(id_div) {
 }
 
 function hidePage(id_div){
+  document.getElementById("loader").style.display = "block";
+  document.getElementById(id_div).style.display = "none";
+}
+
+//Funcion para cargar el loader con los filtros
+var variable_filtro;
+
+function loaderFiltro() {
+    variable_filtro = setTimeout(hidePage_filtro, 100);
+}
+
+function showPage_filtro(id_div) {
+  document.getElementById("loader").style.display = "none";
+  document.getElementById(id_div).style.display = "block";
+}
+
+function hidePage_filtro(id_div){
   document.getElementById("loader").style.display = "block";
   document.getElementById(id_div).style.display = "none";
 }

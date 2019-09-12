@@ -51,7 +51,7 @@ $PAGE->set_context($context_system);
     <title>Document</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
 </head>
-<body>    
+<body onload="loaderGeneral()">    
     <div class="row" style="max-width: 100%;">
         <form id="filter_form" method="post" action="services.php" class='col-sm-3'>
             <a class="btn btn-success" href="dashboard_iframe.php">Volver al dashboard</a><br><br>
@@ -63,6 +63,7 @@ $PAGE->set_context($context_system);
             </div>
             <div id='contenedor_filtros'></div>
         </form>
+        <div id="loader"></div>
         <div class="row col-sm-9" id="contenido_dashboard">
             <div class="col-sm-12 col-xl-12 row" id="course_title"></div>
             <div class="col-sm-12 col-xl-12" id="course_overview"></div>
@@ -154,6 +155,7 @@ $PAGE->set_context($context_system);
                     imprimirRanking('#ranking_dm', informacion_del_curso.data);
                     dateEnding = Date.now();
                     console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
+                    showPage("contenido_dashboard");
                 })
                 .fail(function (error, error2) {
                     isCourseLoading = false;
