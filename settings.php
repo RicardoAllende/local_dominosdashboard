@@ -69,7 +69,7 @@ if ($hassiteconfig) {
             $charts = local_dominosdashboard_get_charts();
             $courses_min = array();
             foreach($courses as $course){
-                $page->add(new admin_setting_heading('course_config'.$course->id, $course->shortname, $course->fullname));
+                $page->add(new admin_setting_heading('course_config'.$course->id, $course->fullname, $course->fullname));
                 $config_name = 'course_completion_' . $course->id;
                 $name = $ldm_pluginname . '/' . $config_name;
                 $title = get_string('completion_mode', $ldm_pluginname);
@@ -118,7 +118,7 @@ if ($hassiteconfig) {
                 $setting = new admin_setting_configselect($name, $title, $description, null, $activities);
                 $page->add($setting);
 
-                $courses_min[$course->id] = $course->shortname;
+                $courses_min[$course->id] = $course->fullname;
             }
             $settings->add($page);
 
@@ -160,13 +160,28 @@ if ($hassiteconfig) {
             $page->add($setting);
 
             foreach(local_dominosdashboard_get_indicators() as $indicator){
-                $title = get_string('filtro', $ldm_pluginname) . ' ' .$indicator;
+                $original_indicator = $indicator;
+                $title = get_string('filtro', $ldm_pluginname) . ' ' .$original_indicator;
                 $indicator = "filtro_" . $indicator;
                 $name = $ldm_pluginname . '/' . $indicator;
-                $description = get_string('filtro' . '_desc', $ldm_pluginname) . ' ' .$indicator;
+                $description = get_string('filtro' . '_desc', $ldm_pluginname) . ' ' .$original_indicator;
                 $setting = new admin_setting_configselect($name, $title, $description, null, $profileFields);
                 $page->add($setting);
+
+                $title = "El catálogo {$original_indicator} permite valores vacíos";
+                $indicator = "allow_empty_" . $original_indicator;
+                $name = $ldm_pluginname . '/' . $indicator;
+                $description = "Si selecciona esta opción, el filtro {$original_indicator} devolverá como en el catálogo a las personas con este campo vacío";
+                $setting = new admin_setting_configselect($name, $title, $description, null, [0 => 'No', 1 => 'Sí']);
+                $page->add($setting);
             }
+
+            $title = get_string('filtro', $ldm_pluginname) . ' ccosto';
+            $indicator = "ccosto"; // local_dominosdashboard/ccosto get_config('local_dominosdashboard', 'ccosto')
+            $name = $ldm_pluginname . '/' . $indicator;
+            $description = get_string('filtro' . '_desc', $ldm_pluginname) . ' ' .$indicator;
+            $setting = new admin_setting_configselect($name, $title, $description, null, $profileFields);
+            $page->add($setting);
 
             $settings->add($page);
 

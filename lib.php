@@ -150,8 +150,18 @@ function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql =
     if($fieldid === false){
         return [];
     }
+    $setting = "allow_empty_" . $key;
+    $allow_empty = get_config('local_dominosdashboard', $setting);
+    _log($allow_empty, $setting);
+    if($allow_empty) {
+        _log($key, 'permite nulos');
+        $allow_empty = "";
+    } else {
+        _log($key, 'bloquea nulos');
+        $allow_empty = " AND data != '' AND data IS NOT NULL";
+    }
     global $DB;
-    $query = "SELECT distinct data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql}";
+    $query = "SELECT distinct data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} ";
     $result = $DB->get_fieldset_sql($query, $query_params);
     return $result;
 }
