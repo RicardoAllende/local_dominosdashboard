@@ -66,7 +66,6 @@ if ($formdata = $mform->get_data()) {
     }, $columns);
     // _log($columns);
     // dd('Columnas mostradas ');
-    $cir->init();
     $currenttime = time();
     $requiredFields=explode(',',"profile_field_ccosto,CECO,CALIFICACIÓN,ESTATUS,TOTAL QUEJAS (NO.),ROTACION MENSUAL %,ROTACION ROLLING %");
 
@@ -77,16 +76,16 @@ if ($formdata = $mform->get_data()) {
         $missingColumns = implode(',', $columns_);
         print_error('Faltan los siguientes campos:' . $missingColumns, '', $returnurl, $missingColumns);
     }
-    $cir->init();
     global $DB;
+    $cir->init();
     while ($line = $cir->next()) {
-        $ccosto = $columns_['profile_field_ccosto'];
-        $calificacion = $columns_['CALIFICACIÓN'];
-        $estatus = $columns_['ESTATUS'];
-        $quejas = $columns_['profile_field_ccosto'];
-        $rotacion_mensual = $columns_['TOTAL QUEJAS (NO.)'];
-        $rotacion_rolling = $columns_['ROTACION MENSUAL %'];
-        $ceco = $columns_['ROTACION ROLLING %'];
+        $ccosto = $line[$columns_['profile_field_ccosto']];
+        $calificacion = $line[$columns_['CALIFICACIÓN']];
+        $estatus = $line[$columns_['ESTATUS']];
+        $quejas = $line[$columns_['TOTAL QUEJAS (NO.)']];
+        $rotacion_mensual = $line[$columns_['ROTACION MENSUAL %']];
+        $rotacion_rolling = $line[$columns_['ROTACION ROLLING %']];
+        $ceco = $line[$columns_['CECO']];
 
         $record = $DB->get_record('dominos_kpis', array('ccosto' => $ccosto, 'kpi_date' => $kpi_date));
         if( empty($record) ){
@@ -103,9 +102,11 @@ if ($formdata = $mform->get_data()) {
             $record->year = $currentYear;
             $record->timecreated = $currenttime;
 
+            _log('Insertando kpi');
             $DB->insert_record('dominos_kpis', $record);
         }else{// El kpi existe
             if($updateIfExists){ // Editando el kpi en caso de seleccionar la opción
+                _log('Existe el kpi');
                 $record->ccosto = $ccosto;
                 $record->ceco = $ceco;
                 $record->calificacion = $calificacion;
@@ -125,20 +126,10 @@ if ($formdata = $mform->get_data()) {
     unset($content);
     $tiempo_final = microtime(true);
     $tiempo = $tiempo_final - $tiempo_inicial;
-    if(LOCALDOMINOSDASHBOARD_DEBUG){
-        echo $OUTPUT->heading("El tiempo de proceso del archivo fue de: " . $tiempo);
-    }
+    // if(LOCALDOMINOSDASHBOARD_DEBUG){
+    //     echo $OUTPUT->heading("El tiempo de proceso del archivo fue de: " . $tiempo);
+    // }
     echo $OUTPUT->heading("Su archivo ha sido procesado");
-    echo $OUTPUT->heading("Si desea subir más archivos, recargue la página");
-    echo "<div class='row' style='text-align: center; padding: 5%;'>";
-    echo "<div class='col-sm-6'>";
-    // $route = $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php';
-    echo "<button class='btn btn-success text-center' style='text-align: center !important;' onclick='window.location.href = window.location.href'>Recargar la página</button>";
-    echo "</div>";
-    echo "<div class='col-sm-6'>";
-    $route = $CFG->wwwroot . '/local/dominosdashboard/dashboard.php';
-    echo "<a class='btn btn-success text-center' style='text-align: center !important;' href='{$route}'>Ver tablero Domino's</a>";
-    echo "</div>";
     $mform->display();
     echo $OUTPUT->footer();
 
