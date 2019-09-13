@@ -51,7 +51,10 @@ function obtenerDefaultEnNull(valor, porDefault){
 }
 
 //Funcion para mostar la grafica sin informacion
-function insertarGraficaSinInfo(div){
+function insertarGraficaSinInfo(div, mensaje){
+    if(typeof mensaje == 'undefined'){
+        mensaje = "Sin información en la Base de Datos";
+    }
     $(div).html(`
     <div class='col-sm-6 espacio'>
             <div class='card bg-gray border-0 m-2'>
@@ -82,7 +85,7 @@ function insertarGraficaSinInfo(div){
                         </div>
                     </div>
                     </div>
-                    <div class='bg-faded text-center noinfo' id=''>Sin información en la Base de Datos</div>                    
+                    <div class='bg-faded text-center noinfo' id=''>${mensaje}</div>
             </div>
     </div>`);
 }
@@ -180,6 +183,7 @@ function obtenerFiltros(indicator){
 
 function generarGraficasTodosLosCursos(_bindto, response, titulo) {
     type = response.type;
+    $(_bindto).html('');
     if(type == 'course_list'){
         cursos = response.result;
         if(Array.isArray(cursos)){
@@ -188,7 +192,6 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
             var _ideal_cobertura = Array();
             aprobados.push("Porcentaje de aprobación del curso");
             _ideal_cobertura.push('Ideal de cobertura');
-            $(_bindto).html('');
             for (var i = 0; i < cursos.length; i++) {
                 _ideal_cobertura.push(ideal_cobertura);
                 var curso = cursos[i];
@@ -204,13 +207,38 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
     if(type == 'kpi_list'){
         kpis = response.result;
         if(Array.isArray(kpis)){
-            $(_bindto).html('');
             for (var i = 0; i < kpis.length; i++) {
                 var aprobados = Array();
                 var _ideal_cobertura = Array();
                 aprobados.push("Porcentaje de aprobación del curso");
                 kpi = kpis[i];
                 cursos = kpi.courses;
+                if(esVacio(kpi.status)){ // No hay kpi devuelto
+                    div_id = "chart__";
+                    if(typeof currentTab != 'undefined'){
+                        div_id += '_';
+                        div_id += currentTab;
+                    }
+                    if(typeof id != "undefined"){
+                        div_id += id;
+                    }
+                    div_id = div_id + i;
+                    insertarTituloSeparador(_bindto, titulo);
+                    $(_bindto).append(`
+                        <div class="col-sm-12 col-xl-12">
+                            <div class="card bg-faded border-0 m-2" id="">
+                                <div class="align-items-end">
+                                    <div class="fincard text-center">
+                                        <a href="#">${kpi.name}</a>
+                                    </div>
+                                </div>
+                                <div class="bg-white m-2" id="${div_id}"></div>                        
+                            </div>
+                        </div>`);
+                    div_id = "#" + div_id;
+                    insertarGraficaSinInfo(div_id);
+                    continue;
+                }
                 switch(kpi.id){
                     case 1: //
                         _destacado = Array();
@@ -276,7 +304,7 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
         div_id += '_';
         div_id += currentTab;
     }
-    if(id != undefined){
+    if(typeof id != "undefined"){
         div_id += id;
     }
     insertarTituloSeparador(_bindto, titulo);

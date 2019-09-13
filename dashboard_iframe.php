@@ -113,8 +113,6 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         var currentTab = 1;
         var indicator;
         var item;
-        var serialized_form = "";
-        var demark = "";
         var tituloPestana = "";
         var tabsCursos = [false, false, false];
         function cambiarpestana(id){
