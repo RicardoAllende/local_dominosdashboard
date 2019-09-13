@@ -56,7 +56,7 @@ function insertarGraficaSinInfo(div, mensaje){
         mensaje = "Sin información en la Base de Datos";
     }
     $(div).html(`
-    <div class='col-sm-6 espacio'>
+    <div class='col-sm-12 espacio'>
             <div class='card bg-gray border-0 m-2'>
             <div class='align-items-end'>                                        
                     <div class='fincard text-center'>
@@ -509,14 +509,14 @@ function loaderFiltro() {
     variable_filtro = setTimeout(hidePage_filtro, 100);
 }
 
-function showPage_filtro(id_div) {
+function showPage_filtro(id_div2) {
   document.getElementById("loader").style.display = "none";
-  document.getElementById(id_div).style.display = "block";
+  //document.getElementById(id_div2).style.display = "block";
 }
 
-function hidePage_filtro(id_div){
+function hidePage_filtro(id_div2){
   document.getElementById("loader").style.display = "block";
-  document.getElementById(id_div).style.display = "none";
+  //document.getElementById(id_div2).style.display = "none";
 }
 
 //------
