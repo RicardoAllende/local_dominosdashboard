@@ -24,8 +24,8 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
+local_dominosdashboard_user_has_access();
 $context_system = context_system::instance();
-require_capability('local/dominosdashboard:view', $context_system);
 require_once(__DIR__ . '/lib.php');
 require_once($CFG->libdir.'/formslib.php');
 // require_login();

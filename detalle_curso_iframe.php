@@ -26,8 +26,8 @@
 require_once(__DIR__ . '/../../config.php');
 require_login();
 $context_system = context_system::instance();
-require_capability('local/dominosdashboard:view', $context_system);
 require_once(__DIR__ . '/lib.php');
+local_dominosdashboard_user_has_access();
 $courseid = optional_param('id', 0, PARAM_INT);
 global $DB;
 $course = $DB->get_record($table = 'course', $conditions_array = array('id' => $courseid), 'id, shortname, fullname', MUST_EXIST);

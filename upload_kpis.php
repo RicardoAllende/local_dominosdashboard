@@ -52,25 +52,30 @@ class local_dominosdashboard_upload_kpis extends moodleform {
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
         $mform->setDefault('encoding', 'ISO-8859-1'); // default de excel
 
-        $choices = local_dominosdashboard_get_KPIS();
-        $choices[0] = "Seleccionar tipo de KPI";
-        $mform->addElement('select', 'kpi', get_string('kpi_select', 'local_dominosdashboard'), $choices);
-        $mform->setDefault('kpi', 0);
-
-        $mform->addElement('text', 'year', 'Año del kpi');
+        $mform->addElement('text', 'year', 'Año correspondiente');
         $mform->setDefault('year', date('Y'));
         $mform->setType('year', PARAM_INT);
         $mform->addRule('year', null, 'required');
 
-        $mform->addElement('text', 'month', 'Año del kpi');
+        $meses = [
+            1 => 'ENERO',
+            2 => 'FEBRERO',
+            3 => 'MARZO',
+            4 => 'ABRIL',
+            5 => 'MAYO',
+            6 => 'JUNIO',
+            7 => 'JULIO',
+            8 => 'AGOSTO',
+            9 => 'SEPTIEMBRE',
+            10 => 'OCTUBRE',
+            11 => 'NOVIEMBRE',
+            12 => 'DICIEMBRE',
+        ];
+        $mform->addElement('select', 'month', 'Mes correspondiente', $meses);
         $mform->setDefault('month', date('m'));
-        $mform->setType('month', PARAM_INT);
-        $mform->addRule('month', null, 'required');
+
+        $mform->addElement('selectyesno', 'updateIfExists', "Actualizar si ya existe");
 
         $this->add_action_buttons(false, get_string('upload_kpi', 'local_dominosdashboard'));
-        $mform->disabledIf('submitbutton', 'kpi', 'eq', 0);
-        $mform->disabledIf('year', 'kpi', 'eq', KPI_SCORCARD);
     }
 }
-
-

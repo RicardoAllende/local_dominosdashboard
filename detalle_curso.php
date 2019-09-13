@@ -25,8 +25,8 @@
 
 require_once(__DIR__ . '/../../config.php');
 $context_system = context_system::instance();
-require_capability('local/dominosdashboard:view', $context_system);
 require_once(__DIR__ . '/lib.php');
+local_dominosdashboard_user_has_access();
 require_login();
 $courseid = optional_param('id', 0, PARAM_INT);
 $PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/detalle_curso.php");

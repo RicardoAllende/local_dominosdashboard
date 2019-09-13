@@ -24,13 +24,14 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/lib.php');
+local_dominosdashboard_user_has_access();
 require_once(__DIR__ . '/upload_kpis.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/csvlib.class.php');
 
 $pluginName = 'local_dominosdashboard';
 $context_system = context_system::instance();
-require_capability('local/dominosdashboard:view', $context_system);
 $PAGE->set_context($context_system);
 $PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/subir_archivo.php");
 $PAGE->set_pagelayout('admin');
@@ -45,14 +46,16 @@ if ($formdata = $mform->get_data()) {
     $tiempo_inicial = microtime(true);
     
     $currentYear = $formdata->year; //date('Y');
+    $month = $formdata->month;
+    $kpi_date = local_dominosdashboard_get_time_from_month_and_year($month, $currentYear);
+    $updateIfExists = $formdata->updateIfExists;
+    // _log('editar si existe', $updateIfExists);
     $iid = csv_import_reader::get_new_iid($pluginName);
     $cir = new csv_import_reader($iid, $pluginName);
 
     $content = $mform->get_file_content('userfile');
-    // _log("Contenido del archivo", $content);
 
     $readcount = $cir->load_csv_content($content, $formdata->encoding, $formdata->delimiter_name);
-    // _log("readcount", $readcount);
     $csvloaderror = $cir->get_error();
     if (!is_null($csvloaderror)) {
         print_error('Existe un error en la estructura de su archivo', '', $returnurl, $csvloaderror);
@@ -61,8 +64,8 @@ if ($formdata = $mform->get_data()) {
     $columns = array_map(function($element){
         return trim($element);
     }, $columns);
-    $kpi = $formdata->kpi;
-    $cir->init();
+    // _log($columns);
+    // dd('Columnas mostradas ');
     $currenttime = time();
     $requiredFields=explode(',',"profile_field_ccosto,CECO,CALIFICACIÓN,ESTATUS,TOTAL QUEJAS (NO.),ROTACION MENSUAL %,ROTACION ROLLING %");
 
@@ -73,55 +76,61 @@ if ($formdata = $mform->get_data()) {
         $missingColumns = implode(',', $columns_);
         print_error('Faltan los siguientes campos:' . $missingColumns, '', $returnurl, $missingColumns);
     }
-    $cir->init();
-    $linenum = 1; //column header is first line
     global $DB;
+    $cir->init();
     while ($line = $cir->next()) {
-        // _log("Línea", $line);
-        if(empty($line[$columns_["ESTATUS"]])){
-            // _log("Estatus vacío en la línea", $line);
-            continue;
-        }
-        if( ! $DB->record_exists('dominos_kpis', array('day' => $line[$columns_['DÍA']], 'ccosto' => $line[$columns_['CC']],
-            'kpi' => KPI_OPS,
-            'region' => $line[$columns_['REGION']],
-            'distrital' => $line[$columns_['DISTRITAL COACH']],
-            ))
-        ){
+        $ccosto = $line[$columns_['profile_field_ccosto']];
+        $calificacion = $line[$columns_['CALIFICACIÓN']];
+        $estatus = $line[$columns_['ESTATUS']];
+        $quejas = $line[$columns_['TOTAL QUEJAS (NO.)']];
+        $rotacion_mensual = $line[$columns_['ROTACION MENSUAL %']];
+        $rotacion_rolling = $line[$columns_['ROTACION ROLLING %']];
+        $ceco = $line[$columns_['CECO']];
+
+        $record = $DB->get_record('dominos_kpis', array('ccosto' => $ccosto, 'kpi_date' => $kpi_date));
+        if( empty($record) ){
             $record = new stdClass();
-            $record->kpi = KPI_OPS;
-            $record->name = "AUDITORÍA ICA";
-            $record->value = $line[$columns_['ESTATUS']];
-            $record->kpi_date = "text";
-            $record->month = $line[$columns_['DÍA']];
-            $record->year = $line[$columns_['SEMANA']];
-            $record->ccosto = local_dominosdashboard_format_month_from_kpi($line[$columns_['MES']]);
-            $record->ceco = "";
+            $record->ccosto = $ccosto;
+            $record->ceco = $ceco;
+            $record->calificacion = $calificacion;
+            $record->estatus = $estatus;
+            $record->quejas = $quejas;
+            $record->rotacion_mensual = $rotacion_mensual;
+            $record->rotacion_rolling = $rotacion_rolling;
+            $record->kpi_date = $kpi_date;
+            $record->month = $month;
+            $record->year = $currentYear;
             $record->timecreated = $currenttime;
 
+            _log('Insertando kpi');
             $DB->insert_record('dominos_kpis', $record);
-        }else{
-            // Llegando aquí el KPI ya está registrado
+        }else{// El kpi existe
+            if($updateIfExists){ // Editando el kpi en caso de seleccionar la opción
+                _log('Existe el kpi');
+                $record->ccosto = $ccosto;
+                $record->ceco = $ceco;
+                $record->calificacion = $calificacion;
+                $record->estatus = $estatus;
+                $record->quejas = $quejas;
+                $record->rotacion_mensual = $rotacion_mensual;
+                $record->rotacion_rolling = $rotacion_rolling;
+                $record->kpi_date = $kpi_date;
+                $record->month = $month;
+                $record->year = $currentYear;
+                $record->timecreated = $currenttime;
+                $DB->update_record('dominos_kpis', $record);
+            }
         }
     }
 
     unset($content);
     $tiempo_final = microtime(true);
     $tiempo = $tiempo_final - $tiempo_inicial;
-    if(LOCALDOMINOSDASHBOARD_DEBUG){
-        echo $OUTPUT->heading("El tiempo de proceso del archivo fue de: " . $tiempo);
-    }
+    // if(LOCALDOMINOSDASHBOARD_DEBUG){
+    //     echo $OUTPUT->heading("El tiempo de proceso del archivo fue de: " . $tiempo);
+    // }
     echo $OUTPUT->heading("Su archivo ha sido procesado");
-    echo $OUTPUT->heading("Si desea subir más archivos, recargue la página");
-    echo "<div class='row' style='text-align: center; padding: 5%;'>";
-    echo "<div class='col-sm-6'>";
-    // $route = $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php';
-    echo "<button class='btn btn-success text-center' style='text-align: center !important;' onclick='window.location.href = window.location.href'>Recargar la página</button>";
-    echo "</div>";
-    echo "<div class='col-sm-6'>";
-    $route = $CFG->wwwroot . '/local/dominosdashboard/dashboard.php';
-    echo "<a class='btn btn-success text-center' style='text-align: center !important;' href='{$route}'>Ver tablero Domino's</a>";
-    echo "</div>";
+    $mform->display();
     echo $OUTPUT->footer();
 
 } else {

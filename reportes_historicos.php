@@ -25,8 +25,8 @@
 
 require_once(__DIR__ . '/../../config.php');
 $context_system = context_system::instance();
-require_capability('local/dominosdashboard:view', $context_system);
 require_once(__DIR__ . '/lib.php');
+local_dominosdashboard_user_has_access();
 require_once("$CFG->libdir/gradelib.php");
 require_once("$CFG->dirroot/grade/querylib.php");
 require_login();
