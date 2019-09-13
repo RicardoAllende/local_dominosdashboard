@@ -152,18 +152,27 @@ function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql =
     }
     $setting = "allow_empty_" . $key;
     $allow_empty = get_config('local_dominosdashboard', $setting);
-    _log($allow_empty, $setting);
     if($allow_empty) {
-        _log($key, 'permite nulos');
         $allow_empty = "";
     } else {
-        _log($key, 'bloquea nulos');
         $allow_empty = " AND data != '' AND data IS NOT NULL";
     }
     global $DB;
-    $query = "SELECT distinct data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} ";
-    $result = $DB->get_fieldset_sql($query, $query_params);
-    return $result;
+    if($key == 'tiendas'){
+        $ccomfield = get_config('local_dominosdashboard', "filtro_ccosto");
+
+        if(empty($ccomfield)){
+            $query = "SELECT distinct data, data as _data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} ";
+            return $DB->get_records_sql_menu($query);
+        }
+
+        $query = "SELECT distinct data, COALESCE((SELECT data from {user_info_data} as uid_ WHERE uid_.fieldid = {$fieldid} AND uid_.userid = uid.userid AND data != '' AND data IS NOT NULL LIMIT 1), '') as id
+         FROM {user_info_data} uid where fieldid = {$ccomfield} {$andWhereSql} {$allow_empty}  ";
+        return $DB->get_records_sql_menu($query);
+    }else{
+        $query = "SELECT distinct data, data as _data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} ";
+        return $DB->get_records_sql_menu($query);
+    }
 }
 
 function local_dominosdashboard_get_user_catalogues($params = array()){
@@ -180,6 +189,7 @@ function local_dominosdashboard_get_user_catalogues($params = array()){
     foreach($returnOnly as $indicator){
         $response[$indicator] = local_dominosdashboard_get_catalogue($indicator, $conditions->sql, $conditions->params);
     }
+    _log($response);
     return $response;
 }
 

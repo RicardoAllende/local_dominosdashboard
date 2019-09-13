@@ -451,12 +451,14 @@ function peticionFiltros(info){
             subfiltro_id = "#" + subfiltro_id;
             $(subfiltro_id).html('');
             // console.log($(subfiltro_id));
-            for(var j = 0; j < catalogo.length; j++){
-                var elementoDeCatalogo = catalogo[j];
+            _claves = Object.keys(catalogo);
+            for(var j = 0; j < _claves.length; j++){
+                _clave = _claves[j];
+                var elementoDeCatalogo = catalogo[_clave];
                 $(subfiltro_id).append(`
                             <label class="subfiltro"><input type="checkbox" name="${clave}[]"
                             class="indicator_option text-uppercase indicator_${clave}\" onclick="loaderFiltro(),obtenerInformacion('${clave}')"
-                            data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\"
+                            data-indicator=\"${clave}\" value=\"${_clave}\"
                             >
                              ${esVacio(elementoDeCatalogo) ? " (Vacío)" : elementoDeCatalogo}</label><br>
                 `);
