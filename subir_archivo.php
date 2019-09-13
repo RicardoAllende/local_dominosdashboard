@@ -48,17 +48,14 @@ if ($formdata = $mform->get_data()) {
     $currentYear = $formdata->year; //date('Y');
     $month = $formdata->month;
     $kpi_date = local_dominosdashboard_get_time_from_month_and_year($month, $currentYear);
-    $updateIfExists = $formdata->update_existent;
-    _log('editar si existe');
-    die('Enviado');
+    $updateIfExists = $formdata->updateIfExists;
+    // _log('editar si existe', $updateIfExists);
     $iid = csv_import_reader::get_new_iid($pluginName);
     $cir = new csv_import_reader($iid, $pluginName);
 
     $content = $mform->get_file_content('userfile');
-    // _log("Contenido del archivo", $content);
 
     $readcount = $cir->load_csv_content($content, $formdata->encoding, $formdata->delimiter_name);
-    // _log("readcount", $readcount);
     $csvloaderror = $cir->get_error();
     if (!is_null($csvloaderror)) {
         print_error('Existe un error en la estructura de su archivo', '', $returnurl, $csvloaderror);
@@ -67,7 +64,8 @@ if ($formdata = $mform->get_data()) {
     $columns = array_map(function($element){
         return trim($element);
     }, $columns);
-    $kpi = $formdata->kpi;
+    // _log($columns);
+    // dd('Columnas mostradas ');
     $cir->init();
     $currenttime = time();
     $requiredFields=explode(',',"profile_field_ccosto,CECO,CALIFICACIÓN,ESTATUS,TOTAL QUEJAS (NO.),ROTACION MENSUAL %,ROTACION ROLLING %");
@@ -141,6 +139,7 @@ if ($formdata = $mform->get_data()) {
     $route = $CFG->wwwroot . '/local/dominosdashboard/dashboard.php';
     echo "<a class='btn btn-success text-center' style='text-align: center !important;' href='{$route}'>Ver tablero Domino's</a>";
     echo "</div>";
+    $mform->display();
     echo $OUTPUT->footer();
 
 } else {

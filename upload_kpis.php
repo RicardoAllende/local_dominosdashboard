@@ -52,11 +52,6 @@ class local_dominosdashboard_upload_kpis extends moodleform {
         $mform->addElement('select', 'encoding', get_string('encoding', 'tool_uploaduser'), $choices);
         $mform->setDefault('encoding', 'ISO-8859-1'); // default de excel
 
-        // $choices = local_dominosdashboard_get_KPIS();
-        // $choices[0] = "Seleccionar tipo de KPI";
-        // $mform->addElement('select', 'kpi', get_string('kpi_select', 'local_dominosdashboard'), $choices);
-        // $mform->setDefault('kpi', 0);
-
         $mform->addElement('text', 'year', 'Año correspondiente');
         $mform->setDefault('year', date('Y'));
         $mform->setType('year', PARAM_INT);
@@ -78,15 +73,9 @@ class local_dominosdashboard_upload_kpis extends moodleform {
         ];
         $mform->addElement('select', 'month', 'Mes correspondiente', $meses);
         $mform->setDefault('month', date('m'));
-        // $mform->setType('month', PARAM_INT);
-        // $mform->addRule('month', null, 'required');
 
         $mform->addElement('selectyesno', 'updateIfExists', "Actualizar si ya existe");
 
         $this->add_action_buttons(false, get_string('upload_kpi', 'local_dominosdashboard'));
-        // $mform->disabledIf('submitbutton', 'kpi', 'eq', 0);
-        // $mform->disabledIf('year', 'kpi', 'eq', KPI_SCORCARD);
     }
 }
-
-
