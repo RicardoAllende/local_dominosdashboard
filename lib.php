@@ -852,6 +852,7 @@ function local_dominosdashboard_get_kpi_info(int $courseid, array $params = arra
 }
 
 function local_dominosdashboard_get_kpi_results($kpi, $params){
+    return null;
     global $DB;
     
     $conditions = array();
