@@ -24,13 +24,14 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/lib.php');
+local_dominosdashboard_user_has_access();
 require_once(__DIR__ . '/upload_kpis.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once($CFG->libdir.'/csvlib.class.php');
 
 $pluginName = 'local_dominosdashboard';
 $context_system = context_system::instance();
-require_capability('local/dominosdashboard:view', $context_system);
 $PAGE->set_context($context_system);
 $PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/subir_archivo.php");
 $PAGE->set_pagelayout('admin');
@@ -45,6 +46,11 @@ if ($formdata = $mform->get_data()) {
     $tiempo_inicial = microtime(true);
     
     $currentYear = $formdata->year; //date('Y');
+    $month = $formdata->month;
+    $kpi_date = local_dominosdashboard_get_time_from_month_and_year($month, $currentYear);
+    $updateIfExists = $formdata->update_existent;
+    _log('editar si existe');
+    die('Enviado');
     $iid = csv_import_reader::get_new_iid($pluginName);
     $cir = new csv_import_reader($iid, $pluginName);
 
@@ -74,34 +80,47 @@ if ($formdata = $mform->get_data()) {
         print_error('Faltan los siguientes campos:' . $missingColumns, '', $returnurl, $missingColumns);
     }
     $cir->init();
-    $linenum = 1; //column header is first line
     global $DB;
     while ($line = $cir->next()) {
-        // _log("Línea", $line);
-        if(empty($line[$columns_["ESTATUS"]])){
-            // _log("Estatus vacío en la línea", $line);
-            continue;
-        }
-        if( ! $DB->record_exists('dominos_kpis', array('day' => $line[$columns_['DÍA']], 'ccosto' => $line[$columns_['CC']],
-            'kpi' => KPI_OPS,
-            'region' => $line[$columns_['REGION']],
-            'distrital' => $line[$columns_['DISTRITAL COACH']],
-            ))
-        ){
+        $ccosto = $columns_['profile_field_ccosto'];
+        $calificacion = $columns_['CALIFICACIÓN'];
+        $estatus = $columns_['ESTATUS'];
+        $quejas = $columns_['profile_field_ccosto'];
+        $rotacion_mensual = $columns_['TOTAL QUEJAS (NO.)'];
+        $rotacion_rolling = $columns_['ROTACION MENSUAL %'];
+        $ceco = $columns_['ROTACION ROLLING %'];
+
+        $record = $DB->get_record('dominos_kpis', array('ccosto' => $ccosto, 'kpi_date' => $kpi_date));
+        if( empty($record) ){
             $record = new stdClass();
-            $record->kpi = KPI_OPS;
-            $record->name = "AUDITORÍA ICA";
-            $record->value = $line[$columns_['ESTATUS']];
-            $record->kpi_date = "text";
-            $record->month = $line[$columns_['DÍA']];
-            $record->year = $line[$columns_['SEMANA']];
-            $record->ccosto = local_dominosdashboard_format_month_from_kpi($line[$columns_['MES']]);
-            $record->ceco = "";
+            $record->ccosto = $ccosto;
+            $record->ceco = $ceco;
+            $record->calificacion = $calificacion;
+            $record->estatus = $estatus;
+            $record->quejas = $quejas;
+            $record->rotacion_mensual = $rotacion_mensual;
+            $record->rotacion_rolling = $rotacion_rolling;
+            $record->kpi_date = $kpi_date;
+            $record->month = $month;
+            $record->year = $currentYear;
             $record->timecreated = $currenttime;
 
             $DB->insert_record('dominos_kpis', $record);
-        }else{
-            // Llegando aquí el KPI ya está registrado
+        }else{// El kpi existe
+            if($updateIfExists){ // Editando el kpi en caso de seleccionar la opción
+                $record->ccosto = $ccosto;
+                $record->ceco = $ceco;
+                $record->calificacion = $calificacion;
+                $record->estatus = $estatus;
+                $record->quejas = $quejas;
+                $record->rotacion_mensual = $rotacion_mensual;
+                $record->rotacion_rolling = $rotacion_rolling;
+                $record->kpi_date = $kpi_date;
+                $record->month = $month;
+                $record->year = $currentYear;
+                $record->timecreated = $currenttime;
+                $DB->update_record('dominos_kpis', $record);
+            }
         }
     }
 

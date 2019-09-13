@@ -25,8 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-// Agrega enlace al Dashboard en el menú lateral de Moodle
-function local_dominosdashboard_extend_navigation(global_navigation $nav) {
+function local_dominosdashboard_user_has_access(bool $throwError = true){
     $has_capability = has_capability('local/dominosdashboard:view', context_system::instance());
     if(!$has_capability){ // si el rol del usuario no tiene permiso, buscar si está en la configuración: allowed_email_admins
         if(isloggedin()){
@@ -43,6 +42,18 @@ function local_dominosdashboard_extend_navigation(global_navigation $nav) {
             }
         }
     }
+    if($throwError){
+        if(!$has_capability){
+            print_error('Usted no tiene permiso para acceder a esta sección');
+        }
+    }else{
+        return $has_capability;
+    }
+}
+
+// Agrega enlace al Dashboard en el menú lateral de Moodle
+function local_dominosdashboard_extend_navigation(global_navigation $nav) {
+    $has_capability = local_dominosdashboard_user_has_access(false);
     if($has_capability){
         global $CFG;
         $node = $nav->add (
@@ -912,6 +923,11 @@ function local_dominosdashboard_get_kpi_results($kpi, $params){
             return "";
         break;
     }
+}
+
+function local_dominosdashboard_get_time_from_month_and_year(int $month, int $year){
+    $date = new DateTime("{$year}-{$month}-02");
+    return $date->format('U');
 }
 
 function local_dominosdashboard_get_ideales_as_js_script(){
