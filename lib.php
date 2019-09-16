@@ -155,24 +155,24 @@ function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql =
     if($allow_empty) {
         $allow_empty = "";
     } else {
-        $allow_empty = " AND data != '' AND data IS NOT NULL";
+        $allow_empty = " AND data != '' AND data IS NOT NULL ";
     }
     global $DB;
     if($key == 'tiendas'){
         $ccomfield = get_config('local_dominosdashboard', "filtro_ccosto");
-
-        if(empty($ccomfield)){
-            $query = "SELECT distinct data, data as _data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} ";
+        if(!empty($ccomfield)){
+            if(!empty($allow_empty)){
+                $_allow_empty = " AND uid_.data != '' AND uid_.data IS NOT NULL ";
+            }else{
+                $_allow_empty = "";
+            }
+            $query = "SELECT distinct data as menu_id, COALESCE((SELECT data from {user_info_data} as uid_ WHERE uid_.fieldid = {$fieldid} AND uid_.userid = uid.userid {$_allow_empty} LIMIT 1), '') as menu_value
+             FROM {user_info_data} uid where fieldid = {$ccomfield} {$andWhereSql} {$allow_empty} group by menu_id ORDER BY menu_value ASC";
             return $DB->get_records_sql_menu($query);
         }
-
-        $query = "SELECT distinct data, COALESCE((SELECT data from {user_info_data} as uid_ WHERE uid_.fieldid = {$fieldid} AND uid_.userid = uid.userid AND data != '' AND data IS NOT NULL LIMIT 1), '') as id
-         FROM {user_info_data} uid where fieldid = {$ccomfield} {$andWhereSql} {$allow_empty}  ";
-        return $DB->get_records_sql_menu($query);
-    }else{
-        $query = "SELECT distinct data, data as _data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} ";
-        return $DB->get_records_sql_menu($query);
     }
+    $query = "SELECT data, data as _data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} group by data order by data ASC ";
+    return $DB->get_records_sql_menu($query);
 }
 
 function local_dominosdashboard_get_user_catalogues($params = array()){
@@ -189,7 +189,7 @@ function local_dominosdashboard_get_user_catalogues($params = array()){
     foreach($returnOnly as $indicator){
         $response[$indicator] = local_dominosdashboard_get_catalogue($indicator, $conditions->sql, $conditions->params);
     }
-    _log($response);
+    // _log($response);
     return $response;
 }
 
