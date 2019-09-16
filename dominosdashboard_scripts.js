@@ -456,7 +456,7 @@ function peticionFiltros(info){
                 _clave = _claves[j];
                 var elementoDeCatalogo = catalogo[_clave];
                 $(subfiltro_id).append(`
-                            <label class="subfiltro"><input type="checkbox" name="${clave}[]"
+                            <label class="text-uppercase subfiltro"><input type="checkbox" name="${clave}[]"
                             class="indicator_option text-uppercase indicator_${clave}\" onclick="loaderFiltro(),obtenerInformacion('${clave}')"
                             data-indicator=\"${clave}\" value=\"${_clave}\"
                             >
