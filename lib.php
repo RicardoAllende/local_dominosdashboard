@@ -118,7 +118,7 @@ DEFINE("COMPLETION_BY_ACTIVITY", 5);
 DEFINE("COMPLETION_BY_AVG", 6);
 // DEFINE("COMPLETION_BY_ATTENDANCE", 5);
 
-DEFINE('DOMINOSDASHBOARD_INDICATORS', 'regiones/distritos/entrenadores/tiendas/puestos');
+DEFINE('DOMINOSDASHBOARD_INDICATORS', 'regiones/distritos/entrenadores/tiendas/puestos/ccosto');
 DEFINE('DOMINOSDASHBOARD_INDICATORS_FOR_KPIS', 'regiones/distritos/tiendas/periodos');
 DEFINE('DOMINOSDASHBOARD_CHARTS', ['bar' => 'Barras', 'pie' => 'Pay', 'gauge' => 'Círculo']); //'bar/pie/gauge');
 
@@ -158,8 +158,8 @@ function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql =
         $allow_empty = " AND data != '' AND data IS NOT NULL ";
     }
     global $DB;
-    if($key == 'tiendas'){
-        $ccomfield = get_config('local_dominosdashboard', "filtro_ccosto");
+    if($key == 'ccosto'){
+        $ccomfield = get_config('local_dominosdashboard', "filtro_idccosto");
         if(!empty($ccomfield)){
             if(!empty($allow_empty)){
                 $_allow_empty = " AND uid_.data != '' AND uid_.data IS NOT NULL ";
@@ -187,7 +187,7 @@ function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql =
     return $DB->get_records_sql_menu($query, $query_params);
 }
 
-function local_dominosdashboard_get_user_catalogues($params = array()){
+function local_dominosdashboard_get_user_catalogues(array $params = array()){
     $response = array();
     $returnOnly = $indicators = local_dominosdashboard_get_indicators();
     if(!empty($params['selected_filter'])){
@@ -248,84 +248,6 @@ function local_dominosdashboard_get_all_catalogues_for_kpi($kpi, $params = array
     }
     _log($indicators);
     return $indicators;
-}
-
-function local_dominosdashboard_get_kpi_catalogue(string $key, $kpi = '', array $params = array()){
-    $conditions = array();
-    $sqlParams = array();
-    $andWhereSql = "";
-    if(!empty($params)){
-        $indicators = local_dominosdashboard_get_kpi_indicators();
-        foreach($params as $key => $param){
-            if(array_search($key, $indicators) !== false){
-                // DEFINE('DOMINOSDASHBOARD_INDICATORS_FOR_KPIS', 'regiones/distritos/tiendas');
-                switch($key){
-                    case 'regiones': 
-                        $field = "region";
-                    break;
-                    case 'distritos': 
-                        $field = "distrital";
-                    break;
-                    case 'tiendas': // Se espera que sea un entero
-                        $field = "ccosto";
-                    break;
-                    default: 
-                        continue; // Continuar con el siguiente parámetro, este no está dentro de los planeados
-                    break;
-                }
-                $data = $params[$key];
-                if(is_string($data) || is_numeric($data)){
-                    $condition = " $field = ? ";
-                    array_push($conditions, $condition);
-                    array_push($sqlParams, $data);
-                }elseif(is_array($data)){
-                    $condition = array();
-                    foreach($data as $d){
-                        $c = " {$field} = ? ";
-                        array_push($condition, $c);
-                        array_push($sqlParams, $d);
-                    }
-                    if(!empty($condition)){
-                        $condition = implode(" OR ", $condition);
-                        array_push($conditions, $condition);
-                    }
-                }
-                if(!empty($conditions)){
-                    $andWhereSql = ' AND ' . implode(" AND ", $conditions);
-                }
-            }
-        }
-    }
-
-    switch($kpi){
-        case KPI_OPS: 
-        case KPI_HISTORICO: 
-        case KPI_SCORCARD: 
-            $where = " AND kpi = {$kpi} ";
-        break;
-        default: 
-            $where = '';
-        break;
-    }
-    global $DB;
-    switch($key){
-        case 'regiones':
-            $query = "SELECT distinct region, region as t1 FROM {dominos_kpis} WHERE region != '' {$where} {$andWhereSql}";
-            break;
-        case 'distritos':
-            $query = "SELECT distinct distrital, distrital as t1 FROM {dominos_kpis} where distrital != '' {$where} {$andWhereSql}";
-            break;
-        case 'tiendas':
-            $query = "SELECT ccosto, nom_ccosto FROM {dominos_kpis} WHERE ccosto != '' {$where} {$andWhereSql} GROUP BY ccosto";
-            break;
-        case 'periodos':
-            $query = "SELECT distinct original_time, original_time as t1 FROM {dominos_kpis} WHERE original_time != '' {$where} {$andWhereSql}";
-            break;
-        default: 
-            return [];
-        break;
-    }
-    return $DB->get_records_sql_menu($query);
 }
 
 function local_dominosdashboard_get_completion_modes(){

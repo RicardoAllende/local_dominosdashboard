@@ -161,7 +161,11 @@ if ($hassiteconfig) {
 
             foreach(local_dominosdashboard_get_indicators() as $indicator){
                 $original_indicator = $indicator;
-                $title = get_string('filtro', $ldm_pluginname) . ' ' .$original_indicator;
+                if($original_indicator == 'ccosto'){
+                    $title = get_string('filtro', $ldm_pluginname) . ' nombre del ccosto';
+                }else{
+                    $title = get_string('filtro', $ldm_pluginname) . ' ' .$original_indicator;
+                }
                 $indicator = "filtro_" . $indicator;
                 $name = $ldm_pluginname . '/' . $indicator;
                 $description = get_string('filtro' . '_desc', $ldm_pluginname) . ' ' .$original_indicator;
@@ -176,8 +180,8 @@ if ($hassiteconfig) {
                 $page->add($setting);
             }
 
-            $title = get_string('filtro', $ldm_pluginname) . ' ccosto';
-            $indicator = "ccosto"; // local_dominosdashboard/ccosto get_config('local_dominosdashboard', 'ccosto')
+            $title = get_string('filtro', $ldm_pluginname) . ' id del ccosto';
+            $indicator = "idccosto"; // local_dominosdashboard/ccosto get_config('local_dominosdashboard', 'ccosto')
             $name = $ldm_pluginname . '/filtro_' . $indicator;
             $description = get_string('filtro' . '_desc', $ldm_pluginname) . ' ' .$indicator;
             $setting = new admin_setting_configselect($name, $title, $description, null, $profileFields);
