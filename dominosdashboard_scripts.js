@@ -415,7 +415,7 @@ function peticionFiltros(info){
     })
     .done(function(data) {
         isFilterLoading = false;
-        console.log(data);
+        console.log('Filtros devueltos', data);
         keys = Object.keys(data.data);
         // div_selector = '#indicator_section_' + clave;
         div_selector = '#contenedor_filtros';
@@ -426,7 +426,6 @@ function peticionFiltros(info){
             heading_id = "indicatorheading" + clave;
             collapse_id = "collapse_" + clave;
             subfiltro_id = 'subfilter_id_' + clave;
-            console.log(clave, catalogo.length);
             if(crearElementos){
                 $(div_selector).append(`
                     <div class="card">
@@ -450,16 +449,35 @@ function peticionFiltros(info){
             $(subfiltro_id).html('');
             // console.log($(subfiltro_id));
             _claves = Object.keys(catalogo);
+            console.log(clave, _claves.length);
+            if(clave == 'tiendas'){
+                _claves = _claves.sort();
+            }
             for(var j = 0; j < _claves.length; j++){
-                _clave = _claves[j];
-                var elementoDeCatalogo = catalogo[_clave];
-                $(subfiltro_id).append(`
-                            <label class="text-uppercase subfiltro"><input type="checkbox" name="${clave}[]"
-                            class="indicator_option text-uppercase indicator_${clave}\" onclick="loaderFiltro(),obtenerInformacion('${clave}')"
-                            data-indicator=\"${clave}\" value=\"${_clave}\"
-                            >
-                             ${esVacio(elementoDeCatalogo) ? " (Vacío)" : elementoDeCatalogo}</label><br>
-                `);
+                var valor_elemento = _claves[j];
+                var elementoDeCatalogo = catalogo[valor_elemento];
+                if(clave == 'tiendas'){
+                    console.log(valor_elemento);
+                    $(subfiltro_id).append(`
+                                <label class="text-uppercase subfiltro"><input type="checkbox" name="${clave}[]"
+                                class="indicator_option text-uppercase indicator_${clave}\" onclick="loaderFiltro(),obtenerInformacion('${clave}')"
+                                data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\"
+                                >
+                                 ${esVacio(valor_elemento) ? " (Vacío)" : valor_elemento}</label><br>
+                    `);
+                    // temporal = valor_elemento;
+                    // valor_elemento = elementoDeCatalogo;
+                    // elementoDeCatalogo = temporal;
+                    // console.log(valor_elemento, elementoDeCatalogo);
+                }else{
+                    $(subfiltro_id).append(`
+                                <label class="text-uppercase subfiltro"><input type="checkbox" name="${clave}[]"
+                                class="indicator_option text-uppercase indicator_${clave}\" onclick="loaderFiltro(),obtenerInformacion('${clave}')"
+                                data-indicator=\"${clave}\" value=\"${valor_elemento}\"
+                                >
+                                 ${esVacio(elementoDeCatalogo) ? " (Vacío)" : elementoDeCatalogo}</label><br>
+                    `);
+                }
             }
         }
         dateEnding = Date.now();
