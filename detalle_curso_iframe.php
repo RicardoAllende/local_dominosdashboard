@@ -141,13 +141,13 @@ $PAGE->set_context($context_system);
                         // console.log('Valor del kpi ' + _kpi.kpi_name, _kpi.value);
                         switch (_kpi.kpi) {
                             case 1: // ICA (normalmente regresa Destacado/Aprobado/No aprobado), OPS
-                                imprimir_kpi_ops_ica_curso(_kpi, (100 - informacion_del_curso.data.percentage));
+                                imprimir_kpi_ops_ica_curso(_kpi, informacion_del_curso.data.percentage);
                                 break;
                             case 2: // Número de quejas, Reporte de Casos Histórico por tiendas
-                                imprimir_kpi_reporte_casos_historico_curso(_kpi, (100 - informacion_del_curso.data.percentage));
+                                imprimir_kpi_reporte_casos_historico_curso(_kpi, informacion_del_curso.data.percentage);
                                 break;
                             case 3: // Porcentaje de rotación, scorcard
-                                imprimir_kpi_scorcard_rotacion_curso(_kpi, (100 - informacion_del_curso.data.percentage));
+                                imprimir_kpi_scorcard_rotacion_curso(_kpi, informacion_del_curso.data.percentage);
                                 break;
                             default:
                                 break;
@@ -195,9 +195,9 @@ $PAGE->set_context($context_system);
             if (esVacio(kpi.value)) {
                 insertarGraficaSinInfo("#card_ops");
             }else{
-                var a = obtenerDefaultEnNull(kpi.value["Aprobado"]);
-                var b = obtenerDefaultEnNull(kpi.value["No aprobado"]);
-                var c = parseInt(a) + parseInt(b);
+                //var a = obtenerDefaultEnNull(kpi.value["Aprobado"]);
+                //var b = obtenerDefaultEnNull(kpi.value["No aprobado"]);
+                //var c = parseInt(a) + parseInt(b);
 
                 document.getElementById("card_ops").innerHTML = "<div class='col-sm-12 espacio'>"+
                                     "<div class='card bg-gray border-0 m-2'>"+
@@ -206,34 +206,34 @@ $PAGE->set_context($context_system);
                                                 "<a href='#' id='titulo_grafica2'></a>"+
                                             "</div>"+
                                         "</div>"+
-                                        "<div class='card esp'>"+
-                                            "<div class='row espr'>"+
-                                                "<div class='border-0 col-sm-4'>"+
-                                                    "<div class='card-body'>"+
-                                                        "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
-                                                        "<p class='card-text text-primary text-center txtnum' id='apro2'></p>"+
-                                                    "</div>"+
-                                                "</div>"+
-                                                "<div class='border-0 col-sm-4'>"+
-                                                    "<div class='card-body text-center'>"+
-                                                        "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
-                                                        "<p class='card-text text-warning text-center txtnum' id='no_apro2'></p>"+
-                                                    "</div>"+
-                                                "</div>"+
-                                                "<div class='border-0 col-sm-4'>"+
-                                                    "<div class='card-body text-center'>"+
-                                                        "<p class='card-text text-success text-center txti'>Total de usuarios</p>"+
-                                                        "<p class='card-text text-warning text-center txtnum' id='tusuario2'>"+c+"</p>"+
-                                                    "</div>"+
-                                                "</div>"+
-                                            "</div>"+
-                                        "</div>"+
+                                        // "<div class='card esp'>"+
+                                        //     "<div class='row espr'>"+
+                                        //         "<div class='border-0 col-sm-4'>"+
+                                        //             "<div class='card-body'>"+
+                                        //                 "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
+                                        //                 "<p class='card-text text-primary text-center txtnum' id='apro2'></p>"+
+                                        //             "</div>"+
+                                        //         "</div>"+
+                                        //         "<div class='border-0 col-sm-4'>"+
+                                        //             "<div class='card-body text-center'>"+
+                                        //                 "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
+                                        //                 "<p class='card-text text-warning text-center txtnum' id='no_apro2'></p>"+
+                                        //             "</div>"+
+                                        //         "</div>"+
+                                        //         "<div class='border-0 col-sm-4'>"+
+                                        //             "<div class='card-body text-center'>"+
+                                        //                 "<p class='card-text text-success text-center txti'>Total de usuarios</p>"+
+                                        //                 "<p class='card-text text-warning text-center txtnum' id='tusuario2'></p>"+
+                                        //             "</div>"+
+                                        //         "</div>"+
+                                        //     "</div>"+
+                                        // "</div>"+
                                         "<div class='bg-faded m-2' id='chart2'></div>"+                                     
                                     "</div>"+
                     "</div>";
                     
-                $('#apro2').html(obtenerDefaultEnNull(kpi.value["Aprobado"]));//Aprobados
-                $('#no_apro2').html(obtenerDefaultEnNull(kpi.value["No aprobado"]));//No Aprobados
+                //$('#apro2').html(obtenerDefaultEnNull(kpi.value["Aprobado"]));//Aprobados
+                //$('#no_apro2').html(obtenerDefaultEnNull(kpi.value["No aprobado"]));//No Aprobados
 
                 $('#titulo_grafica2').html(kpi.kpi_name);//Titulo grafica
                 
@@ -243,8 +243,9 @@ $PAGE->set_context($context_system);
                             ['Aprobado', obtenerDefaultEnNull(kpi.value["Aprobado"])],
                             ['No Aprobado', obtenerDefaultEnNull(kpi.value["No aprobado"])],
                             ['Destacado', obtenerDefaultEnNull(kpi.value["Destacado"])],
+                            ['% de aprobación de un curso', obtenerDefaultEnNull(informacion_del_curso.data.percentage)],
                         ],
-                        type: 'pie',
+                        type: 'bar',
                     },
                     bindto: "#chart2",
                     tooltip: {
@@ -276,28 +277,28 @@ $PAGE->set_context($context_system);
                                                     "<a href='#' id='titulo_grafica3'></a>"+
                                                 "</div>"+
                                             "</div>"+
-                                            "<div class='card esp'>"+
-                                                "<div class='row espr'>"+                                            
-                                                    "<div class='border-0 col-sm-4'>"+
-                                                        "<div class='card-body'>"+
-                                                            "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
-                                                            "<p class='card-text text-primary text-center txtnum' id='apro3'></p>"+
-                                                        "</div>"+
-                                                    "</div>"+
-                                                    "<div class='border-0 col-sm-4'>"+
-                                                        "<div class='card-body text-center'>"+
-                                                            "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
-                                                            "<p class='card-text text-warning text-center txtnum'></p>"+
-                                                        "</div>"+
-                                                    "</div>"+
-                                                    "<div class='border-0 col-sm-4'>"+
-                                                        "<div class='card-body text-center'>"+
-                                                            "<p class='card-text text-success text-center txti'>No visto</p>"+
-                                                            "<p class='card-text text-warning text-center txtnum' id='tusuario3'></p>"+
-                                                        "</div>"+
-                                                    "</div>"+
-                                                "</div>"+
-                                            "</div>"+
+                                            // "<div class='card esp'>"+
+                                            //     "<div class='row espr'>"+                                            
+                                            //         "<div class='border-0 col-sm-4'>"+
+                                            //             "<div class='card-body'>"+
+                                            //                 "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
+                                            //                 "<p class='card-text text-primary text-center txtnum' id='apro3'></p>"+
+                                            //             "</div>"+
+                                            //         "</div>"+
+                                            //         "<div class='border-0 col-sm-4'>"+
+                                            //             "<div class='card-body text-center'>"+
+                                            //                 "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
+                                            //                 "<p class='card-text text-warning text-center txtnum'></p>"+
+                                            //             "</div>"+
+                                            //         "</div>"+
+                                            //         "<div class='border-0 col-sm-4'>"+
+                                            //             "<div class='card-body text-center'>"+
+                                            //                 "<p class='card-text text-success text-center txti'>No visto</p>"+
+                                            //                 "<p class='card-text text-warning text-center txtnum' id='tusuario3'></p>"+
+                                            //             "</div>"+
+                                            //         "</div>"+
+                                            //     "</div>"+
+                                            // "</div>"+
                                             "<div class='bg-faded m-2' id='chart3'></div>"+                                          
                                         "</div>"+
                     "</div>";
@@ -346,28 +347,28 @@ $PAGE->set_context($context_system);
                                                     "<a href='#' id='titulo_grafica4'></a>"+
                                                 "</div>"+
                                             "</div>"+
-                                            "<div class='card esp'>"+
-                                                "<div class='row espr'>"+
-                                                    "<div class='border-0 col-sm-4'>"+
-                                                        "<div class='card-body'>"+
-                                                            "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
-                                                            "<p class='card-text text-primary text-center txtnum' id='apro4'></p>"+
-                                                        "</div>"+
-                                                    "</div>"+
-                                                    "<div class='border-0 col-sm-4'>"+
-                                                        "<div class='card-body text-center'>"+
-                                                            "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
-                                                            "<p class='card-text text-warning text-center txtnum' id='no_apro4'></p>"+
-                                                        "</div>"+
-                                                    "</div>"+
-                                                    "<div class='border-0 col-sm-4'>"+
-                                                        "<div class='card-body text-center'>"+
-                                                            "<p class='card-text text-success text-center txti'>No visto</p>"+
-                                                            "<p class='card-text text-warning text-center txtnum' id='tusuario4'></p>"+
-                                                        "</div>"+
-                                                    "</div>"+
-                                                "</div>"+
-                                            "</div>"+
+                                            // "<div class='card esp'>"+
+                                            //     "<div class='row espr'>"+
+                                            //         "<div class='border-0 col-sm-4'>"+
+                                            //             "<div class='card-body'>"+
+                                            //                 "<p class='card-text text-primary text-center txti'>Aprobados</p>"+
+                                            //                 "<p class='card-text text-primary text-center txtnum' id='apro4'></p>"+
+                                            //             "</div>"+
+                                            //         "</div>"+
+                                            //         "<div class='border-0 col-sm-4'>"+
+                                            //             "<div class='card-body text-center'>"+
+                                            //                 "<p class='card-text text-warning text-center txti'>No Aprobados</p>"+
+                                            //                 "<p class='card-text text-warning text-center txtnum' id='no_apro4'></p>"+
+                                            //             "</div>"+
+                                            //         "</div>"+
+                                            //         "<div class='border-0 col-sm-4'>"+
+                                            //             "<div class='card-body text-center'>"+
+                                            //                 "<p class='card-text text-success text-center txti'>No visto</p>"+
+                                            //                 "<p class='card-text text-warning text-center txtnum' id='tusuario4'></p>"+
+                                            //             "</div>"+
+                                            //         "</div>"+
+                                            //     "</div>"+
+                                            // "</div>"+
                                             "<div class='bg-faded m-2' id='chart4'></div>"+                                        
                                         "</div>"+
                     "</div>";
