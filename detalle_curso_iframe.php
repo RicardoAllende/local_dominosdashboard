@@ -45,9 +45,10 @@ $PAGE->set_context($context_system);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Detalle del curso <?php echo $course->fullname; ?></title>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/jquery.loadingModal.css">
     <link href="estilos.css" rel="stylesheet">
 </head>
 <body onload="loaderGeneral()">    
@@ -65,7 +66,7 @@ $PAGE->set_context($context_system);
         </form>
         <div id="loader"></div>
         <div class="row col-sm-9" id="contenido_dashboard">
-            <div class="col-sm-12 col-xl-12 row" id="course_title"></div>
+            <div class="col-sm-12 col-xl-12" id="course_title"></div>
             <div class="col-sm-12 col-xl-12" id="course_overview"></div>
             <div class="col-sm-12 col-xl-12" id="indicators_title"></div>            
             <div class="col-sm-12" id="card_ops"></div>
@@ -73,7 +74,7 @@ $PAGE->set_context($context_system);
             <div class="col-sm-6" id="card_scorcard"></div>
             
 
-            <div class="col-sm-12 row" id="ranking_dm"></div>
+            <div class="col-sm-12" id="ranking_dm"></div>
             <div class="col-sm-12" id="ldm_comparativas"></div>
         </div>
     </div>
@@ -86,6 +87,7 @@ $PAGE->set_context($context_system);
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="libs/c3.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="js/jquery.loadingModal.js"></script>
     <script src="dominosdashboard_scripts.js"></script>
 
     <script>
@@ -94,6 +96,7 @@ $PAGE->set_context($context_system);
         var isFilterLoading = false;
         var trabajoPendiente = false;
         var comparativa;
+        var comparativas = 0;
         document.addEventListener("DOMContentLoaded", function () {
             $('.dominosdashboard-ranking').hide();
             $('.course-selector').change(function () { obtenerInformacion() });
@@ -106,6 +109,7 @@ $PAGE->set_context($context_system);
             peticionFiltros({
                 request_type: 'user_catalogues'
             });
+            obtenerInformacion();
         }
         var _kpi;
         var _kpis;
@@ -417,8 +421,11 @@ $PAGE->set_context($context_system);
             if(!esVacio(informacion.comparative)){
                 comparative = informacion.comparative;
                 columns = Array();
-                id_para_Grafica = 'ldm_comparativa_' + informacion.key;
-                $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
+                comparativas++;
+                id_para_Grafica = 'ldm_comparativa_' + comparativas + '_' + informacion.key;
+                insertarTituloSeparador(_bindto, 'Comparativa ' + informacion.filter);
+                $(_bindto).append(`<div class='col-sm-12'><div id="${id_para_Grafica}"></div></div><br>`);
+                // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
                 id_para_Grafica = '#' + id_para_Grafica;
                 for(var j = 0; j < comparative.length; j++){
                     datos_a_comparar = comparative[j];

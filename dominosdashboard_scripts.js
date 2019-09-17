@@ -294,6 +294,15 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
     return true;
 }
 
+function MostrarModalEspera(titulo){
+    if(typeof titulo != 'string') { titulo = "Cargando"; }
+    $('body').loadingModal({text:'Cargando...', opacity:'0.2', color: '#016392'});
+}
+
+function ocultarModalEspera(){
+    $('body').loadingModal('destroy');
+}
+
 function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titulo, id){
     div_id = "chart__";
     if(typeof currentTab != 'undefined'){
