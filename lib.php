@@ -860,7 +860,7 @@ function local_dominosdashboard_get_kpi_results($kpi, array $params){
         case KPI_SCORCARD: // 3
             $query = "SELECT ROUND(AVG(rotacion_mensual), 2) AS rotacion_mensual, ROUND(AVG(rotacion_rolling)) AS rotacion_rolling
              FROM {dominos_kpis} WHERE 1 = 1 {$ccoms} {$filtro_fecha} ";
-            $result = $DB->get_field_sql($query, $sqlParams);
+            $result = $DB->get_record_sql($query, $sqlParams);
             if(empty($result)) return null;
             return $result;
             break;
