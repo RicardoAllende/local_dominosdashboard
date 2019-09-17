@@ -227,7 +227,7 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                     $(_bindto).append(`
                         <div class="col-sm-12 col-xl-12">
                             <div class="card bg-faded border-0 m-2" id="">
-                                
+                                    
                                 <div class="bg-white m-2" id="${div_id}"></div>                        
                             </div>
                         </div>`);
@@ -448,14 +448,13 @@ function peticionFiltros(info){
             // console.log($(subfiltro_id));
             _claves = Object.keys(catalogo);
             console.log(clave, _claves.length);
-            if(clave == 'tiendas'){
+            if(clave == 'ccosto'){
                 _claves = _claves.sort();
             }
             for(var j = 0; j < _claves.length; j++){
                 var valor_elemento = _claves[j];
                 var elementoDeCatalogo = catalogo[valor_elemento];
-                if(clave == 'tiendas'){
-                    console.log(valor_elemento);
+                if(clave == 'ccosto'){
                     $(subfiltro_id).append(`
                                 <label class="text-uppercase subfiltro"><input type="checkbox" name="${clave}[]"
                                 class="indicator_option text-uppercase indicator_${clave}\" onclick="loaderFiltro(),obtenerInformacion('${clave}')"
@@ -463,17 +462,13 @@ function peticionFiltros(info){
                                 >
                                  ${esVacio(valor_elemento) ? " (Vacío)" : valor_elemento}</label><br>
                     `);
-                    // temporal = valor_elemento;
-                    // valor_elemento = elementoDeCatalogo;
-                    // elementoDeCatalogo = temporal;
-                    // console.log(valor_elemento, elementoDeCatalogo);
                 }else{
                     $(subfiltro_id).append(`
                                 <label class="text-uppercase subfiltro"><input type="checkbox" name="${clave}[]"
                                 class="indicator_option text-uppercase indicator_${clave}\" onclick="loaderFiltro(),obtenerInformacion('${clave}')"
                                 data-indicator=\"${clave}\" value=\"${valor_elemento}\"
                                 >
-                                 ${esVacio(elementoDeCatalogo) ? " (Vacío)" : elementoDeCatalogo}</label><br>
+                                 ${esVacio(elementoDeCatalogo) ? " (Vacío)" : ' (' + valor_elemento + ')' + elementoDeCatalogo }</label><br>
                     `);
                 }
             }
@@ -505,7 +500,7 @@ function obtenerFiltros(indicator) {
 var myVar;
 
 function loaderGeneral() {
-  myVar = setTimeout(showPage, 100);
+  myVar = setTimeout(showPage, 50);
 }
 
 function showPage(id_div) {
@@ -522,7 +517,7 @@ function hidePage(id_div){
 var variable_filtro;
 
 function loaderFiltro() {
-    variable_filtro = setTimeout(hidePage_filtro, 900);
+    variable_filtro = setTimeout(hidePage_filtro, 100);
 }
 
 function showPage_filtro(id_div2) {

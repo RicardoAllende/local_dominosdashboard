@@ -175,7 +175,7 @@ $PAGE->set_context($context_system);
         var ccoms_seleccionados;
         function ajustar_ccoms(){
             ccoms_seleccionados = "";
-            $('.indicator_tiendas').each(function (index, element){
+            $('.indicator_ccosto').each(function (index, element){
                 if($(this).is(':checked')){
                     if(ccoms_seleccionados == ''){
                         ccoms_seleccionados = $(this).val();
