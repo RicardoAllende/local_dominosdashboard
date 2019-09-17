@@ -44,9 +44,10 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/jquery.loadingModal.css">
     <link href="estilos.css" rel="stylesheet">
 </head>
 <body>
@@ -104,6 +105,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="libs/c3.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="js/jquery.loadingModal.js"></script>
     <script src="dominosdashboard_scripts.js"></script>
     <script>
         var muestraComparativas = false;
@@ -145,6 +147,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
             peticionFiltros({
                 request_type: 'user_catalogues'
             });
+            obtenerInformacion();
         }
         // function rehacerPeticion(){
         //     trabajoPendiente = true;
@@ -184,7 +187,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 render_div = "#ldm_tab_" + currentTab;
                 var cosa = generarGraficasTodosLosCursos(render_div, respuesta, tituloPestana);
                 setTimeout(function(){
-                    console.log(cosa);
+                    // console.log(cosa);
                     if(cosa == true){
                         showPage("ldm_tab_" + currentTab);
                     }
