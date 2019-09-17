@@ -318,7 +318,7 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     var chartz = c3.generate({
         data: {
             columns: info_grafica,
-            type: ''
+            type: 'area-spline'
         },
         bindto: '#' + div_id,
         tooltip: {

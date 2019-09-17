@@ -416,7 +416,9 @@ $PAGE->set_context($context_system);
                 comparative = informacion.comparative;
                 columns = Array();
                 id_para_Grafica = 'ldm_comparativa_' + informacion.key;
-                $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
+                insertarTituloSeparador(_bindto, 'Comparativa' + informacion.filter);
+                $(_bindto).append(`<div class='col-sm-12' id="${id_para_Grafica}"></div><br>`);
+                // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
                 id_para_Grafica = '#' + id_para_Grafica;
                 for(var j = 0; j < comparative.length; j++){
                     datos_a_comparar = comparative[j];
