@@ -228,9 +228,7 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                         <div class="col-sm-12 col-xl-12">
                             <div class="card bg-faded border-0 m-2" id="">
                                 <div class="align-items-end">
-                                    <div class="fincard text-center">
-                                        <a href="#">${kpi.name}</a>
-                                    </div>
+                                    
                                 </div>
                                 <div class="bg-white m-2" id="${div_id}"></div>                        
                             </div>
@@ -451,12 +449,14 @@ function peticionFiltros(info){
             subfiltro_id = "#" + subfiltro_id;
             $(subfiltro_id).html('');
             // console.log($(subfiltro_id));
-            for(var j = 0; j < catalogo.length; j++){
-                var elementoDeCatalogo = catalogo[j];
+            _claves = Object.keys(catalogo);
+            for(var j = 0; j < _claves.length; j++){
+                _clave = _claves[j];
+                var elementoDeCatalogo = catalogo[_clave];
                 $(subfiltro_id).append(`
                             <label class="subfiltro"><input type="checkbox" name="${clave}[]"
                             class="indicator_option text-uppercase indicator_${clave}\" onclick="loaderFiltro(),obtenerInformacion('${clave}')"
-                            data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\"
+                            data-indicator=\"${clave}\" value=\"${_clave}\"
                             >
                              ${esVacio(elementoDeCatalogo) ? " (Vacío)" : elementoDeCatalogo}</label><br>
                 `);
