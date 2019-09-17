@@ -316,7 +316,7 @@ $PAGE->set_context($context_system);
                 var chartc = c3.generate({
                     data: {
                         columns: [
-                            ['No Aprobado', not_approved],
+                            ['No Aprobado',(100 - not_approved)],
                             ['Promedio de no. de quejas', _kpi.value]
                         ],
                         type: 'bar',
@@ -385,7 +385,7 @@ $PAGE->set_context($context_system);
                 var chartc = c3.generate({
                     data: {
                         columns: [
-                            ['No Aprobado', not_approved],
+                            ['No Aprobado', (100 - not_approved)],
                             ['Promedio de rotación', _kpi.value],
                             ['Ideal de rotación', ideal_rotacion],
                             ['Rotación mensual', _kpi.value["rotacion_mensual"]],
