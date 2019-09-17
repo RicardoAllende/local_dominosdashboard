@@ -167,12 +167,13 @@ function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql =
                 $_allow_empty = "";
             }
             $query = "SELECT distinct data as menu_id, COALESCE((SELECT data from {user_info_data} as uid_ WHERE uid_.fieldid = {$fieldid} AND uid_.userid = uid.userid {$_allow_empty} LIMIT 1), '') as menu_value
-             FROM {user_info_data} uid where fieldid = {$ccomfield} {$andWhereSql} {$allow_empty} group by menu_id ORDER BY menu_value ASC";
-            return $DB->get_records_sql_menu($query);
+             FROM {user_info_data} uid where fieldid = {$ccomfield} {$andWhereSql} {$allow_empty} group by menu_id HAVING menu_value != '' ORDER BY menu_value ASC";
+            return $DB->get_records_sql_menu($query, $query_params);
         }
     }
     $query = "SELECT data, data as _data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} group by data order by data ASC ";
-    return $DB->get_records_sql_menu($query);
+    _log('local_dominosdashboard_get_catalogue query', $query);
+    return $DB->get_records_sql_menu($query, $query_params);
 }
 
 function local_dominosdashboard_get_user_catalogues($params = array()){
@@ -853,11 +854,11 @@ function local_dominosdashboard_get_kpi_info(int $courseid, array $params = arra
                         $kpi_info->type = "CALIFICACION";
                         break;
                     case KPI_HISTORICO: // 2 retorna el número de quejas
-                        $kpi_info->type = "NUMERO DE QUEJAS";
+                        $kpi_info->type = "NÚMERO DE QUEJAS";
                         
                         break;
                     case KPI_SCORCARD: // 3
-                        $kpi_info->type = "ROTACION";
+                        $kpi_info->type = "ROTACIÓN";
                         break;
                     default:
                     break;
@@ -871,71 +872,81 @@ function local_dominosdashboard_get_kpi_info(int $courseid, array $params = arra
     return $kpis;
 }
 
-function local_dominosdashboard_get_kpi_results($kpi, $params){
-    return null;
+function local_dominosdashboard_get_kpi_results($kpi, array $params){
+    // return null;
     global $DB;
     
     $conditions = array();
     $sqlParams = array();
     $andWhereSql = "";
-    if(!empty($params)){
-        $indicators = local_dominosdashboard_get_kpi_indicators();
-        foreach($params as $key => $param){
-            if(array_search($key, $indicators) !== false){
-                // DEFINE('DOMINOSDASHBOARD_INDICATORS_FOR_KPIS', 'regiones/distritos/tiendas');
-                switch($key){
-                    case 'regiones': 
-                        $field = "region";
-                    break;
-                    case 'distritos': 
-                        $field = "distrital";
-                    break;
-                    case 'tiendas': // Se espera que sea un entero
-                        $field = "nom_ccosto";
-                    break;
-                    default: 
-                        continue; // Continuar con el siguiente parámetro, este no está dentro de los planeados
-                    break;
-                }
-                $data = $params[$key];
-                if(is_string($data) || is_numeric($data)){
-                    $condition = " $field = ? ";
-                    array_push($conditions, $condition);
-                    array_push($sqlParams, $data);
-                }elseif(is_array($data)){
-                    $condition = array();
-                    foreach($data as $d){
-                        $c = " {$field} = ? ";
-                        array_push($condition, $c);
-                        array_push($sqlParams, $d);
-                    }
-                    if(!empty($condition)){
-                        $condition = implode(" OR ", $condition);
-                        array_push($conditions, $condition);
-                    }
-                }
-                if(!empty($conditions)){
-                    $andWhereSql = ' AND ' . implode(" AND ", $conditions);
-                }
-            }
+    $ccoms = "";
+    if(isset($params['selected_ccoms'])){
+        $ccoms = $params['selected_ccoms'];
+        if($ccoms == '*') $ccoms = '';
+        if( $ccoms != ''){
+            $ccoms = " AND ccosto IN ({$ccoms}) ";
         }
     }
+    // $allowed_params = array('');
+    // if(!empty($params)){
+    //     $indicators = local_dominosdashboard_get_kpi_indicators();
+    //     foreach($params as $key => $param){
+    //         if(array_search($key, $indicators) !== false){
+    //             // DEFINE('DOMINOSDASHBOARD_INDICATORS_FOR_KPIS', 'regiones/distritos/tiendas');
+    //             switch($key){
+    //                 case 'regiones': 
+    //                     $field = "region";
+    //                 break;
+    //                 case 'distritos': 
+    //                     $field = "distrital";
+    //                 break;
+    //                 case 'tiendas': // Se espera que sea un entero
+    //                     $field = "nom_ccosto";
+    //                 break;
+    //                 default: 
+    //                     continue; // Continuar con el siguiente parámetro, este no está dentro de los planeados
+    //                 break;
+    //             }
+    //             $data = $params[$key];
+    //             if(is_string($data) || is_numeric($data)){
+    //                 $condition = " $field = ? ";
+    //                 array_push($conditions, $condition);
+    //                 array_push($sqlParams, $data);
+    //             }elseif(is_array($data)){
+    //                 $condition = array();
+    //                 foreach($data as $d){
+    //                     $c = " {$field} = ? ";
+    //                     array_push($condition, $c);
+    //                     array_push($sqlParams, $d);
+    //                 }
+    //                 if(!empty($condition)){
+    //                     $condition = implode(" OR ", $condition);
+    //                     array_push($conditions, $condition);
+    //                 }
+    //             }
+    //             if(!empty($conditions)){
+    //                 $andWhereSql = ' AND ' . implode(" AND ", $conditions);
+    //             }
+    //         }
+    //     }
+    // }
     
     switch($kpi){
         case KPI_OPS: // 1 // Aprobado, no aprobado y destacado
-            $query = "SELECT valor, COUNT(*) AS conteo FROM {dominos_kpis} WHERE kpi = 1 AND valor != '' {$andWhereSql} GROUP BY valor order by conteo";
+            $query = "SELECT estatus, COUNT(*) AS conteo FROM {dominos_kpis} WHERE 1 = 1 {$ccoms} GROUP BY estatus";
             $result = $DB->get_records_sql_menu($query, $sqlParams);
             if(empty($result)) return null;
             return $result;
             break;
         case KPI_HISTORICO: // 2 retorna el número de quejas
-            $query = "SELECT ROUND(AVG(valor), 0) AS numero FROM {dominos_kpis} WHERE kpi = 2 AND valor != '' {$andWhereSql}";
+            $query = "SELECT ROUND(AVG(quejas), 0) AS quejas FROM {dominos_kpis} WHERE 1 = 1 {$ccoms}";
             $result = $DB->get_field_sql($query, $sqlParams);
             if(empty($result)) return null;
             return $result;
             break;
         case KPI_SCORCARD: // 3
-            $query = "SELECT ROUND(AVG(valor), 2) AS numero FROM {dominos_kpis} WHERE kpi = 3 AND valor != '' {$andWhereSql}";
+            $query = "SELECT ROUND(AVG(rotacion_mensual), 2) AS rotacion_mensual, ROUND(AVG(rotacion_rolling)) AS rotacion_rolling
+             FROM {dominos_kpis} WHERE 1 = 1 {$ccoms}";
             $result = $DB->get_field_sql($query, $sqlParams);
             if(empty($result)) return null;
             return $result;

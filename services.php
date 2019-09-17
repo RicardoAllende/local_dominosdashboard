@@ -32,7 +32,6 @@ if( ! has_capability('local/dominosdashboard:view', $context_system) ){
 }
 if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
     $request_type = $_POST['request_type'];
-    // _log($_POST);
     switch($request_type){
         case 'catalogue':
             if(!empty($_POST['catalogue_name'])){

@@ -102,11 +102,11 @@ if ($formdata = $mform->get_data()) {
             $record->year = $currentYear;
             $record->timecreated = $currenttime;
 
-            _log('Insertando kpi');
+            // _log('Insertando kpi');
             $DB->insert_record('dominos_kpis', $record);
         }else{// El kpi existe
             if($updateIfExists){ // Editando el kpi en caso de seleccionar la opción
-                _log('Existe el kpi');
+                // _log('Existe el kpi');
                 $record->ccosto = $ccosto;
                 $record->ceco = $ceco;
                 $record->calificacion = $calificacion;
