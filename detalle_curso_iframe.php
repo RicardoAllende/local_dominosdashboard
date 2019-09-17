@@ -387,7 +387,9 @@ $PAGE->set_context($context_system);
                         columns: [
                             ['No Aprobado', not_approved],
                             ['Promedio de rotación', _kpi.value],
-                            ['Ideal de rotación', ideal_rotacion]
+                            ['Ideal de rotación', ideal_rotacion],
+                            ['Rotación mensual', _kpi.value["rotacion_mensual"]],
+                            ['Rotación rolling', _kpi.value["rotacion_rolling"]]
                         ],
                         type: 'bar',
                     },
