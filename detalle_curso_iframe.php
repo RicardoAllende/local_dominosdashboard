@@ -55,10 +55,11 @@ $PAGE->set_context($context_system);
         <form id="filter_form" method="post" action="services.php" class='col-sm-3'>
             <a class="btn btn-success" href="dashboard_iframe.php">Volver al dashboard</a><br><br>
             <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br>
+            <input type="hidden" name="selected_ccoms" id="selected_ccoms" value="*">
             <input type="hidden" name="courseid" value="<?php echo $course->id; ?>";>
             <div id="contenedor_fechas">
-                <label for="fecha_inicial">Desde <input type="date" class="form-control" name="fecha_inicial" id="fecha_inicial"></label> 
-                <label for="fecha_final">Hasta <input type="date" class="form-control" name="fecha_final" id="fecha_final"></label>
+                <label for="fecha_inicial">Desde <input type="date" onchange="obtenerInformacion()" class="form-control" name="fecha_inicial" id="fecha_inicial"></label> 
+                <label for="fecha_final">Hasta <input type="date" onchange="obtenerInformacion()" class="form-control" name="fecha_final" id="fecha_final"></label>
             </div>
             <div id='contenedor_filtros'></div>
         </form>
@@ -109,12 +110,13 @@ $PAGE->set_context($context_system);
         var _kpi;
         var _kpis;
         function obtenerInformacion(indicator) {
-            if(isCourseLoading){
-                trabajoPendiente = false;
-                console.log('Cargando contenido de cursos, no debe procesar más peticiones por el momento');
-                return;
-            }
-            isCourseLoading = !isCourseLoading;
+            // if(isCourseLoading){
+            //     trabajoPendiente = false;
+            //     console.log('Cargando contenido de cursos, no debe procesar más peticiones por el momento');
+            //     return;
+            // }
+            // isCourseLoading = !isCourseLoading;
+            ajustar_ccoms();
             informacion = $('#filter_form').serializeArray();
             informacion.push({ name: 'request_type', value: 'course_completion' });
             // $('#local_dominosdashboard_request').html("<br><br>La petición enviada es: <br>" + $('#filter_form').serialize());
@@ -167,6 +169,25 @@ $PAGE->set_context($context_system);
                 });
             if (indicator !== undefined) {
                 obtenerFiltros(indicator);
+            }
+        }
+
+        var ccoms_seleccionados;
+        function ajustar_ccoms(){
+            ccoms_seleccionados = "";
+            $('.indicator_tiendas').each(function (index, element){
+                if($(this).is(':checked')){
+                    if(ccoms_seleccionados == ''){
+                        ccoms_seleccionados = $(this).val();
+                    }else{
+                        ccoms_seleccionados = ccoms_seleccionados + ',' + $(this).val();
+                    }
+                }
+            });
+            if(ccoms_seleccionados == ''){
+                $('#selected_ccoms').val('*');
+            }else{
+                $('#selected_ccoms').val(ccoms_seleccionados);
             }
         }
 
@@ -241,7 +262,7 @@ $PAGE->set_context($context_system);
         }
 
         function imprimir_kpi_reporte_casos_historico_curso(kpi, not_approved) {
-            if(!esVacio(kpi)){
+            if(!esVacio(kpi.value)){
                 var a = obtenerDefaultEnNull(kpi.value["Aprobado"]);
                 var b = obtenerDefaultEnNull(kpi.value["No aprobado"]);
                 var c = parseInt(a) + parseInt(b);

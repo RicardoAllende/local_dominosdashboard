@@ -155,24 +155,25 @@ function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql =
     if($allow_empty) {
         $allow_empty = "";
     } else {
-        $allow_empty = " AND data != '' AND data IS NOT NULL";
+        $allow_empty = " AND data != '' AND data IS NOT NULL ";
     }
     global $DB;
     if($key == 'tiendas'){
         $ccomfield = get_config('local_dominosdashboard', "filtro_ccosto");
-
-        if(empty($ccomfield)){
-            $query = "SELECT distinct data, data as _data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} ";
-            return $DB->get_records_sql_menu($query);
+        if(!empty($ccomfield)){
+            if(!empty($allow_empty)){
+                $_allow_empty = " AND uid_.data != '' AND uid_.data IS NOT NULL ";
+            }else{
+                $_allow_empty = "";
+            }
+            $query = "SELECT distinct data as menu_id, COALESCE((SELECT data from {user_info_data} as uid_ WHERE uid_.fieldid = {$fieldid} AND uid_.userid = uid.userid {$_allow_empty} LIMIT 1), '') as menu_value
+             FROM {user_info_data} uid where fieldid = {$ccomfield} {$andWhereSql} {$allow_empty} group by menu_id HAVING menu_value != '' ORDER BY menu_value ASC";
+            return $DB->get_records_sql_menu($query, $query_params);
         }
-
-        $query = "SELECT distinct data, COALESCE((SELECT data from {user_info_data} as uid_ WHERE uid_.fieldid = {$fieldid} AND uid_.userid = uid.userid AND data != '' AND data IS NOT NULL LIMIT 1), '') as id
-         FROM {user_info_data} uid where fieldid = {$ccomfield} {$andWhereSql} {$allow_empty}  ";
-        return $DB->get_records_sql_menu($query);
-    }else{
-        $query = "SELECT distinct data, data as _data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} ";
-        return $DB->get_records_sql_menu($query);
     }
+    $query = "SELECT data, data as _data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} group by data order by data ASC ";
+    // _log('local_dominosdashboard_get_catalogue query', $query);
+    return $DB->get_records_sql_menu($query, $query_params);
 }
 
 function local_dominosdashboard_get_user_catalogues($params = array()){
@@ -189,7 +190,7 @@ function local_dominosdashboard_get_user_catalogues($params = array()){
     foreach($returnOnly as $indicator){
         $response[$indicator] = local_dominosdashboard_get_catalogue($indicator, $conditions->sql, $conditions->params);
     }
-    _log($response);
+    // _log($response);
     return $response;
 }
 
@@ -853,11 +854,11 @@ function local_dominosdashboard_get_kpi_info(int $courseid, array $params = arra
                         $kpi_info->type = "CALIFICACION";
                         break;
                     case KPI_HISTORICO: // 2 retorna el número de quejas
-                        $kpi_info->type = "NUMERO DE QUEJAS";
+                        $kpi_info->type = "NÚMERO DE QUEJAS";
                         
                         break;
                     case KPI_SCORCARD: // 3
-                        $kpi_info->type = "ROTACION";
+                        $kpi_info->type = "ROTACIÓN";
                         break;
                     default:
                     break;
@@ -871,77 +872,67 @@ function local_dominosdashboard_get_kpi_info(int $courseid, array $params = arra
     return $kpis;
 }
 
-function local_dominosdashboard_get_kpi_results($kpi, $params){
-    return null;
+function local_dominosdashboard_get_kpi_results($kpi, array $params){
+    // return null;
     global $DB;
     
-    $conditions = array();
     $sqlParams = array();
-    $andWhereSql = "";
-    if(!empty($params)){
-        $indicators = local_dominosdashboard_get_kpi_indicators();
-        foreach($params as $key => $param){
-            if(array_search($key, $indicators) !== false){
-                // DEFINE('DOMINOSDASHBOARD_INDICATORS_FOR_KPIS', 'regiones/distritos/tiendas');
-                switch($key){
-                    case 'regiones': 
-                        $field = "region";
-                    break;
-                    case 'distritos': 
-                        $field = "distrital";
-                    break;
-                    case 'tiendas': // Se espera que sea un entero
-                        $field = "nom_ccosto";
-                    break;
-                    default: 
-                        continue; // Continuar con el siguiente parámetro, este no está dentro de los planeados
-                    break;
-                }
-                $data = $params[$key];
-                if(is_string($data) || is_numeric($data)){
-                    $condition = " $field = ? ";
-                    array_push($conditions, $condition);
-                    array_push($sqlParams, $data);
-                }elseif(is_array($data)){
-                    $condition = array();
-                    foreach($data as $d){
-                        $c = " {$field} = ? ";
-                        array_push($condition, $c);
-                        array_push($sqlParams, $d);
-                    }
-                    if(!empty($condition)){
-                        $condition = implode(" OR ", $condition);
-                        array_push($conditions, $condition);
-                    }
-                }
-                if(!empty($conditions)){
-                    $andWhereSql = ' AND ' . implode(" AND ", $conditions);
-                }
-            }
+    $ccoms = "";
+    if(isset($params['selected_ccoms'])){
+        $ccoms = $params['selected_ccoms'];
+        if($ccoms == '*') $ccoms = '';
+        if( $ccoms != ''){
+            $ccoms = " AND ccosto IN ({$ccoms}) ";
+        }
+    }
+
+    $fecha_final = $fecha_inicial = '';
+    if(array_key_exists('fecha_inicial', $params)){
+        if(!empty($params['fecha_inicial'])){
+            $fecha_inicial = $params['fecha_inicial'];
+        }
+    }
+    if(array_key_exists('fecha_final', $params)){
+        if(!empty($params['fecha_final'])){
+            $fecha_final = $params['fecha_final'];
         }
     }
     
+    $campo_fecha = 'kpi_date';
+    $filtro_fecha = "";
+    if(empty($fecha_inicial) && empty($fecha_final)){ // las 2 vacías
+        $filtro_fecha = ""; // No se aplica filtro
+    }elseif(empty($fecha_inicial) && !empty($fecha_final)){ // solamente fecha_inicial
+        $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) > {$fecha_inicial} ";
+        // $filtro_fecha .= $campo_fecha . ' ';
+    }elseif(!empty($fecha_inicial) && empty($fecha_final)){ // solamente fecha_final
+        $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) < {$fecha_inicial} ";
+    }elseif(!empty($fecha_inicial) && !empty($fecha_final)){ // ambas requeridas
+        $filtro_fecha = " AND (FROM_UNIXTIME({$campo_fecha}) BETWEEN {$fecha_inicial} AND {$fecha_final}) ";
+    }
+
     switch($kpi){
         case KPI_OPS: // 1 // Aprobado, no aprobado y destacado
-            $query = "SELECT valor, COUNT(*) AS conteo FROM {dominos_kpis} WHERE kpi = 1 AND valor != '' {$andWhereSql} GROUP BY valor order by conteo";
+            $query = "SELECT estatus, COUNT(*) AS conteo FROM {dominos_kpis} WHERE 1 = 1 {$ccoms} {$filtro_fecha} GROUP BY estatus";
             $result = $DB->get_records_sql_menu($query, $sqlParams);
             if(empty($result)) return null;
             return $result;
             break;
         case KPI_HISTORICO: // 2 retorna el número de quejas
-            $query = "SELECT ROUND(AVG(valor), 0) AS numero FROM {dominos_kpis} WHERE kpi = 2 AND valor != '' {$andWhereSql}";
+            $query = "SELECT ROUND(AVG(quejas), 0) AS quejas FROM {dominos_kpis} WHERE 1 = 1 {$ccoms} {$filtro_fecha} ";
             $result = $DB->get_field_sql($query, $sqlParams);
             if(empty($result)) return null;
             return $result;
             break;
         case KPI_SCORCARD: // 3
-            $query = "SELECT ROUND(AVG(valor), 2) AS numero FROM {dominos_kpis} WHERE kpi = 3 AND valor != '' {$andWhereSql}";
+            $query = "SELECT ROUND(AVG(rotacion_mensual), 2) AS rotacion_mensual, ROUND(AVG(rotacion_rolling)) AS rotacion_rolling
+             FROM {dominos_kpis} WHERE 1 = 1 {$ccoms} {$filtro_fecha} ";
             $result = $DB->get_field_sql($query, $sqlParams);
             if(empty($result)) return null;
             return $result;
             break;
         default:
-            return "";
+            return null;
         break;
     }
 }

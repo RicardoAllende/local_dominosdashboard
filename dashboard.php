@@ -53,9 +53,15 @@ echo $OUTPUT->header();
     function iResize(frame_id) {
         element = document.getElementById(frame_id);
         if(element != null){
-            if(element.contentWindow.document.body.offsetHeight != null){
-                size = element.contentWindow.document.body.offsetHeight + 'px';
-                document.getElementById(frame_id).style.height = size;
+            if(element.contentWindow != null){
+                if(element.contentWindow.document != null){
+                    if(element.contentWindow.document.body != null){
+                        if(element.contentWindow.document.body.offsetHeight != null){
+                            size = element.contentWindow.document.body.offsetHeight + 'px';
+                            document.getElementById(frame_id).style.height = size;
+                        }
+                    }
+                }
             }
         }
     }
