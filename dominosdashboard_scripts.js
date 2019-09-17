@@ -227,9 +227,7 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                     $(_bindto).append(`
                         <div class="col-sm-12 col-xl-12">
                             <div class="card bg-faded border-0 m-2" id="">
-                                <div class="align-items-end">
-                                    
-                                </div>
+                                
                                 <div class="bg-white m-2" id="${div_id}"></div>                        
                             </div>
                         </div>`);
@@ -454,7 +452,7 @@ function peticionFiltros(info){
                 _clave = _claves[j];
                 var elementoDeCatalogo = catalogo[_clave];
                 $(subfiltro_id).append(`
-                            <label class="text-uppercase subfiltro"><input type="checkbox" name="${clave}[]"
+                            <label class="subfiltro"><input type="checkbox" name="${clave}[]"
                             class="indicator_option text-uppercase indicator_${clave}\" onclick="loaderFiltro(),obtenerInformacion('${clave}')"
                             data-indicator=\"${clave}\" value=\"${_clave}\"
                             >
@@ -489,7 +487,7 @@ function obtenerFiltros(indicator) {
 var myVar;
 
 function loaderGeneral() {
-  myVar = setTimeout(showPage, 900);
+  myVar = setTimeout(showPage, 100);
 }
 
 function showPage(id_div) {
@@ -506,7 +504,7 @@ function hidePage(id_div){
 var variable_filtro;
 
 function loaderFiltro() {
-    variable_filtro = setTimeout(hidePage_filtro, 100);
+    variable_filtro = setTimeout(hidePage_filtro, 900);
 }
 
 function showPage_filtro(id_div2) {
