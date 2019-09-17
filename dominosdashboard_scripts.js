@@ -460,7 +460,7 @@ function peticionFiltros(info){
                                 class="indicator_option text-uppercase indicator_${clave}\" onclick="loaderFiltro(),obtenerInformacion('${clave}')"
                                 data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\"
                                 >
-                                 ${esVacio(valor_elemento) ? " (Vacío)" : valor_elemento}</label><br>
+                                 ${esVacio(valor_elemento) ? " (Vacío)" : ' (' + valor_elemento + ')' + elementoDeCatalogo }</label><br>
                     `);
                 }else{
                     $(subfiltro_id).append(`
@@ -468,7 +468,7 @@ function peticionFiltros(info){
                                 class="indicator_option text-uppercase indicator_${clave}\" onclick="loaderFiltro(),obtenerInformacion('${clave}')"
                                 data-indicator=\"${clave}\" value=\"${valor_elemento}\"
                                 >
-                                 ${esVacio(elementoDeCatalogo) ? " (Vacío)" : ' (' + valor_elemento + ')' + elementoDeCatalogo }</label><br>
+                                 ${esVacio(elementoDeCatalogo) ? " (Vacío)" : valor_elemento}</label><br>
                     `);
                 }
             }

@@ -161,7 +161,11 @@ if ($hassiteconfig) {
 
             foreach(local_dominosdashboard_get_indicators() as $indicator){
                 $original_indicator = $indicator;
-                $title = get_string('filtro', $ldm_pluginname) . ' ' .$original_indicator;
+                if($original_indicator == 'ccosto'){
+                    $title = get_string('filtro', $ldm_pluginname) . ' nombre del ccosto';
+                }else{
+                    $title = get_string('filtro', $ldm_pluginname) . ' ' .$original_indicator;
+                }
                 $indicator = "filtro_" . $indicator;
                 $name = $ldm_pluginname . '/' . $indicator;
                 $description = get_string('filtro' . '_desc', $ldm_pluginname) . ' ' .$original_indicator;
