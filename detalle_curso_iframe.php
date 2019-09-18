@@ -53,15 +53,16 @@ $PAGE->set_context($context_system);
 </head>
 <body onload="loaderGeneral()">    
     <div class="row" style="max-width: 100%; min-height: 300px;">
-        <form id="filter_form" method="post" action="services.php" class='col-sm-3'>
+        <form id="filter_form" method="post" action="imprimir_resultado_cursos.php" class='col-sm-3'>
             <a class="btn btn-success" href="dashboard_iframe.php">Volver al dashboard</a><br><br>
-            <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br>
+            <!-- <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br> -->
             <input type="hidden" name="selected_ccoms" id="selected_ccoms" value="*">
             <input type="hidden" name="courseid" value="<?php echo $course->id; ?>";>
             <div id="contenedor_fechas">
                 <label for="fecha_inicial">Desde <input type="date" onchange="obtenerInformacion()" class="form-control" name="fecha_inicial" id="fecha_inicial"></label> 
                 <label for="fecha_final">Hasta <input type="date" onchange="obtenerInformacion()" class="form-control" name="fecha_final" id="fecha_final"></label>
             </div>
+            <input type="hidden" name="report_type" id="report_type" value="course_completion">
             <div id='contenedor_filtros'></div>
         </form>
         <div id="loader"></div>
