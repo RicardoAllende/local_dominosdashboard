@@ -644,6 +644,11 @@ function local_dominosdashboard_get_date_add_days(int $days = 1){
     return $date->format('Y-m-d');
 }
 
+function local_dominosdashboard_create_slug($str, $delimiter = '_'){
+    $slug = strtolower(trim(preg_replace('/[\s-]+/', $delimiter, preg_replace('/[^A-Za-z0-9-]+/', $delimiter, preg_replace('/[&]/', 'and', preg_replace('/[\']/', '', iconv('UTF-8', 'ASCII//TRANSLIT', $str))))), $delimiter));
+    return $slug;
+} 
+
 define('RETURN_RANDOM_DATA', false);
 define('MAX_RANDOM_NUMBER', 500);
 function local_dominosdashboard_get_course_information(int $courseid, bool $get_kpis = false, bool $get_activities = false, array $params = array(), bool $get_comparative = false){

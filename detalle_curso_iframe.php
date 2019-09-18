@@ -53,7 +53,7 @@ $PAGE->set_context($context_system);
 </head>
 <body onload="loaderGeneral()">    
     <div class="row" style="max-width: 100%; min-height: 300px;">
-        <form id="filter_form" method="post" action="imprimir_resultado_cursos.php" class='col-sm-3'>
+        <form id="filter_form" name="filter_form" method="post" action="imprimir.php" class='col-sm-3'>
             <a class="btn btn-success" href="dashboard_iframe.php">Volver al dashboard</a><br><br>
             <!-- <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br> -->
             <input type="hidden" name="selected_ccoms" id="selected_ccoms" value="*">

@@ -53,7 +53,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
 <body>
     
     <div class="row" style="max-width: 100%; min-height: 300px;">
-        <form id="filter_form" method="post" action="imprimir_resultado_cursos.php" class='col-sm-3'>
+        <form id="filter_form" name="filter_form" method="post" action="imprimir.php" class='col-sm-3'>
             <!-- <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br> -->
             <div id="contenedor_fechas">
                 <label for="fecha_inicial">Desde <input type="date" onchange="obtenerInformacion()" class="form-control" name="fecha_inicial" id="fecha_inicial"></label> 
@@ -188,7 +188,6 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 render_div = "#ldm_tab_" + currentTab;
                 var cosa = generarGraficasTodosLosCursos(render_div, respuesta, tituloPestana);
                 setTimeout(function(){
-                    // console.log(cosa);
                     if(cosa == true){
                         showPage("ldm_tab_" + currentTab);
                     }
