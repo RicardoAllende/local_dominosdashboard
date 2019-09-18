@@ -380,7 +380,7 @@ function crearTarjetaParaGraficakpi(div, curso, kpi, id){
 
 function crearGraficaDeCursokpi(_bindto, curso, kpi){
     _columns = [
-        ['Porcentage de aprobación', curso.percentage],
+        ['Porcentaje de aprobación', curso.percentage],
         kpi,
     ];
     var nombre_columnas = ["Porcentaje de aprobación", "", "No iniciaron el curso", ""];
