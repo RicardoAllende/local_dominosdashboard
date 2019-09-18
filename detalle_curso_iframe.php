@@ -59,8 +59,8 @@ $PAGE->set_context($context_system);
             <input type="hidden" name="selected_ccoms" id="selected_ccoms" value="*">
             <input type="hidden" name="courseid" value="<?php echo $course->id; ?>";>
             <div id="contenedor_fechas">
-                <label for="fecha_inicial">Desde <input type="date" onchange="obtenerInformacion()" class="form-control" name="fecha_inicial" id="fecha_inicial"></label> 
-                <label for="fecha_final">Hasta <input type="date" onchange="obtenerInformacion()" class="form-control" name="fecha_final" id="fecha_final"></label>
+                <label for="fecha_inicial">Desde <input type="date" onchange="obtenerInformacion(),loaderFecha()" class="form-control" name="fecha_inicial" id="fecha_inicial"></label> 
+                <label for="fecha_final">Hasta <input type="date" onchange="obtenerInformacion(),loaderFecha()" class="form-control" name="fecha_final" id="fecha_final"></label>
             </div>
             <div id='contenedor_filtros'></div>
         </form>
@@ -165,6 +165,7 @@ $PAGE->set_context($context_system);
                     dateEnding = Date.now();
                     console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
                     showPage("contenido_dashboard");
+                    showPage_fecha("contenido_dashboard");
                 })
                 .fail(function (error, error2) {
                     isCourseLoading = false;
@@ -273,6 +274,7 @@ $PAGE->set_context($context_system);
                 var c = parseInt(a) + parseInt(b);
                 var d = parseInt(b) * 100;
                 var e = parseInt(d) / parseInt(c);
+                
 
                 document.getElementById("card_numero_de_quejas").innerHTML = "<div class='col-sm-12 espacio'>"+
                                         "<div class='card bg-gray border-0 m-2'>"+
@@ -317,10 +319,13 @@ $PAGE->set_context($context_system);
                 // var d = parseInt(b) * 100;
                 // var e = parseInt(d) / parseInt(c);
                 // var f = e.toFixed(2);
+
+                
+
                 var chartc = c3.generate({
                     data: {
                         columns: [
-                            ['No Aprobado',(100 - not_approved)],
+                            ['No Aprobado',(100-informacion_del_curso.data.percentage).toFixed(2)],
                             ['Promedio de no. de quejas', _kpi.value]
                         ],
                         type: 'bar',
@@ -389,7 +394,7 @@ $PAGE->set_context($context_system);
                 var chartc = c3.generate({
                     data: {
                         columns: [
-                            ['No Aprobado', (100 - not_approved)],
+                            ['No Aprobado', (100-informacion_del_curso.data.percentage).toFixed(2)],
                             ['Promedio de rotación', _kpi.value],
                             ['Ideal de rotación', ideal_rotacion],
                             ['Rotación mensual', _kpi.value["rotacion_mensual"]],

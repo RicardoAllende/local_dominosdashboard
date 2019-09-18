@@ -443,7 +443,7 @@ function peticionFiltros(info){
                                     aria-controls="${collapse_id}">
                                     ${clave}
                                 </span>
-                                ${muestraComparativas ? `<span class="btn btn-link text-right texto-filtro" onclick="compararFiltros('${clave}')" style="color: white;">Comparar</span>` : ``}
+                                ${muestraComparativas ? `<span class="btn btn-link text-right texto-filtro" onclick="loaderComparar(),compararFiltros('${clave}')" style="color: white;">Comparar</span>` : ``}
                             </h5>
                         </div>
                         <div id="${collapse_id}" class="collapse" aria-labelledby="${heading_id}" data-parent="#contenedor_filtros">
@@ -486,6 +486,7 @@ function peticionFiltros(info){
         console.log(`Tiempo de respuesta al obtener filtros de API ${dateEnding - dateBegining} ms`);
         setTimeout(function(){            
             showPage_filtro("contenido_dashboard");
+            showPage_comparar("contenido_dashboard");
         },1000)
     })
     .fail(function(error, error2) {
@@ -532,11 +533,53 @@ function loaderFiltro() {
 function showPage_filtro() {
   document.getElementById("loader").style.display = "none";
   document.getElementById("ldm_tab_" + currentTab).style.display = "block";
+  
 }
 
 function hidePage_filtro(){
   document.getElementById("loader").style.display = "block";
   document.getElementById("ldm_tab_" + currentTab).style.display = "none";
+  
+}
+
+//Funcion para cargar el loader a la fecha en detalle de curso
+var variable_fecha;
+
+function loaderFecha() {
+    variable_fecha = setTimeout(hidePage_fecha, 100);
+}
+
+function showPage_fecha() {
+  document.getElementById("loader").style.display = "none";     
+  document.getElementById("contenido_dashboard").style.display = "block";
+  
+}
+
+function hidePage_fecha(){
+  document.getElementById("loader").style.display = "block";
+  document.getElementById("contenido_dashboard").style.display = "none";
+  
+}
+
+//------
+
+//Funcion para cargar el loader a comparar en detalle de curso
+var variable_comparar;
+
+function loaderComparar() {
+    variable_comparar = setTimeout(hidePage_comparar, 100);
+}
+
+function showPage_comparar() {
+  document.getElementById("loader").style.display = "none";     
+  document.getElementById("contenido_dashboard").style.display = "block";
+  
+}
+
+function hidePage_comparar(){
+  document.getElementById("loader").style.display = "block";
+  document.getElementById("contenido_dashboard").style.display = "none";
+  
 }
 
 //------
