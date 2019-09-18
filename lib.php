@@ -435,7 +435,7 @@ function local_dominosdashboard_get_enrolled_users_ids(int $courseid, string $fe
     }else{
         $where = ""; 
     }
-    $campo_fecha = "_ue.timecreated";
+    $campo_fecha = "_ue.timestart";
     $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
     /*
     $query = "SELECT DISTINCT ra.userid as userid
@@ -457,6 +457,7 @@ function local_dominosdashboard_get_enrolled_users_ids(int $courseid, string $fe
         WHERE _c.id = {$courseid}
         AND ra.roleid NOT IN (5) # No students
     )";
+    _log('local_dominosdashboard_get_enrolled_users_ids ', $query);
     global $DB;
     if($result = $DB->get_fieldset_sql($query)){
         return $result;
@@ -995,7 +996,7 @@ function local_dominosdashboard_get_course_grade_item_id(int $courseid){
 }
 
 function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $params = array(), bool $returnAsString = false){
-    $fecha_final = $fecha_inicial = '';
+    $fecha_final = ''; $fecha_inicial = '';
     if(array_key_exists('fecha_inicial', $params)){
         if(!empty($params['fecha_inicial'])){
             $fecha_inicial = $params['fecha_inicial'];
@@ -1007,7 +1008,7 @@ function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $p
         }
     }
     
-    $ids = local_dominosdashboard_get_enrolled_users_ids($courseid, $fecha_final, $fecha_final);
+    $ids = local_dominosdashboard_get_enrolled_users_ids($courseid, $fecha_inicial, $fecha_final);
     if(empty($ids)){
         return false;
     }

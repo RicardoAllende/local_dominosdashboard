@@ -91,7 +91,7 @@ function insertarGraficaSinInfo(div, mensaje){
 }
 
 function crearGraficaDeCurso(_bindto, curso){
-    console.log('Probable error', curso);
+    // console.log('Probable error', curso);
     switch(curso.chart){
         case 'pie':
         case 'bar':
