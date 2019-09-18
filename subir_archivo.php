@@ -67,7 +67,7 @@ if ($formdata = $mform->get_data()) {
     // _log($columns);
     // dd('Columnas mostradas ');
     $currenttime = time();
-    $requiredFields=explode(',',"profile_field_ccosto,CECO,CALIFICACIÓN,ESTATUS,TOTAL QUEJAS (NO.),ROTACION MENSUAL %,ROTACION ROLLING %");
+    $requiredFields=explode(',',"profile_field_ccosto,CALIFICACIÓN,ESTATUS,TOTAL QUEJAS (NO.),ROTACION MENSUAL %,ROTACION ROLLING %");
 
     $count= 0;
     $hasRequiredColumns = true;
@@ -85,13 +85,13 @@ if ($formdata = $mform->get_data()) {
         $quejas = $line[$columns_['TOTAL QUEJAS (NO.)']];
         $rotacion_mensual = $line[$columns_['ROTACION MENSUAL %']];
         $rotacion_rolling = $line[$columns_['ROTACION ROLLING %']];
-        $ceco = $line[$columns_['CECO']];
+        // $ceco = $line[$columns_['CECO']];
 
         $record = $DB->get_record('dominos_kpis', array('ccosto' => $ccosto, 'kpi_date' => $kpi_date));
         if( empty($record) ){
             $record = new stdClass();
             $record->ccosto = $ccosto;
-            $record->ceco = $ceco;
+            // $record->ceco = $ceco;
             $record->calificacion = $calificacion;
             $record->estatus = $estatus;
             $record->quejas = $quejas;
@@ -108,7 +108,7 @@ if ($formdata = $mform->get_data()) {
             if($updateIfExists){ // Editando el kpi en caso de seleccionar la opción
                 // _log('Existe el kpi');
                 $record->ccosto = $ccosto;
-                $record->ceco = $ceco;
+                // $record->ceco = $ceco;
                 $record->calificacion = $calificacion;
                 $record->estatus = $estatus;
                 $record->quejas = $quejas;
