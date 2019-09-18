@@ -394,10 +394,7 @@ function crearGraficaDeCursokpi(_bindto, curso, kpi){
         data: {
             columns: _columns,
             type: 'bar',
-            colors: {
-                'Porcentaje de aprobación': '#FBFF00',
-                                
-            }
+            
             
         },
         bindto: _bindto,

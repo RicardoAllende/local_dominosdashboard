@@ -252,6 +252,12 @@ $PAGE->set_context($context_system);
                             ['% de aprobación de un curso', obtenerDefaultEnNull(informacion_del_curso.data.percentage)],
                         ],
                         type: 'bar',
+                        colors: {
+                            'Aprobado': '#008000',
+                            'No Aprobado': '#ff0000', 
+                            'Destacado': '#ff7f0e',
+                            '% de aprobación de un curso': '#d6c4b5'                                            
+                        }
                     },
                     bindto: "#chart2",
                     tooltip: {
@@ -330,6 +336,10 @@ $PAGE->set_context($context_system);
                             ['Promedio de no. de quejas', _kpi.value]
                         ],
                         type: 'bar',
+                        colors: {
+                            'No Aprobado': '#ff0000', 
+                            'Promedio de no. de quejas': '#97a5af'                                            
+                        }
                     },
                     bindto: "#chart3",
                     tooltip: {
@@ -402,6 +412,13 @@ $PAGE->set_context($context_system);
                             ['Rotación rolling', _kpi.value["rotacion_rolling"]]
                         ],
                         type: 'bar',
+                        colors: {
+                            'No Aprobado': '#ff0000',
+                            'Promedio de rotación': '#6f5252',
+                            'Ideal de rotación': '#f7e488',
+                            'Rotación mensual': '#49bf89',
+                            'Rotación rolling': '#3c87bb'                                        
+                        }
                     },
                     bindto: "#chart4",
                     tooltip: {
