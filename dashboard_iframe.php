@@ -106,7 +106,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     <script src="libs/c3.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="js/jquery.loadingModal.js"></script>
-    <script src="dominosdashboard_scripts.js"></script>
+    
     <script>
         var muestraComparativas = false;
         var isCourseLoading = false;
@@ -204,5 +204,6 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         }
         
     </script>
+    <script src="dominosdashboard_scripts.js"></script>
 </body>
 </html>

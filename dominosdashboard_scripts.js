@@ -529,14 +529,14 @@ function loaderFiltro() {
     variable_filtro = setTimeout(hidePage_filtro, 100);
 }
 
-function showPage_filtro(id_div2) {
+function showPage_filtro() {
   document.getElementById("loader").style.display = "none";
-  //document.getElementById(id_div2).style.display = "block";
+  document.getElementById("ldm_tab_" + currentTab).style.display = "block";
 }
 
-function hidePage_filtro(id_div2){
+function hidePage_filtro(){
   document.getElementById("loader").style.display = "block";
-  //document.getElementById(id_div2).style.display = "none";
+  document.getElementById("ldm_tab_" + currentTab).style.display = "none";
 }
 
 //------
