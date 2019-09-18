@@ -67,7 +67,7 @@ function local_dominosdashboard_extend_navigation(global_navigation $nav) {
         );
         $node->showinflatnavigation = true;
         $node = $nav->add (
-            'Subir kpis en csv ' . get_string('pluginname', 'local_dominosdashboard'),
+            "Subir KPI's en csv " . get_string('pluginname', 'local_dominosdashboard'),
             new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php' )
         );
         $node->showinflatnavigation = true;
@@ -93,7 +93,7 @@ function local_dominosdashboard_get_course_tabs(){
     return $tabOptions = [
         LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO => 'Programas de entrenamiento',
         LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS => 'Campañas',
-        LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARATIVE => 'Comparación de kpis',
+        LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARATIVE => "Comparación de KPI's",
     ];
 }
 
@@ -105,9 +105,9 @@ function local_dominosdashboard_get_course_tabs_as_js_script(){
 function local_dominosdashboard_get_KPIS(){
     return [
         // KPI_NA => "N/A", // No kpi
-        KPI_OPS => "OPS MÉXICO W",
-        KPI_HISTORICO => "Reporte de Casos Histórico por tiendas",
-        KPI_SCORCARD => "Scorcard RRHH"
+        KPI_OPS => "AUDITORÍA ICA",
+        KPI_HISTORICO => "TOTAL DE QUEJAS POR TIENDA",
+        KPI_SCORCARD => "INDICADORES RRHH"
     ];
 }
 
@@ -567,14 +567,14 @@ function local_dominosdashboard_get_kpi_overview(array $params = array(), bool $
         }
         switch($kpi){
             case KPI_OPS: // 1 // Aprobado, no aprobado y destacado
-                $kpi_status->type = "CALIFICACION";
+                $kpi_status->type = $kpis[KPI_OPS];
                 break;
             case KPI_HISTORICO: // 2 retorna el número de quejas
-                $kpi_status->type = "NUMERO DE QUEJAS";
+                $kpi_status->type = $kpis[KPI_HISTORICO];
                 
                 break;
-            case KPI_SCORCARD: // 3
-                $kpi_status->type = "ROTACION";
+            case KPI_SCORCARD: // 3 Rotación rolling y rotación mensual
+                $kpi_status->type = $kpis[KPI_SCORCARD];
                 break;
         }
         $kpi_status->name = $kpis[$kpi];
@@ -761,11 +761,11 @@ function local_dominosdashboard_get_course_comparative(int $courseid, array $par
         if(empty($userids)){
             $item_to_compare->enrolled_users = 0;
             $item_to_compare->approved_users = 0;
-            $item_to_compare->percentage = local_dominosdashboard_percentage_of($item_to_compare->enrolled_users, $item_to_compare->approved_users);                    
+            $item_to_compare->percentage = local_dominosdashboard_percentage_of($item_to_compare->approved_users, $item_to_compare->enrolled_users);                    
         }else{
             $item_to_compare->enrolled_users = local_dominosdashboard_get_enrolled_users_count($courseid, $userids, $fecha_inicial, $fecha_final); //
             $item_to_compare->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids, $fecha_inicial, $fecha_final); //
-            $item_to_compare->percentage = local_dominosdashboard_percentage_of($item_to_compare->enrolled_users, $item_to_compare->approved_users);
+            $item_to_compare->percentage = local_dominosdashboard_percentage_of($item_to_compare->approved_users, $item_to_compare->enrolled_users);
         }
         array_push($comparative, $item_to_compare);
     }
@@ -1233,11 +1233,11 @@ function local_dominosdashboard_get_courses(bool $allCourses = false, $andWhereC
     global $DB;
     $categories = local_dominosdashboard_get_categories_with_subcategories(local_dominosdashboard_get_category_parent(), false);
     if($allCourses){
-        $query = "SELECT id, fullname, shortname FROM {course} where category in ({$categories}) AND visible = 1 {$andWhereClause} order by sortorder";
+        $query = "SELECT id, fullname, shortname FROM {course} where category in ({$categories}) {$andWhereClause} order by sortorder";
     }else{
         if($exclusion = get_config('local_dominosdashboard', 'excluded_courses')){
             if($exclusion != ''){
-                $andWhereClause .= " AND id NOT IN ({$exclusion})";
+                $andWhereClause .= " AND id NOT IN ({$exclusion}) ";
             }
         }
         $query = "SELECT id, fullname, shortname FROM {course} where category in ({$categories}) {$andWhereClause} order by sortorder";

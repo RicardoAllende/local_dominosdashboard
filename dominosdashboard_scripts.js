@@ -532,7 +532,7 @@ function showPage(id_div) {
 
 function hidePage(id_div){
   document.getElementById("loader").style.display = "block";
-  document.getElementById(id_div).style.display = "none";
+//   document.getElementById(id_div).style.display = "none";
 }
 
 //Funcion para cargar el loader con los filtros
@@ -550,7 +550,7 @@ function showPage_filtro() {
 
 function hidePage_filtro(){
   document.getElementById("loader").style.display = "block";
-  document.getElementById("ldm_tab_" + currentTab).style.display = "none";
+//   document.getElementById("ldm_tab_" + currentTab).style.display = "none";
   
 }
 
@@ -569,7 +569,7 @@ function showPage_fecha() {
 
 function hidePage_fecha(){
   document.getElementById("loader").style.display = "block";
-  document.getElementById("contenido_dashboard").style.display = "none";
+//   document.getElementById("contenido_dashboard").style.display = "none";
   
 }
 
@@ -590,7 +590,7 @@ function showPage_comparar() {
 
 function hidePage_comparar(){
   document.getElementById("loader").style.display = "block";
-  document.getElementById("ldm_comparativas").style.display = "none";
+//   document.getElementById("contenido_dashboard").style.display = "none";
   
 }
 

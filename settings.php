@@ -37,7 +37,7 @@ if ($hassiteconfig) {
     if(isset($_GET['section'])){
         if($_GET['section'] == 'local_dominosdashboard'){
             $PAGE->requires->js(new moodle_url($CFG->wwwroot . '/local/dominosdashboard/settings.js'));
-            $courses = local_dominosdashboard_get_courses(false);
+            $courses = local_dominosdashboard_get_courses(true);
             
             $page = new admin_settingpage($ldm_pluginname . 'tab_category', get_string('categoriestab', $ldm_pluginname));
 

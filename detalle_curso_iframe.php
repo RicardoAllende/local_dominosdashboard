@@ -446,10 +446,23 @@ $PAGE->set_context($context_system);
             }
         }
 
+        var comparativaMaxima = 20;
+        var clase;
         function compararFiltros(filtro_seleccionado){
             informacion = $('#filter_form').serializeArray();
             informacion.push({ name: 'request_type', value: 'course_comparative' });
             informacion.push({ name: 'selected_filter', value: filtro_seleccionado });
+            clase = ".indicator_" + filtro_seleccionado;
+            elementosAComparar = $(clase).filter(':checked').length;
+            if(elementosAComparar == 0){
+                elementosAComparar = $(clase).length;
+            }
+            if(elementosAComparar > comparativaMaxima){
+                if(!confirm('Usted está comparando más de ' + comparativaMaxima + ' elementos, ¿desea modificar su selección?')){
+                    return false;
+                }
+            }
+            loaderComparar();
             dateBeginingComparacion = Date.now();
             $.ajax({
                 type: "POST",
