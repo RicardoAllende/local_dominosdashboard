@@ -87,6 +87,7 @@ DEFINE("LOCALDOMINOSDASHBOARD_NOFILTER", "__NOFILTER__");
 DEFINE('LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO', 1);
 DEFINE('LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS', 2);
 DEFINE('LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARATIVE', 3);
+DEFINE('LOCALDOMINOSDASHBOARD_AVAILABLE_COURSES', 4);
 
 function local_dominosdashboard_get_course_tabs(){
     return $tabOptions = [
@@ -478,6 +479,9 @@ function local_dominosdashboard_get_courses_with_filter(bool $allCourses = false
         $LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS = "";
     }
     switch ($type) {
+        case LOCALDOMINOSDASHBOARD_AVAILABLE_COURSES:
+            return local_dominosdashboard_get_courses($allCourses);
+            break;
         case LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO: // Cursos en línea
         # not in
             // $LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS = get_config('local_dominosdashboard', 'LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS');
