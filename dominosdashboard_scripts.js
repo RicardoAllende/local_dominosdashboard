@@ -91,7 +91,7 @@ function insertarGraficaSinInfo(div, mensaje){
 }
 
 function crearGraficaDeCurso(_bindto, curso){
-    console.log('Probable error', curso);
+    // console.log('Probable error', curso);
     switch(curso.chart){
         case 'pie':
         case 'bar':
@@ -294,9 +294,10 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
     return true;
 }
 
-function MostrarModalEspera(titulo){
+function mostrarModalEspera(titulo, color){
+    if(typeof color != 'string') { color = "#1E8ABB"; }
     if(typeof titulo != 'string') { titulo = "Cargando"; }
-    $('body').loadingModal({text:'Cargando...', opacity:'0.2', color: '#016392'});
+    $('body').loadingModal({text: titulo, opacity:'0.2', color: color});
 }
 
 function ocultarModalEspera(){
@@ -469,7 +470,7 @@ function peticionFiltros(info){
                                 class="indicator_option text-uppercase indicator_${clave}\" onclick="loaderFiltro(),obtenerInformacion('${clave}')"
                                 data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\"
                                 >
-                                 ${esVacio(valor_elemento) ? " (Vacío)" : ' (' + valor_elemento + ')' + elementoDeCatalogo }</label><br>
+                                 ${esVacio(valor_elemento) ? " (Vacío)" : ' (' + elementoDeCatalogo + ')' + valor_elemento }</label><br>
                     `);
                 }else{
                     $(subfiltro_id).append(`

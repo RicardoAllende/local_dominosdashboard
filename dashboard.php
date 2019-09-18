@@ -57,7 +57,7 @@ echo $OUTPUT->header();
                 if(element.contentWindow.document != null){
                     if(element.contentWindow.document.body != null){
                         if(element.contentWindow.document.body.offsetHeight != null){
-                            size = element.contentWindow.document.body.offsetHeight + 'px';
+                            size = (element.contentWindow.document.body.offsetHeight + 30 ) + 'px';
                             document.getElementById(frame_id).style.height = size;
                         }
                     }
