@@ -165,7 +165,7 @@ $PAGE->set_context($context_system);
                     imprimirRanking('#ranking_dm', informacion_del_curso.data);
                     dateEnding = Date.now();
                     console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
-                    showPage("contenido_dashboard");
+                    showPage("contenido_dashboard");                    
                     showPage_fecha("contenido_dashboard");
                 })
                 .fail(function (error, error2) {

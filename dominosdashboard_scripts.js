@@ -113,6 +113,11 @@ function crearGraficaDeCurso(_bindto, curso){
         data: {
             columns: _columns,
             type: curso.chart,
+            colors: {
+                Inscritos: '#0000ff',
+                Aprobados: '#008000'
+                
+            }
         },
         bindto: _bindto,
         tooltip: {
@@ -148,20 +153,20 @@ function crearTarjetaParaGrafica(div, curso, claseDiv){
                     <div class="row espr">
                         <div class="border-0 col-sm-4">
                             <div class="card-body text-center">
-                                <p class="card-text text-primary txti">Aprobados</p>
-                                <p class="card-text text-primary txtnum">${curso.approved_users} (${curso.percentage} %)</p>
+                                <p class="card-text txti_aprobados">Aprobados</p>
+                                <p class="card-text txtnum_aprobados">${curso.approved_users} (${curso.percentage} %)</p>
                             </div>
                         </div>
                         <div class="border-0 col-sm-4">
                             <div class="card-body text-center">
-                                <p class="card-text text-warning txti">No Aprobados</p>
-                                <p class="card-text text-warning txtnum">${curso.not_approved_users}</p>
+                                <p class="card-text txti_noaprobados">No Aprobados</p>
+                                <p class="card-text txtnum_noaprobados">${curso.not_approved_users}</p>
                             </div>
                         </div>
                         <div class="border-0 col-sm-4">
                             <div class="card-body text-center">
-                                <p class="card-text text-success txti">Total de usuarios inscritos</p>
-                                <p class="card-text text-success txtnum">${curso.enrolled_users}</p>
+                                <p class="card-text txti_inscritos">Total de usuarios inscritos</p>
+                                <p class="card-text txtnum_inscritos">${curso.enrolled_users}</p>
                             </div>
                         </div>
                         </div>
@@ -355,20 +360,20 @@ function crearTarjetaParaGraficakpi(div, curso, kpi, id){
                     <div class="row espr">
                         <div class="border-0 col-sm-4">
                             <div class="card-body text-center">
-                                <p class="card-text text-primary txti">Aprobados</p>
-                                <p class="card-text text-primary txtnum">${curso.approved_users} (${curso.percentage} %)</p>
+                                <p class="card-text txti_aprobados">Aprobados</p>
+                                <p class="card-text txtnum_aprobados">${curso.approved_users} (${curso.percentage} %)</p>
                             </div>
                         </div>
                         <div class="border-0 col-sm-4">
                             <div class="card-body text-center">
-                                <p class="card-text text-warning txti">No Aprobados</p>
-                                <p class="card-text text-warning txtnum">${curso.not_approved_users}</p>
+                                <p class="card-text txti_noaprobados">No Aprobados</p>
+                                <p class="card-text txtnum_noaprobados">${curso.not_approved_users}</p>
                             </div>
                         </div>
                         <div class="border-0 col-sm-4">
                             <div class="card-body text-center">
-                                <p class="card-text text-success txti">Total de usuarios inscritos</p>
-                                <p class="card-text text-success txtnum">${curso.enrolled_users}</p>
+                                <p class="card-text txti_inscritos">Total de usuarios inscritos</p>
+                                <p class="card-text txtnum_inscritos">${curso.enrolled_users}</p>
                             </div>
                         </div>
                         </div>
@@ -389,6 +394,11 @@ function crearGraficaDeCursokpi(_bindto, curso, kpi){
         data: {
             columns: _columns,
             type: 'bar',
+            colors: {
+                'Porcentaje de aprobación': '#FBFF00',
+                                
+            }
+            
         },
         bindto: _bindto,
         tooltip: {
@@ -444,7 +454,7 @@ function peticionFiltros(info){
                                     aria-controls="${collapse_id}">
                                     ${clave}
                                 </span>
-                                ${muestraComparativas ? `<span class="btn btn-link text-right texto-filtro" onclick="loaderComparar(),compararFiltros('${clave}')" style="color: white;">Comparar</span>` : ``}
+                                ${muestraComparativas ? `<span class="btn btn-link text-right texto-filtro" onclick="compararFiltros('${clave}')" style="color: white;">Comparar</span>` : ``}
                             </h5>
                         </div>
                         <div id="${collapse_id}" class="collapse" aria-labelledby="${heading_id}" data-parent="#contenedor_filtros">
@@ -486,9 +496,10 @@ function peticionFiltros(info){
         dateEnding = Date.now();
         console.log(`Tiempo de respuesta al obtener filtros de API ${dateEnding - dateBegining} ms`);
         setTimeout(function(){            
-            showPage_filtro("contenido_dashboard");
-            showPage_comparar("contenido_dashboard");
+            showPage_filtro("contenido_dashboard");            
         },1000)
+        showPage_comparar("ldm_comparativas");
+        
     })
     .fail(function(error, error2) {
         isFilterLoading = false;
@@ -573,13 +584,13 @@ function loaderComparar() {
 
 function showPage_comparar() {
   document.getElementById("loader").style.display = "none";     
-  document.getElementById("contenido_dashboard").style.display = "block";
+  document.getElementById("ldm_comparativas").style.display = "block";
   
 }
 
 function hidePage_comparar(){
   document.getElementById("loader").style.display = "block";
-  document.getElementById("contenido_dashboard").style.display = "none";
+  document.getElementById("ldm_comparativas").style.display = "none";
   
 }
 
