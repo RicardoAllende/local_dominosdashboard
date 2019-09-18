@@ -444,7 +444,7 @@ function peticionFiltros(info){
                                     aria-controls="${collapse_id}">
                                     ${clave}
                                 </span>
-                                ${muestraComparativas ? `<span class="btn btn-link text-right texto-filtro" onclick="loaderComparar(),compararFiltros('${clave}')" style="color: white;">Comparar</span>` : ``}
+                                ${muestraComparativas ? `<span class="btn btn-link text-right texto-filtro" onclick="compararFiltros('${clave}')" style="color: white;">Comparar</span>` : ``}
                             </h5>
                         </div>
                         <div id="${collapse_id}" class="collapse" aria-labelledby="${heading_id}" data-parent="#contenedor_filtros">
@@ -521,7 +521,7 @@ function showPage(id_div) {
 
 function hidePage(id_div){
   document.getElementById("loader").style.display = "block";
-  document.getElementById(id_div).style.display = "none";
+//   document.getElementById(id_div).style.display = "none";
 }
 
 //Funcion para cargar el loader con los filtros
@@ -539,7 +539,7 @@ function showPage_filtro() {
 
 function hidePage_filtro(){
   document.getElementById("loader").style.display = "block";
-  document.getElementById("ldm_tab_" + currentTab).style.display = "none";
+//   document.getElementById("ldm_tab_" + currentTab).style.display = "none";
   
 }
 
@@ -558,7 +558,7 @@ function showPage_fecha() {
 
 function hidePage_fecha(){
   document.getElementById("loader").style.display = "block";
-  document.getElementById("contenido_dashboard").style.display = "none";
+//   document.getElementById("contenido_dashboard").style.display = "none";
   
 }
 
@@ -579,7 +579,7 @@ function showPage_comparar() {
 
 function hidePage_comparar(){
   document.getElementById("loader").style.display = "block";
-  document.getElementById("contenido_dashboard").style.display = "none";
+//   document.getElementById("contenido_dashboard").style.display = "none";
   
 }
 

@@ -462,6 +462,7 @@ $PAGE->set_context($context_system);
                     return false;
                 }
             }
+            loaderComparar();
             dateBeginingComparacion = Date.now();
             $.ajax({
                 type: "POST",
