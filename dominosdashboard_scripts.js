@@ -470,7 +470,7 @@ function peticionFiltros(info){
                                 class="indicator_option text-uppercase indicator_${clave}\" onclick="loaderFiltro(),obtenerInformacion('${clave}')"
                                 data-indicator=\"${clave}\" value=\"${elementoDeCatalogo}\"
                                 >
-                                 ${esVacio(valor_elemento) ? " (Vacío)" : ' (' + valor_elemento + ')' + elementoDeCatalogo }</label><br>
+                                 ${esVacio(valor_elemento) ? " (Vacío)" : ' (' + elementoDeCatalogo + ')' + valor_elemento }</label><br>
                     `);
                 }else{
                     $(subfiltro_id).append(`
