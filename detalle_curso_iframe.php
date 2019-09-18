@@ -419,6 +419,7 @@ $PAGE->set_context($context_system);
          * @param _bindto string selector con sintaxis jquery donde se imprimirán las gráficas
          */
         function imprimirComparativaFiltrosDeCurso(_bindto, informacion){
+            $(_bindto).html('');
             if(!esVacio(informacion.comparative)){
                 comparative = informacion.comparative;
                 columns = Array();

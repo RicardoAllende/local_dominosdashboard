@@ -59,8 +59,8 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 <label for="fecha_inicial">Desde <input type="date" onchange="obtenerInformacion()" class="form-control" name="fecha_inicial" id="fecha_inicial"></label> 
                 <label for="fecha_final">Hasta <input type="date" onchange="obtenerInformacion()" class="form-control" name="fecha_final" id="fecha_final"></label>
             </div>
-            <div id='contenedor_filtros'></div>
             <input type="hidden" name="report_type" id="report_type" value="course_list">
+            <div id='contenedor_filtros'></div>
         </form>
         <div class="col-sm-9" id="contenido_cursos">
             <div id="navbarSupportedContent">

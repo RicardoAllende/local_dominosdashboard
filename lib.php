@@ -436,16 +436,7 @@ function local_dominosdashboard_get_enrolled_users_ids(int $courseid, string $fe
         $where = ""; 
     }
     $campo_fecha = "_ue.timecreated";
-    if(empty($fecha_inicial) && empty($fecha_final)){ // las 2 vacías
-        $filtro_fecha = ""; // No se aplica filtro
-    }elseif(empty($fecha_inicial) && !empty($fecha_final)){ // solamente fecha_inicial
-        $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) > {$fecha_inicial}";
-        // $filtro_fecha .= $campo_fecha . ' ';
-    }elseif(!empty($fecha_inicial) && empty($fecha_final)){ // solamente fecha_final
-        $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) < {$fecha_inicial}";
-    }elseif(!empty($fecha_inicial) && !empty($fecha_final)){ // ambas requeridas
-        $filtro_fecha = " AND (FROM_UNIXTIME({$campo_fecha}) BETWEEN {$fecha_inicial} AND {$fecha_final})";
-    }
+    $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
     /*
     $query = "SELECT DISTINCT ra.userid as userid
     FROM {course} AS c
@@ -842,16 +833,7 @@ function local_dominosdashboard_get_kpi_results($kpi, array $params){
     
     $campo_fecha = 'kpi_date';
     $filtro_fecha = "";
-    if(empty($fecha_inicial) && empty($fecha_final)){ // las 2 vacías
-        $filtro_fecha = ""; // No se aplica filtro
-    }elseif(empty($fecha_inicial) && !empty($fecha_final)){ // solamente fecha_inicial
-        $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) > {$fecha_inicial} ";
-        // $filtro_fecha .= $campo_fecha . ' ';
-    }elseif(!empty($fecha_inicial) && empty($fecha_final)){ // solamente fecha_final
-        $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) < {$fecha_inicial} ";
-    }elseif(!empty($fecha_inicial) && !empty($fecha_final)){ // ambas requeridas
-        $filtro_fecha = " AND (FROM_UNIXTIME({$campo_fecha}) BETWEEN {$fecha_inicial} AND {$fecha_final}) ";
-    }
+    $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
 
     switch($kpi){
         case KPI_OPS: // 1 // Aprobado, no aprobado y destacado
@@ -877,6 +859,21 @@ function local_dominosdashboard_get_kpi_results($kpi, array $params){
             return null;
         break;
     }
+}
+
+function local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final){
+    $filtro_fecha = '';
+    if(empty($fecha_inicial) && empty($fecha_final)){ // las 2 vacías
+        $filtro_fecha = ""; // No se aplica filtro
+    }elseif(!empty($fecha_inicial) && empty($fecha_final)){ // solamente fecha_inicial
+        $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) > '{$fecha_inicial}'";
+        // $filtro_fecha .= $campo_fecha . ' ';
+    }elseif(empty($fecha_inicial) && !empty($fecha_final)){ // solamente fecha_final
+        $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) < '{$fecha_final}'";
+    }elseif(!empty($fecha_inicial) && !empty($fecha_final)){ // ambas requeridas
+        $filtro_fecha = " AND (FROM_UNIXTIME({$campo_fecha}) BETWEEN '{$fecha_inicial}' AND '{$fecha_final}')";
+    }
+    return $filtro_fecha;
 }
 
 function local_dominosdashboard_get_time_from_month_and_year(int $month, int $year){
@@ -919,48 +916,10 @@ function local_dominosdashboard_get_approved_users(int $courseid, string $userid
                 $whereids = " AND p.userid IN ({$userids})";
             }
             $campo_fecha = "p.timecompleted";
-            if(empty($fecha_inicial) && empty($fecha_final)){ // las 2 vacías
-                $filtro_fecha = ""; // No se aplica filtro
-            }elseif(empty($fecha_inicial) && !empty($fecha_final)){ // solamente fecha_inicial
-                $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) > {$fecha_inicial}";
-                // $filtro_fecha .= $campo_fecha . ' ';
-            }elseif(!empty($fecha_inicial) && empty($fecha_final)){ // solamente fecha_final
-                $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) < {$fecha_inicial}";
-            }elseif(!empty($fecha_inicial) && !empty($fecha_final)){ // ambas requeridas
-                $filtro_fecha = " AND (FROM_UNIXTIME({$campo_fecha}) BETWEEN {$fecha_inicial} AND {$fecha_final})";
-            }
+            $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);    
             $query = "SELECT count(*) AS completions FROM {course_completions} AS p
             WHERE p.course = {$courseid} AND p.timecompleted IS NOT NULL {$whereids} {$filtro_fecha} ";
         break;
-        // case COMPLETION_DEFAULT_AND_GRADE:
-        //     if(empty($userids)){
-        //         $whereids = "";
-        //     }else{
-        //         $whereids = " AND p.userid IN ({$userids})";
-        //     }
-        //     $grade_item = local_dominosdashboard_get_course_grade_item_id($courseid);
-        //     $minimum_score = get_config('local_dominosdashboard', 'course_minimum_score_' . $courseid);
-        //     if($grade_item === false || $minimum_score === false){ // Missing configuration
-        //         // _log("Missing configuration courseid", $courseid, 'COMPLETION_DEFAULT_AND_GRADE');
-        //         return $response;
-        //     }
-        //     $campo_fecha = " p.timecompleted ";
-        //     if($aplicar_filtro_fecha){
-        //         if(empty($fecha_inicial) && empty($fecha_final)){ // las 2 vacías
-        //             $filtro_fecha = ""; // No se aplica filtro
-        //         }elseif(empty($fecha_inicial) && !empty($fecha_final)){ // solamente fecha_inicial
-        //             $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) > {$fecha_inicial}";
-        //             // $filtro_fecha .= $campo_fecha . ' ';
-        //         }elseif(!empty($fecha_inicial) && empty($fecha_final)){ // solamente fecha_final
-        //             $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) < {$fecha_inicial}";
-        //         }elseif(!empty($fecha_inicial) && !empty($fecha_final)){ // ambas requeridas
-        //             $filtro_fecha = " AND (FROM_UNIXTIME({$campo_fecha}) BETWEEN {$fecha_inicial} AND {$fecha_final})";
-        //         }
-        //     }
-        //     $query = "SELECT count(*) AS completions 
-        //     FROM {grade_grades} AS gg JOIN {user} AS user ON user.id = gg.userid WHERE gg.itemid = {$grade_item} AND final_grade >= {$minimum_score} AND user.id IN 
-        //     (SELECT u.id FROM {course_completions} AS p WHERE p.course = {$courseid} AND p.timecompleted IS NOT NULL {$whereids})";
-        // break;
         case COMPLETION_BY_GRADE:
             if(empty($userids)){
                 $whereids = "";
@@ -974,16 +933,7 @@ function local_dominosdashboard_get_approved_users(int $courseid, string $userid
                 return $response;
             }
             $campo_fecha = "gg.timemodified";
-            if(empty($fecha_inicial) && empty($fecha_final)){ // las 2 vacías
-                $filtro_fecha = ""; // No se aplica filtro
-            }elseif(empty($fecha_inicial) && !empty($fecha_final)){ // solamente fecha_inicial
-                $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) > {$fecha_inicial}";
-                // $filtro_fecha .= $campo_fecha . ' ';
-            }elseif(!empty($fecha_inicial) && empty($fecha_final)){ // solamente fecha_final
-                $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) < {$fecha_inicial}";
-            }elseif(!empty($fecha_inicial) && !empty($fecha_final)){ // ambas requeridas
-                $filtro_fecha = " AND (FROM_UNIXTIME({$campo_fecha}) BETWEEN {$fecha_inicial} AND {$fecha_final})";
-            }
+            $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
             $query = "SELECT count(*) AS completions FROM {grade_grades} AS gg WHERE
              gg.itemid = {$grade_item} AND final_grade >= {$minimum_score} {$whereids} {$filtro_fecha}";
         break;
@@ -999,16 +949,7 @@ function local_dominosdashboard_get_approved_users(int $courseid, string $userid
             $completion_activity = get_config('local_dominosdashboard', 'course_completion_activity_' . $courseid);
             /* completionstate 0 => 'In Progress' 1 => 'Completed' 2 => 'Completed with Pass' completionstate = 3 => 'Completed with Fail' */
             $campo_fecha = "timemodified";
-            if(empty($fecha_inicial) && empty($fecha_final)){ // las 2 vacías
-                $filtro_fecha = ""; // No se aplica filtro
-            }elseif(empty($fecha_inicial) && !empty($fecha_final)){ // solamente fecha_inicial
-                $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) > {$fecha_inicial}";
-                // $filtro_fecha .= $campo_fecha . ' ';
-            }elseif(!empty($fecha_inicial) && empty($fecha_final)){ // solamente fecha_final
-                $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) < {$fecha_inicial}";
-            }elseif(!empty($fecha_inicial) && !empty($fecha_final)){ // ambas requeridas
-                $filtro_fecha = " AND (FROM_UNIXTIME({$campo_fecha}) BETWEEN {$fecha_inicial} AND {$fecha_final})";
-            }
+            $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
             $query = "SELECT count(*) AS completions from {course_modules_completion} WHERE
              coursemoduleid = {$completion_activity} AND completionstate IN (1,2) $whereids {$filtro_fecha}";
         break;
@@ -1022,16 +963,7 @@ function local_dominosdashboard_get_approved_users(int $courseid, string $userid
                 $whereids = " AND userid IN ({$userids})";
             }
             $campo_fecha = "dateissued";
-            if(empty($fecha_inicial) && empty($fecha_final)){ // las 2 vacías
-                $filtro_fecha = ""; // No se aplica filtro
-            }elseif(empty($fecha_inicial) && !empty($fecha_final)){ // solamente fecha_inicial
-                $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) > {$fecha_inicial}";
-                // $filtro_fecha .= $campo_fecha . ' ';
-            }elseif(!empty($fecha_inicial) && empty($fecha_final)){ // solamente fecha_final
-                $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) < {$fecha_inicial}";
-            }elseif(!empty($fecha_inicial) && !empty($fecha_final)){ // ambas requeridas
-                $filtro_fecha = " AND (FROM_UNIXTIME({$campo_fecha}) BETWEEN {$fecha_inicial} AND {$fecha_final})";
-            }
+            $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
         $query = "SELECT count(*) AS completions from {badge_issued} WHERE badgeid = {$completion_badge} {$whereids} {$filtro_fecha}";
         break;
         default: 
@@ -1400,16 +1332,7 @@ function local_dominosdashboard_get_activities_completion(int $courseid, string 
 function local_dominos_dashboard_get_activity_completions(int $activityid, string $userids = "", $title = "", string $fecha_inicial, string $fecha_final){
     $campo_fecha = "timemodified";
     $filtro_fecha = "";
-    if(empty($fecha_inicial) && empty($fecha_final)){ // las 2 vacías
-        $filtro_fecha = ""; // No se aplica filtro
-    }elseif(empty($fecha_inicial) && !empty($fecha_final)){ // solamente fecha_inicial
-        $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) > {$fecha_inicial}";
-        // $filtro_fecha .= $campo_fecha . ' ';
-    }elseif(!empty($fecha_inicial) && empty($fecha_final)){ // solamente fecha_final
-        $filtro_fecha = " AND FROM_UNIXTIME({$campo_fecha}) < {$fecha_inicial}";
-    }elseif(!empty($fecha_inicial) && !empty($fecha_final)){ // ambas requeridas
-        $filtro_fecha = " AND (FROM_UNIXTIME({$campo_fecha}) BETWEEN {$fecha_inicial} AND {$fecha_final})";
-    }
+    $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
     global $DB;
     $key = "module" . $activityid;
     // $inProgress         = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 0");
