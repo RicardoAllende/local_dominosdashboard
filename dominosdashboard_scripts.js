@@ -294,9 +294,10 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
     return true;
 }
 
-function MostrarModalEspera(titulo){
+function mostrarModalEspera(titulo, color){
+    if(typeof color != 'string') { color = "#1E8ABB"; }
     if(typeof titulo != 'string') { titulo = "Cargando"; }
-    $('body').loadingModal({text:'Cargando...', opacity:'0.2', color: '#016392'});
+    $('body').loadingModal({text: titulo, opacity:'0.2', color: color});
 }
 
 function ocultarModalEspera(){
