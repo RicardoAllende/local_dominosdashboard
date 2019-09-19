@@ -410,7 +410,7 @@ function local_dominosdashboard_get_enrolled_users_ids(int $courseid, string $fe
         WHERE _c.id = {$courseid}
         AND ra.roleid NOT IN (5) # No students
     )";
-    _log('local_dominosdashboard_get_enrolled_users_ids ', $query);
+    // _log('local_dominosdashboard_get_enrolled_users_ids ', $query);
     global $DB;
     if($result = $DB->get_fieldset_sql($query)){
         return $result;
@@ -940,6 +940,42 @@ function local_dominosdashboard_percentage_of(int $number, int $total, int $deci
 function local_dominosdashboard_get_course_grade_item_id(int $courseid){
     global $DB;
     return $DB->get_field('grade_items', 'id', array('courseid' => $courseid, 'itemtype' => 'course'));
+}
+
+function local_dominosdashboard_get_selected_params(array $params){
+    $result = array();
+    if(!empty($params)){
+        $indicators = local_dominosdashboard_get_indicators();
+        foreach($params as $key => $param){
+            if(array_search($key, $indicators) !== false){
+                $filter = array();
+
+                $data = $params[$key];
+                if(is_string($data) || is_numeric($data)){
+                    array_push($filter, $data);
+                }elseif(is_array($data)){
+                    foreach ($data as $d) {
+                        array_push($filter, $d);
+                    }
+                }
+
+                if(!empty($filter)){
+                    $result[$key] = implode(', ', $filter);
+                }
+            }
+        }
+
+        $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
+        if(!empty($fecha_inicial)){
+            $result['fecha_inicial'] = $fecha_inicial;
+        }
+
+        $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final');
+        if(!empty($fecha_final)){
+            $result['fecha_final'] = $fecha_final;
+        }
+    }
+    return $result;
 }
 
 function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $params = array(), bool $returnAsString = false){

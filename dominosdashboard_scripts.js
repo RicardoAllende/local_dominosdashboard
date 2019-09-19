@@ -50,6 +50,10 @@ function obtenerDefaultEnNull(valor, porDefault){
     return valor;
 }
 
+function exportar_a_excel(){
+    document.forms.filter_form.submit();
+}
+
 //Funcion para mostar la grafica sin informacion
 function insertarGraficaSinInfo(div, mensaje){
     if(typeof mensaje == 'undefined'){
