@@ -111,6 +111,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     
     <script>
         var muestraComparativas = false;
+        var mostrarEnlaces = true;
         var isCourseLoading = false;
         var isFilterLoading = false;
         var trabajoPendiente = false;

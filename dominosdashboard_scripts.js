@@ -64,7 +64,7 @@ function insertarGraficaSinInfo(div, mensaje){
             <div class='card bg-gray border-0 m-2'>
             <div class='align-items-end'>                                        
                     <div class='fincard text-center'>
-                        <a href='' id=''></a>
+                        <a href='#' id=''></a>
                     </div>
                 </div>
                 <div class='card esp'>
@@ -146,11 +146,16 @@ function crearTarjetaParaGrafica(div, curso, claseDiv){
     if(typeof currentTab != 'undefined'){
         id_para_Grafica += '_' + currentTab;
     }
+    if(typeof mostrarEnlaces != 'undefined'){
+        enlace = "detalle_curso_iframe.php?id=" + curso.id;
+    }else{
+        enlace = '#';
+    }
     $(div).append(`<div class="${claseDiv} espacio">
                 <div class="card bg-gray border-0 m-2">
                 <div class="align-items-end">
                         <div class="fincard text-center">
-                            <a href="detalle_curso_iframe.php?id=${curso.id}">${curso.title}</a>
+                            <a href="${enlace}">${curso.title}</a>
                         </div>
                     </div>
                     <div class="card esp">
@@ -343,11 +348,16 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
 
 function crearTarjetaParaGraficakpi(div, curso, kpi, id){
     id_para_Grafica = "chart_" + id + '_' + curso.id;
+    if(typeof mostrarEnlaces != 'undefined'){
+        enlace = "detalle_curso_iframe.php?id=" + curso.id;
+    }else{
+        enlace = '#';
+    }
     $(div).append(`<div class="col-sm-12 col-xl-6 espacio">
                 <div class="card bg-gray border-0 m-2" id="">
                 <div class="align-items-end">
                         <div class="fincard text-center">
-                            <a href="detalle_curso_iframe.php?id=${curso.id}">${curso.title}</a>
+                            <a href="${enlace}">${curso.title}</a>
                         </div>
                     </div>
                     <div class="card esp">
