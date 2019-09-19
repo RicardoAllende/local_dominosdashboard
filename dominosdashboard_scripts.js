@@ -102,7 +102,7 @@ function crearGraficaDeCurso(_bindto, curso){
             var nombre_columnas = ["Inscritos", "Aprobados", "No iniciaron el curso"];
         break;
         case 'gauge':
-            _columns  = [ ['Aprobados', 30] ];
+            _columns  = [ ['Aprobados', curso.percentage] ];
             var nombre_columnas = ["Aprobados"];
         break;
         default:
@@ -297,16 +297,6 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
         }
     }
     return true;
-}
-
-function mostrarModalEspera(titulo, color){
-    if(typeof color != 'string') { color = "#1E8ABB"; }
-    if(typeof titulo != 'string') { titulo = "Cargando"; }
-    $('body').loadingModal({text: titulo, opacity:'0.2', color: color});
-}
-
-function ocultarModalEspera(){
-    $('body').loadingModal('destroy');
 }
 
 function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titulo, id){

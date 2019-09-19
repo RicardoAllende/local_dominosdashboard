@@ -374,46 +374,6 @@ function local_dominosdashboard_get_enrolled_users_count(int $courseid, string $
     return 0; // default
 }
 
-function local_dominosdashboard_get_enrolled_users_count_2(int $courseid, string $userids = '', string $fecha_inicial, string $fecha_final){ //
-    $email_provider = local_dominosdashboard_get_email_provider_to_allow();
-    if(empty($userids)){
-        return 0; // default
-    }else{
-        $whereids = " AND ra.userid IN ({$userids})";
-    }
-    if(!empty($email_provider)){
-        $where = " AND email LIKE '{$email_provider}'"; 
-    }else{
-        $where = ""; 
-    }
-    global $DB;
-    $enrolment_types = $DB->get_records('enrol', array('courseid' => $courseid));
-    $query = "SELECT COUNT(DISTINCT ra.userid) AS learners
-    FROM {course} AS c
-    LEFT JOIN {context} AS ctx ON c.id = ctx.instanceid
-    JOIN {role_assignments} AS ra ON ra.contextid = ctx.id
-    -- JOIN (SELECT {user_enrolments} AS ue JOIN {enrol}
-    WHERE c.id = {$courseid}
-    AND ra.userid IN(SELECT id from {user} WHERE deleted = 0 AND suspended = 0 {$where} {$whereids})
-    AND ra.roleid IN (5) # default student role";
-
-    /**
-     * mdl_context donde instanceid
-     */
-
-    // Consulta desde el plugin
-
-    "SELECT DISTINCT _user.id FROM {user} _user
-    JOIN {user_enrolments} _ue ON _ue.userid = _user.id
-    JOIN {enrol} _enrol ON (_enrol.id = _ue.enrolid AND _enrol.courseid = {$courseid})
-    WHERE _user.deleted = 0 AND _user.suspended = 0 {$where}";
-
-    if($result = $DB->get_record_sql($query)){
-        return intval($result->learners);
-    }
-    return 0; // default
-}
-
 function local_dominosdashboard_get_email_provider_to_allow(){
     if($email_provider = get_config('local_dominosdashboard', 'allowed_email_addresses_in_course')){
         return $email_provider; // Ejemplo: @alsea.com.mx o @dominos.com.mx
@@ -437,19 +397,12 @@ function local_dominosdashboard_get_enrolled_users_ids(int $courseid, string $fe
     }
     $campo_fecha = "_ue.timestart";
     $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
-    /*
-    $query = "SELECT DISTINCT ra.userid as userid
-    FROM {course} AS c
-    LEFT JOIN {context} AS ctx ON c.id = ctx.instanceid
-    JOIN {role_assignments} AS ra ON ra.contextid = ctx.id
-    WHERE c.id = {$courseid}
-    AND ra.userid IN(SELECT id from {user} WHERE deleted = 0 AND suspended = 0 {$where})
-    AND ra.roleid IN (5) # default student role";
-    */
+    /* User is active participant (used in user_enrolments->status) -- Documentación tomada de enrollib.php 
+    define('ENROL_USER_ACTIVE', 0);*/
     $query = "SELECT DISTINCT _user.id FROM {user} _user
     JOIN {user_enrolments} _ue ON _ue.userid = _user.id
     JOIN {enrol} _enrol ON (_enrol.id = _ue.enrolid AND _enrol.courseid = {$courseid})
-    WHERE _user.deleted = 0 {$filtro_fecha} AND _user.suspended = 0 {$where} AND _user.id NOT IN 
+    WHERE _ue.status = 0 AND _user.deleted = 0 {$filtro_fecha} AND _user.suspended = 0 {$where} AND _user.id NOT IN 
     (SELECT DISTINCT ra.userid as userid
         FROM {course} AS _c
         LEFT JOIN {context} AS ctx ON _c.id = ctx.instanceid
