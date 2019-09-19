@@ -94,6 +94,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         </div>
         <div id="loader"></div>
         <div class="col-sm-12" id="local_dominosdashboard_content"></div>
+        
         <!-- <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div> -->
     </div>
     
@@ -192,6 +193,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                         showPage("ldm_tab_" + currentTab);
                     }
                 },1000)
+                
             })
             .fail(function(error, error2) {
                 isCourseLoading = false;

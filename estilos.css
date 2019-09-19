@@ -276,3 +276,25 @@
 #navbarSupportedContent {
     padding-bottom: 1%;
 }
+
+/*Texto en tabla comparativa*/
+.txt_tabla_aprobados{
+    color: green;
+}
+
+.txt_tabla_no_aprobados{
+    color: red;
+}
+
+.txt_tabla_inscritos{
+    color: blue;
+}
+
+.txt_tabla_ideal{
+    color: #ff7f0e
+}
+
+.txt_tabla_porcentaje_aprobacion{
+    color: #1f77b4;
+}
+

@@ -186,6 +186,7 @@ function obtenerFiltros(indicator){
     peticionFiltros(informacion);
 }
 
+
 function generarGraficasTodosLosCursos(_bindto, response, titulo) {
     type = response.type;
     $(_bindto).html('');
@@ -330,6 +331,7 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
                         <div class="bg-white m-2" id="${div_id}"></div>                        
                     </div>
                 </div>`);
+    
     var chartz = c3.generate({
         data: {
             columns: info_grafica,
@@ -345,6 +347,38 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
             }
         }
     });
+    
+    console.log('INFORMACION TABLA');
+    console.log(cursos);
+
+    if(currentTab != 3){
+        $(_bindto).append(`        
+    <div class="col-sm-12">
+    <table frame="void" id="tabla_coparativa" rules="rows" style="width:100%;text-align: center;">
+
+        <tr class="rankingt">
+            <th>Nombre del curso</th>
+            <th class="txt_tabla_aprobados">Aprobados</th>
+            <th class="txt_tabla_no_aprobados">No Aprobados</th>
+            <th class="txt_tabla_inscritos">Total de usuarios inscritos</th>
+            <th class="txt_tabla_ideal">Ideal de cobertura</th>
+            <th class="txt_tabla_porcentaje_aprobacion">Porcentaje de Aprobación del curso</th>                        
+        </tr>                                       
+    </table>
+    <br>
+    </div>        
+    `);   
+    for(var j = 0; j < cursos.length; j++){                  
+        $("#tabla_coparativa").append(`<tr>        
+        <td>${cursos[j].title}</td>
+        <td class="txt_tabla_aprobados">${cursos[j].approved_users}</td>
+        <td class="txt_tabla_no_aprobados">${cursos[j].not_approved_users}</td>
+        <td class="txt_tabla_inscritos">${cursos[j].enrolled_users}</td>
+        <td class="txt_tabla_ideal">${ideal_cobertura} %</td>
+        <td class="txt_tabla_porcentaje_aprobacion">${cursos[j].percentage} %</td>
+        </tr> `);                
+    }
+    }
 }
 
 function crearTarjetaParaGraficakpi(div, curso, kpi, id){
@@ -394,7 +428,9 @@ function crearGraficaDeCursokpi(_bindto, curso, kpi){
         data: {
             columns: _columns,
             type: 'bar',
-            
+            colors: {
+                                                          
+            }
             
         },
         bindto: _bindto,
