@@ -608,17 +608,8 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     $response->chart = local_dominosdashboard_get_course_chart($courseid);
     $response->title = $course->fullname;
     $response->status = 'ok';
-    $fecha_inicial = $fecha_final = "";
-    if(array_key_exists('fecha_inicial', $params)){
-        if(!empty($params['fecha_inicial'])){
-            $fecha_inicial = $params['fecha_inicial'];
-        }
-    }
-    if(array_key_exists('fecha_final', $params)){
-        if(!empty($params['fecha_final'])){
-            $fecha_final = $params['fecha_final'];
-        }
-    }
+    $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
+    $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final');
 
     if(RETURN_RANDOM_DATA){
         $response->enrolled_users = random_int(100, MAX_RANDOM_NUMBER);
@@ -688,17 +679,8 @@ function local_dominosdashboard_get_course_comparative(int $courseid, array $par
     if($course === false){
         return array();
     }
-    $fecha_final = $fecha_inicial = "";
-    if(array_key_exists('fecha_inicial', $params)){
-        if(!empty($params['fecha_inicial'])){
-            $fecha_inicial = $params['fecha_inicial'];
-        }
-    }
-    if(array_key_exists('fecha_final', $params)){
-        if(!empty($params['fecha_final'])){
-            $fecha_final = $params['fecha_final'];
-        }
-    }
+    $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
+    $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final');
     $indicator = $params['selected_filter'];
     if(isset($params[$indicator])){
         _log('Se tienen parámetros');
@@ -760,9 +742,28 @@ function local_dominosdashboard_get_kpi_info(int $courseid, array $params = arra
     return $kpis;
 }
 
+function local_dominosdashboard_get_value_from_params(array $params, string $search, $returnIfNotExists = '', bool $apply_not_empty = false){
+    if(array_key_exists($search, $params)){
+        if($apply_not_empty){
+            if(!empty($params[$search])){
+                return $params[$search];
+            }
+        }else{
+            return $params[$search];
+        }
+    }
+    return $returnIfNotExists;
+}
+
 function local_dominosdashboard_get_kpi_results($kpi, array $params){
     // return null;
     global $DB;
+
+    $fecha_kpi = local_dominosdashboard_get_value_from_params($params, 'fecha_kpi', date('Y-m-d', time()));
+    $selected_date = new DateTime($fecha_kpi);
+    $month = $selected_date->format('m');
+    $year = $selected_date->format('Y');
+    $sql_fecha_kpi = " AND YEAR(FROM_UNIXTIME(kpi_date)) = {$year} AND MONTH(FROM_UNIXTIME(kpi_date)) = $month ";
     
     $sqlParams = array();
     $ccoms = "";
@@ -774,38 +775,30 @@ function local_dominosdashboard_get_kpi_results($kpi, array $params){
         }
     }
 
-    $fecha_final = $fecha_inicial = '';
-    if(array_key_exists('fecha_inicial', $params)){
-        if(!empty($params['fecha_inicial'])){
-            $fecha_inicial = $params['fecha_inicial'];
-        }
-    }
-    if(array_key_exists('fecha_final', $params)){
-        if(!empty($params['fecha_final'])){
-            $fecha_final = $params['fecha_final'];
-        }
-    }
+    $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
+    $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final');
     
     $campo_fecha = 'kpi_date';
     $filtro_fecha = "";
     $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
 
+    $whereClauses = " 1 = 1 {$ccoms} {$filtro_fecha} {$sql_fecha_kpi} GROUP BY estatus ";
     switch($kpi){
         case KPI_OPS: // 1 // Aprobado, no aprobado y destacado
-            $query = "SELECT estatus, COUNT(*) AS conteo FROM {dominos_kpis} WHERE 1 = 1 {$ccoms} {$filtro_fecha} GROUP BY estatus";
+            $query = "SELECT estatus, COUNT(*) AS conteo FROM {dominos_kpis} WHERE {$whereClauses}";
             $result = $DB->get_records_sql_menu($query, $sqlParams);
             if(empty($result)) return null;
             return $result;
             break;
         case KPI_HISTORICO: // 2 retorna el número de quejas
-            $query = "SELECT ROUND(AVG(quejas), 0) AS quejas FROM {dominos_kpis} WHERE 1 = 1 {$ccoms} {$filtro_fecha} ";
+            $query = "SELECT ROUND(AVG(quejas), 0) AS quejas FROM {dominos_kpis} WHERE {$whereClauses} ";
             $result = $DB->get_field_sql($query, $sqlParams);
             if(empty($result)) return null;
             return $result;
             break;
         case KPI_SCORCARD: // 3
             $query = "SELECT ROUND(AVG(rotacion_mensual), 2) AS rotacion_mensual, ROUND(AVG(rotacion_rolling)) AS rotacion_rolling
-             FROM {dominos_kpis} WHERE 1 = 1 {$ccoms} {$filtro_fecha} ";
+             FROM {dominos_kpis} WHERE {$whereClauses} ";
             $result = $DB->get_record_sql($query, $sqlParams);
             if(empty($result)) return null;
             return $result;
@@ -950,19 +943,11 @@ function local_dominosdashboard_get_course_grade_item_id(int $courseid){
 }
 
 function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $params = array(), bool $returnAsString = false){
-    $fecha_final = ''; $fecha_inicial = '';
-    if(array_key_exists('fecha_inicial', $params)){
-        if(!empty($params['fecha_inicial'])){
-            $fecha_inicial = $params['fecha_inicial'];
-        }
-    }
-    if(array_key_exists('fecha_final', $params)){
-        if(!empty($params['fecha_final'])){
-            $fecha_final = $params['fecha_final'];
-        }
-    }
-    
-    $ids = local_dominosdashboard_get_enrolled_users_ids($courseid, $fecha_inicial, $fecha_final);
+    $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
+    $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final');
+    // Se omite $fecha_inicial debido a que si se incluye los usuarios inscritos anteriormente serían omitidos, activar si se pide explícitamente ese funcionamiento
+    // $ids = local_dominosdashboard_get_enrolled_users_ids($courseid, $fecha_inicial, $fecha_final);
+    $ids = local_dominosdashboard_get_enrolled_users_ids($courseid, '', $fecha_final);
     if(empty($ids)){
         return false;
     }

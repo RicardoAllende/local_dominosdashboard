@@ -61,6 +61,7 @@ $PAGE->set_context($context_system);
             <div id="contenedor_fechas">
                 <label for="fecha_inicial">Desde <input type="date" onchange="obtenerInformacion(),loaderFecha()" class="form-control" name="fecha_inicial" id="fecha_inicial"></label> 
                 <label for="fecha_final">Hasta <input type="date" onchange="obtenerInformacion(),loaderFecha()" class="form-control" name="fecha_final" id="fecha_final"></label>
+                <label for="fecha_kpi">Fecha del kpi (mensual) <input type="date" onchange="obtenerInformacion()" class="form-control" name="fecha_kpi" id="fecha_kpi"></label>
             </div>
             <input type="hidden" name="report_type" id="report_type" value="course_completion">
             <div id='contenedor_filtros'></div>
@@ -360,6 +361,10 @@ $PAGE->set_context($context_system);
 
         function imprimir_kpi_scorcard_rotacion_curso(kpi, not_approved) {
             if(!esVacio(kpi.value)){  
+                if(esVacio(_kpi.value["rotacion_mensual"]) && esVacio(_kpi.value["rotacion_rolling"])){
+                    insertarGraficaSinInfo("#card_scorcard");
+                    return;
+                }
                 document.getElementById("card_scorcard").innerHTML = "<div class='col-sm-12 espacio'>"+
                                         "<div class='card bg-gray border-0 m-2'>"+
                                             "<div class='align-items-end'>"+
@@ -406,10 +411,10 @@ $PAGE->set_context($context_system);
                     data: {
                         columns: [
                             ['No Aprobado', (100-informacion_del_curso.data.percentage).toFixed(2)],
-                            ['Promedio de rotación', _kpi.value],
+                            ['Promedio de rotación', kpi.value],
                             ['Ideal de rotación', ideal_rotacion],
-                            ['Rotación mensual', _kpi.value["rotacion_mensual"]],
-                            ['Rotación rolling', _kpi.value["rotacion_rolling"]]
+                            ['Rotación mensual', kpi.value["rotacion_mensual"]],
+                            ['Rotación rolling', kpi.value["rotacion_rolling"]]
                         ],
                         type: 'bar',
                         colors: {
