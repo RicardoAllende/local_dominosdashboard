@@ -757,13 +757,14 @@ function local_dominosdashboard_get_course_comparative(int $courseid, array $par
         $item_to_compare = new stdClass();
         $item_to_compare->name = $catalogue_item;
         $params[$key] = [$catalogue_item];
-        $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params, true);                
+        $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params, false);                
         if(empty($userids)){
             $item_to_compare->enrolled_users = 0;
             $item_to_compare->approved_users = 0;
             $item_to_compare->percentage = local_dominosdashboard_percentage_of($item_to_compare->approved_users, $item_to_compare->enrolled_users);                    
         }else{
-            $item_to_compare->enrolled_users = local_dominosdashboard_get_enrolled_users_count($courseid, $userids, $fecha_inicial, $fecha_final); //
+            $item_to_compare->enrolled_users = count($userids); //
+            $userids = implode(',', $userids);
             $item_to_compare->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids, $fecha_inicial, $fecha_final); //
             $item_to_compare->percentage = local_dominosdashboard_percentage_of($item_to_compare->approved_users, $item_to_compare->enrolled_users);
         }
