@@ -151,6 +151,10 @@ function crearTarjetaParaGrafica(div, curso, claseDiv){
     }else{
         enlace = '#';
     }
+
+    var a = curso.percentage;
+    var b = 100 - a;     
+    
     $(div).append(`<div class="${claseDiv} espacio">
                 <div class="card bg-gray border-0 m-2">
                 <div class="align-items-end">
@@ -169,7 +173,7 @@ function crearTarjetaParaGrafica(div, curso, claseDiv){
                         <div class="border-0 col-sm-4">
                             <div class="card-body text-center">
                                 <p class="card-text txti_noaprobados">No Aprobados</p>
-                                <p class="card-text txtnum_noaprobados">${curso.not_approved_users}</p>
+                                <p class="card-text txtnum_noaprobados">${curso.not_approved_users} (${b} %)</p>
                             </div>
                         </div>
                         <div class="border-0 col-sm-4">
