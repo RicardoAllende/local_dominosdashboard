@@ -280,21 +280,26 @@
 /*Texto en tabla comparativa*/
 .txt_tabla_aprobados{
     color: green;
+    font-size: 15px;
 }
 
 .txt_tabla_no_aprobados{
     color: red;
+    font-size: 15px;
 }
 
 .txt_tabla_inscritos{
     color: blue;
+    font-size: 15px;
 }
 
 .txt_tabla_ideal{
-    color: #ff7f0e
+    color: #ff7f0e;
+    font-size: 15px;
 }
 
 .txt_tabla_porcentaje_aprobacion{
     color: #1f77b4;
+    font-size: 15px;
 }
 

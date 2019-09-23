@@ -353,7 +353,7 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     if(currentTab != 3){
         $(_bindto).append(`        
     <div class="col-sm-12">
-    <table frame="void" id="tabla_coparativa" rules="rows" style="width:100%;text-align: center;">
+    <table frame="void" id="tabla_comparativa" rules="rows" style="width:100%;text-align: center;">
 
         <tr class="rankingt">
             <th>Nombre del curso</th>
@@ -368,7 +368,7 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     </div>        
     `);   
     for(var j = 0; j < cursos.length; j++){                  
-        $("#tabla_coparativa").append(`<tr>        
+        $("#tabla_comparativa").append(`<tr>        
         <td>${cursos[j].title}</td>
         <td class="txt_tabla_aprobados">${cursos[j].approved_users}</td>
         <td class="txt_tabla_no_aprobados">${cursos[j].not_approved_users}</td>
