@@ -51,6 +51,8 @@ function local_dominosdashboard_user_has_access(bool $throwError = true){
     }
 }
 
+DEFINE('LOCAL_DOMINOSDASHBOARD_USERID_FIELD', '_userid_');
+
 // Agrega enlace al Dashboard en el menú lateral de Moodle
 function local_dominosdashboard_extend_navigation(global_navigation $nav) {
     $has_capability = local_dominosdashboard_user_has_access(false);
@@ -399,18 +401,18 @@ function local_dominosdashboard_get_enrolled_users_ids(int $courseid, string $fe
     $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
     /* User is active participant (used in user_enrolments->status) -- Documentación tomada de enrollib.php 
     define('ENROL_USER_ACTIVE', 0);*/
-    $query = "SELECT DISTINCT _user.id FROM {user} _user
-    JOIN {user_enrolments} _ue ON _ue.userid = _user.id
-    JOIN {enrol} _enrol ON (_enrol.id = _ue.enrolid AND _enrol.courseid = {$courseid})
-    WHERE _ue.status = 0 AND _user.deleted = 0 {$filtro_fecha} AND _user.suspended = 0 {$where} AND _user.id NOT IN 
-    (SELECT DISTINCT ra.userid as userid
-        FROM {course} AS _c
-        LEFT JOIN {context} AS ctx ON _c.id = ctx.instanceid
-        JOIN {role_assignments} AS ra ON ra.contextid = ctx.id
-        WHERE _c.id = {$courseid}
-        AND ra.roleid NOT IN (5) # No students
+    $query = "SELECT DISTINCT __user__.id FROM {user} AS __user__
+    JOIN {user_enrolments} AS __ue__ ON __ue__.userid = __user__.id
+    JOIN {enrol} __enrol__ ON (__enrol__.id = __ue__.enrolid AND __enrol__.courseid = {$courseid})
+    WHERE __ue__.status = 0 AND __user__.deleted = 0 {$filtro_fecha} AND __user__.suspended = 0 {$where} AND __user__.id NOT IN 
+    (SELECT DISTINCT __role_assignments__.userid as userid
+        FROM {course} AS __course__
+        LEFT JOIN {context} AS __context__ ON __course__.id = __context__.instanceid
+        JOIN {role_assignments} AS __role_assignments__ ON __role_assignments__.contextid = __context__.id
+        WHERE __course__.id = {$courseid}
+        AND __role_assignments__.roleid NOT IN (5) # No students
     )";
-    // _log('local_dominosdashboard_get_enrolled_users_ids ', $query);
+
     global $DB;
     if($result = $DB->get_fieldset_sql($query)){
         return $result;
@@ -989,27 +991,49 @@ function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $p
     }
     $allow_users = array();
     $filter_active = false;
+    $filters_sql = array();
+    $query_parameters = array();
     if(!empty($params)){
         global $DB;
         $indicators = local_dominosdashboard_get_indicators();
         // // _log('indicators', $indicators);
         // $position = array_search();
+        $prefix = "___";
+        $tableName = 'user_info_data';
         foreach($params as $key => $param){
             // // _log('$params as $key => $param', $key, $param);
             if(array_search($key, $indicators) !== false){
                 $fieldid = get_config('local_dominosdashboard', "filtro_" . $key);
                 if($fieldid !== false){
+                    $prefix .= '_';
+                    $alias = $prefix . $tableName;
                     $data = $params[$key];
                     $filter_active = true;
                     if(is_string($data) || is_numeric($data)){
+                        array_push($filters_sql, " (SELECT DISTINCT {$alias}.userid FROM {user_info_data} AS {$alias} WHERE {$alias}.fieldid = ? AND {$alias}.data = ?) ");
+                        array_push($query_parameters, $fieldid);
+                        array_push($query_parameters, $data);
                         // $newIds = 
                         $newIds = $DB->get_fieldset_select('user_info_data', 'distinct userid', ' fieldid = :fieldid AND data = :data ', array('fieldid' => $fieldid, 'data' => $params[$key]));
                     }elseif(is_array($data)){
                         $wheres = array();
                         $query_params = array();
+                        $options = array();
                         foreach ($data as $d) {
                                 array_push($wheres, " data = ? ");
                                 array_push($query_params, $d);
+                                array_push($options, $d);
+                                array_push($query_parameters, $d);
+                        }
+                        if(!empty($options)){
+                            $bindParams = array();
+                            for($i = 0; $i < count($options); $i++){
+                                array_push($bindParams, '?');
+                            }
+                            $bindParams = implode(',', $bindParams);
+                            array_push($filters_sql, " (SELECT DISTINCT {$alias}.userid FROM {user_info_data} AS {$alias} WHERE {$alias}.data IN ({$bindParams}) AND {$alias}.fieldid = ? ) ");
+                            array_push($query_parameters, $fieldid);                            
+                            // $options = implode(',')
                         }
                         if(!empty($wheres)){
                             $wheres = " AND ( " . implode(" || ", $wheres) . " ) ";
@@ -1044,6 +1068,10 @@ function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $p
             }
         }
     }
+    $response = new stdClass();
+    $response->filters = $filters_sql;
+    $response->params = $query_parameters;
+    return $response;
     $ids = array_unique($ids);
     // // _log('$allow_users', $allow_users);
     if($filter_active){
