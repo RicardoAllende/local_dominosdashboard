@@ -105,6 +105,13 @@ function crearGraficaDeCurso(_bindto, curso){
             var nombre_columnas = ["Aprobados", "No Aprobados"];
         break;    
         case 'bar':
+                // _columns = [
+                //     ['Inscritos', 30, 200, 100, 400],
+                //     ['Aprobados', 130, 100, 140, 200]
+                // ];
+                // axis: {
+                //     rotated: true
+                // }
             _columns = [
                 ['Inscritos', curso.enrolled_users],
                 ['Aprobados', curso.approved_users],
@@ -115,6 +122,20 @@ function crearGraficaDeCurso(_bindto, curso){
             _columns  = [ ['Aprobados', curso.percentage] ];
             var nombre_columnas = ["Aprobados"];
         break;
+        case 'spline':
+                _columns = [
+                    ['Inscritos', 30, 200, 100, 400],
+                    ['Aprobados', 130, 100, 140, 200]
+                ];
+                var nombre_columnas = ["Aprobados", "No Aprobados"];    
+        break;
+        case 'grupo':
+                _columns = [
+                    ['Inscritos', 30, 200, 100, 400],
+                    ['Aprobados', 130, 100, 140, 200]
+                ];
+                var nombre_columnas = ["Aprobados", "No Aprobados"];            
+        break;    
         default:
             $(_bindto).html('');
             return;
@@ -502,11 +523,11 @@ function peticionFiltros(info){
                         <div class="card-header cuerpo-filtro" id="${heading_id}">
                             <h5 class="mb-0">
                                 <span class="btn btn-link collapsed texto-filtro"
-                                    data-toggle="collapse" style="color: white; text-transform: uppercase;" data-target="#${collapse_id}" aria-expanded="false"
+                                    data-toggle="collapse" style="color: white;text-transform: uppercase;font-size: 0.8rem;" data-target="#${collapse_id}" aria-expanded="false"
                                     aria-controls="${collapse_id}">
                                     ${clave}
                                 </span>
-                                ${muestraComparativas ? `<span class="btn btn-link text-right texto-filtro" onclick="compararFiltros('${clave}')" style="color: white;">Comparar</span>` : ``}
+                                ${muestraComparativas ? `<span class="btn btn-link text-right texto-filtro" onclick="compararFiltros('${clave}')" style="color: white;font-size: 0.8rem;">Comparar</span>` : ``}
                             </h5>
                         </div>
                         <div id="${collapse_id}" class="collapse" aria-labelledby="${heading_id}" data-parent="#contenedor_filtros">
