@@ -207,16 +207,21 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
         cursos = response.result;
         if(Array.isArray(cursos)){
             var aprobados = Array();
+            var no_aprobados = Array();
             var nombres = Array();
             var _ideal_cobertura = Array();
             aprobados.push("Porcentaje de aprobación del curso");
+            no_aprobados.push("Porcentaje de no aprobados");
             _ideal_cobertura.push('Ideal de cobertura');
             for (var i = 0; i < cursos.length; i++) {
                 _ideal_cobertura.push(ideal_cobertura);
                 var curso = cursos[i];
                 aprobados.push(curso.percentage);
+                var resta = 100 - curso.percentage;
+                var resu = resta.toFixed(2);
+                no_aprobados.push(resu);
             }
-            crearGraficaComparativaVariosCursos(_bindto, [aprobados, _ideal_cobertura], cursos, titulo);
+            crearGraficaComparativaVariosCursos(_bindto, [aprobados, no_aprobados, _ideal_cobertura], cursos, titulo);
             for (var i = 0; i < cursos.length; i++) {
                 var curso = cursos[i];
                 crearTarjetaParaGrafica(_bindto, curso);
