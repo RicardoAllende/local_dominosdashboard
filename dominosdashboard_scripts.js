@@ -689,7 +689,7 @@ function imprimirRanking(div, info) {
         if(num_activities >= 6){ // Se muestran 2 rankings
             $(div).append(`
                     <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
-                        <h1 style="text-align: center;">Ranking de actividades</h1>
+                        <h1 class="text-center">Ranking de actividades</h1>
                     </div>
                     <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
                         <table frame="void" rules="rows" style="width:100%">
