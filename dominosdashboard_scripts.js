@@ -356,31 +356,32 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
 
     if(currentTab != 3){
         $(_bindto).append(`        
-    <div class="col-sm-12">
-    <table frame="void" id="tabla_comparativa" rules="rows" style="width:100%;text-align: center;">
+            <div class="col-sm-12">
+            <table frame="void" id="tabla_comparativa${currentTab}" rules="rows" style="width:100%;text-align: center;">
 
-        <tr class="rankingt">
-            <th>Nombre del curso</th>
-            <th class="txt_tabla_aprobados">Aprobados</th>
-            <th class="txt_tabla_no_aprobados">No Aprobados</th>
-            <th class="txt_tabla_inscritos">Total de usuarios inscritos</th>
-            <th class="txt_tabla_ideal">Ideal de cobertura</th>
-            <th class="txt_tabla_porcentaje_aprobacion">Porcentaje de Aprobación del curso</th>                        
-        </tr>                                       
-    </table>
-    <br>
-    </div>        
-    `);   
-    for(var j = 0; j < cursos.length; j++){                  
-        $("#tabla_comparativa").append(`<tr>        
-        <td>${cursos[j].title}</td>
-        <td class="txt_tabla_aprobados">${cursos[j].approved_users}</td>
-        <td class="txt_tabla_no_aprobados">${cursos[j].not_approved_users}</td>
-        <td class="txt_tabla_inscritos">${cursos[j].enrolled_users}</td>
-        <td class="txt_tabla_ideal">${ideal_cobertura} %</td>
-        <td class="txt_tabla_porcentaje_aprobacion">${cursos[j].percentage} %</td>
-        </tr> `);                
-    }
+                <tr class="rankingt${currentTab}">
+                    <th>Nombre del curso</th>
+                    <th class="txt_tabla_aprobados">Aprobados</th>
+                    <th class="txt_tabla_no_aprobados">No Aprobados</th>
+                    <th class="txt_tabla_inscritos">Total de usuarios inscritos</th>
+                    <th class="txt_tabla_ideal">Ideal de cobertura</th>
+                    <th class="txt_tabla_porcentaje_aprobacion">Porcentaje de Aprobación del curso</th>                        
+                </tr>                                       
+            </table>
+            <br>
+            </div>        
+        `);   
+        for(var j = 0; j < cursos.length; j++){                  
+            $(`#tabla_comparativa${currentTab}`).append(`<tr>        
+                <td>${cursos[j].title}</td>
+                <td class="txt_tabla_aprobados">${cursos[j].approved_users}</td>
+                <td class="txt_tabla_no_aprobados">${cursos[j].not_approved_users}</td>
+                <td class="txt_tabla_inscritos">${cursos[j].enrolled_users}</td>
+                <td class="txt_tabla_ideal">${ideal_cobertura} %</td>
+                <td class="txt_tabla_porcentaje_aprobacion">${cursos[j].percentage} %</td>
+                </tr> 
+            `);                
+        }
     }
 }
 
@@ -457,11 +458,11 @@ function crearGraficaDeCursokpi(_bindto, curso, kpi){
 }
 
 function peticionFiltros(info){
-    if(isFilterLoading){
-        console.log('Cargando contenido de cursos, no debe procesar más peticiones por el momento');
-        return;
-    }
-    isFilterLoading = !isFilterLoading;
+    // if(isFilterLoading){
+    //     console.log('Cargando contenido de cursos, no debe procesar más peticiones por el momento');
+    //     return;
+    // }
+    // isFilterLoading = !isFilterLoading;
     dateBeginingFiltros = Date.now();
     if(typeof muestraComparativas != 'boolean'){
         muestraComparativas = false;
