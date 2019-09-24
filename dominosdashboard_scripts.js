@@ -173,7 +173,7 @@ function crearTarjetaParaGrafica(div, curso, claseDiv){
                         <div class="border-0 col-sm-4">
                             <div class="card-body text-center">
                                 <p class="card-text txti_noaprobados">No Aprobados</p>
-                                <p class="card-text txtnum_noaprobados">${curso.not_approved_users} (${b} %)</p>
+                                <p class="card-text txtnum_noaprobados">${curso.not_approved_users} (${b.toFixed(2)} %)</p>
                             </div>
                         </div>
                         <div class="border-0 col-sm-4">

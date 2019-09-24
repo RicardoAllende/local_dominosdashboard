@@ -138,6 +138,7 @@
 /* Clase text-center de otras versiones de bootstrap */
 .text-center{
     text-align: center!important;
+    font-size: 1rem;
 }
 
 /* Texto para la card cuando no haya informacion*/
