@@ -97,7 +97,13 @@ function insertarGraficaSinInfo(div, mensaje){
 function crearGraficaDeCurso(_bindto, curso){
     // console.log('Probable error', curso);
     switch(curso.chart){
-        case 'pie':
+        case 'pie':        
+            _columns = [                
+                ['Aprobados', curso.approved_users],
+                ['No Aprobados', curso.not_approved_users]
+            ];
+            var nombre_columnas = ["Aprobados", "No Aprobados"];
+        break;    
         case 'bar':
             _columns = [
                 ['Inscritos', curso.enrolled_users],
@@ -119,7 +125,8 @@ function crearGraficaDeCurso(_bindto, curso){
             type: curso.chart,
             colors: {
                 Inscritos: '#0000ff',
-                Aprobados: '#008000'
+                Aprobados: '#008000',
+                'No Aprobados': '#ff0000'
                 
             }
         },
@@ -329,7 +336,7 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     }
     insertarTituloSeparador(_bindto, titulo);
     $(_bindto).append(`
-                <div class="col-sm-12 col-xl-12">
+                <div class="col-sm-12">
                     <div class="card bg-faded border-0 m-2" id="">
                     <div class="align-items-end">
                             <div class="fincard text-center">
@@ -368,8 +375,7 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
                     <th>Nombre del curso</th>
                     <th class="txt_tabla_aprobados">Aprobados</th>
                     <th class="txt_tabla_no_aprobados">No Aprobados</th>
-                    <th class="txt_tabla_inscritos">Total de usuarios inscritos</th>
-                    <th class="txt_tabla_ideal">Ideal de cobertura</th>
+                    <th class="txt_tabla_inscritos">Total de usuarios inscritos</th>                    
                     <th class="txt_tabla_porcentaje_aprobacion">Porcentaje de Aprobación del curso</th>                        
                 </tr>                                       
             </table>
@@ -381,8 +387,7 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
                 <td>${cursos[j].title}</td>
                 <td class="txt_tabla_aprobados">${cursos[j].approved_users}</td>
                 <td class="txt_tabla_no_aprobados">${cursos[j].not_approved_users}</td>
-                <td class="txt_tabla_inscritos">${cursos[j].enrolled_users}</td>
-                <td class="txt_tabla_ideal">${ideal_cobertura} %</td>
+                <td class="txt_tabla_inscritos">${cursos[j].enrolled_users}</td>                
                 <td class="txt_tabla_porcentaje_aprobacion">${cursos[j].percentage} %</td>
                 </tr> 
             `);                
