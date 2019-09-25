@@ -502,7 +502,9 @@ $PAGE->set_context($context_system);
                 data = { columns: columns, type: 'bar'};
                 var chart = c3.generate({
                     data: data,
-                    
+                    axis: {
+                        rotated: true
+                    },   
                     bindto: id_para_Grafica,
                 });
             }else{
