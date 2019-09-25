@@ -504,7 +504,13 @@ $PAGE->set_context($context_system);
                     data: data,
                     axis: {
                         rotated: true
-                    },   
+                    },
+                    tooltip: {
+                        format: {
+                            title: function (d) { return 'Porcentaje de aprobación'; },
+
+                        }               
+                    }   
                     bindto: id_para_Grafica,
                 });
             }else{
