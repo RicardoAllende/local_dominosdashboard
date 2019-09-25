@@ -31,13 +31,26 @@ local_dominosdashboard_user_has_access();
 
 global $DB;
 $PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/administrar_KPIS.php");
+$uploadKPIsurl = $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php';
+$settingsurl = $CFG->wwwroot . '/admin/settings.php?section=local_dominosdashboard';
 $PAGE->set_context($context_system);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 echo $OUTPUT->header();
 ?>
 <link rel="stylesheet" href="estilos.css">
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarKPIModal">Agregar nuevo KPI</button>
+<div class="row" style="padding-bottom: 2%;">
+    <div class="col-sm-4" style="text-align: right;">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarKPIModal">Agregar nuevo KPI</button>
+    </div>
+    <div class="col-sm-4" style="text-align: center;">
+        <a class="btn btn-primary" href="<?php echo $uploadKPIsurl; ?>">Subir KPI's</a>        
+    </div>
+    <div class="col-sm-4" style="text-align: left;">
+        <a class="btn btn-primary" href="<?php echo $settingsurl; ?>">Subir KPI's</a>
+    </div>
+</div>
+
 <div class="table-responsive">
     <table class="table table-hover text-center">
         <thead>
@@ -83,7 +96,7 @@ echo $OUTPUT->header();
                         <label for="message-text" class="col-form-label">Tipo de dato:</label>
                         <select name="kpi_type" class="form-control">
                             <option value="Porcentaje">Porcentaje</option>
-                            <option value="Número">Número</option>
+                            <option value="Número entero">Número entero</option>
                             <option value="Texto">Texto</option>
                         </select>
                     </div>
@@ -162,7 +175,7 @@ echo $OUTPUT->header();
                 <td>
                     <select form='${formname}' name="kpi_type" id='type_selected_${kpi.id}' class="form-control">
                         <option value="Porcentaje">Porcentaje</option>
-                        <option value="Número">Número</option>
+                        <option value="Número entero">Número entero</option>
                         <option value="Texto">Texto</option>
                     </select>
                 </td>
@@ -223,7 +236,7 @@ echo $OUTPUT->header();
             .replace(/\s+/g, '-') // collapse whitespace and replace by -
             .replace(/-+/g, '-'); // collapse dashes
 
-        return str;
+        return str.toUpperCase();
     }
 
     function ocultarModal(){

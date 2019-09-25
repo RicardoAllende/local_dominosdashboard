@@ -321,8 +321,8 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                     insertarGraficaSinInfo(div_id);
                     continue;
                 }
-                switch(kpi.id){
-                    case 1: //
+                switch(kpi.type){
+                    case 1: // Nombre
                         _destacado = Array();
                         _aprobado = Array();
                         _noAprobado = Array();
@@ -357,12 +357,13 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                         }
 
                     break;
-                    case 2:
-                    case 3:
-                        __kpi = [kpi.type, kpi.status];
+                    case 'Número entero':
+                    case 'Porcentaje':
+                        __kpi = [kpi.name, kpi.status];
                         info_kpi = Array();
                         info_kpi.push(kpi.type);
                         for(var j = 0; j < cursos.length; j++){
+                            curso = cursos[j];
                             aprobados.push(curso.percentage);
                             info_kpi.push(kpi.status);
                         }
@@ -767,8 +768,11 @@ function loaderComparar() {
 }
 
 function showPage_comparar() {
-  document.getElementById("loader").style.display = "none";     
-  document.getElementById("ldm_comparativas").style.display = "block";
+    document.getElementById("loader").style.display = "none";     
+    comp =  document.getElementById("ldm_comparativas");
+    if(comp != null){
+        comp.style.display = "block";
+    }
   
 }
 
