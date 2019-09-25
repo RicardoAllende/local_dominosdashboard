@@ -64,7 +64,7 @@ $PAGE->set_context($context_system);
                 <label for="fecha_kpi">Fecha del kpi (mensual) <input type="date" onchange="obtenerInformacion()" class="form-control" name="fecha_kpi" id="fecha_kpi"></label>
             </div>
             <input type="hidden" name="report_type" id="report_type" value="course_completion">
-            <div id='contenedor_filtros'></div>
+            <div class="col-sm-11" id='contenedor_filtros' style="text-align: center;"></div>
         </form>
         <div id="loader"></div>
         <div class="row col-sm-9" id="contenido_dashboard">
