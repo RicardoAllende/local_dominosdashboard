@@ -31,16 +31,24 @@ local_dominosdashboard_user_has_access();
 
 global $DB;
 $PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/administrar_KPIS.php");
-$link = $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php';
+$uploadKPIsurl = $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php';
+$settingsurl = $CFG->wwwroot . '/admin/settings.php?section=local_dominosdashboard';
 $PAGE->set_context($context_system);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 echo $OUTPUT->header();
 ?>
 <link rel="stylesheet" href="estilos.css">
-<div class="container">
-    <button type="button" class="btn btn-primary" style="text-align: left;" data-toggle="modal" data-target="#agregarKPIModal">Agregar nuevo KPI</button>
-    <a class="btn btn-primary" style="text-align: right;" href="<?php echo $link; ?>">Subir KPI's</a>
+<div class="row" style="padding-bottom: 2%;">
+    <div class="col-sm-4" style="text-align: right;">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarKPIModal">Agregar nuevo KPI</button>
+    </div>
+    <div class="col-sm-4" style="text-align: center;">
+        <a class="btn btn-primary" href="<?php echo $uploadKPIsurl; ?>">Subir KPI's</a>        
+    </div>
+    <div class="col-sm-4" style="text-align: left;">
+        <a class="btn btn-primary" href="<?php echo $settingsurl; ?>">Subir KPI's</a>
+    </div>
 </div>
 
 <div class="table-responsive">
