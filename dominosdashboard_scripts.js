@@ -321,8 +321,8 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                     insertarGraficaSinInfo(div_id);
                     continue;
                 }
-                switch(kpi.id){
-                    case 1: //
+                switch(kpi.type){
+                    case 1: // Nombre
                         _destacado = Array();
                         _aprobado = Array();
                         _noAprobado = Array();
@@ -357,12 +357,13 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                         }
 
                     break;
-                    case 2:
-                    case 3:
-                        __kpi = [kpi.type, kpi.status];
+                    case 'Número entero':
+                    case 'Porcentaje':
+                        __kpi = [kpi.name, kpi.status];
                         info_kpi = Array();
                         info_kpi.push(kpi.type);
                         for(var j = 0; j < cursos.length; j++){
+                            curso = cursos[j];
                             aprobados.push(curso.percentage);
                             info_kpi.push(kpi.status);
                         }
@@ -435,17 +436,12 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     //     }
     // });
 
-    // Gráfica barras agrupadas
+    // Gráfica de curvas
     var chartz = c3.generate({
         data: {
-                        
             columns: info_grafica,
-            type: 'bar',
-            colors: {
-                        'Ideal de cobertura': '#8a7e7e',            
-                    }                           
-        },
-                
+            type: 'bar'
+        },        
         bindto: '#' + div_id,
         tooltip: {
             format: {
@@ -457,25 +453,36 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
         }
     });
 
-    //Esta sería la gráfica con barras agrupadas
+    // Gráfica barras agrupadas
+    // var titulos_cursos=['x'];
+    // var arr_grafica = [];
+    // console.log("arr_grafica");
+    
+    // for(i=0; i<cursos.length; i++){
+    //     titulos_cursos.push(cursos[i].title)
+    // }
+
+    // for(i=0; i<info_grafica.length; i++){
+    //     arr_grafica.push(info_grafica[i])
+    // }
+
+    // console.log(arr_grafica);
+    
     // var chartz = c3.generate({
     //     data: {
-    //         x : 'x',
-    //     columns: [
-    //         ['x', 'www.site1.com', 'www.site2.com', 'www.site3.com', 'www.site4.com'],
-    //         ['download', 30, 200, 100, 400],
-    //         ['loading', 90, 100, 140, 200],
-    //     ],
-    //     type: 'bar',
-    //     colors: {
-    //         download: '#a8f7a8',            
-    //     },
+    //         x: 'x',                        
+    //         columns: info_grafica,
+    //             columns: [titulos_cursos, arr_grafica],
+    //         type: 'bar',
+    //         colors: {
+    //                     'Ideal de cobertura': '#8a7e7e',            
+    //         }                           
     //     },
     //     axis: {
     //         x: {
     //             type: 'category' // this needed to load string x value
     //         }
-    //     },                   
+    //     },        
     //     bindto: '#' + div_id,
     //     tooltip: {
     //         format: {
@@ -486,6 +493,8 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     //         }
     //     }
     // });
+
+    
     
     console.log('INFORMACION TABLA');
     console.log(cursos);
@@ -759,8 +768,11 @@ function loaderComparar() {
 }
 
 function showPage_comparar() {
-  document.getElementById("loader").style.display = "none";     
-  document.getElementById("ldm_comparativas").style.display = "block";
+    document.getElementById("loader").style.display = "none";     
+    comp =  document.getElementById("ldm_comparativas");
+    if(comp != null){
+        comp.style.display = "block";
+    }
   
 }
 

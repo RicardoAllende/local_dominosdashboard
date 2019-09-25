@@ -145,16 +145,17 @@ $PAGE->set_context($context_system);
                         _kpi = informacion_del_curso.data.kpi[index];
                         // console.log('Id del kpi', _kpi.kpi);
                         // console.log('Valor del kpi ' + _kpi.kpi_name, _kpi.value);
-                        switch (_kpi.kpi) {
-                            case 1: // ICA (normalmente regresa Destacado/Aprobado/No aprobado), OPS
+                        switch (_kpi.type) {
+                            case 'Texto': // ICA (normalmente regresa Destacado/Aprobado/No aprobado), (ejemplo)
                                 imprimir_kpi_ops_ica_curso(_kpi, informacion_del_curso.data.percentage);
                                 break;
-                            case 2: // Número entero de quejas, Reporte de Casos Histórico por tiendas
+                            case 'Número entero': // Número entero de quejas (ejemplo)
+                            case 'Porcentaje': // Número entero de quejas, Reporte de Casos Histórico por tiendas
                                 imprimir_kpi_reporte_casos_historico_curso(_kpi, informacion_del_curso.data.percentage);
                                 break;
-                            case 3: // Porcentaje de rotación, scorcard
-                                imprimir_kpi_scorcard_rotacion_curso(_kpi, informacion_del_curso.data.percentage);
-                                break;
+                            // case 3: // Porcentaje de rotación, scorcard
+                            //     imprimir_kpi_scorcard_rotacion_curso(_kpi, informacion_del_curso.data.percentage);
+                            //     break;
                             default:
                                 break;
                         }

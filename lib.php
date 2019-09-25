@@ -522,11 +522,14 @@ function local_dominosdashboard_get_kpi_overview(array $params = array(), bool $
         $courses[$key] = local_dominosdashboard_get_course_information($key, false, false, $params, false);
     }
     $response = array();
+    // _log($courses);
     foreach($configs as $id => $config){
         $kpi_status = new stdClass();
         $kpi_courses = array();
         foreach($config as $course_id){ // Se agregan los cursos correspondientes
-            array_push($kpi_courses, $courses[$course_id]);
+            if(isset($courses[$course_id])){
+                array_push($kpi_courses, $courses[$course_id]);
+            }
         }
         $kpi_status->type = $kpis[$id]->type;
         $kpi_status->name = $kpis[$id]->name;
@@ -703,6 +706,7 @@ function local_dominosdashboard_get_course_comparative(int $courseid, array $par
 function local_dominosdashboard_get_kpi_info(int $courseid, array $params = array()){
     $kpis = array();
     $configs = get_config('local_dominosdashboard');
+    $configs = (array) $configs;
     foreach(local_dominosdashboard_get_KPIS('list') as $kpi){
         $key = $kpi->id;
         if(isset($configs['kpi_' . $key])){
@@ -786,7 +790,7 @@ function local_dominosdashboard_get_kpi_results($id, array $params){
             break;
         case 'Porcentaje': // 3
             $query = "SELECT ROUND(AVG(value), 2) AS value FROM {dominos_kpis} WHERE {$whereClauses} ";
-            $result = $DB->get_record_sql($query, $sqlParams);
+            $result = $DB->get_field_sql($query, $sqlParams);
             if(empty($result)) return null;
             return $result;
             break;
