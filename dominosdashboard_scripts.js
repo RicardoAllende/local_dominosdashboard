@@ -750,7 +750,7 @@ function imprimirRanking(div, info) {
         }else if(num_activities > 0){ // Sólo se muestra un ranking
             $(div).append(`
                     <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
-                        <h1 style="text-align: center;">Ranking de actividades</h1>
+                        <h1 class="text-center">Ranking de actividades</h1>
                     </div>
 
                     <div class="col-sm-8 offset-sm-4 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
