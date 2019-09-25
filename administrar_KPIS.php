@@ -31,13 +31,18 @@ local_dominosdashboard_user_has_access();
 
 global $DB;
 $PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/administrar_KPIS.php");
+$link = $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php';
 $PAGE->set_context($context_system);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 echo $OUTPUT->header();
 ?>
 <link rel="stylesheet" href="estilos.css">
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarKPIModal">Agregar nuevo KPI</button>
+<div class="container">
+    <button type="button" class="btn btn-primary" style="text-align: left;" data-toggle="modal" data-target="#agregarKPIModal">Agregar nuevo KPI</button>
+    <a class="btn btn-primary" style="text-align: right;" href="<?php echo $link; ?>">Subir KPI's</a>
+</div>
+
 <div class="table-responsive">
     <table class="table table-hover text-center">
         <thead>
@@ -83,7 +88,7 @@ echo $OUTPUT->header();
                         <label for="message-text" class="col-form-label">Tipo de dato:</label>
                         <select name="kpi_type" class="form-control">
                             <option value="Porcentaje">Porcentaje</option>
-                            <option value="Número">Número</option>
+                            <option value="Número entero">Número entero</option>
                             <option value="Texto">Texto</option>
                         </select>
                     </div>
@@ -162,7 +167,7 @@ echo $OUTPUT->header();
                 <td>
                     <select form='${formname}' name="kpi_type" id='type_selected_${kpi.id}' class="form-control">
                         <option value="Porcentaje">Porcentaje</option>
-                        <option value="Número">Número</option>
+                        <option value="Número entero">Número entero</option>
                         <option value="Texto">Texto</option>
                     </select>
                 </td>
@@ -223,7 +228,7 @@ echo $OUTPUT->header();
             .replace(/\s+/g, '-') // collapse whitespace and replace by -
             .replace(/-+/g, '-'); // collapse dashes
 
-        return str;
+        return str.toUpperCase();
     }
 
     function ocultarModal(){

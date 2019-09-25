@@ -82,7 +82,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
             }
             break;
         case 'kpi_list':
-            die(local_dominosdashboard_format_response(local_dominosdashboard_get_kpi_list(true)));
+            die(local_dominosdashboard_format_response(local_dominosdashboard_get_kpi_list()));
         break;
         case 'delete_kpi':
             die(local_dominosdashboard_delete_kpi($params = $_POST));

@@ -60,10 +60,10 @@ _print(local_dominosdashboard_get_kpi_list());
 // $coursecontext = context_course::instance($courseid);
 // $users = get_enrolled_users($coursecontext, '', 0, 'distinct u.id', '');
 // _print($users);
-// _print('Número de ' . count($users));
+// _print('Número entero de ' . count($users));
 // $users = local_dominosdashboard_get_enrolled_users_ids($courseid);
 // _print($users);
-// _print('Número de ' . count($users));
+// _print('Número entero de ' . count($users));
 // _print(local_dominosdashboard_get_user_catalogues($params = array()));
 // local_dominosdashboard_make_all_historic_reports();
 

@@ -149,7 +149,7 @@ $PAGE->set_context($context_system);
                             case 1: // ICA (normalmente regresa Destacado/Aprobado/No aprobado), OPS
                                 imprimir_kpi_ops_ica_curso(_kpi, informacion_del_curso.data.percentage);
                                 break;
-                            case 2: // Número de quejas, Reporte de Casos Histórico por tiendas
+                            case 2: // Número entero de quejas, Reporte de Casos Histórico por tiendas
                                 imprimir_kpi_reporte_casos_historico_curso(_kpi, informacion_del_curso.data.percentage);
                                 break;
                             case 3: // Porcentaje de rotación, scorcard

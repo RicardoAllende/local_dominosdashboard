@@ -41,8 +41,11 @@ $PAGE->set_heading(get_string('pluginname', $pluginName));
 $returnurl = new moodle_url('/local/dominosdashboard/dashboard.php');
 
 $mform = new local_dominosdashboard_upload_kpis();
+global $CFG;
+$link = $CFG->wwwroot . '/local/dominosdashboard/administrar_KPIS.php';
+echo $OUTPUT->header();
+echo "<div class='row' style='text-align: right;'><a href='{$link}' class='btn btn-primary btn-lg'>Administrar KPI'S</a></div>";
 if ($formdata = $mform->get_data()) {
-    echo $OUTPUT->header();
     $tiempo_inicial = microtime(true);
     
     $currentYear = $formdata->year; //date('Y');
@@ -71,56 +74,98 @@ if ($formdata = $mform->get_data()) {
 
     $count= 0;
     $hasRequiredColumns = true;
-    $columns_ = local_dominosdashboard_relate_column_with_fields($columns, $requiredFields, $hasRequiredColumns);
+    // $columns_ = local_dominosdashboard_relate_column_with_fields($columns, $requiredFields, $hasRequiredColumns);
+    $columns_ = local_dominosdashboard_read_kpis_from_columns($columns, $hasRequiredColumns);
     if(!$hasRequiredColumns){
-        $missingColumns = implode(',', $columns_);
-        print_error('Faltan los siguientes campos:' . $missingColumns, '', $returnurl, $missingColumns);
+        // $missingColumns = implode(',', $columns_);
+        print_error('Faltan los siguientes campos:' . $columns_, '', $returnurl, $columns_);
     }
     global $DB;
     $cir->init();
     while ($line = $cir->next()) {
-        $ccosto = $line[$columns_['profile_field_ccosto']];
-        $calificacion = $line[$columns_['CALIFICACIÓN']];
-        $estatus = $line[$columns_['ESTATUS']];
-        $quejas = $line[$columns_['TOTAL QUEJAS (NO.)']];
-        $rotacion_mensual = $line[$columns_['ROTACION MENSUAL %']];
-        $rotacion_rolling = $line[$columns_['ROTACION ROLLING %']];
-        // $ceco = $line[$columns_['CECO']];
 
-        $record = $DB->get_record('dominos_kpis', array('ccosto' => $ccosto, 'kpi_date' => $kpi_date));
-        if( empty($record) ){
-            $record = new stdClass();
-            $record->ccosto = $ccosto;
-            // $record->ceco = $ceco;
-            $record->calificacion = $calificacion;
-            $record->estatus = $estatus;
-            $record->quejas = $quejas;
-            $record->rotacion_mensual = $rotacion_mensual;
-            $record->rotacion_rolling = $rotacion_rolling;
-            $record->kpi_date = $kpi_date;
-            $record->month = $month;
-            $record->year = $currentYear;
-            $record->timecreated = $currenttime;
-
-            // _log('Insertando kpi');
-            $DB->insert_record('dominos_kpis', $record);
-        }else{// El kpi existe
-            if($updateIfExists){ // Editando el kpi en caso de seleccionar la opción
-                // _log('Existe el kpi');
-                $record->ccosto = $ccosto;
-                // $record->ceco = $ceco;
-                $record->calificacion = $calificacion;
-                $record->estatus = $estatus;
-                $record->quejas = $quejas;
-                $record->rotacion_mensual = $rotacion_mensual;
-                $record->rotacion_rolling = $rotacion_rolling;
+        $ccosto = $columns_->ccosto;
+        
+        /* 
+        <FIELD NAME="id"                TYPE="int"   LENGTH="10"  NOTNULL="true"   SEQUENCE="true"  />
+        <FIELD NAME="ccosto"            TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" />
+        <FIELD NAME="kpi_key"           TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
+        <FIELD NAME="value"             TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
+        <FIELD NAME="kpi_date"          TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
+        <FIELD NAME="month"             TYPE="char"  LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
+        <FIELD NAME="year"              TYPE="char"  LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
+        <FIELD NAME="timecreated"       TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
+        */
+        foreach($columns_->kpis as $kpi){
+            
+            $record = $DB->get_record('dominos_kpis', array('ccosto' => $ccosto, 'kpi_date' => $kpi_date, 'kpi_key' => $kpi->kpi_key));
+            if( empty($record) ){
+                $record = new stdClass();
+                $record->ccosto = $line[$columns_->ccosto];
+                $record->kpi_key = $kpi->kpi_key;
+                $record->value = $line[$kpi->position];
                 $record->kpi_date = $kpi_date;
                 $record->month = $month;
                 $record->year = $currentYear;
                 $record->timecreated = $currenttime;
-                $DB->update_record('dominos_kpis', $record);
+                $DB->insert_record('dominos_kpis', $record);
+            }else{
+                if($updateIfExists){
+                    $record->ccosto = $line[$columns_->ccosto];
+                    $record->kpi_key = $kpi->kpi_key;
+                    $record->value = $line[$kpi->position];
+                    $record->kpi_date = $kpi_date;
+                    $record->month = $month;
+                    $record->year = $currentYear;
+                    $record->timecreated = $currenttime;
+                    $DB->update_record('dominos_kpis', $record);
+                }
             }
         }
+
+
+        // $ccosto = $line[$columns_['profile_field_ccosto']];
+        // $calificacion = $line[$columns_['CALIFICACIÓN']];
+        // $estatus = $line[$columns_['ESTATUS']];
+        // $quejas = $line[$columns_['TOTAL QUEJAS (NO.)']];
+        // $rotacion_mensual = $line[$columns_['ROTACION MENSUAL %']];
+        // $rotacion_rolling = $line[$columns_['ROTACION ROLLING %']];
+        // $ceco = $line[$columns_['CECO']];
+
+        // $record = $DB->get_record('dominos_kpis', array('ccosto' => $ccosto, 'kpi_date' => $kpi_date));
+        // if( empty($record) ){
+        //     $record = new stdClass();
+        //     $record->ccosto = $ccosto;
+        //     // $record->ceco = $ceco;
+        //     $record->calificacion = $calificacion;
+        //     $record->estatus = $estatus;
+        //     $record->quejas = $quejas;
+        //     $record->rotacion_mensual = $rotacion_mensual;
+        //     $record->rotacion_rolling = $rotacion_rolling;
+        //     $record->kpi_date = $kpi_date;
+        //     $record->month = $month;
+        //     $record->year = $currentYear;
+        //     $record->timecreated = $currenttime;
+
+        //     // _log('Insertando kpi');
+        //     $DB->insert_record('dominos_kpis', $record);
+        // }else{// El kpi existe
+        //     if($updateIfExists){ // Editando el kpi en caso de seleccionar la opción
+        //         // _log('Existe el kpi');
+        //         $record->ccosto = $ccosto;
+        //         // $record->ceco = $ceco;
+        //         $record->calificacion = $calificacion;
+        //         $record->estatus = $estatus;
+        //         $record->quejas = $quejas;
+        //         $record->rotacion_mensual = $rotacion_mensual;
+        //         $record->rotacion_rolling = $rotacion_rolling;
+        //         $record->kpi_date = $kpi_date;
+        //         $record->month = $month;
+        //         $record->year = $currentYear;
+        //         $record->timecreated = $currenttime;
+        //         $DB->update_record('dominos_kpis', $record);
+        //     }
+        // }
     }
 
     unset($content);
@@ -131,14 +176,11 @@ if ($formdata = $mform->get_data()) {
     // }
     echo $OUTPUT->heading("Su archivo ha sido procesado");
     $mform->display();
-    echo $OUTPUT->footer();
 
 } else {
-    echo $OUTPUT->header();
 
     echo $OUTPUT->heading_with_help(get_string('uploadkpis', 'local_dominosdashboard'), 'uploadkpis', 'local_dominosdashboard');
 
     $mform->display();
-    echo $OUTPUT->footer();
-    die;
 }
+echo $OUTPUT->footer();
