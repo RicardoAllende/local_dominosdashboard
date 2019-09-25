@@ -504,7 +504,7 @@ $PAGE->set_context($context_system);
                     data: data,
                     axis: {
                         rotated: true
-                    }
+                    },
                     bindto: id_para_Grafica,
                 });
             }else{
