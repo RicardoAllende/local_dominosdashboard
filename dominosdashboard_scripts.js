@@ -104,14 +104,7 @@ function crearGraficaDeCurso(_bindto, curso){
             ];
             var nombre_columnas = ["Aprobados", "No Aprobados"];
         break;    
-        case 'bar':
-                // _columns = [
-                //     ['Inscritos', 30, 200, 100, 400],
-                //     ['Aprobados', 130, 100, 140, 200]
-                // ];
-                // axis: {
-                //     rotated: true
-                // }
+        case 'bar':                
             _columns = [
                 ['Inscritos', curso.enrolled_users],
                 ['Aprobados', curso.approved_users],
@@ -127,27 +120,55 @@ function crearGraficaDeCurso(_bindto, curso){
                     ['Inscritos', 30, 200, 100, 400],
                     ['Aprobados', 130, 100, 140, 200]
                 ];
-                var nombre_columnas = ["Aprobados", "No Aprobados"];    
-        break;
-        case 'grupo':
-                // _columns = [
-                //     ['Inscritos', 30, 200, 100, 400],
-                //     ['Aprobados', 130, 100, 140, 200]
-                //];
-                var nombre_columnas = ["Aprobados", "No Aprobados"];
+                
                 return c3.generate({
                     data: {
-                        columns: [
-                            ['data1', 30, 200, 200, 400, 150, 250],
-                            ['data2', 130, 100, 100, 200, 150, 50],
-                            ['data3', 230, 200, 200, 300, 250, 250]
-                        ],
-                        type: 'bar',
-                        groups: [
-                            ['data1', 'data2']
-                        ]
+                        columns: _columns,
+                        type: curso.chart,
+                        colors: {
+                            Inscritos: '#0000ff',
+                            Aprobados: '#008000',
+                            'No Aprobados': '#ff0000'
+                            
+                        }
+                    },
+                    bindto: _bindto,
+                    tooltip: {
+                        format: {
+                            title: function (d) { return 'Porcentaje de aprobación'; },
+                                
+                            }
+                        }
+                    
+                }); 
+                   
+        break;
+        case 'grupo':
+            _columns = [
+                ['Inscritos', 30, 200, 100, 400],
+                ['Aprobados', 130, 100, 140, 200]
+            ];
+            
+            return c3.generate({
+                data: {
+                    columns: _columns,
+                    type: 'bar',
+                    colors: {
+                        Inscritos: '#0000ff',
+                        Aprobados: '#008000',
+                        'No Aprobados': '#ff0000'
+                        
                     }
-                });            
+                },
+                bindto: _bindto,
+                tooltip: {
+                    format: {
+                        title: function (d) { return ''; },
+                            
+                        }
+                    }
+                
+            });       
         break;    
         default:
             $(_bindto).html('');
