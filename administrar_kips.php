@@ -42,10 +42,11 @@ echo $OUTPUT->header();
     <table class="table table-hover text-center">
         <thead>
             <tr>
-                <th scope="col" class="text-center">KPI</th>
+                <th scope="col" class="text-center">Clave</th>
                 <th scope="col" class="text-center">Nombre del KPI</th>
                 <th scope="col" class="text-center">Tipo de valor</th>
                 <th scope="col" class="text-center">Estado</th>
+                <th scope="col" class="text-center">Editar</th>                
                 <th scope="col" class="text-center">Eliminar</th>
             </tr>
         </thead>
@@ -75,7 +76,7 @@ echo $OUTPUT->header();
                         <input type="text" oninput="crearClave()" class="form-control" id="kpi_name" name="kpi_name">
                     </div>
                     <div class="form-group">
-                        <label for="kpi_key" class="col-form-label">Clave del kpi: (esta tendrá que estar en el archivo de excel exactamente como aquí aparezca)</label>
+                        <label for="kpi_key" class="col-form-label">Clave del kpi: (esta clave tendrá que estar como cabecera en el archivo csv para agregar este KPI)</label>
                         <input type="text" class="form-control" id="kpi_key" name="kpi_key">
                     </div>
                     <div class="form-group">
@@ -148,22 +149,30 @@ echo $OUTPUT->header();
 
     function imprimirKPI(kpi){
         console.log(kpi);
+        formname = "kpi_edit_" + kpi.id;
         $('#listado_kpis').append(`
             <tr>
-                <th scope="row" class='text-center'><input type='text' name='kpi_key' value='${kpi.kpi_key}' class='form-control'></th>
-                <td><input type='text' name='kpi_name' value='${kpi.name}' class='form-control'></td>
-                <td><select name="kpi_type" id='type_selected_${kpi.id}' class="form-control">
-                            <option value="Porcentaje">Porcentaje</option>
-                            <option value="Número">Número</option>
-                            <option value="Texto">Texto</option>
-                        </select>
+            <form id='${formname}' name='${formname}'></form>
+                <input type='hidden' form='${formname}' name='id' value='${kpi.id}' >
+                <th scope="row" class='text-center'>
+                <input type='text' form='${formname}' name='kpi_key' initialvalue='${kpi.kpi_key}' value='${kpi.kpi_key}'
+                id='key_edit_${kpi.id}' class='form-control '>
+                </th>
+                <td><input type='text' form='${formname}' name='kpi_name' value='${kpi.name}' class='form-control'></td>
+                <td>
+                    <select form='${formname}' name="kpi_type" id='type_selected_${kpi.id}' class="form-control">
+                        <option value="Porcentaje">Porcentaje</option>
+                        <option value="Número">Número</option>
+                        <option value="Texto">Texto</option>
+                    </select>
                 </td>
-                <td><select name="kpi_enabled" id='type_enabled_${kpi.id}' class="form-control">
+                <td>
+                    <select form='${formname}' name="kpi_enabled" id='type_enabled_${kpi.id}' class="form-control">
                         <option value="0">Deshabilitado</option>
                         <option value="1">Habilitado</option>
                     </select>
                 </td>
-                
+                <td><button onclick="editarKPI('#${formname}', ${kpi.id})" class='btn btn-info'>Editar</button></td>
                 <td><button onclick='eliminarKPI(${kpi.id})' class='btn btn-danger'>Eliminar</button></td>
             </tr>
         `);
@@ -172,24 +181,32 @@ echo $OUTPUT->header();
     }
 
     /*
-    
-                <td>${kpi.enabled == 0 ? `<button class='btn btn-primary' onclick="inhabilitarKPI(${kpi.id})">Habilitar KPI</button>` : `<button class='btn btn-danger' onclick="habilitarKPI(${kpi.id})">Deshabilitar KPI</button>` }</td>
+        <td>${kpi.enabled == 0 ? `<button class='btn btn-primary' onclick="inhabilitarKPI(${kpi.id})">Habilitar KPI</button>` : `<button class='btn btn-danger' onclick="habilitarKPI(${kpi.id})">Deshabilitar KPI</button>` }</td>
      */
 
-    var name_selector = "#kpi_name";
-    var type_selector = "#kpi_type";
-
-    var name_selector_edit = "#kpi_name_edit";
-    var type_selector_edit = "#kpi_type_edit";
-
-    function editarKPI(){
-
+    function editarKPI(formname, id){
+        informacion = $(formname).serializeArray();
+        informacion.push({name: 'request_type', value: 'update_kpi'});
+        $.ajax({
+            type: "POST",
+            url: "services.php",
+            data: informacion,
+            // dataType: "json"
+        })
+        .done(function(data) {
+            console.log('La información obtenida es: ', data);
+            if(data == 'ok'){
+                cargarKPIS();
+            }else{ // Se trata de un error
+                var key_input = $('#key_edit_' + id)
+                key_input.val(key_input.attr('initialvalue'));
+                alert(data);
+            }
+        })
+        .fail(function(error, error2) {
+            alert('Por favor, inténtelo de nuevo');
+        });
     }
-
-    function enviarInformacion(){
-
-    }
-
     
     function string_to_slug (str) {
         str = str.replace(/^\s+|\s+$/g, ''); // trim
@@ -208,6 +225,10 @@ echo $OUTPUT->header();
 
         return str;
     }
+
+    function ocultarModal(){
+        $('#agregarKPIModal').modal('hide');
+    }
     
     var informacion;
     function agregarKPI(kpi) {
@@ -223,27 +244,46 @@ echo $OUTPUT->header();
             console.log('La información obtenida es: ', data);
             // return;
             if(data == 'ok'){
-                $('#listado_kpis').append(`
-                <tr>
-                    <td>KPI</td>
-                    <td>Nombre del KPI</td>
-                    <td>Tipo de valor</td>
-                    <td>Eliminar</td>
-                </tr>
-                `);
-            }else{
-
+                cargarKPIS();
+                alert('Insertado con éxito');
+                ocultarModal();
+            }else{ // Se trata de un error
+                alert(data);
             }
-            
         })
         .fail(function(error, error2) {
-            
+            alert('Por favor, inténtelo de nuevo');
+            ocultarModal();
         });
-
     }
 
     function eliminarKPI(kpi) {
-
+        if(confirm('¿Está seguro que desea eliminar este KPI?')){
+            $.ajax({
+                type: "POST",
+                url: "services.php",
+                data: {
+                    request_type: 'delete_kpi',
+                    id: kpi
+                },
+                // dataType: "json"
+            })
+            .done(function(data) {
+                console.log('La información obtenida es: ', data);
+                // return;
+                if(data == 'ok'){ 
+                    cargarKPIS();
+                    alert('Eliminado con éxito');
+                }else{ // Se trata de un error
+                    alert(data);
+                }
+            })
+            .fail(function(error, error2) {
+                alert('Por favor, inténtelo de nuevo');
+            });
+        }
+        // informacion = $('#form_kpi').serializeArray();
+        // informacion.push({name: 'request_type', value: 'create_kpi'});
     }
 </script>
 <?php

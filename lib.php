@@ -1498,39 +1498,51 @@ function local_dominosdashboard_has_empty(... $params){
 }
 
 function local_dominosdashboard_delete_kpi(array $params){
-    global $DB;
-    $id = local_dominosdashboard_get_value_from_params($params, 'id', false, true);
-    $kpi = $DB->get_record('dominos_kpi_list', array('id' => $id));
-    if($kpi === false){
-        _log('No se encontró kpi');
-        return 'error';
+    try{
+        global $DB;
+        $id = local_dominosdashboard_get_value_from_params($params, 'id', false, true);
+        // $kpi = $DB->get_record('dominos_kpi_list', array('id' => $id));
+        // if($kpi === false){
+        //     _log('No se encontró kpi');
+        //     return 'No se encontró kpi a eliminar';
+        // }
+        // $DB->delete_records('dominos_kpis',  array('kpi' => $kpi->kpi));
+        $DB->delete_records('dominos_kpi_list',  array('id' => $id));
+    }catch(Exception $e){
+        _log('Eliminar KPI EXCEPTION', $e);
+        return 'Por favor, inténtelo de nuevo';
     }
-    $DB->delete_records('dominos_kpi_list',  array('id' => $id));
-    $DB->delete_records('dominos_kpis',  array('kpi' => $kpi->kpi));
 }
 
 function local_dominosdashboard_update_kpi(array $params){
-    $id = local_dominosdashboard_get_value_from_params($params, 'id', false, true);
-    global $DB;
-    $kpi = $DB->get_record('dominos_kpi_list', array('id' => $id));
-    if($kpi === false){
-        _log('No se encontró kpi');
-        return 'error';
+    try{
+        $id = local_dominosdashboard_get_value_from_params($params, 'id', false, true);
+        global $DB;
+        $kpi = $DB->get_record('dominos_kpi_list', array('id' => $id));
+        if($kpi === false){
+            _log('No se encontró kpi');
+            return 'No se encontró KPI a editar';
+        }
+        
+        $key = local_dominosdashboard_get_value_from_params($params, 'kpi_key', false, true);
+        $name = local_dominosdashboard_get_value_from_params($params, 'kpi_name', false, true);
+        $type = local_dominosdashboard_get_value_from_params($params, 'kpi_type', false, true);
+        $enabled = local_dominosdashboard_get_value_from_params($params, 'kpi_enabled', false, true);
+        if($kpi->kpi_key != $key){
+            if($DB->record_exists('dominos_kpi_list', array('kpi_key' => $key))){
+                return "Ya existe un KPI con esta clave";
+            }
+        }
+        $kpi->kpi_key = $key;
+        $kpi->name = $name;
+        $kpi->type = $type;
+        $kpi->enabled = $enabled;
+        $DB->update_record('dominos_kpi_list', $kpi);
+        return 'ok';
+    }catch(Exception $e){
+        _log('Editar KPI EXCEPTION', $e);
+        return 'Por favor, inténtelo de nuevo';
     }
-    // $id = local_dominosdashboard_get_value_from_params($params, 'id', false, true);
-    
-    $key = local_dominosdashboard_get_value_from_params($params, 'kpi_key', false, true);
-    $name = local_dominosdashboard_get_value_from_params($params, 'kpi_name', false, true);
-    $type = local_dominosdashboard_get_value_from_params($params, 'kpi_type', false, true);
-    $enabled = local_dominosdashboard_get_value_from_params($params, 'kpi_enabled', false, true);
-    if($kpi->kpi_key == $key){
-        // repetido
-    }
-    $kpi->kpi_key = $key;
-    $kpi->name = $name;
-    $kpi->type = $type;
-    $kpi->enabled = $enabled;
-    $DB->update_record('dominos_kpi_list', $kpi);
 }
 
 function local_dominosdashboard_create_kpi(array $params){
@@ -1547,7 +1559,7 @@ function local_dominosdashboard_create_kpi(array $params){
         }
         $existent = $DB->record_exists('dominos_kpi_list', array('kpi_key' => $key));
         if($existent){
-            return "La clave ya existe";
+            return "La clave ya está siendo utilizada en otro KPI, por favor utilice otra";
         }
         // $DB->record_exists($table, $conditions_array);
         $kpi = new stdClass();
@@ -1560,7 +1572,7 @@ function local_dominosdashboard_create_kpi(array $params){
         return "ok";
     }catch(Exception $e){
         _log('Error al crear kpi', $e);
-        return 'error';
+        return 'Por favor, inténtelo de nuevo';
     }
 }
 
