@@ -151,7 +151,13 @@ function local_dominosdashboard_relate_column_with_fields(array $columns, array 
 }
 
 function local_dominosdashboard_read_kpis_from_columns(array $columns){
-
+    $kpis = local_dominosdashboard_get_kpi_list();
+    $response = new stdClass();
+    $response->ccom;
+    foreach($columns as $column){
+        $position = array_search($column, $kpis);
+        // if()
+    }
 }
 
 function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql = '', array $query_params = array()){

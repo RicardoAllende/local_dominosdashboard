@@ -443,32 +443,6 @@ $PAGE->set_context($context_system);
             }
         }
 
-        /**
-         * @param _bindto string selector con sintaxis jquery donde se imprimirán las gráficas
-         */
-        function imprimirComparativaFiltrosDeCurso(_bindto, informacion){
-            $(_bindto).html('');
-            if(!esVacio(informacion.comparative)){
-                comparative = informacion.comparative;
-                columns = Array();
-                comparativas++;
-                id_para_Grafica = 'ldm_comparativa_' + comparativas + '_' + informacion.key;
-                insertarTituloSeparador(_bindto, 'Comparativa ' + informacion.filter);
-                $(_bindto).append(`<div class='col-sm-12'><div id="${id_para_Grafica}"></div></div><br>`);
-                // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
-                id_para_Grafica = '#' + id_para_Grafica;
-                for(var j = 0; j < comparative.length; j++){
-                    datos_a_comparar = comparative[j];
-                    columns.push([datos_a_comparar.name, datos_a_comparar.percentage]);
-                }
-                data = { columns: columns, type: 'bar'};
-                crearGraficaComparativaPorFiltro(id_para_Grafica, data);
-            }else{
-                console.log('Error de imprimirComparativaFiltrosDeCurso', informacion);
-                $(_bindto).html('');
-            }
-        }
-
         var comparativaMaxima = 20;
         var clase;
         function compararFiltros(filtro_seleccionado){
@@ -506,6 +480,36 @@ $PAGE->set_context($context_system);
                     console.log(error2);
                 });
         }
+
+        /**
+         * @param _bindto string selector con sintaxis jquery donde se imprimirán las gráficas
+         */
+        function imprimirComparativaFiltrosDeCurso(_bindto, informacion){
+            $(_bindto).html('');
+            if(!esVacio(informacion.comparative)){
+                comparative = informacion.comparative;
+                columns = Array();
+                comparativas++;
+                id_para_Grafica = 'ldm_comparativa_' + comparativas + '_' + informacion.key;
+                insertarTituloSeparador(_bindto, 'Comparativa ' + informacion.filter);
+                $(_bindto).append(`<div class='col-sm-12'><div id="${id_para_Grafica}"></div></div><br>`);
+                // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
+                id_para_Grafica = '#' + id_para_Grafica;
+                for(var j = 0; j < comparative.length; j++){
+                    datos_a_comparar = comparative[j];
+                    columns.push([datos_a_comparar.name, datos_a_comparar.percentage]);
+                }
+                data = { columns: columns, type: 'bar'};
+                var chart = c3.generate({
+                    data: data,
+                    bindto: id_para_Grafica,
+                });
+            }else{
+                console.log('Error de imprimirComparativaFiltrosDeCurso', informacion);
+                $(_bindto).html('');
+            }
+        }
+
     </script>
 </body>
 </html>

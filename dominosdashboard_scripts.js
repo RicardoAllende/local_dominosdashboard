@@ -789,25 +789,6 @@ function imprimirRanking(div, info) {
     }
 }
 
-function crearGraficaComparativaPorFiltro(_bindto, data){
-    var chart = c3.generate({
-        data: data,
-        bindto: _bindto,
-        // tooltip: {
-        //     format: {
-        //         // title: function (d) {
-        //         //     console.log('Nombres en tooltip', nombres);
-        //         //     if(typeof nombres[d] !== 'undefined'){
-        //         //         return nombres[d];
-        //         //     }else{
-        //         //         return "terminó antes";
-        //         //     }
-        //         // },
-        //     }
-        // }
-    });
-}
-
 function imprimirDIV(contenido) {
     var ficha = document.getElementById(contenido);
     var ventanaImpresion = window.open(' ', 'popUp');
