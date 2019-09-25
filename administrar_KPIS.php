@@ -30,7 +30,7 @@ require_once(__DIR__ . '/lib.php');
 local_dominosdashboard_user_has_access();
 
 global $DB;
-$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/administrar_kpis.php");
+$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/administrar_KPIS.php");
 $PAGE->set_context($context_system);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));

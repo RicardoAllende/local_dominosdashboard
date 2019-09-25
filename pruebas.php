@@ -50,11 +50,12 @@ echo $OUTPUT->header();
 // );
 
 // _print(local_dominosdashboard_relate_column_with_fields($columnas, explode(',', "CC,CALIFICACION,ESTATUS,DIA,SEMANA,NOMBRE,REGION,DISTRITAL COACH,MES")));
+_print(local_dominosdashboard_get_kpi_list());
 
-foreach(local_dominosdashboard_get_courses() as $course){
-    // _print("Actividades del curso ", $course->fullname, local_dominosdashboard_get_activities($course->id));
-    _print(local_dominosdashboard_create_slug($course->fullname));
-}
+// foreach(local_dominosdashboard_get_courses() as $course){
+//     // _print("Actividades del curso ", $course->fullname, local_dominosdashboard_get_activities($course->id));
+//     _print(local_dominosdashboard_create_slug($course->fullname));
+// }
 // $courseid = 8;
 // $coursecontext = context_course::instance($courseid);
 // $users = get_enrolled_users($coursecontext, '', 0, 'distinct u.id', '');

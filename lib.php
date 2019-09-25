@@ -150,6 +150,10 @@ function local_dominosdashboard_relate_column_with_fields(array $columns, array 
     return $response;
 }
 
+function local_dominosdashboard_read_kpis_from_columns(array $columns){
+
+}
+
 function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql = '', array $query_params = array()){
     $indicators = local_dominosdashboard_get_indicators();
     if(array_search($key, $indicators) === false){
@@ -1576,7 +1580,14 @@ function local_dominosdashboard_create_kpi(array $params){
     }
 }
 
-function local_dominosdashboard_get_kpi_list(){
+function local_dominosdashboard_get_kpi_list($returnAllKPIS = false){
     global $DB;
-    return $DB->get_records('dominos_kpi_list');
+    if($returnAllKPIS){
+        return $DB->get_records('dominos_kpi_list');
+    }else{
+        return $DB->get_fieldset_select('dominos_kpi_list', 'kpi_key', ' enabled = 1 ');
+
+        // return $DB->get_fieldset_select('dominos_kpi_list', $return, $select, $params_array);
+        // return $DB->get_records('dominos_kpi_list', array('enabled' => '1'), '', '');
+    }
 }
