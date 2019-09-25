@@ -61,7 +61,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 <label for="fecha_final">Hasta <input type="date" onchange="obtenerInformacion(),loaderFiltro()" class="form-control" name="fecha_final" id="fecha_final"></label>
             </div>
             <input type="hidden" name="report_type" id="report_type" value="course_list">
-            <div id='contenedor_filtros'></div>
+            <div class="col-sm-11" id='contenedor_filtros' style="text-align: center;"></div>
         </form>
         <div class="col-sm-9" id="contenido_cursos">
             <div id="navbarSupportedContent">

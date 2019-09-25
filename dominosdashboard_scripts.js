@@ -97,8 +97,14 @@ function insertarGraficaSinInfo(div, mensaje){
 function crearGraficaDeCurso(_bindto, curso){
     // console.log('Probable error', curso);
     switch(curso.chart){
-        case 'pie':
-        case 'bar':
+        case 'pie':        
+            _columns = [                
+                ['Aprobados', curso.approved_users],
+                ['No Aprobados', curso.not_approved_users]
+            ];
+            var nombre_columnas = ["Aprobados", "No Aprobados"];
+        break;    
+        case 'bar':                
             _columns = [
                 ['Inscritos', curso.enrolled_users],
                 ['Aprobados', curso.approved_users],
@@ -109,6 +115,61 @@ function crearGraficaDeCurso(_bindto, curso){
             _columns  = [ ['Aprobados', curso.percentage] ];
             var nombre_columnas = ["Aprobados"];
         break;
+        case 'spline':
+                _columns = [
+                    ['Inscritos', 30, 200, 100, 400],
+                    ['Aprobados', 130, 100, 140, 200]
+                ];
+                
+                return c3.generate({
+                    data: {
+                        columns: _columns,
+                        type: curso.chart,
+                        colors: {
+                            Inscritos: '#0000ff',
+                            Aprobados: '#008000',
+                            'No Aprobados': '#ff0000'
+                            
+                        }
+                    },
+                    bindto: _bindto,
+                    tooltip: {
+                        format: {
+                            title: function (d) { return 'Porcentaje de aprobación'; },
+                                
+                            }
+                        }
+                    
+                }); 
+                   
+        break;
+        case 'grupo':
+            _columns = [
+                ['Inscritos', 30, 200, 100, 400],
+                ['Aprobados', 130, 100, 140, 200]
+            ];
+            
+            return c3.generate({
+                data: {
+                    columns: _columns,
+                    type: 'bar',
+                    colors: {
+                        Inscritos: '#0000ff',
+                        Aprobados: '#008000',
+                        'No Aprobados': '#ff0000'
+                        
+                    }
+                },
+                bindto: _bindto,
+                tooltip: {
+                    format: {
+                        title: function (d) { return ''; },
+                            
+                        }
+                    }
+                
+            });       
+        break;    
         default:
             $(_bindto).html('');
             return;
@@ -119,7 +180,8 @@ function crearGraficaDeCurso(_bindto, curso){
             type: curso.chart,
             colors: {
                 Inscritos: '#0000ff',
-                Aprobados: '#008000'
+                Aprobados: '#008000',
+                'No Aprobados': '#ff0000'
                 
             }
         },
@@ -151,6 +213,10 @@ function crearTarjetaParaGrafica(div, curso, claseDiv){
     }else{
         enlace = '#';
     }
+
+    var a = curso.percentage;
+    var b = 100 - a;     
+    
     $(div).append(`<div class="${claseDiv} espacio">
                 <div class="card bg-gray border-0 m-2">
                 <div class="align-items-end">
@@ -169,7 +235,7 @@ function crearTarjetaParaGrafica(div, curso, claseDiv){
                         <div class="border-0 col-sm-4">
                             <div class="card-body text-center">
                                 <p class="card-text txti_noaprobados">No Aprobados</p>
-                                <p class="card-text txtnum_noaprobados">${curso.not_approved_users}</p>
+                                <p class="card-text txtnum_noaprobados">${curso.not_approved_users} (${b.toFixed(2)} %)</p>
                             </div>
                         </div>
                         <div class="border-0 col-sm-4">
@@ -203,16 +269,21 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
         cursos = response.result;
         if(Array.isArray(cursos)){
             var aprobados = Array();
+            var no_aprobados = Array();
             var nombres = Array();
             var _ideal_cobertura = Array();
             aprobados.push("Porcentaje de aprobación del curso");
+            no_aprobados.push("Porcentaje de no aprobados");
             _ideal_cobertura.push('Ideal de cobertura');
             for (var i = 0; i < cursos.length; i++) {
                 _ideal_cobertura.push(ideal_cobertura);
                 var curso = cursos[i];
                 aprobados.push(curso.percentage);
+                var resta = 100 - curso.percentage;
+                var resu = resta.toFixed(2);
+                no_aprobados.push(resu);
             }
-            crearGraficaComparativaVariosCursos(_bindto, [aprobados, _ideal_cobertura], cursos, titulo);
+            crearGraficaComparativaVariosCursos(_bindto, [aprobados, no_aprobados, _ideal_cobertura], cursos, titulo);
             for (var i = 0; i < cursos.length; i++) {
                 var curso = cursos[i];
                 crearTarjetaParaGrafica(_bindto, curso);
@@ -320,7 +391,7 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     }
     insertarTituloSeparador(_bindto, titulo);
     $(_bindto).append(`
-                <div class="col-sm-12 col-xl-12">
+                <div class="col-sm-12">
                     <div class="card bg-faded border-0 m-2" id="">
                     <div class="align-items-end">
                             <div class="fincard text-center">
@@ -330,12 +401,51 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
                         <div class="bg-white m-2" id="${div_id}"></div>                        
                     </div>
                 </div>`);
-    
+    // Gráfica de líneas rectas
+    // var chartz = c3.generate({
+    //     data: {
+    //         columns: info_grafica,
+    //         type: ''
+    //     },        
+    //     bindto: '#' + div_id,
+    //     tooltip: {
+    //         format: {
+    //             title: function (d) { return cursos[d].title; },
+    //             value: function (value, ratio, id) {
+    //                 return value + " %";
+    //             }
+    //         }
+    //     }
+    // });
+
+    // Gráfica de curvas
+    // var chartz = c3.generate({
+    //     data: {
+    //         columns: info_grafica,
+    //         type: 'spline'
+    //     },        
+    //     bindto: '#' + div_id,
+    //     tooltip: {
+    //         format: {
+    //             title: function (d) { return cursos[d].title; },
+    //             value: function (value, ratio, id) {
+    //                 return value + " %";
+    //             }
+    //         }
+    //     }
+    // });
+
+    // Gráfica barras agrupadas
     var chartz = c3.generate({
         data: {
+                        
             columns: info_grafica,
-            type: ''
+            type: 'bar',
+            colors: {
+                        'Ideal de cobertura': '#8a7e7e',            
+                    }                           
         },
+                
         bindto: '#' + div_id,
         tooltip: {
             format: {
@@ -346,37 +456,66 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
             }
         }
     });
+
+    //Esta sería la gráfica con barras agrupadas
+    // var chartz = c3.generate({
+    //     data: {
+    //         x : 'x',
+    //     columns: [
+    //         ['x', 'www.site1.com', 'www.site2.com', 'www.site3.com', 'www.site4.com'],
+    //         ['download', 30, 200, 100, 400],
+    //         ['loading', 90, 100, 140, 200],
+    //     ],
+    //     type: 'bar',
+    //     colors: {
+    //         download: '#a8f7a8',            
+    //     },
+    //     },
+    //     axis: {
+    //         x: {
+    //             type: 'category' // this needed to load string x value
+    //         }
+    //     },                   
+    //     bindto: '#' + div_id,
+    //     tooltip: {
+    //         format: {
+    //             title: function (d) { return cursos[d].title; },
+    //             value: function (value, ratio, id) {
+    //                 return value + " %";
+    //             }
+    //         }
+    //     }
+    // });
     
     console.log('INFORMACION TABLA');
     console.log(cursos);
 
     if(currentTab != 3){
         $(_bindto).append(`        
-    <div class="col-sm-12">
-    <table frame="void" id="tabla_coparativa" rules="rows" style="width:100%;text-align: center;">
+            <div class="col-sm-12">
+            <table frame="void" id="tabla_comparativa${currentTab}" rules="rows" style="width:100%;text-align: center;">
 
-        <tr class="rankingt">
-            <th>Nombre del curso</th>
-            <th class="txt_tabla_aprobados">Aprobados</th>
-            <th class="txt_tabla_no_aprobados">No Aprobados</th>
-            <th class="txt_tabla_inscritos">Total de usuarios inscritos</th>
-            <th class="txt_tabla_ideal">Ideal de cobertura</th>
-            <th class="txt_tabla_porcentaje_aprobacion">Porcentaje de Aprobación del curso</th>                        
-        </tr>                                       
-    </table>
-    <br>
-    </div>        
-    `);   
-    for(var j = 0; j < cursos.length; j++){                  
-        $("#tabla_coparativa").append(`<tr>        
-        <td>${cursos[j].title}</td>
-        <td class="txt_tabla_aprobados">${cursos[j].approved_users}</td>
-        <td class="txt_tabla_no_aprobados">${cursos[j].not_approved_users}</td>
-        <td class="txt_tabla_inscritos">${cursos[j].enrolled_users}</td>
-        <td class="txt_tabla_ideal">${ideal_cobertura} %</td>
-        <td class="txt_tabla_porcentaje_aprobacion">${cursos[j].percentage} %</td>
-        </tr> `);                
-    }
+                <tr class="rankingt${currentTab}">
+                    <th>Nombre del curso</th>
+                    <th class="txt_tabla_aprobados">Aprobados</th>
+                    <th class="txt_tabla_no_aprobados">No Aprobados</th>
+                    <th class="txt_tabla_inscritos">Total de usuarios inscritos</th>                    
+                    <th class="txt_tabla_porcentaje_aprobacion">Porcentaje de Aprobación del curso</th>                        
+                </tr>                                       
+            </table>
+            <br>
+            </div>        
+        `);   
+        for(var j = 0; j < cursos.length; j++){                  
+            $(`#tabla_comparativa${currentTab}`).append(`<tr>        
+                <td>${cursos[j].title}</td>
+                <td class="txt_tabla_aprobados">${cursos[j].approved_users}</td>
+                <td class="txt_tabla_no_aprobados">${cursos[j].not_approved_users}</td>
+                <td class="txt_tabla_inscritos">${cursos[j].enrolled_users}</td>                
+                <td class="txt_tabla_porcentaje_aprobacion">${cursos[j].percentage} %</td>
+                </tr> 
+            `);                
+        }
     }
 }
 
@@ -453,11 +592,11 @@ function crearGraficaDeCursokpi(_bindto, curso, kpi){
 }
 
 function peticionFiltros(info){
-    if(isFilterLoading){
-        console.log('Cargando contenido de cursos, no debe procesar más peticiones por el momento');
-        return;
-    }
-    isFilterLoading = !isFilterLoading;
+    // if(isFilterLoading){
+    //     console.log('Cargando contenido de cursos, no debe procesar más peticiones por el momento');
+    //     return;
+    // }
+    // isFilterLoading = !isFilterLoading;
     dateBeginingFiltros = Date.now();
     if(typeof muestraComparativas != 'boolean'){
         muestraComparativas = false;
@@ -487,11 +626,11 @@ function peticionFiltros(info){
                         <div class="card-header cuerpo-filtro" id="${heading_id}">
                             <h5 class="mb-0">
                                 <span class="btn btn-link collapsed texto-filtro"
-                                    data-toggle="collapse" style="color: white; text-transform: uppercase;" data-target="#${collapse_id}" aria-expanded="false"
+                                    data-toggle="collapse" style="color: white;text-transform: uppercase;font-size: 0.8rem;" data-target="#${collapse_id}" aria-expanded="false"
                                     aria-controls="${collapse_id}">
                                     ${clave}
                                 </span>
-                                ${muestraComparativas ? `<span class="btn btn-link text-right texto-filtro" onclick="compararFiltros('${clave}')" style="color: white;">Comparar</span>` : ``}
+                                ${muestraComparativas ? `<span class="btn btn-link text-right texto-filtro" onclick="compararFiltros('${clave}')" style="color: white;font-size: 0.8rem;">Comparar</span>` : ``}
                             </h5>
                         </div>
                         <div id="${collapse_id}" class="collapse" aria-labelledby="${heading_id}" data-parent="#contenedor_filtros">
@@ -653,7 +792,7 @@ function imprimirRanking(div, info) {
         if(num_activities >= 6){ // Se muestran 2 rankings
             $(div).append(`
                     <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
-                        <h1 style="text-align: center;">Ranking de actividades</h1>
+                        <h1 class="text-center">Ranking de actividades</h1>
                     </div>
                     <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
                         <table frame="void" rules="rows" style="width:100%">
@@ -714,7 +853,7 @@ function imprimirRanking(div, info) {
         }else if(num_activities > 0){ // Sólo se muestra un ranking
             $(div).append(`
                     <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
-                        <h1 style="text-align: center;">Ranking de actividades</h1>
+                        <h1 class="text-center">Ranking de actividades</h1>
                     </div>
 
                     <div class="col-sm-8 offset-sm-4 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
@@ -751,25 +890,6 @@ function imprimirRanking(div, info) {
         }
         return;
     }
-}
-
-function crearGraficaComparativaPorFiltro(_bindto, data){
-    var chart = c3.generate({
-        data: data,
-        bindto: _bindto,
-        // tooltip: {
-        //     format: {
-        //         // title: function (d) {
-        //         //     console.log('Nombres en tooltip', nombres);
-        //         //     if(typeof nombres[d] !== 'undefined'){
-        //         //         return nombres[d];
-        //         //     }else{
-        //         //         return "terminó antes";
-        //         //     }
-        //         // },
-        //     }
-        // }
-    });
 }
 
 function imprimirDIV(contenido) {

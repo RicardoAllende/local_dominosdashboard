@@ -69,14 +69,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
                 die(local_dominosdashboard_format_response(local_dominosdashboard_get_historic_reports(intval($_POST['courseid']))));
             }
             break;
-        case 'kpi_catalogues': 
-            if(!empty($_POST['kpi'])){
-                $kpi = $_POST['kpi'];
-            }else{
-                $kpi = "";
-            }
-            die(local_dominosdashboard_format_response(local_dominosdashboard_get_all_catalogues_for_kpi($kpi, $_POST)));
-            break;
         case 'course_comparative':
             if(!empty($_POST['courseid'])){
                 if(isset($_POST['selected_filter'])){
@@ -89,6 +81,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
                 die(local_dominosdashboard_error_response("courseid (int) not found"));
             }
             break;
+        case 'kpi_list':
+            die(local_dominosdashboard_format_response(local_dominosdashboard_get_kpi_list()));
+        break;
+        case 'delete_kpi':
+            die(local_dominosdashboard_delete_kpi($params = $_POST));
+        break;
+        case 'update_kpi':
+            die(local_dominosdashboard_update_kpi($params = $_POST));
+        break;
+        case 'create_kpi':
+            die(local_dominosdashboard_create_kpi($params = $_POST));
+        break;
         default:
             die(local_dominosdashboard_error_response("request_type not allowed"));
             break;

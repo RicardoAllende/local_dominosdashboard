@@ -64,7 +64,7 @@ $PAGE->set_context($context_system);
                 <label for="fecha_kpi">Fecha del kpi (mensual) <input type="date" onchange="obtenerInformacion()" class="form-control" name="fecha_kpi" id="fecha_kpi"></label>
             </div>
             <input type="hidden" name="report_type" id="report_type" value="course_completion">
-            <div id='contenedor_filtros'></div>
+            <div class="col-sm-11" id='contenedor_filtros' style="text-align: center;"></div>
         </form>
         <div id="loader"></div>
         <div class="row col-sm-9" id="contenido_dashboard">
@@ -149,7 +149,7 @@ $PAGE->set_context($context_system);
                             case 1: // ICA (normalmente regresa Destacado/Aprobado/No aprobado), OPS
                                 imprimir_kpi_ops_ica_curso(_kpi, informacion_del_curso.data.percentage);
                                 break;
-                            case 2: // Número de quejas, Reporte de Casos Histórico por tiendas
+                            case 2: // Número entero de quejas, Reporte de Casos Histórico por tiendas
                                 imprimir_kpi_reporte_casos_historico_curso(_kpi, informacion_del_curso.data.percentage);
                                 break;
                             case 3: // Porcentaje de rotación, scorcard
@@ -162,6 +162,7 @@ $PAGE->set_context($context_system);
                     $('#course_title,#course_overview').html('');
                     insertarTituloSeparador('#course_title', 'Curso ' + informacion_del_curso.data.title);
                     crearTarjetaParaGrafica('#course_overview', informacion_del_curso.data, 'col-sm-12 col-xl-12');
+                    //Aqui va una funcion nueva 
 
                     imprimirRanking('#ranking_dm', informacion_del_curso.data);
                     dateEnding = Date.now();
@@ -442,32 +443,6 @@ $PAGE->set_context($context_system);
             }
         }
 
-        /**
-         * @param _bindto string selector con sintaxis jquery donde se imprimirán las gráficas
-         */
-        function imprimirComparativaFiltrosDeCurso(_bindto, informacion){
-            $(_bindto).html('');
-            if(!esVacio(informacion.comparative)){
-                comparative = informacion.comparative;
-                columns = Array();
-                comparativas++;
-                id_para_Grafica = 'ldm_comparativa_' + comparativas + '_' + informacion.key;
-                insertarTituloSeparador(_bindto, 'Comparativa ' + informacion.filter);
-                $(_bindto).append(`<div class='col-sm-12'><div id="${id_para_Grafica}"></div></div><br>`);
-                // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
-                id_para_Grafica = '#' + id_para_Grafica;
-                for(var j = 0; j < comparative.length; j++){
-                    datos_a_comparar = comparative[j];
-                    columns.push([datos_a_comparar.name, datos_a_comparar.percentage]);
-                }
-                data = { columns: columns, type: 'bar'};
-                crearGraficaComparativaPorFiltro(id_para_Grafica, data);
-            }else{
-                console.log('Error de imprimirComparativaFiltrosDeCurso', informacion);
-                $(_bindto).html('');
-            }
-        }
-
         var comparativaMaxima = 20;
         var clase;
         function compararFiltros(filtro_seleccionado){
@@ -505,6 +480,45 @@ $PAGE->set_context($context_system);
                     console.log(error2);
                 });
         }
+
+        /**
+         * @param _bindto string selector con sintaxis jquery donde se imprimirán las gráficas
+         */
+        function imprimirComparativaFiltrosDeCurso(_bindto, informacion){
+            $(_bindto).html('');
+            if(!esVacio(informacion.comparative)){
+                comparative = informacion.comparative;
+                columns = Array();
+                comparativas++;
+                id_para_Grafica = 'ldm_comparativa_' + comparativas + '_' + informacion.key;
+                insertarTituloSeparador(_bindto, 'Comparativa ' + informacion.filter);
+                $(_bindto).append(`<div class='col-sm-12'><div id="${id_para_Grafica}"></div></div><br>`);
+                // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
+                id_para_Grafica = '#' + id_para_Grafica;
+                for(var j = 0; j < comparative.length; j++){
+                    datos_a_comparar = comparative[j];
+                    columns.push([datos_a_comparar.name, datos_a_comparar.percentage]);
+                }
+                data = { columns: columns, type: 'bar'};
+                var chart = c3.generate({
+                    data: data,
+                    axis: {
+                        rotated: true
+                    },
+                    tooltip: {
+                        format: {
+                            title: function (d) { return 'Porcentaje de aprobación'; },
+
+                        }               
+                    },   
+                    bindto: id_para_Grafica,
+                });
+            }else{
+                console.log('Error de imprimirComparativaFiltrosDeCurso', informacion);
+                $(_bindto).html('');
+            }
+        }
+
     </script>
 </body>
 </html>
