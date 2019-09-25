@@ -130,11 +130,24 @@ function crearGraficaDeCurso(_bindto, curso){
                 var nombre_columnas = ["Aprobados", "No Aprobados"];    
         break;
         case 'grupo':
-                _columns = [
-                    ['Inscritos', 30, 200, 100, 400],
-                    ['Aprobados', 130, 100, 140, 200]
-                ];
-                var nombre_columnas = ["Aprobados", "No Aprobados"];            
+                // _columns = [
+                //     ['Inscritos', 30, 200, 100, 400],
+                //     ['Aprobados', 130, 100, 140, 200]
+                //];
+                var nombre_columnas = ["Aprobados", "No Aprobados"];
+                return c3.generate({
+                    data: {
+                        columns: [
+                            ['data1', 30, 200, 200, 400, 150, 250],
+                            ['data2', 130, 100, 100, 200, 150, 50],
+                            ['data3', 230, 200, 200, 300, 250, 250]
+                        ],
+                        type: 'bar',
+                        groups: [
+                            ['data1', 'data2']
+                        ]
+                    }
+                });            
         break;    
         default:
             $(_bindto).html('');
