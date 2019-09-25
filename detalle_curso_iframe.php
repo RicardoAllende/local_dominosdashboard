@@ -510,7 +510,7 @@ $PAGE->set_context($context_system);
                             title: function (d) { return 'Porcentaje de aprobación'; },
 
                         }               
-                    }   
+                    },   
                     bindto: id_para_Grafica,
                 });
             }else{
