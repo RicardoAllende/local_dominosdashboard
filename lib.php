@@ -23,6 +23,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use PHPMailer\PHPMailer\Exception;
+
 defined('MOODLE_INTERNAL') || die();
 
 function local_dominosdashboard_user_has_access(bool $throwError = true){
@@ -127,7 +129,7 @@ DEFINE('DOMINOSDASHBOARD_CHARTS', ['bar' => 'Barras',
  'spline' => 'Curvas',
  'grupo' => 'Barras agrupadas',
 //  'progreso' => 'Avance'
- ]); //'bar/pie/gauge');
+ ]); 
 
 
 function local_dominosdashboard_relate_column_with_fields(array $columns, array $requiredFields, bool &$hasRequiredColumns){
@@ -173,24 +175,13 @@ function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql =
             }else{
                 $_allow_empty = "";
             }
-            // $query = "SELECT data from {user_info_data} as uid_ WHERE uid_.fieldid = {$fieldid} AND uid_.userid = uid.userid {$_allow_empty} (SELECT data as menu_value FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} group by data) ";
-            // $query = "SELECT data as menu_id, COALESCE((SELECT data from {user_info_data} as uid_ WHERE uid_.fieldid = {$fieldid} AND uid_.userid = uid.userid {$_allow_empty} LIMIT 1), '') as menu_value
-            //  FROM {user_info_data} uid where fieldid = {$ccomfield} {$andWhereSql} {$allow_empty} group by menu_id HAVING menu_value != ''";
             $query = "SELECT distinct data as menu_id, COALESCE((SELECT data from {user_info_data} as uid_ WHERE uid_.fieldid = {$ccomfield} AND uid_.userid = uid.userid {$_allow_empty} LIMIT 1), '') as menu_value
              FROM {user_info_data} uid where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} group by menu_id HAVING menu_value != '' ORDER BY menu_value ASC";
             $result = $DB->get_records_sql_menu($query, $query_params);
-            // if($result){
-            //     $_result = array();
-            //     foreach($result as $key => $temporal){
-            //         $result
-            //     }
-            // }
-            // usort($result, function ($a, $b) {return $a->percentage < $b->percentage;});
             return $result;
         }
     }
     $query = "SELECT data, data as _data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} group by data order by data ASC ";
-    // _log('local_dominosdashboard_get_catalogue query', $query);
     return $DB->get_records_sql_menu($query, $query_params);
 }
 
@@ -246,15 +237,6 @@ function local_dominosdashboard_get_wheresql_for_user_catalogues(array $params, 
     $response->sql = $andWhereSql;
     $response->params = $query_params;
     return $response;
-}
-
-function local_dominosdashboard_get_all_catalogues_for_kpi($kpi, $params = array()){
-    $indicators = array();
-    foreach(local_dominosdashboard_get_kpi_indicators() as $indicator){
-        $indicators[$indicator] = local_dominosdashboard_get_kpi_catalogue($indicator, $kpi, $params);
-    }
-    _log($indicators);
-    return $indicators;
 }
 
 function local_dominosdashboard_get_completion_modes(){
@@ -1502,4 +1484,87 @@ function local_dominosdashboard_get_historic_dates(int $courseid){
     global $DB;
     $query = "SELECT distinct DATE(FROM_UNIXTIME(timecreated)) FROM {dominos_historico} WHERE courseid = ?";
     return $DB->get_recordset_sql($query, array($courseid));
+}
+
+function local_dominosdashboard_has_empty(... $params){
+    foreach($params as $param){
+        if(empty($param)){
+            // if($param !== 0){ // Acepta el 0 como valor válido
+                return true;
+            // }
+        }
+    }
+    return false;
+}
+
+function local_dominosdashboard_delete_kpi(array $params){
+    global $DB;
+    $id = local_dominosdashboard_get_value_from_params($params, 'id', false, true);
+    $kpi = $DB->get_record('dominos_kpi_list', array('id' => $id));
+    if($kpi === false){
+        _log('No se encontró kpi');
+        return 'error';
+    }
+    $DB->delete_records('dominos_kpi_list',  array('id' => $id));
+    $DB->delete_records('dominos_kpis',  array('kpi' => $kpi->kpi));
+}
+
+function local_dominosdashboard_update_kpi(array $params){
+    $id = local_dominosdashboard_get_value_from_params($params, 'id', false, true);
+    global $DB;
+    $kpi = $DB->get_record('dominos_kpi_list', array('id' => $id));
+    if($kpi === false){
+        _log('No se encontró kpi');
+        return 'error';
+    }
+    // $id = local_dominosdashboard_get_value_from_params($params, 'id', false, true);
+    
+    $key = local_dominosdashboard_get_value_from_params($params, 'kpi_key', false, true);
+    $name = local_dominosdashboard_get_value_from_params($params, 'kpi_name', false, true);
+    $type = local_dominosdashboard_get_value_from_params($params, 'kpi_type', false, true);
+    $enabled = local_dominosdashboard_get_value_from_params($params, 'kpi_enabled', false, true);
+    if($kpi->kpi_key == $key){
+        // repetido
+    }
+    $kpi->kpi_key = $key;
+    $kpi->name = $name;
+    $kpi->type = $type;
+    $kpi->enabled = $enabled;
+    $DB->update_record('dominos_kpi_list', $kpi);
+}
+
+function local_dominosdashboard_create_kpi(array $params){
+    _log('Función local_dominosdashboard_create_kpi');
+    try{
+        global $DB;
+        $key = local_dominosdashboard_get_value_from_params($params, 'kpi_key', false, true);
+        $name = local_dominosdashboard_get_value_from_params($params, 'kpi_name', false, true);
+        $type = local_dominosdashboard_get_value_from_params($params, 'kpi_type', false, true);
+        $enabled = local_dominosdashboard_get_value_from_params($params, 'kpi_enabled', false, true);
+        if(local_dominosdashboard_has_empty($key, $name, $type, $enabled)){
+            _log('Datos vacíos en creación de kpi');
+            return 'Hay datos vacíos';
+        }
+        $existent = $DB->record_exists('dominos_kpi_list', array('kpi_key' => $key));
+        if($existent){
+            return "La clave ya existe";
+        }
+        // $DB->record_exists($table, $conditions_array);
+        $kpi = new stdClass();
+        $kpi->kpi_key = $key;
+        $kpi->name = $name;
+        $kpi->type = $type;
+        $kpi->enabled = $enabled;
+        $insertion = $DB->insert_record('dominos_kpi_list', $kpi);
+        
+        return "ok";
+    }catch(Exception $e){
+        _log('Error al crear kpi', $e);
+        return 'error';
+    }
+}
+
+function local_dominosdashboard_get_kpi_list(){
+    global $DB;
+    return $DB->get_records('dominos_kpi_list');
 }

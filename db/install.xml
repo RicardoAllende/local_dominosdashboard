@@ -6,19 +6,26 @@
         <TABLE NAME="dominos_kpis" COMMENT="">
             <FIELDS>
                 <FIELD NAME="id"                TYPE="int"   LENGTH="10"  NOTNULL="true"   SEQUENCE="true"  />
-                <!-- <FIELD NAME="kpi"               TYPE="char"  LENGTH="10"  NOTNULL="false"  SEQUENCE="false" /> -->
-                <!-- <FIELD NAME="name"              TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" /> -->
+                <!-- <FIELD NAME="name"         TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" /> -->
                 <FIELD NAME="ccosto"            TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" />
-                <!-- <FIELD NAME="ceco"              TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" /> -->
-                <FIELD NAME="calificacion"      TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="estatus"           TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="quejas"            TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="rotacion_mensual"  TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="rotacion_rolling"  TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="kpi_key"           TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="value"             TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="kpi_date"          TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="month"             TYPE="char"  LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="year"              TYPE="char"  LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="timecreated"       TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="dominos_kpi_list" COMMENT="">
+            <FIELDS>
+                <FIELD NAME="id"        TYPE="int"  LENGTH="10" NOTNULL="true"   SEQUENCE="true"  />
+                <FIELD NAME="kpi_key"   TYPE="char" LENGTH="255"  NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="name"      TYPE="char" LENGTH="255"  NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="enabled"   TYPE="char" LENGTH="1" NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="type"      TYPE="char" LENGTH="50" NOTNULL="false"  SEQUENCE="false" />
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" />
