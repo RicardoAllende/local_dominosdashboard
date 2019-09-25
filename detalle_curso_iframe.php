@@ -162,6 +162,7 @@ $PAGE->set_context($context_system);
                     $('#course_title,#course_overview').html('');
                     insertarTituloSeparador('#course_title', 'Curso ' + informacion_del_curso.data.title);
                     crearTarjetaParaGrafica('#course_overview', informacion_del_curso.data, 'col-sm-12 col-xl-12');
+                    //Aqui va una funcion nueva 
 
                     imprimirRanking('#ranking_dm', informacion_del_curso.data);
                     dateEnding = Date.now();

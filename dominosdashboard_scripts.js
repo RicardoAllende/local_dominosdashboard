@@ -372,7 +372,7 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
         data: {
             columns: info_grafica,
             type: ''
-        },
+        },        
         bindto: '#' + div_id,
         tooltip: {
             format: {
