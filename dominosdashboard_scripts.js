@@ -401,7 +401,7 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
                         <div class="bg-white m-2" id="${div_id}"></div>                        
                     </div>
                 </div>`);
-    // Esta sería la gráfica de líneas rectas
+    // Gráfica de líneas rectas
     // var chartz = c3.generate({
     //     data: {
     //         columns: info_grafica,
@@ -418,7 +418,7 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     //     }
     // });
 
-    // Esta sería la gráfica de curvas
+    // Gráfica de curvas
     // var chartz = c3.generate({
     //     data: {
     //         columns: info_grafica,
@@ -435,15 +435,17 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     //     }
     // });
 
-    // Esta sería la gráfica barras agrupadas
+    // Gráfica barras agrupadas
     var chartz = c3.generate({
         data: {
+                        
             columns: info_grafica,
             type: 'bar',
             colors: {
                         'Ideal de cobertura': '#8a7e7e',            
-                    },
-        },        
+                    }                           
+        },
+                
         bindto: '#' + div_id,
         tooltip: {
             format: {
