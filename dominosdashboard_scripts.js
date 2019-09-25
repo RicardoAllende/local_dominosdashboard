@@ -437,15 +437,20 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
 
     // Gráfica barras agrupadas
     var chartz = c3.generate({
-        data: {
-                        
-            columns: info_grafica,
+    //    x : 'x',
+        data: { 
+            columns: info_grafica,                       
+    //        columns: [['x', 'www.site1.com', 'www.site2.com', 'www.site3.com', 'www.site4.com'],[info_grafica]] ,
             type: 'bar',
             colors: {
-                        'Ideal de cobertura': '#8a7e7e',            
-                    }                           
+                'Ideal de cobertura': '#8a7e7e',            
+            }                           
         },
-                
+        //axis: {
+        //            x: {
+        //                type: 'category' // this needed to load string x value
+        //            }
+        //        },                
         bindto: '#' + div_id,
         tooltip: {
             format: {
