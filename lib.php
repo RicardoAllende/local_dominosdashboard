@@ -190,6 +190,12 @@ function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql =
     } else {
         $allow_empty = " AND data != '' AND data IS NOT NULL ";
     }
+    $email_provider = local_dominosdashboard_get_email_provider_to_allow();
+    if(!empty($email_provider)){
+        $whereEmailProvider = " AND userid IN (SELECT id FROM {user} WHERE email LIKE '%{$email_provider}')"; 
+    }else{
+        $whereEmailProvider = " "; 
+    }
     global $DB;
     if($key == 'ccosto'){
         $ccomfield = get_config('local_dominosdashboard', "filtro_idccosto");
@@ -200,12 +206,12 @@ function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql =
                 $_allow_empty = "";
             }
             $query = "SELECT distinct data as menu_id, COALESCE((SELECT data from {user_info_data} as uid_ WHERE uid_.fieldid = {$ccomfield} AND uid_.userid = uid.userid {$_allow_empty} LIMIT 1), '') as menu_value
-             FROM {user_info_data} uid where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} group by menu_id HAVING menu_value != '' ORDER BY menu_value ASC";
+             FROM {user_info_data} uid where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} {$whereEmailProvider} group by menu_id HAVING menu_value != '' ORDER BY menu_value ASC";
             $result = $DB->get_records_sql_menu($query, $query_params);
             return $result;
         }
     }
-    $query = "SELECT data, data as _data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} group by data order by data ASC ";
+    $query = "SELECT data, data as _data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} {$whereEmailProvider} group by data order by data ASC ";
     return $DB->get_records_sql_menu($query, $query_params);
 }
 
@@ -372,36 +378,6 @@ function local_dominosdashboard_get_userid_with_dominos_mail(){
     global $DB;
     $query = "SELECT id FROM {user} WHERE ";
     return $DB->get_fieldset_sql($query);
-}
-
-function local_dominosdashboard_get_enrolled_users_ids(int $courseid, string $fecha_inicial, string $fecha_final){
-    $email_provider = local_dominosdashboard_get_email_provider_to_allow();
-    if(!empty($email_provider)){
-        $where = " AND email LIKE '%{$email_provider}'"; 
-    }else{
-        $where = ""; 
-    }
-    $campo_fecha = "_ue.timestart";
-    $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
-    /* User is active participant (used in user_enrolments->status) -- Documentación tomada de enrollib.php 
-    define('ENROL_USER_ACTIVE', 0);*/
-    $query = "SELECT DISTINCT __user__.id FROM {user} AS __user__
-    JOIN {user_enrolments} AS __ue__ ON __ue__.userid = __user__.id
-    JOIN {enrol} __enrol__ ON (__enrol__.id = __ue__.enrolid AND __enrol__.courseid = {$courseid})
-    WHERE __ue__.status = 0 AND __user__.deleted = 0 {$filtro_fecha} AND __user__.suspended = 0 {$where} AND __user__.id NOT IN 
-    (SELECT DISTINCT __role_assignments__.userid as userid
-        FROM {course} AS __course__
-        LEFT JOIN {context} AS __context__ ON __course__.id = __context__.instanceid
-        JOIN {role_assignments} AS __role_assignments__ ON __role_assignments__.contextid = __context__.id
-        WHERE __course__.id = {$courseid}
-        AND __role_assignments__.roleid NOT IN (5) # No students
-    )";
-
-    global $DB;
-    if($result = $DB->get_fieldset_sql($query)){
-        return $result;
-    }
-    return array(); // default
 }
 
 function local_dominosdashboard_get_courses_with_filter(bool $allCourses = false, int $type){
@@ -637,10 +613,7 @@ function local_dominosdashboard_get_whereids_clauses($filters, $fieldname){
         return "";
     }
     $separator = " AND {$fieldname} IN ";
-    if(count($filters) == 1){
-        return $separator . $filters[0];
-    }
-    return implode($separator, $filters);
+    return $separator . implode($separator, $filters);
 }
 
 function local_dominosdashboard_get_count_users($userids){
@@ -684,7 +657,7 @@ function local_dominosdashboard_get_course_comparative(int $courseid, array $par
             $item_to_compare->percentage = local_dominosdashboard_percentage_of($item_to_compare->approved_users, $item_to_compare->enrolled_users);                    
         }else{
             $item_to_compare->enrolled_users = local_dominosdashboard_get_count_users($userids);
-            $userids = implode(',', $userids);
+            // $userids = implode(',', $userids);
             $item_to_compare->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids, $fecha_inicial, $fecha_final); //
             $item_to_compare->percentage = local_dominosdashboard_percentage_of($item_to_compare->approved_users, $item_to_compare->enrolled_users);
         }
@@ -983,18 +956,49 @@ function local_dominosdashboard_get_selected_params(array $params){
     return $result;
 }
 
+
+function local_dominosdashboard_get_enrolled_users_ids(int $courseid, string $fecha_inicial, string $fecha_final){
+    $email_provider = local_dominosdashboard_get_email_provider_to_allow();
+    if(!empty($email_provider)){
+        $where = " AND email LIKE '%{$email_provider}'"; 
+    }else{
+        $where = ""; 
+    }
+    $campo_fecha = "_ue.timestart";
+    $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
+    /* User is active participant (used in user_enrolments->status) -- Documentación tomada de enrollib.php 
+    define('ENROL_USER_ACTIVE', 0);*/
+    $query = "( SELECT DISTINCT __user__.id FROM {user} AS __user__
+    JOIN {user_enrolments} AS __ue__ ON __ue__.userid = __user__.id
+    JOIN {enrol} __enrol__ ON (__enrol__.id = __ue__.enrolid AND __enrol__.courseid = {$courseid})
+    WHERE __ue__.status = 0 AND __user__.deleted = 0 {$filtro_fecha} AND __user__.suspended = 0 {$where} AND __user__.id NOT IN 
+    (SELECT DISTINCT __role_assignments__.userid as userid
+        FROM {course} AS __course__
+        LEFT JOIN {context} AS __context__ ON __course__.id = __context__.instanceid
+        JOIN {role_assignments} AS __role_assignments__ ON __role_assignments__.contextid = __context__.id
+        WHERE __course__.id = {$courseid}
+        AND __role_assignments__.roleid NOT IN (5) # No students
+    ) )";
+
+    return $query;
+
+    global $DB;
+    if($result = $DB->get_fieldset_sql($query)){
+        return $result;
+    }
+    return array(); // default
+}
+
 function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $params = array(), bool $returnAsString = false){
     $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
     $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final');
     // Se omite $fecha_inicial debido a que si se incluye los usuarios inscritos anteriormente serían omitidos, activar si se pide explícitamente ese funcionamiento
     // $ids = local_dominosdashboard_get_enrolled_users_ids($courseid, $fecha_inicial, $fecha_final);
     $ids = local_dominosdashboard_get_enrolled_users_ids($courseid, '', $fecha_final);
-    if(empty($ids)){
-        return false;
-    }
+    $filters_sql = array();
+    array_push($filters_sql, $ids);
     $allow_users = array();
     $filter_active = false;
-    $filters_sql = array();
     $query_parameters = array();
     if(!empty($params)){
         global $DB;
@@ -1074,7 +1078,7 @@ function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $p
     $response = new stdClass();
     $response->filters = $filters_sql;
     $response->params = $query_parameters;
-    _log($response);
+    // _log($response);
     return $response;
     $ids = array_unique($ids);
     // // _log('$allow_users', $allow_users);
