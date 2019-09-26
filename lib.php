@@ -360,32 +360,6 @@ function local_dominosdashboard_is_enrolled(int $courseid, int $userid){
     return is_enrolled(context_course::instance($courseid), $userid);    
 }
 
-function local_dominosdashboard_get_enrolled_users_count(int $courseid, string $userids = '', string $fecha_inicial, string $fecha_final){ //
-    $email_provider = local_dominosdashboard_get_email_provider_to_allow();
-    if(empty($userids)){
-        return 0; // default
-    }else{
-        $whereids = " AND ra.userid IN ({$userids})";
-    }
-    if(!empty($email_provider)){
-        $where = " AND email LIKE '{$email_provider}'"; 
-    }else{
-        $where = ""; 
-    }
-    $query = "SELECT COUNT(DISTINCT ra.userid) AS learners
-    FROM {course} AS c
-    LEFT JOIN {context} AS ctx ON c.id = ctx.instanceid
-    JOIN {role_assignments} AS ra ON ra.contextid = ctx.id
-    WHERE c.id = {$courseid}
-    AND ra.userid IN(SELECT id from {user} WHERE deleted = 0 AND suspended = 0 {$where} {$whereids})
-    AND ra.roleid IN (5) # default student role";
-    global $DB;
-    if($result = $DB->get_record_sql($query)){
-        return intval($result->learners);
-    }
-    return 0; // default
-}
-
 function local_dominosdashboard_get_email_provider_to_allow(){
     if($email_provider = get_config('local_dominosdashboard', 'allowed_email_addresses_in_course')){
         return $email_provider; // Ejemplo: @alsea.com.mx o @dominos.com.mx
@@ -644,18 +618,24 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         $response->value = 0;
         return $response;
     }
-    $num_users = count($userids);
-    $userids = implode(',', $userids);
+    // $num_users = count($userids);
+    // $userids = implode(',', $userids);
     if($get_activities){
         $response->activities = local_dominosdashboard_get_activities_completion($courseid, $userids, $fecha_inicial, $fecha_final); //
     }
 
-    $response->enrolled_users = $num_users; //
+    $response->enrolled_users = local_dominosdashboard_get_count_users($userids); // modificar
     $response->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids, $fecha_inicial, $fecha_final); //
     $response->not_approved_users = $response->enrolled_users - $response->approved_users;
     $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users);
     $response->value = $response->percentage;
     return $response;
+}
+
+function local_dominosdashboard_get_count_users($userids){
+    global $DB;
+    $whereids = implode(' AND _us_.userid IN ', $userids->filters);
+    return $DB->count_records_sql("SELECT count(*) FROM {user} as _us_ WHERE 1 = 1 {$whereids}", $userids->params);
 }
 
 function local_dominosdashboard_get_course_comparative(int $courseid, array $params){
@@ -691,7 +671,7 @@ function local_dominosdashboard_get_course_comparative(int $courseid, array $par
             $item_to_compare->approved_users = 0;
             $item_to_compare->percentage = local_dominosdashboard_percentage_of($item_to_compare->approved_users, $item_to_compare->enrolled_users);                    
         }else{
-            $item_to_compare->enrolled_users = count($userids); //
+            $item_to_compare->enrolled_users = local_dominosdashboard_get_count_users($userids);
             $userids = implode(',', $userids);
             $item_to_compare->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids, $fecha_inicial, $fecha_final); //
             $item_to_compare->percentage = local_dominosdashboard_percentage_of($item_to_compare->approved_users, $item_to_compare->enrolled_users);
@@ -832,7 +812,7 @@ function local_dominosdashboard_get_ideales_as_js_script(){
     return "<script> var ideal_cobertura = {$ideal_cobertura}; var ideal_rotacion = {$ideal_rotacion}; </script>";
 }
 
-function local_dominosdashboard_get_approved_users(int $courseid, string $userids = '', string $fecha_inicial, string $fecha_final){ //
+function local_dominosdashboard_get_approved_users(int $courseid, $userids = '', string $fecha_inicial, string $fecha_final){ //
     $response = 0;
     if(empty($userids)){ // no users to search in query
         // _log('No se encuentran usuarios');
@@ -850,20 +830,24 @@ function local_dominosdashboard_get_approved_users(int $courseid, string $userid
     switch($completion_mode){
         case COMPLETION_DEFAULT:
             if(empty($userids)){
-                $whereids = "";
+                // $whereids = "";
+                return 0;
             }else{
-                $whereids = " AND p.userid IN ({$userids})";
+                $whereids = implode(' AND p.userid IN ', $userids->filters);
+                // $whereids = " AND p.userid IN ({$userids})";
             }
             $campo_fecha = "p.timecompleted";
             $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);    
             $query = "SELECT count(*) AS completions FROM {course_completions} AS p
-            WHERE p.course = {$courseid} AND p.timecompleted IS NOT NULL {$whereids} {$filtro_fecha} ";
+            WHERE p.course = {$courseid} AND p.timecompleted IS NOT NULL {$filtro_fecha} {$whereids} ";
         break;
         case COMPLETION_BY_GRADE:
             if(empty($userids)){
-                $whereids = "";
+                // $whereids = "";
+                return 0;
             }else{
-                $whereids = " AND gg.userid IN ({$userids})";
+                $whereids = implode(' AND gg.userid IN ', $userids->filters);
+                // $whereids = " AND p.userid IN ({$userids})";
             }
             $grade_item = get_config('local_dominosdashboard', 'course_grade_activity_completion_' . $courseid);
             $minimum_score = get_config('local_dominosdashboard', 'course_minimum_score_' . $courseid);
@@ -881,15 +865,22 @@ function local_dominosdashboard_get_approved_users(int $courseid, string $userid
         // break;
         case COMPLETION_BY_ACTIVITY:
             if(empty($userids)){
-                $whereids = "";
+                // $whereids = "";
+                return 0;
             }else{
-                $whereids = " AND userid IN ({$userids})";
+                $whereids = implode(' AND cmc_.userid IN ', $userids->filters);
+                // $whereids = " AND p.userid IN ({$userids})";
             }
+            // if(empty($userids)){
+            //     $whereids = "";
+            // }else{
+            //     $whereids = " AND cmc_.userid IN ({$userids})";
+            // }
             $completion_activity = get_config('local_dominosdashboard', 'course_completion_activity_' . $courseid);
             /* completionstate 0 => 'In Progress' 1 => 'Completed' 2 => 'Completed with Pass' completionstate = 3 => 'Completed with Fail' */
             $campo_fecha = "timemodified";
             $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
-            $query = "SELECT count(*) AS completions from {course_modules_completion} WHERE
+            $query = "SELECT count(*) AS completions from {course_modules_completion} as cmc_ WHERE
              coursemoduleid = {$completion_activity} AND completionstate IN (1,2) $whereids {$filtro_fecha}";
         break;
         case COMPLETION_BY_BADGE:
@@ -897,13 +888,20 @@ function local_dominosdashboard_get_approved_users(int $courseid, string $userid
             $completion_badge = get_config('local_dominosdashboard', 'badge_completion_' . $courseid);
             // $ids = implode(',', $ids);
             if(empty($userids)){
-                $whereids = "";
+                // $whereids = "";
+                return 0;
             }else{
-                $whereids = " AND userid IN ({$userids})";
+                $whereids = implode(' AND bi.userid IN ', $userids->filters);
+                // $whereids = " AND p.userid IN ({$userids})";
             }
+            // if(empty($userids)){
+            //     $whereids = "";
+            // }else{
+            //     $whereids = " AND bi.userid IN ({$userids})";
+            // }
             $campo_fecha = "dateissued";
             $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
-        $query = "SELECT count(*) AS completions from {badge_issued} WHERE badgeid = {$completion_badge} {$whereids} {$filtro_fecha}";
+        $query = "SELECT count(*) AS completions from {badge_issued} as bi_ WHERE badgeid = {$completion_badge} {$whereids} {$filtro_fecha}";
         break;
         default: 
             // $response->message = 'Completion not allowed';
@@ -912,7 +910,7 @@ function local_dominosdashboard_get_approved_users(int $courseid, string $userid
     }
     if(!empty($query)){
         global $DB;
-        if($result = $DB->get_record_sql($query)){
+        if($result = $DB->get_record_sql($query, $userids->params)){
             $response = $result->completions;
             return $response;
         }
@@ -1003,15 +1001,15 @@ function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $p
                         array_push($query_parameters, $fieldid);
                         array_push($query_parameters, $data);
                         // $newIds = 
-                        $newIds = $DB->get_fieldset_select('user_info_data', 'distinct userid', ' fieldid = :fieldid AND data = :data ', array('fieldid' => $fieldid, 'data' => $params[$key]));
+                        // $newIds = $DB->get_fieldset_select('user_info_data', 'distinct userid', ' fieldid = :fieldid AND data = :data ', array('fieldid' => $fieldid, 'data' => $params[$key]));
                     }elseif(is_array($data)){
                         $wheres = array();
                         $query_params = array();
                         $options = array();
                         foreach ($data as $d) {
                                 array_push($wheres, " data = ? ");
-                                array_push($query_params, $d);
-                                array_push($options, $d);
+                                // array_push($query_params, $d);
+                                // array_push($options, $d);
                                 array_push($query_parameters, $d);
                         }
                         if(!empty($options)){
@@ -1027,28 +1025,28 @@ function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $p
                         if(!empty($wheres)){
                             $wheres = " AND ( " . implode(" || ", $wheres) . " ) ";
                             $query = "SELECT DISTINCT userid FROM {user_info_data} WHERE fieldid = {$fieldid} " . $wheres;
-                            $newIds = $DB->get_fieldset_sql($query, $query_params);
-                        }else{
-                            $newIds = false;
+                            // $newIds = $DB->get_fieldset_sql($query, $query_params);
+                        // }else{
+                            // $newIds = false;
                         }
-                    }else{
-                        $newIds = false;
+                    // }else{
+                    //     $newIds = false;
                     }
 
-                    if($newIds){
-                        if(is_array($newIds)){
-                            $allow_users[] = $newIds;
-                        }else{
-                            // _log("no existen usuarios con esta coincidencia",array('fieldid' => $fieldid, 'data' => $params[$key]));
-                        }
-                    }else{
-                        // _log('no newIds', array('fieldid' => $fieldid, 'data' => $params[$key]));
-                        if($returnAsString){
-                            return ""; // Search returns empty
-                        }else{
-                            return array(); // Search returns empty
-                        }
-                    }
+                    // if($newIds){
+                    //     if(is_array($newIds)){
+                    //         $allow_users[] = $newIds;
+                    //     }else{
+                    //         // _log("no existen usuarios con esta coincidencia",array('fieldid' => $fieldid, 'data' => $params[$key]));
+                    //     }
+                    // }else{
+                    //     // _log('no newIds', array('fieldid' => $fieldid, 'data' => $params[$key]));
+                    //     if($returnAsString){
+                    //         return ""; // Search returns empty
+                    //     }else{
+                    //         return array(); // Search returns empty
+                    //     }
+                    // }
                 }else{
                     // _log('no fieldid');
                 }
@@ -1306,7 +1304,7 @@ function local_dominosdashboard_get_activities(int $courseid, string $andwhere =
     return $DB->get_records_sql_menu($query);
 }
 
-function local_dominosdashboard_get_activities_completion(int $courseid, string $userids, string $fecha_inicial, string $fecha_final){
+function local_dominosdashboard_get_activities_completion(int $courseid, $userids, string $fecha_inicial, string $fecha_final){
 
     $activities = array();
     if(empty($userids)){
@@ -1322,14 +1320,19 @@ function local_dominosdashboard_get_activities_completion(int $courseid, string 
     return $activities;
 }
 
-function local_dominosdashboard_get_activity_completions(int $activityid, string $userids = "", $title = "", string $fecha_inicial, string $fecha_final){
+function local_dominosdashboard_get_activity_completions(int $activityid, $userids = "", $title = "", string $fecha_inicial, string $fecha_final){
     $campo_fecha = "timemodified";
     $filtro_fecha = "";
     $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
     global $DB;
     $key = "module" . $activityid;
+    if(empty($userids)){
+        return 0;
+    }else{
+        $whereids = implode(' AND _cmc_.userid IN ', $userids->filters);
+    }
     // $inProgress         = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 0");
-    $completed          = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate IN (1,2) {$filtro_fecha}");
+    $completed          = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} as _cmc_ WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate IN (1,2) {$filtro_fecha}", $userids->params);
     // $completedWithFail  = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 3");
     return compact('key', 'title', 'inProgress', 'completed', 'completedWithFail');
 }
