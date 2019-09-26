@@ -447,6 +447,7 @@ $PAGE->set_context($context_system);
         var comparativaMaxima = 20;
         var clase;
         function compararFiltros(filtro_seleccionado){
+            mostrarLoader();
             informacion = $('#filter_form').serializeArray();
             informacion.push({ name: 'request_type', value: 'course_comparative' });
             informacion.push({ name: 'selected_filter', value: filtro_seleccionado });
@@ -474,11 +475,13 @@ $PAGE->set_context($context_system);
                     imprimirComparativaFiltrosDeCurso('#ldm_comparativas', comparativa.data);
                     dateEnding = Date.now();
                     console.log(`Tiempo de respuesta de API al obtener json para comparativas ${dateEnding - dateBeginingComparacion} ms`);
+                    ocultarLoader();
                 })
                 .fail(function (error, error2) {
                     // isCourseLoading = false;
                     console.log(error);
                     console.log(error2);
+                    ocultarLoader();
                 });
         }
 

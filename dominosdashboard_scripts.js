@@ -720,6 +720,14 @@ function showPage(id_div) {
   document.getElementById(id_div).style.display = "block";
 }
 
+function mostrarLoader(){
+    document.getElementById("loader").style.display = "block";
+}
+
+function ocultarLoader(){
+    document.getElementById("loader").style.display = "none";
+}
+
 function hidePage(id_div){
   document.getElementById("loader").style.display = "block";
 //   document.getElementById(id_div).style.display = "none";
