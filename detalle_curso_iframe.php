@@ -74,6 +74,7 @@ $PAGE->set_context($context_system);
             <div class="col-sm-12" id="card_ops"></div>
             <div class="col-sm-6" id="card_numero_de_quejas"></div>
             <div class="col-sm-6" id="card_scorcard"></div>
+            <div class="col-sm-6" id="kpi_texto_numero"></div>
             
 
             <div class="col-sm-12" id="ranking_dm"></div>
@@ -147,9 +148,10 @@ $PAGE->set_context($context_system);
                         // console.log('Valor del kpi ' + _kpi.kpi_name, _kpi.value);
                         switch (_kpi.type) {
                             case 'Texto': // ICA (normalmente regresa Destacado/Aprobado/No aprobado), (ejemplo)
-                                imprimir_kpi_ops_ica_curso(_kpi, informacion_del_curso.data.percentage);
+                            kpi_texto();
                                 break;
                             case 'Número entero': // Número entero de quejas (ejemplo)
+                            kpi_numero();       
                             case 'Porcentaje': // Número entero de quejas, Reporte de Casos Histórico por tiendas
                                 imprimir_kpi_reporte_casos_historico_curso(_kpi, informacion_del_curso.data.percentage);
                                 break;
@@ -200,8 +202,151 @@ $PAGE->set_context($context_system);
             }
         }
 
-        function kpi_texto(){
+        
+
+        // Función cuando el tipo de kpi es texto
+        function kpi_texto(kpi){
             keys = Object.keys();
+            div_selector = '#kpi_texto_numero'
+            for (var index = 0; index < kpi.length; index++) {
+                clave = informacion_del_curso[index];
+                var tipo_texto = informacion_del_curso.data.kpi[index].value;
+                $(div_selector).append(`
+                <div class='col-sm-6 espacio'>
+                                    <div class='card bg-gray border-0 m-2'>
+                                        <div class='align-items-end'>
+                                            <div class='fincard text-center'>
+                                                <a href='#' id='titulo_grafica2'>${informacion_del_curso.data.kpi.kpi_name}</a>
+                                            </div>
+                                        </div>
+                                        <div class='card esp'>
+                                            <div class='row espr'>
+                                                <div class='border-0 col-sm-4'>
+                                                    <div class='card-body'>
+                                                        <p class='card-text text-primary text-center txti'>Aprobados</p>
+                                                        <p class='card-text text-primary text-center txtnum' id='apro2'></p>
+                                                    </div>
+                                                </div>
+                                                <div class='border-0 col-sm-4'>
+                                                    <div class='card-body text-center'>
+                                                        <p class='card-text text-warning text-center txti'>No Aprobados</p>
+                                                        <p class='card-text text-warning text-center txtnum' id='no_apro2'></p>
+                                                    </div>
+                                                </div>
+                                                <div class='border-0 col-sm-4'>
+                                                    <div class='card-body text-center'>
+                                                        <p class='card-text text-success text-center txti'>Total de usuarios</p>
+                                                        <p class='card-text text-warning text-center txtnum' id='tusuario2'></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class='bg-faded m-2' id='chart_texto'></div>                                     
+                                    </div>
+                    </div>
+                    `);
+                    
+                    var chartc = c3.generate({
+                    data: {
+                        columns: [
+                            ['Aprobado', obtenerDefaultEnNull(kpi.value["Aprobado"])],
+                            ['No Aprobado', obtenerDefaultEnNull(kpi.value["No aprobado"])],
+                            ['Destacado', obtenerDefaultEnNull(kpi.value["Destacado"])],
+                            ['% de aprobación de un curso', obtenerDefaultEnNull(informacion_del_curso.data.percentage)],
+                        ],
+                        type: 'bar',
+                        colors: {
+                            'Aprobado': '#008000',
+                            'No Aprobado': '#ff0000', 
+                            'Destacado': '#ff7f0e',
+                            '% de aprobación de un curso': '#d6c4b5'                                            
+                        }
+                    },
+                    bindto: "#chart_texto",
+                    tooltip: {
+                        format: {
+                            title: function (d) { return 'Calificacion '; },
+                            value: function (value, ratio, id) {
+                                var format = id === 'data1' ? d3.format(',') : d3.format('');
+                                return format(value);
+                            }
+
+                        }
+                    }
+                });
+            } 
+        }
+
+        // Función cuando el tipo de kpi es entero o porcentaje
+        function kpi_numero(informacion_del_curso){            
+            div_selector =
+            for (var index = 0; index < informacion_del_curso.data.kpi.length; index++) {
+                clave = informacion_del_curso[index];
+                var tipo_texto = informacion_del_curso.data.kpi[index].value;
+                $(div_selector).append(`
+                <div class='col-sm-6 espacio'>
+                                    <div class='card bg-gray border-0 m-2'>
+                                        <div class='align-items-end'>
+                                            <div class='fincard text-center'>
+                                                <a href='#' id='titulo_grafica2'>${informacion_del_curso.data.kpi.kpi_name}</a>
+                                            </div>
+                                        </div>
+                                        <div class='card esp'>
+                                            <div class='row espr'>
+                                                <div class='border-0 col-sm-4'>
+                                                    <div class='card-body'>
+                                                        <p class='card-text text-primary text-center txti'>Aprobados</p>
+                                                        <p class='card-text text-primary text-center txtnum' id='apro2'></p>
+                                                    </div>
+                                                </div>
+                                                <div class='border-0 col-sm-4'>
+                                                    <div class='card-body text-center'>
+                                                        <p class='card-text text-warning text-center txti'>No Aprobados</p>
+                                                        <p class='card-text text-warning text-center txtnum' id='no_apro2'></p>
+                                                    </div>
+                                                </div>
+                                                <div class='border-0 col-sm-4'>
+                                                    <div class='card-body text-center'>
+                                                        <p class='card-text text-success text-center txti'>Total de usuarios</p>
+                                                        <p class='card-text text-warning text-center txtnum' id='tusuario2'></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class='bg-faded m-2' id='chart_numero'></div>                                     
+                                    </div>
+                    </div>
+                    `);
+
+                    var chartc = c3.generate({
+                    data: {
+                        columns: [
+                            ['Aprobado', obtenerDefaultEnNull(kpi.value["Aprobado"])],
+                            ['No Aprobado', obtenerDefaultEnNull(kpi.value["No aprobado"])],
+                            ['Destacado', obtenerDefaultEnNull(kpi.value["Destacado"])],
+                            ['% de aprobación de un curso', obtenerDefaultEnNull(informacion_del_curso.data.percentage)],
+                        ],
+                        type: 'bar',
+                        colors: {
+                            'Aprobado': '#008000',
+                            'No Aprobado': '#ff0000', 
+                            'Destacado': '#ff7f0e',
+                            '% de aprobación de un curso': '#d6c4b5'                                            
+                        }
+                    },
+                    bindto: "#chart_numero",
+                    tooltip: {
+                        format: {
+                            title: function (d) { return 'Calificacion '; },
+                            value: function (value, ratio, id) {
+                                var format = id === 'data1' ? d3.format(',') : d3.format('');
+                                return format(value);
+                            }
+
+                        }
+                    }
+                });
+            } 
         }
 
         function imprimir_kpi_ops_ica_curso(kpi) {
