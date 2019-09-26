@@ -70,10 +70,7 @@ $PAGE->set_context($context_system);
             <div class="col-sm-12 col-xl-12" id="course_title"></div>
             <div class="col-sm-12 col-xl-12" id="course_overview"></div>
             <div class="col-sm-12 col-xl-12" id="indicators_title"></div>            
-            <div class="col-sm-12" id="card_ops"></div>
-            <div class="col-sm-6" id="card_numero_de_quejas"></div>
-            <div class="col-sm-6" id="card_scorcard"></div>
-            <div class="col-sm-6" id="kpi_texto_numero"></div>
+            <div class="col-sm-6" id="todos_los_kpis"></div>
             
 
             <div class="col-sm-12" id="ranking_dm"></div>
@@ -145,6 +142,7 @@ $PAGE->set_context($context_system);
                         _kpi = informacion_del_curso.data.kpi[index];
                         // console.log('Id del kpi', _kpi.kpi);
                         // console.log('Valor del kpi ' + _kpi.kpi_name, _kpi.value);
+                        $('#todos_los_kpis').html('');
                         switch (_kpi.type) {
                             case 'Texto': // ICA (normalmente regresa Destacado/Aprobado/No aprobado), (ejemplo)
                             kpi_texto();
@@ -278,7 +276,7 @@ $PAGE->set_context($context_system);
 
         // Función cuando el tipo de kpi es entero o porcentaje
         function kpi_numero(informacion_del_curso){            
-            div_selector =
+            div_selector = '#todos_los_kpis';
             for (var index = 0; index < informacion_del_curso.data.kpi.length; index++) {
                 clave = informacion_del_curso[index];
                 var tipo_texto = informacion_del_curso.data.kpi[index].value;
