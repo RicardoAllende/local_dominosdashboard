@@ -72,6 +72,7 @@ $PAGE->set_context($context_system);
             <div class="col-sm-12 col-xl-12" id="indicators_title"></div>            
             <div class="col-sm-6" id="todos_los_kpis"></div>
             
+            
 
             <div class="col-sm-12" id="ranking_dm"></div>
             <div class="col-sm-12" id="ldm_comparativas"></div>
@@ -142,17 +143,31 @@ $PAGE->set_context($context_system);
                         _kpi = informacion_del_curso.data.kpi[index];
                         // console.log('Id del kpi', _kpi.kpi);
                         // console.log('Valor del kpi ' + _kpi.kpi_name, _kpi.value);
+                        // console.log('_kpi');
+                        // console.log(_kpi);
                         $('#todos_los_kpis').html('');
+                        
                         switch (_kpi.type) {
                             case 'Texto': // ICA (normalmente regresa Destacado/Aprobado/No aprobado), (ejemplo)
-                            kpi_texto();
+                            var valor = [];
+                            var contador = 0;
+                            $.each(_kpi.value, function( index, value ) {                
+                            // console.log('Inicia Each');
+                            // console.log( index + ": " + value );
+                            // console.log('Each');
+                            //indices.push(index);
+                            valor.push([index, value]);
+                            contador++;
+                            //valor.push([[index][value]]);            
+                            });
+                            kpi_texto([valor], informacion_del_curso.data.percentage);
                                 break;
                             case 'Número entero': // Número entero de quejas (ejemplo)
-                            kpi_numero();       
+                            kpi_numero(_kpi, informacion_del_curso.data.percentage);       
                             case 'Porcentaje': // Número entero de quejas, Reporte de Casos Histórico por tiendas
-                                imprimir_kpi_reporte_casos_historico_curso(_kpi, informacion_del_curso.data.percentage);
+                            kpi_numero(_kpi, informacion_del_curso.data.percentage); 
                                 break;
-                            // case 3: // Porcentaje de rotación, scorcard
+                            //  3: // Porcentaje de rotación, scorcard
                             //     imprimir_kpi_scorcard_rotacion_curso(_kpi, informacion_del_curso.data.percentage);
                             //     break;
                             default:
@@ -202,148 +217,116 @@ $PAGE->set_context($context_system);
         
 
         // Función cuando el tipo de kpi es texto
-        function kpi_texto(kpi){
-            keys = Object.keys();
-            div_selector = '#kpi_texto_numero'
-            for (var index = 0; index < kpi.length; index++) {
-                clave = informacion_del_curso[index];
-                var tipo_texto = informacion_del_curso.data.kpi[index].value;
+        function kpi_texto([valores], porcentaje_curso){
+            // keys = Object.keys(_kpi);
+            // console.log('keys');
+            // console.log(keys);
+            div_selector = '#todos_los_kpis';
+            // console.log('info kpi');
+            // console.log(_kpi.kpi_key);
+            // console.log(_kpi.kpi_name);
+            // console.log(_kpi.value);
+            // console.log(_kpi.type);
+            // var indices = [];
+            // var valor = [];
+            // //var valor = [[][]];
+            // var contador = 0;
+            // $.each(_kpi.value, function( index, value ) {
+                
+            // console.log('Inicia Each');
+            // console.log( index + ": " + value );
+            // console.log('Each');
+            // indices.push(index);
+            // valor[contador]=new Array(index, value);
+            // contador++;
+            // //valor.push([[index][value]]);            
+            // });
+            // console.log('indices y valor');
+            // console.log(indices);
+            // console.log(valor);
+            
                 $(div_selector).append(`
                 <div class='col-sm-6 espacio'>
                                     <div class='card bg-gray border-0 m-2'>
                                         <div class='align-items-end'>
                                             <div class='fincard text-center'>
-                                                <a href='#' id='titulo_grafica2'>${informacion_del_curso.data.kpi.kpi_name}</a>
+                                                <a href='#' id='titulo_grafica2'>${_kpi.kpi_name}</a>
                                             </div>
-                                        </div>
-                                        <div class='card esp'>
-                                            <div class='row espr'>
-                                                <div class='border-0 col-sm-4'>
-                                                    <div class='card-body'>
-                                                        <p class='card-text text-primary text-center txti'>Aprobados</p>
-                                                        <p class='card-text text-primary text-center txtnum' id='apro2'></p>
-                                                    </div>
-                                                </div>
-                                                <div class='border-0 col-sm-4'>
-                                                    <div class='card-body text-center'>
-                                                        <p class='card-text text-warning text-center txti'>No Aprobados</p>
-                                                        <p class='card-text text-warning text-center txtnum' id='no_apro2'></p>
-                                                    </div>
-                                                </div>
-                                                <div class='border-0 col-sm-4'>
-                                                    <div class='card-body text-center'>
-                                                        <p class='card-text text-success text-center txti'>Total de usuarios</p>
-                                                        <p class='card-text text-warning text-center txtnum' id='tusuario2'></p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        </div>                                       
                                         <div class='bg-faded m-2' id='chart_texto'></div>                                     
                                     </div>
                     </div>
-                    `);
-                    
+                `);
+
                     var chartc = c3.generate({
-                    data: {
-                        columns: [
-                            ['Aprobado', obtenerDefaultEnNull(kpi.value["Aprobado"])],
-                            ['No Aprobado', obtenerDefaultEnNull(kpi.value["No aprobado"])],
-                            ['Destacado', obtenerDefaultEnNull(kpi.value["Destacado"])],
-                            ['% de aprobación de un curso', obtenerDefaultEnNull(informacion_del_curso.data.percentage)],
-                        ],
-                        type: 'bar',
-                        colors: {
-                            'Aprobado': '#008000',
-                            'No Aprobado': '#ff0000', 
-                            'Destacado': '#ff7f0e',
-                            '% de aprobación de un curso': '#d6c4b5'                                            
-                        }
+                    data: {                        
+
+                        columns: valores,
+                        type: 'bar'
+                        // colors: {
+                        //     'Aprobado': '#008000',
+                        //     'No Aprobado': '#ff0000', 
+                        //     'Destacado': '#ff7f0e',
+                        //     '% de aprobación de un curso': '#d6c4b5'                                            
+                        // }
                     },
                     bindto: "#chart_texto",
                     tooltip: {
-                        format: {
-                            title: function (d) { return 'Calificacion '; },
-                            value: function (value, ratio, id) {
-                                var format = id === 'data1' ? d3.format(',') : d3.format('');
-                                return format(value);
-                            }
+                        // format: {
+                        //     title: function (d) { return ''; },
+                        //     value: function (value, ratio, id) {
+                        //         var format = id === 'data1' ? d3.format(',') : d3.format('');
+                        //         return format(value);
+                          //  }
 
-                        }
+                        //}
                     }
                 });
-            } 
+             
         }
 
         // Función cuando el tipo de kpi es entero o porcentaje
-        function kpi_numero(informacion_del_curso){            
-            div_selector = '#todos_los_kpis';
-            for (var index = 0; index < informacion_del_curso.data.kpi.length; index++) {
-                clave = informacion_del_curso[index];
-                var tipo_texto = informacion_del_curso.data.kpi[index].value;
-                $(div_selector).append(`
-                <div class='col-sm-6 espacio'>
-                                    <div class='card bg-gray border-0 m-2'>
-                                        <div class='align-items-end'>
-                                            <div class='fincard text-center'>
-                                                <a href='#' id='titulo_grafica2'>${informacion_del_curso.data.kpi.kpi_name}</a>
-                                            </div>
-                                        </div>
-                                        <div class='card esp'>
-                                            <div class='row espr'>
-                                                <div class='border-0 col-sm-4'>
-                                                    <div class='card-body'>
-                                                        <p class='card-text text-primary text-center txti'>Aprobados</p>
-                                                        <p class='card-text text-primary text-center txtnum' id='apro2'></p>
-                                                    </div>
-                                                </div>
-                                                <div class='border-0 col-sm-4'>
-                                                    <div class='card-body text-center'>
-                                                        <p class='card-text text-warning text-center txti'>No Aprobados</p>
-                                                        <p class='card-text text-warning text-center txtnum' id='no_apro2'></p>
-                                                    </div>
-                                                </div>
-                                                <div class='border-0 col-sm-4'>
-                                                    <div class='card-body text-center'>
-                                                        <p class='card-text text-success text-center txti'>Total de usuarios</p>
-                                                        <p class='card-text text-warning text-center txtnum' id='tusuario2'></p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class='bg-faded m-2' id='chart_numero'></div>                                     
-                                    </div>
-                    </div>
-                    `);
+        function kpi_numero(_kpi){           
+            // div_selector = '#todos_los_kpis';           
+            
+            //     $(div_selector).append(`
+            //     <div class='col-sm-6 espacio'>
+            //                         <div class='card bg-gray border-0 m-2'>
+            //                             <div class='align-items-end'>
+            //                                 <div class='fincard text-center'>
+            //                                     <a href='#' id='titulo_grafica2'>${_kpi.kpi_name}</a>
+            //                                 </div>
+            //                             </div>                                       
+            //                             <div class='bg-faded m-2' id='chart_texto'></div>                                     
+            //                         </div>
+            //         </div>
+            //     `);
 
-                    var chartc = c3.generate({
-                    data: {
-                        columns: [
-                            ['Aprobado', obtenerDefaultEnNull(kpi.value["Aprobado"])],
-                            ['No Aprobado', obtenerDefaultEnNull(kpi.value["No aprobado"])],
-                            ['Destacado', obtenerDefaultEnNull(kpi.value["Destacado"])],
-                            ['% de aprobación de un curso', obtenerDefaultEnNull(informacion_del_curso.data.percentage)],
-                        ],
-                        type: 'bar',
-                        colors: {
-                            'Aprobado': '#008000',
-                            'No Aprobado': '#ff0000', 
-                            'Destacado': '#ff7f0e',
-                            '% de aprobación de un curso': '#d6c4b5'                                            
-                        }
-                    },
-                    bindto: "#chart_numero",
-                    tooltip: {
-                        format: {
-                            title: function (d) { return 'Calificacion '; },
-                            value: function (value, ratio, id) {
-                                var format = id === 'data1' ? d3.format(',') : d3.format('');
-                                return format(value);
-                            }
+            //         var chartc = c3.generate({
+            //         data: {                        
 
-                        }
-                    }
-                });
-            } 
+            //             columns: 
+            //             type: 'bar'
+            //             // colors: {
+            //             //     'Aprobado': '#008000',
+            //             //     'No Aprobado': '#ff0000', 
+            //             //     'Destacado': '#ff7f0e',
+            //             //     '% de aprobación de un curso': '#d6c4b5'                                            
+            //             // }
+            //         },
+            //         bindto: "#chart_texto",
+            //         tooltip: {
+            //             format: {
+            //                 title: function (d) { return ''; },
+            //                 value: function (value, ratio, id) {
+            //                     var format = id === 'data1' ? d3.format(',') : d3.format('');
+            //                     return format(value);
+            //                 }
+
+            //             }
+            //         }
+            //     });
+             
         }
 
         function imprimir_kpi_ops_ica_curso(kpi) {

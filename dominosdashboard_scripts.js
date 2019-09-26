@@ -202,7 +202,7 @@ function crearGraficaDeCurso(_bindto, curso){
 
 function crearTarjetaParaGrafica(div, curso, claseDiv){
     if(typeof claseDiv !== 'string'){
-        claseDiv = "col-sm-12 col-xl-6";
+        claseDiv = "col-sm-4";
     }
     id_para_Grafica = "chart_" + curso.id;
     if(typeof currentTab != 'undefined'){
@@ -717,7 +717,7 @@ function loaderGeneral() {
 
 function showPage(id_div) {
   document.getElementById("loader").style.display = "none";
-  document.getElementById(id_div).style.display = "block";
+  //document.getElementById(id_div).style.display = "block";
 }
 
 function mostrarLoader(){
@@ -742,7 +742,7 @@ function loaderFiltro() {
 
 function showPage_filtro() {
   document.getElementById("loader").style.display = "none";
-  document.getElementById("ldm_tab_" + currentTab).style.display = "block";
+  //document.getElementById("ldm_tab_" + currentTab).style.display = "block";
   
 }
 

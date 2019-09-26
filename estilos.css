@@ -173,18 +173,21 @@
     font-size: 20px;
     padding-bottom: 15px;
     color: green;
+    font-size: 0.8rem;
 }
 
 .txtnum_noaprobados{
     font-size: 20px;
     padding-bottom: 15px;
     color: red;
+    font-size: 0.8rem;
 }
 
 .txtnum_inscritos {
     font-size: 20px;
     padding-bottom: 15px;
     color: blue;
+    font-size: 0.8rem;
 }
 
 /*Espacio entre cards*/
