@@ -61,7 +61,6 @@ $PAGE->set_context($context_system);
             <div id="contenedor_fechas">
                 <label for="fecha_inicial">Desde <input type="date" onchange="obtenerInformacion(),loaderFecha()" class="form-control" name="fecha_inicial" id="fecha_inicial"></label> 
                 <label for="fecha_final">Hasta <input type="date" onchange="obtenerInformacion(),loaderFecha()" class="form-control" name="fecha_final" id="fecha_final"></label>
-                <label for="fecha_kpi">Fecha del kpi (mensual) <input type="date" onchange="obtenerInformacion()" class="form-control" name="fecha_kpi" id="fecha_kpi"></label>
             </div>
             <input type="hidden" name="report_type" id="report_type" value="course_completion">
             <div class="col-sm-11" id='contenedor_filtros' style="text-align: center;"></div>

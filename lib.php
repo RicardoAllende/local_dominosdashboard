@@ -632,9 +632,21 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     return $response;
 }
 
+function local_dominosdashboard_get_whereids_clauses($filters, $fieldname){
+    if(empty($filters)){
+        return "";
+    }
+    $separator = " AND {$fieldname} IN ";
+    if(count($filters) == 1){
+        return $separator . $filters[0];
+    }
+    return implode($separator, $filters);
+}
+
 function local_dominosdashboard_get_count_users($userids){
     global $DB;
-    $whereids = implode(' AND _us_.userid IN ', $userids->filters);
+    // $whereids = implode(' AND _us_.id IN ', $userids->filters);
+    $whereids = local_dominosdashboard_get_whereids_clauses($userids->filters, '_us_.id');
     return $DB->count_records_sql("SELECT count(*) FROM {user} as _us_ WHERE 1 = 1 {$whereids}", $userids->params);
 }
 
@@ -833,7 +845,8 @@ function local_dominosdashboard_get_approved_users(int $courseid, $userids = '',
                 // $whereids = "";
                 return 0;
             }else{
-                $whereids = implode(' AND p.userid IN ', $userids->filters);
+                // $whereids = implode(' AND p.userid IN ', $userids->filters);
+                $whereids = local_dominosdashboard_get_whereids_clauses($userids->filters, 'p.userid');
                 // $whereids = " AND p.userid IN ({$userids})";
             }
             $campo_fecha = "p.timecompleted";
@@ -846,7 +859,8 @@ function local_dominosdashboard_get_approved_users(int $courseid, $userids = '',
                 // $whereids = "";
                 return 0;
             }else{
-                $whereids = implode(' AND gg.userid IN ', $userids->filters);
+                // $whereids = implode(' AND gg.userid IN ', $userids->filters);
+                $whereids = local_dominosdashboard_get_whereids_clauses($userids->filters, 'gg.userid');
                 // $whereids = " AND p.userid IN ({$userids})";
             }
             $grade_item = get_config('local_dominosdashboard', 'course_grade_activity_completion_' . $courseid);
@@ -868,7 +882,8 @@ function local_dominosdashboard_get_approved_users(int $courseid, $userids = '',
                 // $whereids = "";
                 return 0;
             }else{
-                $whereids = implode(' AND cmc_.userid IN ', $userids->filters);
+                // $whereids = implode(' AND cmc_.userid IN ', $userids->filters);
+                $whereids = local_dominosdashboard_get_whereids_clauses($userids->filters, 'cmc_.userid');
                 // $whereids = " AND p.userid IN ({$userids})";
             }
             // if(empty($userids)){
@@ -891,7 +906,8 @@ function local_dominosdashboard_get_approved_users(int $courseid, $userids = '',
                 // $whereids = "";
                 return 0;
             }else{
-                $whereids = implode(' AND bi.userid IN ', $userids->filters);
+                // $whereids = implode(' AND bi.userid IN ', $userids->filters);
+                $whereids = local_dominosdashboard_get_whereids_clauses($userids->filters, 'bi.userid');
                 // $whereids = " AND p.userid IN ({$userids})";
             }
             // if(empty($userids)){
@@ -1008,8 +1024,8 @@ function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $p
                         $options = array();
                         foreach ($data as $d) {
                                 array_push($wheres, " data = ? ");
-                                // array_push($query_params, $d);
-                                // array_push($options, $d);
+                                array_push($query_params, $d);
+                                array_push($options, $d);
                                 array_push($query_parameters, $d);
                         }
                         if(!empty($options)){
@@ -1020,7 +1036,7 @@ function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $p
                             $bindParams = implode(',', $bindParams);
                             array_push($filters_sql, " (SELECT DISTINCT {$alias}.userid FROM {user_info_data} AS {$alias} WHERE {$alias}.data IN ({$bindParams}) AND {$alias}.fieldid = ? ) ");
                             array_push($query_parameters, $fieldid);                            
-                            // $options = implode(',')
+                            // $options = implode(',');
                         }
                         if(!empty($wheres)){
                             $wheres = " AND ( " . implode(" || ", $wheres) . " ) ";
@@ -1058,6 +1074,7 @@ function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $p
     $response = new stdClass();
     $response->filters = $filters_sql;
     $response->params = $query_parameters;
+    _log($response);
     return $response;
     $ids = array_unique($ids);
     // // _log('$allow_users', $allow_users);
@@ -1329,7 +1346,8 @@ function local_dominosdashboard_get_activity_completions(int $activityid, $useri
     if(empty($userids)){
         $whereids = " AND 1 = 0 ";
     }else{
-        $whereids = implode(' AND _cmc_.userid IN ', $userids->filters);
+        // $whereids = implode(' AND _cmc_.userid IN ', $userids->filters);
+        $whereids = local_dominosdashboard_get_whereids_clauses($userids->filters, '_cmc_.userid');
     }
     // $inProgress         = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 0");
     $completed          = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} as _cmc_ WHERE coursemoduleid = {$activityid} {$whereids} AND completionstate IN (1,2) {$filtro_fecha}", $userids->params);
