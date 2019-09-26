@@ -272,6 +272,7 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
             var no_aprobados = Array();
             var nombres = Array();
             var _ideal_cobertura = Array();
+            nombres.push('x');
             aprobados.push("Porcentaje de aprobación del curso");
             no_aprobados.push("Porcentaje de no aprobados");
             _ideal_cobertura.push('Ideal de cobertura');
@@ -282,8 +283,9 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                 var resta = 100 - curso.percentage;
                 var resu = resta.toFixed(2);
                 no_aprobados.push(resu);
+                nombres.push(curso.title);
             }
-            crearGraficaComparativaVariosCursos(_bindto, [aprobados, no_aprobados, _ideal_cobertura], cursos, titulo);
+            crearGraficaComparativaVariosCursos(_bindto, [nombres, aprobados, no_aprobados, _ideal_cobertura], cursos, titulo);
             for (var i = 0; i < cursos.length; i++) {
                 var curso = cursos[i];
                 crearTarjetaParaGrafica(_bindto, curso);
@@ -361,13 +363,16 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                     case 'Porcentaje':
                         __kpi = [kpi.name, kpi.status];
                         info_kpi = Array();
+                        nombres = Array();
+                        nombres.push('x');
                         info_kpi.push(kpi.type);
                         for(var j = 0; j < cursos.length; j++){
                             curso = cursos[j];
                             aprobados.push(curso.percentage);
                             info_kpi.push(kpi.status);
+                            nombres.push(curso.title);
                         }
-                        crearGraficaComparativaVariosCursos(_bindto, [aprobados, info_kpi], cursos, kpi.name, kpi.id);
+                        crearGraficaComparativaVariosCursos(_bindto, [nombres, aprobados, info_kpi], cursos, kpi.name, kpi.id);
 
                         for(var j = 0; j < cursos.length; j++){
                             curso = cursos[j];
@@ -437,21 +442,21 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     // });
 
     // Gráfica de curvas
-    var chartz = c3.generate({
-        data: {
-            columns: info_grafica,
-            type: 'bar'
-        },        
-        bindto: '#' + div_id,
-        tooltip: {
-            format: {
-                title: function (d) { return cursos[d].title; },
-                value: function (value, ratio, id) {
-                    return value + " %";
-                }
-            }
-        }
-    });
+    // var chartz = c3.generate({
+    //     data: {
+    //         columns: info_grafica,
+    //         type: 'bar'
+    //     },        
+    //     bindto: '#' + div_id,
+    //     tooltip: {
+    //         format: {
+    //             title: function (d) { return cursos[d].title; },
+    //             value: function (value, ratio, id) {
+    //                 return value + " %";
+    //             }
+    //         }
+    //     }
+    // });
 
     // Gráfica barras agrupadas
     // var titulos_cursos=['x'];
@@ -468,31 +473,31 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
 
     // console.log(arr_grafica);
     
-    // var chartz = c3.generate({
-    //     data: {
-    //         x: 'x',                        
-    //         columns: info_grafica,
-    //             columns: [titulos_cursos, arr_grafica],
-    //         type: 'bar',
-    //         colors: {
-    //                     'Ideal de cobertura': '#8a7e7e',            
-    //         }                           
-    //     },
-    //     axis: {
-    //         x: {
-    //             type: 'category' // this needed to load string x value
-    //         }
-    //     },        
-    //     bindto: '#' + div_id,
-    //     tooltip: {
-    //         format: {
-    //             title: function (d) { return cursos[d].title; },
-    //             value: function (value, ratio, id) {
-    //                 return value + " %";
-    //             }
-    //         }
-    //     }
-    // });
+    var chartz = c3.generate({
+        data: {
+            x: 'x',                        
+            columns: info_grafica,
+                // columns: [titulos_cursos, arr_grafica],
+            type: 'bar',
+            colors: {
+                'Ideal de cobertura': '#8a7e7e',            
+            }                           
+        },
+        axis: {
+            x: {
+                type: 'category' // this needed to load string x value
+            }
+        },        
+        bindto: '#' + div_id,
+        tooltip: {
+            format: {
+                title: function (d) { return cursos[d].title; },
+                value: function (value, ratio, id) {
+                    return value + " %";
+                }
+            }
+        }
+    });
 
     
     
@@ -713,6 +718,14 @@ function loaderGeneral() {
 function showPage(id_div) {
   document.getElementById("loader").style.display = "none";
   document.getElementById(id_div).style.display = "block";
+}
+
+function mostrarLoader(){
+    document.getElementById("loader").style.display = "block";
+}
+
+function ocultarLoader(){
+    document.getElementById("loader").style.display = "none";
 }
 
 function hidePage(id_div){
