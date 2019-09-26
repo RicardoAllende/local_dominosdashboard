@@ -1327,12 +1327,12 @@ function local_dominosdashboard_get_activity_completions(int $activityid, $useri
     global $DB;
     $key = "module" . $activityid;
     if(empty($userids)){
-        return 0;
+        $whereids = " AND 1 = 0 ";
     }else{
         $whereids = implode(' AND _cmc_.userid IN ', $userids->filters);
     }
     // $inProgress         = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 0");
-    $completed          = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} as _cmc_ WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate IN (1,2) {$filtro_fecha}", $userids->params);
+    $completed          = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} as _cmc_ WHERE coursemoduleid = {$activityid} {$whereids} AND completionstate IN (1,2) {$filtro_fecha}", $userids->params);
     // $completedWithFail  = $DB->count_records_sql("SELECT count(*) FROM {course_modules_completion} WHERE coursemoduleid = {$activityid} AND userid IN ({$userids}) AND completionstate = 3");
     return compact('key', 'title', 'inProgress', 'completed', 'completedWithFail');
 }
