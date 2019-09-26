@@ -200,6 +200,10 @@ $PAGE->set_context($context_system);
             }
         }
 
+        function kpi_texto(){
+            keys = Object.keys();
+        }
+
         function imprimir_kpi_ops_ica_curso(kpi) {
             if (esVacio(kpi.value)) {
                 insertarGraficaSinInfo("#card_ops");
