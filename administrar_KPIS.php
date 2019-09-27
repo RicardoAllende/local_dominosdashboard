@@ -41,13 +41,13 @@ echo $OUTPUT->header();
 <link rel="stylesheet" href="estilos.css">
 <div class="row" style="padding-bottom: 2%;">
     <div class="col-sm-4" style="text-align: right;">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarKPIModal">Agregar nuevo KPI</button>
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#agregarKPIModal">Agregar nuevo KPI</button>
     </div>
     <div class="col-sm-4" style="text-align: center;">
-        <a class="btn btn-primary" href="<?php echo $uploadKPIsurl; ?>">Subir KPI's</a>        
+        <a class="btn btn-primary btn-lg" href="<?php echo $uploadKPIsurl; ?>">Subir KPI's</a>        
     </div>
     <div class="col-sm-4" style="text-align: left;">
-        <a class="btn btn-primary" href="<?php echo $settingsurl; ?>">Subir KPI's</a>
+        <a class="btn btn-primary btn-lg" href="<?php echo $settingsurl; ?>">Configuraciones del plugin</a>
     </div>
 </div>
 

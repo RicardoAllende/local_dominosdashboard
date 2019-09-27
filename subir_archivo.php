@@ -43,10 +43,23 @@ $returnurl = new moodle_url('/local/dominosdashboard/dashboard.php');
 $mform = new local_dominosdashboard_upload_kpis();
 global $CFG;
 $link = $CFG->wwwroot . '/local/dominosdashboard/administrar_KPIS.php';
+$uploadKPIsurl = $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php';
+$settingsurl = $CFG->wwwroot . '/admin/settings.php?section=local_dominosdashboard';
 echo $OUTPUT->header();
-echo "<div class='row' style='text-align: right; padding-right: 2%'><a href='{$link}' class='btn btn-primary btn-lg'>Administrar KPI'S</a></div>";
+echo "
+<div class='row' style='padding-bottom: 2%;'>
+    <div class='col-sm-4' style='text-align: right;'>
+    </div>
+    <div class='col-sm-4' style='text-align: center;'>
+        <a class='btn btn-primary btn-lg' href='$uploadKPIsurl'>Subir KPI's</a>        
+    </div>
+    <div class='col-sm-4' style='text-align: left;'>
+        <a class='btn btn-primary btn-lg' href='$settingsurl'>Configuraciones del plugin</a>
+    </div>
+</div>
+";
 $fields = implode(',', local_dominosdashboard_get_kpi_list('menu'));
-echo "<div class='row' style='padding-left: 2%;'><h4>Las columnas disponibles son: {$fields}</h4></div><br><br>";
+echo "<div class='row' style='padding-left: 2%;'><h4 style='font-weight: 300;'>Las columnas disponibles son: {$fields}</h4></div><br><br>";
 if ($formdata = $mform->get_data()) {
     $tiempo_inicial = microtime(true);
     
@@ -54,7 +67,6 @@ if ($formdata = $mform->get_data()) {
     $month = $formdata->month;
     $kpi_date = local_dominosdashboard_get_time_from_month_and_year($month, $currentYear);
     $updateIfExists = $formdata->updateIfExists;
-    // _log('editar si existe', $updateIfExists);
     $iid = csv_import_reader::get_new_iid($pluginName);
     $cir = new csv_import_reader($iid, $pluginName);
 
