@@ -850,7 +850,7 @@ function imprimirRanking(div, info) {
                     <td>${elemento.title}</td>
                     <td>
                         <div class="progress">
-                            <div class="progress-bar" style="width: ${percentage}%; background: ${colorTop}; color: white; border-radius: 5px; text-align: center;">${percentage}%</div>
+                            <div class="progress-bar" style="width: ${percentage}%; background: ${colorTop}; color: #525252; border-radius: 5px; text-align: center;">${percentage}%</div>
                         </div>
                     </td>
                 </tr>`;
@@ -868,7 +868,7 @@ function imprimirRanking(div, info) {
                     <td>${elemento.title}</td>
                     <td>
                         <div class="progress">
-                            <div class="progress-bar" style="width: ${percentage}%; background: ${colorBottom}; color: white;border-radius: 5px; text-align: center;">${percentage}%</div>
+                            <div class="progress-bar" style="width: ${percentage}%; background: ${colorBottom}; color: #525252;border-radius: 5px; text-align: center;">${percentage}%</div>
                         </div>
                     </td>
                 </tr>`;
@@ -905,7 +905,7 @@ function imprimirRanking(div, info) {
                     <td>${elemento.title}</td>
                     <td>
                         <div class="progress">
-                            <div class="progress-bar" style="width: ${percentage}%; background: ${colorTop}; color: white; border-radius: 5px; text-align: center;">${percentage}%</div>
+                            <div class="progress-bar" style="width: ${percentage}%; background: ${colorTop}; color: #525252; border-radius: 5px; text-align: center;">${percentage}%</div>
                         </div>
                     </td>
                 </tr>`;
