@@ -914,11 +914,9 @@ function imprimirRanking(div, info) {
         if(enrolled_users < 1){
             return false;
         }
+        insertarTituloSeparador(div, 'Ranking de actividades');
         if(num_activities >= 6){ // Se muestran 2 rankings
             $(div).append(`
-                    <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
-                        <h1 class="text-center">Ranking de actividades</h1>
-                    </div>
                     <div class="col-sm-6 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
                         <table frame="void" rules="rows" style="width:100%">
                             <tr class="rankingt">
@@ -977,10 +975,6 @@ function imprimirRanking(div, info) {
             return;
         }else if(num_activities > 0){ // Sólo se muestra un ranking
             $(div).append(`
-                    <div class="titulog col-sm-12 dominosdashboard-ranking" id="dominosdashboard-ranking-title">
-                        <h1 class="text-center">Ranking de actividades</h1>
-                    </div>
-
                     <div class="col-sm-8 offset-sm-4 dominosdashboard-ranking" id="dominosdashboard-ranking-top">
                         <table frame="void" rules="rows" style="width:100%">
                             <tr class="rankingt">
