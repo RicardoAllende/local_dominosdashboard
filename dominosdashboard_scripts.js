@@ -324,39 +324,139 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                     continue;
                 }
                 switch(kpi.type){
-                    case 1: // Nombre
-                        _destacado = Array();
-                        _aprobado = Array();
-                        _noAprobado = Array();
-                        _destacado.push("Destacado");
-                        _aprobado.push("Aprobado");
-                        _noAprobado.push("No aprobado");
+                    case "Texto": // Nombre
+                        valores = Array();
 
-                        destacado = parseInt(kpi.status["Destacado"]);
-                        aprobado = parseInt(kpi.status["Aprobado"]);
-                        noAprobado = parseInt(kpi.status["No aprobado"]);
+                        _keys = Object.keys(kpi.status);
+                        info_grafica = Array();
+                        info_grafica.aprobados = Array();
+                        info_grafica.aprobados.push('Porcentaje de aprobación');
+                        nombre_cursos = Array();
+                        nombre_cursos.push('x');
 
-                        _total = destacado + aprobado + noAprobado;
-                        _aprobados = destacado + aprobado;
-                        resultado = obtenerPorcentaje(_aprobados, _total);
-                        __kpi = ["Aprobado-Destacado", resultado];
-                        destacado = obtenerPorcentaje(destacado, _total);
-                        aprobado = obtenerPorcentaje(aprobado, _total);
-                        noAprobado = obtenerPorcentaje(noAprobado, _total);
-
+                        for(var t = 0; t < _keys.length; t++){
+                            _current_key = _keys[t];
+                            info_grafica[_current_key] = Array();
+                            info_grafica[_current_key].push(_current_key);
+                        }
                         for(var j = 0; j < cursos.length; j++){
                             curso = cursos[j];
-                            aprobados.push(curso.percentage);
-                            _destacado.push(destacado);
-                            _aprobado.push(aprobado);
-                            _noAprobado.push(noAprobado);
+                            nombre_cursos.push(curso.title);
+                            info_grafica.aprobados.push(curso.percentage);
+                            for(var r = 0; r < _keys.length; r++){
+                                _current_key = _keys[r];
+                                info_grafica[_current_key].push(kpi.status[_current_key]);
+                            }
                         }
-                        crearGraficaComparativaVariosCursos(_bindto, [aprobados, _destacado, _aprobado, _noAprobado], cursos, kpi.name, kpi.id);
 
+                        _keys = Object.keys(info_grafica);
+                        info_procesada_grafica = Array();
+                        for(var r = 0; r < _keys.length; r++){
+                            _current_key = _keys[r];
+                            info_procesada_grafica.push(info_grafica[_current_key]);
+                            // info_grafica[_current_key] = Array();
+                            // info_grafica[_current_key].push(kpi.status[_current_key]);
+                        }
+                        info_procesada_grafica.push(nombre_cursos);
+
+                        div_id = "chart__";
+                        if(typeof currentTab != 'undefined'){
+                            div_id += '_';
+                            div_id += currentTab;
+                        }
+                        div_id += kpi.type;
+                        insertarTituloSeparador(_bindto, kpi.name);
+                        $(_bindto).append(`
+                                    <div class="col-sm-12">
+                                        <div class="card bg-faded border-0 m-2" id="">
+                                        <div class="align-items-end">
+                                                <div class="fincard text-center">
+                                                    <a href="#">${kpi.name}</a>
+                                                </div>
+                                            </div>
+                                            <div class="bg-white m-2" id="${div_id}"></div>
+                                        </div>
+                                    </div>`);
+
+                        console.log('Información de la gráfica spline', info_grafica);
+                        c3.generate({
+                            data: {
+                                x: 'x',
+                                columns: info_procesada_grafica,
+                                type: 'spline'
+                            },        
+                            bindto: '#' + div_id,
+                            axis: {
+                                x: {
+                                    type: 'category' // this needed to load string x value
+                                }
+                            },  
+                        });
+                        // crearGraficaComparativaVariosCursos(_bindto, [aprobados, _destacado, _aprobado, _noAprobado], cursos, kpi.name, kpi.id);
+
+
+                        _keys = Object.keys(kpi.status);
                         for(var j = 0; j < cursos.length; j++){
                             curso = cursos[j];
-                            crearTarjetaParaGraficakpi(_bindto, curso, __kpi, kpi.id);
+
+                            info_grafica_kpi = Array();
+                            info_grafica_kpi.push(['Porcentaje de aprobación', curso.percentage]);
+                            for(var r = 0; r < _keys.length; r++){
+                                ck = _keys[r];
+                                info_grafica_kpi.push([ck, kpi.status[ck]]);
+                            }
+
+                            // crearTarjetaParaGraficakpi(_bindto, curso, __kpi, kpi.id);
+
+                            id_para_Grafica = "chart_" + kpi.id + '_' + curso.id;
+                            if(typeof mostrarEnlaces != 'undefined'){
+                                enlace = "detalle_curso_iframe.php?id=" + curso.id;
+                            }else{
+                                enlace = '#';
+                            }
+                            $(_bindto).append(`<div class="col-sm-12 col-xl-6 espacio">
+                                        <div class="card bg-gray border-0 m-2" id="">
+                                        <div class="align-items-end">
+                                                <div class="fincard text-center">
+                                                    <a href="${enlace}">${curso.title}</a>
+                                                </div>
+                                            </div>
+                                            <div class="card esp">
+                                            <div class="row espr">
+                                                <div class="border-0 col-sm-4">
+                                                    <div class="card-body text-center">
+                                                        <p class="card-text txti_aprobados">Aprobados</p>
+                                                        <p class="card-text txtnum_aprobados">${curso.approved_users} (${curso.percentage} %)</p>
+                                                    </div>
+                                                </div>
+                                                <div class="border-0 col-sm-4">
+                                                    <div class="card-body text-center">
+                                                        <p class="card-text txti_noaprobados">No Aprobados</p>
+                                                        <p class="card-text txtnum_noaprobados">${curso.not_approved_users}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="border-0 col-sm-4">
+                                                    <div class="card-body text-center">
+                                                        <p class="card-text txti_inscritos">Total de usuarios inscritos</p>
+                                                        <p class="card-text txtnum_inscritos">${curso.enrolled_users}</p>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            </div>
+                                            <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>                    
+                                        </div>
+                                    </div>`);
+                            id_para_Grafica = '#' + id_para_Grafica;
+                            console.log('info_grafica_kpi', info_grafica_kpi);
+                            c3.generate({
+                                data: {
+                                    columns: info_grafica_kpi,
+                                    type: 'bar',
+                                },
+                                bindto: id_para_Grafica,
+                            });
                         }
+
 
                     break;
                     case 'Número entero':
@@ -365,7 +465,7 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                         info_kpi = Array();
                         nombres = Array();
                         nombres.push('x');
-                        info_kpi.push(kpi.type);
+                        info_kpi.push(kpi.name);
                         for(var j = 0; j < cursos.length; j++){
                             curso = cursos[j];
                             aprobados.push(curso.percentage);

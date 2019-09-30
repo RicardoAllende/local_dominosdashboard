@@ -226,8 +226,8 @@ echo $OUTPUT->header();
         str = str.toLowerCase();
     
         // remove accents, swap ñ for n, etc
-        var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
-        var to   = "aaaaeeeeiiiioooouuuunc------";
+        var from = "àáäâèéëêìíïîòóöôùúüûñç·/-,:;";
+        var to   = "aaaaeeeeiiiioooouuuunc______";
         for (var i=0, l=from.length ; i<l ; i++) {
             str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
         }
