@@ -122,8 +122,8 @@ DEFINE('DOMINOSDASHBOARD_INDICATORS_FOR_KPIS', 'regiones/distritos/tiendas/perio
 DEFINE('DOMINOSDASHBOARD_CHARTS', ['bar' => 'Barras',
  'pie' => 'Pay',
  'gauge' => 'Círculo',
- 'spline' => 'Curvas',
- 'grupo' => 'Barras agrupadas',
+//  'spline' => 'Curvas',
+//  'grupo' => 'Barras agrupadas',
 //  'progreso' => 'Avance'
  ]); 
 
