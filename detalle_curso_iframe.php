@@ -70,7 +70,7 @@ $PAGE->set_context($context_system);
             <div class="col-sm-12 col-xl-12" id="course_title"></div>
             <div class="col-sm-12 col-xl-12" id="course_overview"></div>
             <div class="col-sm-12 col-xl-12" id="indicators_title"></div>            
-            <div class="col-sm-6" id="todos_los_kpis"></div>
+            <div class="col-sm-12" id="todos_los_kpis"></div>
             
             
 
@@ -141,32 +141,41 @@ $PAGE->set_context($context_system);
                     if(informacion_del_curso.data.kpi.length > 0){ insertarTituloSeparador('#indicators_title', 'Cruce de indicadores'); }
                     for (var index = 0; index < informacion_del_curso.data.kpi.length; index++) {
                         _kpi = informacion_del_curso.data.kpi[index];
-                        // console.log('Id del kpi', _kpi.kpi);
-                        // console.log('Valor del kpi ' + _kpi.kpi_name, _kpi.value);
-                        // console.log('_kpi');
-                        // console.log(_kpi);
-                        $('#todos_los_kpis').html('');
                         
+                        console.log("index: "+ index);
+                        if(esVacio(_kpi.value)){
+                            insertarGraficaSinInfo("#todos_los_kpis");
+                            continue;
+                        }
                         switch (_kpi.type) {
                             case 'Texto': // ICA (normalmente regresa Destacado/Aprobado/No aprobado), (ejemplo)
                             var valor = [];
                             var contador = 0;
-                            $.each(_kpi.value, function( index, value ) {                
-                            // console.log('Inicia Each');
-                            // console.log( index + ": " + value );
-                            // console.log('Each');
-                            //indices.push(index);
-                            valor.push([index, value]);
-                            contador++;
-                            //valor.push([[index][value]]);            
+                            $.each(_kpi.value, function( ind, value ) {                          
+                            valor.push([ind, parseInt(value)]);
+                            
+                            contador++;                                       
                             });
-                            kpi_texto([valor], informacion_del_curso.data.percentage);
-                                break;
+                            kpi_texto(valor, informacion_del_curso.data.percentage ,index);
+                            break;
+
                             case 'Número entero': // Número entero de quejas (ejemplo)
-                            kpi_numero(_kpi, informacion_del_curso.data.percentage);       
+                            var a = ((informacion_del_curso.data.approved_users * 100)/informacion_del_curso.data.enrolled_users);
+                            var porcentaje_aprobados_entero = a.toFixed(2);
+                            //console.log('AQUI VIENE LA A');
+                            //console.log(porcentaje_aprobados_entero);
+                            var valor_numero = [[_kpi.kpi_key , parseInt(_kpi.value)],['Porcentaje de aprobados',porcentaje_aprobados_entero]];                            
+                            kpi_numero(valor_numero, informacion_del_curso.data.percentage,index);
+                            break;    
+
                             case 'Porcentaje': // Número entero de quejas, Reporte de Casos Histórico por tiendas
-                            kpi_numero(_kpi, informacion_del_curso.data.percentage); 
-                                break;
+                            var b = ((informacion_del_curso.data.approved_users * 100)/informacion_del_curso.data.enrolled_users);
+                            var porcentaje_aprobados_porcentaje = b.toFixed(2);
+                            //console.log('AQUI VIENE LA B');
+                            //console.log(porcentaje_aprobados_porcentaje);
+                            var valor_porcentaje = [[_kpi.kpi_key , parseFloat(_kpi.value)],['Porcentaje de aprobados',porcentaje_aprobados_porcentaje]];                            
+                            kpi_numero(valor_porcentaje, informacion_del_curso.data.percentage,index); 
+                            break;
                             //  3: // Porcentaje de rotación, scorcard
                             //     imprimir_kpi_scorcard_rotacion_curso(_kpi, informacion_del_curso.data.percentage);
                             //     break;
@@ -217,33 +226,9 @@ $PAGE->set_context($context_system);
         
 
         // Función cuando el tipo de kpi es texto
-        function kpi_texto([valores], porcentaje_curso){
-            // keys = Object.keys(_kpi);
-            // console.log('keys');
-            // console.log(keys);
+        function kpi_texto(valores, porcentaje_curso, indexfor){
+            
             div_selector = '#todos_los_kpis';
-            // console.log('info kpi');
-            // console.log(_kpi.kpi_key);
-            // console.log(_kpi.kpi_name);
-            // console.log(_kpi.value);
-            // console.log(_kpi.type);
-            // var indices = [];
-            // var valor = [];
-            // //var valor = [[][]];
-            // var contador = 0;
-            // $.each(_kpi.value, function( index, value ) {
-                
-            // console.log('Inicia Each');
-            // console.log( index + ": " + value );
-            // console.log('Each');
-            // indices.push(index);
-            // valor[contador]=new Array(index, value);
-            // contador++;
-            // //valor.push([[index][value]]);            
-            // });
-            // console.log('indices y valor');
-            // console.log(indices);
-            // console.log(valor);
             
                 $(div_selector).append(`
                 <div class='col-sm-6 espacio'>
@@ -253,7 +238,51 @@ $PAGE->set_context($context_system);
                                                 <a href='#' id='titulo_grafica2'>${_kpi.kpi_name}</a>
                                             </div>
                                         </div>                                       
-                                        <div class='bg-faded m-2' id='chart_texto'></div>                                     
+                                        <div class='bg-faded m-2' id='chart_texto_${indexfor}'></div>                                     
+                                    </div>
+                    </div>
+                `);
+
+                    var chartc = c3.generate({
+                    data: {                        
+
+                        columns: valores,
+                        type: 'bar',
+                        colors: {
+                            'Aprobado': '#008000',
+                            'No aprobado': '#ff0000', 
+                            'Destacado': '#ff7f0e',
+                         //   '% de aprobación de un curso': '#d6c4b5'                                            
+                        }
+                    },
+                    bindto: "#chart_texto_"+indexfor,
+                    tooltip: {
+                        format: {
+                            title: function (d) { return ''; },
+                            value: function (value, ratio, id) {
+                                var format = id === 'data1' ? d3.format(',') : d3.format('');
+                                return format(value);
+                           }
+
+                        }
+                    }
+                });
+            
+        }
+
+        // Función cuando el tipo de kpi es entero o porcentaje
+        function kpi_numero(valores, porcentaje_curso, indexfor){           
+            div_selector = '#todos_los_kpis';            
+            
+                $(div_selector).append(`
+                <div class='col-sm-6 espacio'>
+                                    <div class='card bg-gray border-0 m-2'>
+                                        <div class='align-items-end'>
+                                            <div class='fincard text-center'>
+                                                <a href='#' id='titulo_grafica2'>${_kpi.kpi_name}</a>
+                                            </div>
+                                        </div>                                       
+                                        <div class='bg-faded m-2' id='chart_numero_${indexfor}'></div>                                     
                                     </div>
                     </div>
                 `);
@@ -270,64 +299,23 @@ $PAGE->set_context($context_system);
                         //     '% de aprobación de un curso': '#d6c4b5'                                            
                         // }
                     },
-                    bindto: "#chart_texto",
+                    bindto: "#chart_numero_"+indexfor,
                     tooltip: {
-                        // format: {
-                        //     title: function (d) { return ''; },
-                        //     value: function (value, ratio, id) {
-                        //         var format = id === 'data1' ? d3.format(',') : d3.format('');
-                        //         return format(value);
-                          //  }
+                        format: {
+                            title: function (d) { return ''; },
+                            value: function (value, ratio, id) {
+                                var format = id === 'data1' ? d3.format(',') : d3.format('');
+                                return format(value);
+                            }
 
-                        //}
+                        }
                     }
                 });
-             
-        }
-
-        // Función cuando el tipo de kpi es entero o porcentaje
-        function kpi_numero(_kpi){           
-            // div_selector = '#todos_los_kpis';           
             
-            //     $(div_selector).append(`
-            //     <div class='col-sm-6 espacio'>
-            //                         <div class='card bg-gray border-0 m-2'>
-            //                             <div class='align-items-end'>
-            //                                 <div class='fincard text-center'>
-            //                                     <a href='#' id='titulo_grafica2'>${_kpi.kpi_name}</a>
-            //                                 </div>
-            //                             </div>                                       
-            //                             <div class='bg-faded m-2' id='chart_texto'></div>                                     
-            //                         </div>
-            //         </div>
-            //     `);
-
-            //         var chartc = c3.generate({
-            //         data: {                        
-
-            //             columns: 
-            //             type: 'bar'
-            //             // colors: {
-            //             //     'Aprobado': '#008000',
-            //             //     'No Aprobado': '#ff0000', 
-            //             //     'Destacado': '#ff7f0e',
-            //             //     '% de aprobación de un curso': '#d6c4b5'                                            
-            //             // }
-            //         },
-            //         bindto: "#chart_texto",
-            //         tooltip: {
-            //             format: {
-            //                 title: function (d) { return ''; },
-            //                 value: function (value, ratio, id) {
-            //                     var format = id === 'data1' ? d3.format(',') : d3.format('');
-            //                     return format(value);
-            //                 }
-
-            //             }
-            //         }
-            //     });
-             
+         
         }
+
+        
 
         function imprimir_kpi_ops_ica_curso(kpi) {
             if (esVacio(kpi.value)) {
