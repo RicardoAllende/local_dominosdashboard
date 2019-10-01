@@ -143,6 +143,10 @@ $PAGE->set_context($context_system);
                         _kpi = informacion_del_curso.data.kpi[index];
                         
                         console.log("index: "+ index);
+                        if(esVacio(_kpi.value)){
+                            insertarGraficaSinInfo("#todos_los_kpis");
+                            continue;
+                        }
                         switch (_kpi.type) {
                             case 'Texto': // ICA (normalmente regresa Destacado/Aprobado/No aprobado), (ejemplo)
                             var valor = [];
@@ -263,7 +267,7 @@ $PAGE->set_context($context_system);
                         }
                     }
                 });
-             
+            
         }
 
         // Función cuando el tipo de kpi es entero o porcentaje
@@ -308,7 +312,7 @@ $PAGE->set_context($context_system);
                     }
                 });
             
-             
+         
         }
 
         
