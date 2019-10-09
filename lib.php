@@ -1601,7 +1601,6 @@ function local_dominosdashboard_update_kpi(array $params){
 }
 
 function local_dominosdashboard_create_kpi(array $params){
-    _log('Función local_dominosdashboard_create_kpi');
     try{
         global $DB;
         $key = local_dominosdashboard_get_value_from_params($params, 'kpi_key', false, true);
