@@ -41,6 +41,6 @@ class make_historic_logs extends \core\task\scheduled_task {
      * Execute the task.
      */
     public function execute() {
-        local_dominosdashboard_make_historic_report();
+        local_dominosdashboard_make_all_historic_reports();
     }
 }
