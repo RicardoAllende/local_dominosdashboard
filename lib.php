@@ -475,14 +475,17 @@ function local_dominosdashboard_get_kpi_overview(array $params = array(), bool $
     $params['selected_filter'] = "regiones"; // Comparativa de las regiones
     foreach($configs as $id => $config){ // Iteración entre las configuraciones de los kpis
         $kpi_result = local_dominosdashboard_get_kpi_results($id, $params);
+
+        // $kpi_status = new stdClass();
+        // $kpi_status->type = $kpis[$id]->type;
+        // $kpi_status->name = $kpis[$id]->name;
+        // $kpi_status->id = $kpis[$id]->id;
+        // $kpi_status->status = $kpi_result;
+
+        $kpis[$id]->status = $kpi_result;
         foreach($config as $courseid){ // Se agregan los cursos correspondientes
             if(isset($courses[$courseid])){
-                $kpi_status = new stdClass();
-                $kpi_status->type = $kpis[$id]->type;
-                $kpi_status->name = $kpis[$id]->name;
-                $kpi_status->id = $kpis[$id]->id;
-                $kpi_status->status = $kpi_result;
-                $courses[$courseid]->kpi = $kpi_status;
+                $courses[$courseid]->kpi = $kpis[$id];
                 // $kpi_status->course_comparative = local_dominosdashboard_get_course_comparative($courseid, $params);
                 array_push($response, $courses[$courseid]);
             }

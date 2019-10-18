@@ -43,7 +43,7 @@ $returnurl = new moodle_url('/local/dominosdashboard/dashboard.php');
 $mform = new local_dominosdashboard_upload_kpis();
 global $CFG;
 $link = $CFG->wwwroot . '/local/dominosdashboard/administrar_KPIS.php';
-$uploadKPIsurl = $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php';
+$managekpis = $CFG->wwwroot . '/local/dominosdashboard/administrar_KPIS.php';
 $settingsurl = $CFG->wwwroot . '/admin/settings.php?section=local_dominosdashboard';
 echo $OUTPUT->header();
 echo "
@@ -51,15 +51,22 @@ echo "
     <div class='col-sm-4' style='text-align: right;'>
     </div>
     <div class='col-sm-4' style='text-align: center;'>
-        <a class='btn btn-primary btn-lg' href='$uploadKPIsurl'>Subir KPI's</a>        
+        <a class='btn btn-primary btn-lg' href='{$managekpis}'>Administrar KPI's</a>
     </div>
     <div class='col-sm-4' style='text-align: left;'>
-        <a class='btn btn-primary btn-lg' href='$settingsurl'>Configuraciones del plugin</a>
+        <a class='btn btn-primary btn-lg' href='{$settingsurl}'>Configuraciones del plugin</a>
     </div>
 </div>
 ";
-$fields = implode(',', local_dominosdashboard_get_kpi_list('menu'));
-echo "<div class='row' style='padding-left: 2%;'><h4 style='font-weight: 300;'>Las columnas disponibles son: {$fields}</h4></div><br><br>";
+// echo "<br>";
+
+$fields = local_dominosdashboard_get_kpi_list('menu');
+// $fields = implode(',', local_dominosdashboard_get_kpi_list('menu'));
+echo "<div class='row' style='padding-left: 2%;'><div class='col-sm-6'><h4 style='font-weight: 300;'>Las columnas disponibles son:</h4>";
+foreach ($fields as $fieldid => $field) {
+    echo "<p>{$field}</p>";
+}
+echo "</div><div class='col-sm-6'><h2>Recuerde establecer  la relación entre los cursos su KPI en las configuraciones del plugin</h2></div></div><br><br>";
 if ($formdata = $mform->get_data()) {
     $tiempo_inicial = microtime(true);
     

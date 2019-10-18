@@ -39,6 +39,7 @@ $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 echo $OUTPUT->header();
 ?>
 <link rel="stylesheet" href="estilos.css">
+<h2>Recuerde establecer  la relación entre los cursos su KPI en las configuraciones del plugin</h2><br>
 <div class="row" style="padding-bottom: 2%;">
     <div class="col-sm-4" style="text-align: right;">
         <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#agregarKPIModal">Agregar nuevo KPI</button>
