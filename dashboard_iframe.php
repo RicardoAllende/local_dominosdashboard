@@ -92,9 +92,13 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                     <div class="" id="ldm_tab_3"></div>
                 </div>
             </div>
+            <div class="col-sm-12" id="comparativa_region"></div>
+            <div class="col-sm-12" id="grafica_comparativa"></div>
         </div>
+        
         <div id="loader"></div>
         <div class="col-sm-12" id="local_dominosdashboard_content"></div>
+        
         
         <!-- <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div> -->
     </div>
@@ -120,7 +124,8 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         var indicator;
         var item;
         var tituloPestana = "";
-        var tabsCursos = [false, false, false];
+        var tabsCursos = [false, false, false];                        
+        //imprimirComparativaFiltrosDeCurso('#comparativa_region',informacion_del_curso.data.region_comparative);
         function cambiarpestana(id){
             if(id != currentTab){
                 hidePage("ldm_tab_" + id);
@@ -195,6 +200,8 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                         showPage("ldm_tab_" + currentTab);
                     }
                 },1000)
+                imprimirGraficaComparativaCursos();
+                // imprimirComparativaFiltrosDeCurso('#comparativa_region', informacion_del_curso.data.region_comparative);    
                 
             })
             .fail(function(error, error2) {
@@ -207,7 +214,12 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
             }
         }
         
+
+
+        
+
     </script>
     <script src="dominosdashboard_scripts.js"></script>
+    
 </body>
 </html>

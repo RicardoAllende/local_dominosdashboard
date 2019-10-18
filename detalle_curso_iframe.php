@@ -96,7 +96,7 @@ $PAGE->set_context($context_system);
         var isFilterLoading = false;
         var trabajoPendiente = false;
         var comparativa;
-        var comparativas = 0;
+        imprimirComparativaFiltrosDeCurso('#ldm_comparativas');
         document.addEventListener("DOMContentLoaded", function () {
             $('.dominosdashboard-ranking').hide();
             $('.course-selector').change(function () { obtenerInformacion() });
@@ -605,40 +605,74 @@ $PAGE->set_context($context_system);
         /**
          * @param _bindto string selector con sintaxis jquery donde se imprimirán las gráficas
          */
-        function imprimirComparativaFiltrosDeCurso(_bindto, informacion){
-            $(_bindto).html('');
-            if(!esVacio(informacion.comparative)){
-                comparative = informacion.comparative;
-                columns = Array();
-                comparativas++;
-                id_para_Grafica = 'ldm_comparativa_' + comparativas + '_' + informacion.key;
-                insertarTituloSeparador(_bindto, 'Comparativa ' + informacion.filter);
-                $(_bindto).append(`<div class='col-sm-12'><div id="${id_para_Grafica}"></div></div><br>`);
-                // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
-                id_para_Grafica = '#' + id_para_Grafica;
-                for(var j = 0; j < comparative.length; j++){
-                    datos_a_comparar = comparative[j];
-                    columns.push([datos_a_comparar.name, datos_a_comparar.percentage]);
-                }
-                data = { columns: columns, type: 'bar'};
-                var chart = c3.generate({
-                    data: data,
-                    axis: {
-                        rotated: true
-                    },
-                    tooltip: {
-                        format: {
-                            title: function (d) { return 'Porcentaje de aprobación'; },
+        // function imprimirComparativaFiltrosDeCurso(_bindto, informacion){
+        //     informacion = {
+        //             title: "Fanáticos por el servicio", key: "course_5", id: "5", shortname: "fanserv2019", fullname: "Fanáticos por el servicio",
+        //             comparative: [
+        //             {
+        //                 approved_users: "8",
+        //                 enrolled_users: 18,
+        //                 name: "bajio",
+        //                 percentage: 44.44
+        //             },{
+        //                 approved_users: "1371",
+        //                 enrolled_users: 2032,
+        //                 name: "centro norte",
+        //                 percentage: 67.47
+        //             },{
+        //                 approved_users: "1118",
+        //                 enrolled_users: 1901,
+        //                 name: "centro sur",
+        //                 percentage: 58.81
+        //             },{
+        //                 approved_users: "1",
+        //                 enrolled_users: 1,
+        //                 name: "Ciudad de Mexico",
+        //                 percentage: 100
+        //             }
+                
+                
+        //             ],
+        //             filter: "regiones",
+        //             fullname: "Fanáticos por el servicio",
+        //             id: "5",
+        //             key: "course_5",
+        //             shortname: "fanserv2019",
+        //             title: "Fanáticos por el servicio"
+        //         } 
+        //     $(_bindto).html('');
+        //     if(!esVacio(informacion.comparative)){
+        //         comparative = informacion.comparative;
+        //         columns = Array();
+        //         comparativas++;
+        //         id_para_Grafica = 'ldm_comparativa_' + comparativas + '_' + informacion.key;
+        //         insertarTituloSeparador(_bindto, 'Comparativa ' + informacion.filter);
+        //         $(_bindto).append(`<div class='col-sm-12'><div id="${id_para_Grafica}"></div></div><br>`);
+        //         // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
+        //         id_para_Grafica = '#' + id_para_Grafica;
+        //         for(var j = 0; j < comparative.length; j++){
+        //             datos_a_comparar = comparative[j];
+        //             columns.push([datos_a_comparar.name, datos_a_comparar.percentage]);
+        //         }
+        //         data = { columns: columns, type: 'bar'};
+        //         var chart = c3.generate({
+        //             data: data,
+        //             axis: {
+        //                 rotated: true
+        //             },
+        //             tooltip: {
+        //                 format: {
+        //                     title: function (d) { return 'Porcentaje de aprobación'; },
 
-                        }               
-                    },   
-                    bindto: id_para_Grafica,
-                });
-            }else{
-                console.log('Error de imprimirComparativaFiltrosDeCurso', informacion);
-                $(_bindto).html('');
-            }
-        }
+        //                 }               
+        //             },   
+        //             bindto: id_para_Grafica,
+        //         });
+        //     }else{
+        //         console.log('Error de imprimirComparativaFiltrosDeCurso', informacion);
+        //         $(_bindto).html('');
+        //     }
+        // }
 
     </script>
 </body>
