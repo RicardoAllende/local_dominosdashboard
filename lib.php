@@ -124,7 +124,7 @@ DEFINE('DOMINOSDASHBOARD_CHARTS', ['bar' => 'Barras',
  'gauge' => 'Círculo',
 //  'spline' => 'Curvas',
 //  'grupo' => 'Barras agrupadas',
-//  'progreso' => 'Avance'
+ 'comparativa_regiones' => 'Comparativa de regiones'
  ]); 
 
 
@@ -464,29 +464,28 @@ function local_dominosdashboard_get_kpi_overview(array $params = array(), bool $
     if(empty($ids)){
         return array();
     }
-    $ids = array_unique($ids);
+    $ids = array_unique($ids); // Cursos que serán consultados
     $ids = implode(',', $ids);
     $where = " AND id IN ({$ids}) ";
     $courses = local_dominosdashboard_get_courses($allCourses, $where);
     foreach($courses as $key => $course){
-        $courses[$key] = local_dominosdashboard_get_course_information($key, false, false, $params, false);
+        $courses[$key] = local_dominosdashboard_get_course_information($key, false, false, $params, true);
     }
     $response = array();
-    // _log($courses);
-    foreach($configs as $id => $config){
-        $kpi_status = new stdClass();
-        $kpi_courses = array();
-        foreach($config as $course_id){ // Se agregan los cursos correspondientes
-            if(isset($courses[$course_id])){
-                array_push($kpi_courses, $courses[$course_id]);
+    $params['selected_filter'] = "regiones"; // Comparativa de las regiones
+    foreach($configs as $id => $config){ // Iteración entre las configuraciones de los kpis
+        $kpi_result = local_dominosdashboard_get_kpi_results($id, $params);
+        foreach($config as $courseid){ // Se agregan los cursos correspondientes
+            if(isset($courses[$courseid])){
+                $kpi_status = new stdClass();
+                $kpi_status->type = $kpis[$id]->type;
+                $kpi_status->name = $kpis[$id]->name;
+                $kpi_status->id = $kpis[$id]->id;
+                $kpi_status->status = $kpi_result;
+                $kpi_status->course_comparative = local_dominosdashboard_get_course_comparative($courseid, $params);
+                array_push($response, $courses[$courseid]);
             }
         }
-        $kpi_status->type = $kpis[$id]->type;
-        $kpi_status->name = $kpis[$id]->name;
-        $kpi_status->id = $kpis[$id]->id;
-        $kpi_status->courses = $kpi_courses;
-        $kpi_status->status = local_dominosdashboard_get_kpi_results($id, $params);
-        array_push($response, $kpi_status);
     }
     return ['type' => 'kpi_list', 'result' => $response];
 }
@@ -539,7 +538,7 @@ function local_dominosdashboard_create_slug($str, $delimiter = '_'){
 
 define('RETURN_RANDOM_DATA', false);
 define('MAX_RANDOM_NUMBER', 500);
-function local_dominosdashboard_get_course_information(int $courseid, bool $get_kpis = false, bool $get_activities = false, array $params = array()){
+function local_dominosdashboard_get_course_information(int $courseid, bool $get_kpis = false, bool $get_activities = false, array $params = array(), bool $get_region_comparative = false){
     global $DB;
     $course = $DB->get_record('course', array('id' => $courseid));
     if($course === false){
@@ -585,17 +584,6 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         $response->kpi = local_dominosdashboard_get_kpi_info($courseid, $params);
     }
     $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params);
-    // if($userids === false){
-    //     $response->activities = [];
-    //     $response->enrolled_users = 0;
-    //     $response->approved_users = 0;
-    //     $response->percentage = 0;
-    //     $response->not_approved_users = $response->enrolled_users - $response->approved_users;
-    //     $response->value = 0;
-    //     return $response;
-    // }
-    // $num_users = count($userids);
-    // $userids = implode(',', $userids);
     if($get_activities){
         $response->activities = local_dominosdashboard_get_activities_completion($courseid, $userids, $fecha_inicial, $fecha_final); //
     }
@@ -605,6 +593,10 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
         $response->approved_users = 0;
     }else{
         $response->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids, $fecha_inicial, $fecha_final); //
+    }
+    if($get_region_comparative || $response->chart == 'comparativa_regiones'){
+        $params['selected_filter'] = "regiones"; // Comparativa de las regiones
+        $response->region_comparative = local_dominosdashboard_get_course_comparative($courseid, $params);
     }
     $response->not_approved_users = $response->enrolled_users - $response->approved_users;
     $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users);
@@ -644,9 +636,9 @@ function local_dominosdashboard_get_course_comparative(int $courseid, array $par
     $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
     $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final');
     $indicator = $params['selected_filter'];
-    if(isset($params[$indicator])){
-        _log('Se tienen parámetros');
-    }
+    // if(isset($params[$indicator])){
+    //     _log('Se tienen parámetros');
+    // }
     $catalogue = local_dominosdashboard_get_catalogue($indicator, $conditions->sql, $conditions->params);
     if(!in_array('', $catalogue)){
         array_push($catalogue, '');
@@ -656,12 +648,12 @@ function local_dominosdashboard_get_course_comparative(int $courseid, array $par
     foreach($catalogue as $catalogue_item){
         $item_to_compare = new stdClass();
         if($catalogue_item == ''){
-            $item_to_compare->name = 'Vacío';
+            $item_to_compare->name = '(Vacío)';
         }else{
             $item_to_compare->name = $catalogue_item;
         }
         $params[$key] = [$catalogue_item];
-        $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params, false);
+        $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params);
         $item_to_compare->enrolled_users = local_dominosdashboard_get_count_users($userids);
         if($item_to_compare->enrolled_users == 0){
             $item_to_compare->approved_users = 0;

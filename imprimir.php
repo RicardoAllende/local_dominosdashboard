@@ -24,7 +24,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['report_type'])){
         // case 'course_completion':
         //     if(!empty($_POST['courseid'])){
         //         $courseid = $_POST['courseid'];
-        //         $resultado = local_dominosdashboard_get_course_information($courseid, $get_kpis = true, $get_activities = true, $params = $_POST, true);
+        //         $resultado = local_dominosdashboard_get_course_information($courseid, $get_kpis = true, $get_activities = true, $params = $_POST, false);
         //         if(!empty($resultado)){
         //             $nombre = local_dominosdashboard_create_slug($resultado->title);
         //             header("Content-Disposition: attachment; filename={$nombre}_{$fecha}.xls");
