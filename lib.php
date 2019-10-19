@@ -482,15 +482,39 @@ function local_dominosdashboard_get_kpi_overview(array $params = array(), bool $
         // $kpi_status->id = $kpis[$id]->id;
         // $kpi_status->status = $kpi_result;
 
-        $kpis[$id]->status = $kpi_result;
+        // $kpis[$id]->status = $kpi_result;
+        $_kpi = $kpis[$id];
+        $_kpi->status = $kpi_result;
+        // _log($kpis[$id]);
         foreach($config as $courseid){ // Se agregan los cursos correspondientes
             if(isset($courses[$courseid])){
-                $courses[$courseid]->kpi = $kpis[$id];
-                // $kpi_status->course_comparative = local_dominosdashboard_get_course_comparative($courseid, $params);
-                array_push($response, $courses[$courseid]);
+                _log($courseid, $id);
+                $ctemp = $courses[$courseid];
+                $ctemp->kpi = $_kpi;
+                array_push($response, $ctemp);
             }
         }
     }
+    // _log('Resultado ', $response);
+    /*
+        8 1 
+
+        9 1 
+
+        10 1 
+
+        8 2 
+
+        9 2 
+
+        10 2 
+
+        8 3 
+
+        9 3 
+
+        10 3 
+    */
     return ['type' => 'kpi_list', 'result' => $response];
 }
 
