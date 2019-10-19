@@ -181,7 +181,7 @@ function crearGraficaDeCurso(_bindto, curso){
     }
     return c3.generate({
         data: {
-            columns: _columns,
+            columns: [] ,//_columns,
             type: curso.chart,
             colors: {
                 Inscritos: '#0000ff',
@@ -533,21 +533,21 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     // });
 
     // Gráfica de curvas
-    // var chartz = c3.generate({
-    //     data: {
-    //         columns: info_grafica,
-    //         type: 'spline'
-    //     },        
-    //     bindto: '#' + div_id,
-    //     tooltip: {
-    //         format: {
-    //             title: function (d) { return cursos[d].title; },
-    //             value: function (value, ratio, id) {
-    //                 return value + " %";
-    //             }
-    //         }
-    //     }
-    // });
+    var chartz = c3.generate({
+        data: {
+            columns: info_grafica,
+            type: 'spline'
+        },        
+        bindto: '#' + div_id,
+        tooltip: {
+            format: {
+                title: function (d) { return cursos[d].title; },
+                value: function (value, ratio, id) {
+                    return value + " %";
+                }
+            }
+        }
+    });
 
       
     // var titulos_cursos=['x'];
@@ -565,31 +565,31 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     // console.log(arr_grafica);
     
     //Gráfica de barra agrupada
-    var chartz = c3.generate({
-        data: {
-            x: 'x',                        
-            columns: info_grafica,
-                // columns: [titulos_cursos, arr_grafica],
-            type: 'bar',
-            colors: {
-                'Ideal de cobertura': '#8a7e7e',            
-            }                           
-        },
-        axis: {
-            x: {
-                type: 'category' // this needed to load string x value
-            }
-        },        
-        bindto: '#' + div_id,
-        tooltip: {
-            format: {
-                title: function (d) { return cursos[d].title; },
-                value: function (value, ratio, id) {
-                    return value + " %";
-                }
-            }
-        }
-    });
+    // var chartz = c3.generate({
+    //     data: {
+    //         x: 'x',                        
+    //         columns: info_grafica,
+    //             // columns: [titulos_cursos, arr_grafica],
+    //         type: 'bar',
+    //         colors: {
+    //             'Ideal de cobertura': '#8a7e7e',            
+    //         }                           
+    //     },
+    //     axis: {
+    //         x: {
+    //             type: 'category' // this needed to load string x value
+    //         }
+    //     },        
+    //     bindto: '#' + div_id,
+    //     tooltip: {
+    //         format: {
+    //             title: function (d) { return cursos[d].title; },
+    //             value: function (value, ratio, id) {
+    //                 return value + " %";
+    //             }
+    //         }
+    //     }
+    // });
 
     
     
@@ -1012,13 +1012,12 @@ function imprimirDIV(contenido) {
     ventanaImpresion.close();
 }
 
-//Función para pintar una card donde se comparen los cursos, en la primera pestaña
-function imprimirGraficaComparativaCursos(){
-    document.getElementById("grafica_comparativa").innerHTML = "<div class='col-sm-6 espacio'>"+
+function seccion_a_imprimirGraficaComparativaCursos(){
+    document.getElementById("graficas_seccion_a").innerHTML = "<div class='col-sm-12 espacio'>"+
     "<div class='card bg-gray border-0 m-2'>"+
     "<div class='align-items-end'>"+
             "<div class='fincard text-center'>"+
-                "<a href=''>Comparativa de cursos</a>"+
+                "<a href=''>Grafica comparativa general</a>"+
             "</div>"+
         "</div>"+
         "<div class='card esp'>"+
@@ -1026,7 +1025,115 @@ function imprimirGraficaComparativaCursos(){
             
             "</div>"+
         "</div>"+
-        "<div class='chart_ bg-faded m-2' id='grafica_historico'></div>"                    
+        "<div class='chart_ bg-faded m-2' id='grafica_a'></div>"                    
+    "</div>"+
+    "</div>";
+    return c3.generate({
+        data: {
+            x : 'x',
+            columns: [
+                ['x', 'Region 1', 'Region 2', 'Region 3', 'Region 4'],
+                ['avance', 30, 200, 100, 400]
+                
+            ],
+            type: 'spline'
+        },
+        axis: {
+            x: {
+                type: 'category' // this needed to load string x value
+            }
+        },
+        bindto: "#grafica_a",        
+    });
+}
+
+function seccion_b_imprimirGraficaComparativaCursos(){
+    document.getElementById("graficas_seccion_b").innerHTML = "<div class='col-sm-6 espacio'>"+
+    "<div class='card bg-gray border-0 m-2'>"+
+    "<div class='align-items-end'>"+
+            "<div class='fincard text-center'>"+
+                "<a href=''>Graficas de avance</a>"+
+            "</div>"+
+        "</div>"+
+        "<div class='card esp'>"+
+        "<div class='row espr'>"+           
+            
+            "</div>"+
+        "</div>"+
+        "<div class='chart_ bg-faded m-2' id='grafica_b'></div>"                    
+    "</div>"+
+    "</div>";
+    return c3.generate({
+        data: {
+            columns: [
+                ['Aprobados', 91.4]
+            ],
+            type: 'gauge',
+        },
+        bindto: "#grafica_b"
+    });
+}
+
+function seccion_c_imprimirGraficaComparativaCursos(){
+    document.getElementById("graficas_seccion_c").innerHTML = "<div class='col-sm-6 espacio'>"+
+    "<div class='card bg-gray border-0 m-2'>"+
+    "<div class='align-items-end'>"+
+            "<div class='fincard text-center'>"+
+                "<a href=''>Grafica comparativa de ruta dominos</a>"+
+            "</div>"+
+        "</div>"+
+        "<div class='card esp'>"+
+        "<div class='row espr'>"+           
+            
+            "</div>"+
+        "</div>"+
+        "<div class='chart_ bg-faded m-2' id='grafica_c'></div>"                    
+    "</div>"+
+    "</div>";
+    return c3.generate({
+        data: {
+            columns: [
+                ['Region 1', 30],
+                ['Region 2', 70],
+                ['Region 3', 25],
+                ['Region 4', 50]                
+            ],
+            type: 'bar',
+            colors: {
+                Inscritos: '#a5a3a4',
+                Aprobados: '#016392',
+                'No Aprobados': '#d70c20'
+                
+            },
+            
+        },
+        axis: {
+            rotated: true
+        },
+        bindto: "#grafica_c",
+        grid: {
+            y: {
+                lines: [{value:0}]
+            }
+        }
+    });
+}
+
+//Función para pintar una card donde se comparen los cursos, en la primera pestaña
+function seccion_d_imprimirGraficaComparativaCursos(){
+    document.getElementById("graficas_seccion_d").innerHTML = "<div class='col-sm-6 espacio'>"+
+    "<div class='card bg-gray border-0 m-2'>"+
+    "<div class='align-items-end'>"+
+            "<div class='fincard text-center'>"+
+                "<a href=''>Grafica comparativa cursos</a>"+
+            "</div>"+
+        "</div>"+
+        "<div class='card esp'>"+
+        "<div class='row espr'>"+           
+            
+            "</div>"+
+        "</div>"+
+        "<div class='chart_ bg-faded m-2' id='grafica_d'></div>"                    
     "</div>"+
     "</div>";
 
@@ -1048,7 +1155,7 @@ function imprimirGraficaComparativaCursos(){
                         ['Aprobados', 'No Aprobados']
                     ]
                 },
-                bindto: "#grafica_historico",
+                bindto: "#grafica_d",
                 grid: {
                     y: {
                         lines: [{value:0}]
@@ -1062,7 +1169,7 @@ function imprimirGraficaComparativaCursos(){
          * @param _bindto string selector con sintaxis jquery donde se imprimirán las gráficas
          */
         function imprimirComparativaFiltrosDeCurso(_bindto, informacion){
-            $(_bindto).html('');
+            
             if(!esVacio(informacion.comparative)){
                 comparative = informacion.comparative;
                 columns = Array();
