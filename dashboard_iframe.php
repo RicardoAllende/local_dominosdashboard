@@ -84,6 +84,26 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     <div class="" id="ldm_tab_1"></div>
                     <!-- <div class="" id="contenedor_cursos"></div> -->
+                    <div class="col-sm-12" id="seccion_a">                    
+                        <h2>Grafica comparativa general</h2>                    
+                        <div id="graficas_seccion_a"></div>                        
+                    </div>
+
+                    <div class="col-sm-12" id="seccion_b">
+                        <h2>Graficas de avance</h2>
+                        <div id="graficas_seccion_b"></div>
+                    </div>
+
+                    <div class="col-sm-12" id="seccion_c">
+                        <h2>Grafica comparativa de ruta dominos</h2>
+                        <div id="graficas_seccion_c"></div>
+                    </div>
+
+                    <div class="col-sm-12" id="seccion_d">
+                        <h2>Grafica comparativa cursos</h2>                    
+                        <div id="graficas_seccion_d"></div>                        
+                    </div>
+
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     <div class="" id="ldm_tab_2"></div>
@@ -92,12 +112,11 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                     <div class="" id="ldm_tab_3"></div>
                 </div>
             </div>
-            <div class="col-sm-12" id="comparativa_region"></div>
-            <div class="col-sm-12" id="grafica_comparativa"></div>
+            
         </div>
         
         <div id="loader"></div>
-        <div class="col-sm-12" id="local_dominosdashboard_content"></div>
+        <!-- <div class="col-sm-12" id="local_dominosdashboard_content"></div> -->
         
         
         <!-- <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div> -->
@@ -220,6 +239,13 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
 
     </script>
     <script src="dominosdashboard_scripts.js"></script>
+    <script>        
+        //imprimirComparativaFiltrosDeCurso('#graficas_seccion_a');        
+        seccion_a_imprimirGraficaComparativaCursos('#graficas_seccion_a');
+        seccion_b_imprimirGraficaComparativaCursos('#graficas_seccion_b');
+        seccion_c_imprimirGraficaComparativaCursos('#graficas_seccion_c');
+        seccion_d_imprimirGraficaComparativaCursos('#graficas_seccion_d');
+    </script>
     
 </body>
 </html>

@@ -488,33 +488,17 @@ function local_dominosdashboard_get_kpi_overview(array $params = array(), bool $
         // _log($kpis[$id]);
         foreach($config as $courseid){ // Se agregan los cursos correspondientes
             if(isset($courses[$courseid])){
-                _log($courseid, $id);
                 $ctemp = $courses[$courseid];
-                $ctemp->kpi = $_kpi;
-                array_push($response, $ctemp);
+                $item = new stdClass();
+                $item->course_name = $ctemp->title;
+                $item->kpi_name = $_kpi->name;
+                $item->kpi = $_kpi;
+                $item->course_information = $ctemp;
+                // _log($item);
+                array_push($response, $item);
             }
         }
     }
-    // _log('Resultado ', $response);
-    /*
-        8 1 
-
-        9 1 
-
-        10 1 
-
-        8 2 
-
-        9 2 
-
-        10 2 
-
-        8 3 
-
-        9 3 
-
-        10 3 
-    */
     return ['type' => 'kpi_list', 'result' => $response];
 }
 
