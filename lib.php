@@ -119,13 +119,16 @@ DEFINE("COMPLETION_BY_AVG", 6);
 
 DEFINE('DOMINOSDASHBOARD_INDICATORS', 'regiones/distritos/entrenadores/tiendas/puestos/ccosto');
 DEFINE('DOMINOSDASHBOARD_INDICATORS_FOR_KPIS', 'regiones/distritos/tiendas/periodos');
-DEFINE('DOMINOSDASHBOARD_CHARTS', ['bar' => 'Barras',
- 'pie' => 'Pay',
- 'gauge' => 'Círculo',
-//  'spline' => 'Curvas',
-//  'grupo' => 'Barras agrupadas',
- 'comparativa_regiones' => 'Comparativa de regiones'
- ]); 
+DEFINE('DOMINOSDASHBOARD_CHARTS', 
+    [
+        'bar' => 'Barras',
+        'pie' => 'Pay',
+        'gauge' => 'Círculo',
+        'grupo_cursos' => 'Grupo de cursos',
+        // 'grupo' => 'Barras agrupadas',
+        'comparativa_regiones' => 'Comparativa de regiones'    
+    ]
+); 
 
 
 function local_dominosdashboard_relate_column_with_fields(array $columns, array $requiredFields, bool &$hasRequiredColumns){
