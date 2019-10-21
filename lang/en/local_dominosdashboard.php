@@ -105,3 +105,15 @@ $string['uploadkpis_help'] = "Usted debe agregar los archivos KPI's con el forma
 $string['crontask_name'] = 'Creación de consultas para generación de históricos';
 
 $string['course_details_title'] = 'Detalle del curso: ';
+
+$string['seccion_a'] = 'Comparativa de aprovechamiento de cursos';
+$string['seccion_a_desc'] = 'Contendra la informacion de avance de todos los cursos dividido por region';
+
+$string['seccion_b'] = 'Programa de entrenamiento de nuevo ingreso';
+$string['seccion_b_desc'] = 'Contendra la información de los cursos definidos por el administrador del dashboard (por el momento solo es nom 251 y curso de induccion), este tambien respondera a los filtros y mostrara la información de avance dividido por curso configurado en la seccion';
+
+$string['seccion_c'] = 'Ruta dominos';
+$string['seccion_c_desc'] = 'Contendra un comparativo de regiones, dividido por cursos definidos, responderá a los filtros de regiones';
+
+$string['seccion_d'] = 'Programas de entrenamiento temporal';
+$string['seccion_d_desc'] = 'Contendra la información de aprovechamiento (usuarios inscritos, usuarios aprobados y usuarios no aprobados) de los cursos seleccionados definidos por el usuario administrador y responderan a todos los filtros';
