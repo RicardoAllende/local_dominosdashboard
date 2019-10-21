@@ -291,10 +291,33 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                 nombres.push(curso.title);
             }
             crearGraficaComparativaVariosCursos(_bindto, [nombres, aprobados, no_aprobados, _ideal_cobertura], cursos, titulo);
+            grupoDeCursos = Array();
+            var aprobados_ = Array();
+            var no_aprobados_ = Array();
+            var nombres_ = Array();
+            var _ideal_cobertura_ = Array();
+            nombres_.push('x');
+            aprobados_.push("Porcentaje de aprobación del curso");
+            no_aprobados_.push("Porcentaje de no aprobados_");
+            _ideal_cobertura_.push('Ideal de cobertura');
             for (var i = 0; i < cursos.length; i++) {
                 var curso = cursos[i];
-                crearTarjetaParaGrafica(_bindto, curso);
+                chart = curso.chart;
+                if(chart.indexOf('grupo_cursos') !== -1){ // Se hará una comparativa entre estos cursos, primero creamos un arreglo con esos cursos
+                    grupoDeCursos.push(curso);
+                    var curso_ = cursos[i];
+                    _ideal_cobertura_.push(ideal_cobertura);
+                    aprobados_.push(curso_.percentage);
+                    var resta = 100 - curso_.percentage;
+                    var resu = resta.toFixed(2);
+                    no_aprobados_.push(resu);
+                    nombres_.push(curso_.title);
+                }else{ // Creación estándar donde se hace una gráfica por curso (gauge, bar, pie, comparativa_regiones, ...)
+                    crearTarjetaParaGrafica(_bindto, curso);
+                }
             }
+            crearGraficaComparativaVariosCursos(_bindto, [nombres_, aprobados_, no_aprobados_, _ideal_cobertura_], grupoDeCursos, "Grupo de cursos");
+
         }
     }
     if(type == 'kpi_list'){
@@ -1156,16 +1179,16 @@ function seccion_d_imprimirGraficaComparativaCursos(){
                     ]
                 },
                 bindto: "#grafica_d",
-                grid: {
-                    y: {
-                        lines: [{value:0}]
-                    }
-                }
+                // grid: {
+                //     y: {
+                //         lines: [{value:0}]
+                //     }
+                // }
             });
 
 }
 
-/**
+        /**
          * @param _bindto string selector con sintaxis jquery donde se imprimirán las gráficas
          */
         function imprimirComparativaFiltrosDeCurso(_bindto, informacion){
