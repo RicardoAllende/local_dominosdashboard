@@ -295,10 +295,12 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
             var aprobados_ = Array();
             var no_aprobados_ = Array();
             var nombres_ = Array();
+            var inscritos = Array();
             var _ideal_cobertura_ = Array();
             nombres_.push('x');
-            aprobados_.push("Porcentaje de aprobación del curso");
-            no_aprobados_.push("Porcentaje de no aprobados_");
+            inscritos.push('Inscritos');
+            aprobados_.push("Aprobados");
+            no_aprobados_.push("No Aprobados");
             _ideal_cobertura_.push('Ideal de cobertura');
             for (var i = 0; i < cursos.length; i++) {
                 var curso = cursos[i];
@@ -306,17 +308,17 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                 if (chart.indexOf('grupo_cursos') !== -1) { // Se hará una comparativa entre estos cursos, primero creamos un arreglo con esos cursos
                     grupoDeCursos.push(curso);
                     var curso_ = cursos[i];
-                    _ideal_cobertura_.push(ideal_cobertura);
-                    aprobados_.push(curso_.percentage);
-                    var resta = 100 - curso_.percentage;
-                    var resu = resta.toFixed(2);
-                    no_aprobados_.push(resu);
+                    // _ideal_cobertura_.push(ideal_cobertura);
+                    aprobados_.push(curso_.approved_users);
+                    inscritos.push(curso.enrolled_users);
+                    no_aprobados_.push(curso_.not_approved_users);
                     nombres_.push(curso_.title);
                 } else { // Creación estándar donde se hace una gráfica por curso (gauge, bar, pie, comparativa_regiones, ...)
                     crearTarjetaParaGrafica(_bindto, curso);
                 }
             }
-            crearGraficaComparativaVariosCursos(_bindto, [nombres_, aprobados_, no_aprobados_, _ideal_cobertura_], grupoDeCursos, "Grupo de cursos");
+            // console.log('Grupo de cursos', grupoDeCursos);
+            dashboardCrearGraficaComparativaGrupoDeCursos(_bindto, [nombres_, inscritos, aprobados_, no_aprobados_], grupoDeCursos, "Grupo de cursos");
 
         }
     }
@@ -648,7 +650,52 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     // }
 }
 
-function crearTarjetaParaGraficakpi(div, curso, kpi, id) {
+function dashboardCrearGraficaComparativaGrupoDeCursos(_bindto, info_grafica, cursos, titulo, id){
+    div_id = "course_group_";
+    if(typeof currentTab != 'undefined'){
+        div_id += '_';
+        div_id += currentTab;
+    }
+    if(typeof id != "undefined"){
+        div_id += id;
+    }
+    insertarTituloSeparador(_bindto, titulo);
+    $(_bindto).append(`
+                <div class="col-sm-12">
+                    <div class="card bg-faded border-0 m-2" id="">
+                    <div class="align-items-end">
+                            <div class="fincard text-center">
+                                <a href="#">${titulo}</a>
+                            </div>
+                        </div>
+                        <div class="bg-white m-2" id="${div_id}"></div>                        
+                    </div>
+                </div>`);
+
+    return c3.generate({
+        data: {
+            x: 'x',
+            columns: info_grafica,
+            type: 'bar',
+            colors: {
+                Inscritos: '#a5a3a4',
+                Aprobados: '#016392',
+                'No Aprobados': '#d70c20'
+            },
+            groups: [
+                ['Aprobados', 'No Aprobados']
+            ]
+        },
+        bindto: '#' + div_id,
+        axis: {
+            x: {
+                type: 'category' // this needed to load string x value
+            }
+        }, 
+    });
+}
+
+function crearTarjetaParaGraficakpi(div, curso, kpi, id){
     id_para_Grafica = "chart_" + id + '_' + curso.id;
     if (typeof mostrarEnlaces != 'undefined') {
         enlace = "detalle_curso_iframe.php?id=" + curso.id;

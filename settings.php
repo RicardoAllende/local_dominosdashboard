@@ -77,11 +77,11 @@ if ($hassiteconfig) {
                 $setting = new admin_setting_configselect($name, $title, $description, 0, $completions);
                 $page->add($setting);
                 
-                $name = $ldm_pluginname . '/course_main_chart_' . $course->id;
-                $title = get_string('chart', $ldm_pluginname);
-                $description = get_string('chart' . '_desc', $ldm_pluginname);        
-                $setting = new admin_setting_configselect($name, $title, $description, null, $charts);
-                $page->add($setting);
+                // $name = $ldm_pluginname . '/course_main_chart_' . $course->id;
+                // $title = get_string('chart', $ldm_pluginname);
+                // $description = get_string('chart' . '_desc', $ldm_pluginname);        
+                // $setting = new admin_setting_configselect($name, $title, $description, null, $charts);
+                // $page->add($setting);
 
                 // $name = $ldm_pluginname . '/course_main_chart_color_' . $course->id;
                 // $title = get_string('course_main_chart_color', $ldm_pluginname);
@@ -192,17 +192,17 @@ if ($hassiteconfig) {
 
             $page = new admin_settingpage($ldm_pluginname . 'coursetypestab', get_string('coursetypestab', $ldm_pluginname));
 
-            $name = $ldm_pluginname . '/' . 'LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS';
-            $title = get_string('LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS', $ldm_pluginname);
-            $description = get_string('LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS' . '_desc', $ldm_pluginname);
-            $setting = new admin_setting_configmultiselect($name, $title, $description, array(), $courses_min);
-            $page->add($setting);
+            // $sections = array('a', 'b', 'c', 'd'); // a allows all courses
+            $sections = array('b', 'c', 'd');
+            foreach($sections as $section){
+                $config_name = 'seccion_' . $section;
+                $name = $ldm_pluginname . '/' . $config_name;
+                $title = get_string($config_name, $ldm_pluginname);
+                $description = get_string($config_name . '_desc', $ldm_pluginname);
+                $setting = new admin_setting_configmultiselect($name, $title, $description, array(), $courses_min);
+                $page->add($setting);
+            }
 
-            $name = $ldm_pluginname . '/' . 'excluded_courses';
-            $title = get_string('excluded_courses', $ldm_pluginname);
-            $description = get_string('excluded_courses' . '_desc', $ldm_pluginname);
-            $setting = new admin_setting_configmultiselect($name, $title, $description, array(), $courses_min);
-            $page->add($setting);
 
             $settings->add($page);
 
