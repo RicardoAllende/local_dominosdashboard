@@ -201,7 +201,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                     }
                 },1000)
                 imprimirGraficaComparativaCursos();
-                // imprimirComparativaFiltrosDeCurso('#comparativa_region', informacion_del_curso.data.region_comparative);    
+                imprimirComparativaFiltrosDeCurso('#comparativa_region', informacion_del_curso.data.region_comparative);    
                 
             })
             .fail(function(error, error2) {
