@@ -209,15 +209,18 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
             .done(function(data) {
                 isCourseLoading = false;
                 console.log('Data obtenida', data);
-                respuesta = JSON.parse(JSON.stringify(data));
-                respuesta = respuesta.data;
+                respuestaArr = JSON.parse(JSON.stringify(data));
+                respuesta = respuestaArr.data;
                 console.log('Imprimiendo la respuesta', respuesta);
                 dateEnding = Date.now();
                 // $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
                 console.log(`Tiempo de respuesta de API al obtener json para listado de cursos ${dateEnding - dateBegining} ms`);
-                render_div = "#ldm_tab_" + currentTab;
-                var cosa = generarGraficasTodosLosCursos(render_div, respuesta, tituloPestana);
-
+                //render_div = "#ldm_tab_" + currentTab;
+                //var cosa = generarGraficasTodosLosCursos(render_div, respuesta, tituloPestana);
+                console.log("currentTab: " + currentTab);
+                if(currentTab == 3){
+                    kpi_region('#contenedor_kpi', respuesta.result)
+                }
                 seccion_c_imprimirGraficaComparativaCursos('#graficas_seccion_c', respuesta.region_comparative);
 
 
@@ -252,7 +255,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         seccion_b_imprimirGraficaComparativaCursos('#graficas_seccion_b');
         
         seccion_d_imprimirGraficaComparativaCursos('#graficas_seccion_d');
-        kpi_region('#contenedor_kpi');
+       // kpi_region('#contenedor_kpi');
     </script>
     
 </body>

@@ -1286,44 +1286,66 @@ function imprimirComparativaFiltrosDeCurso(_bindto, informacion) {
 }
 
 //Funcion de kpi por region en la pestaña 3
-function kpi_region() {
-    var nombre_region= Array();
-    var region_avance= Array();
-    nombre_region.push('x');
-    region_avance.push('Avance');
+function kpi_region(container, respuesta) {
 
-    for(var i = 0; i < respuesta.result.length; i++){
-        var kpi_info = respuesta.result[i];
+    console.log("Respuesta ");
+    console.log(respuesta);
+
+
+
+    for(var i = 0; i < respuesta.length; i++){
+        var nombre_region= [];
+        var region_avance= [];
+        nombre_region.push('x');
+        region_avance.push('Avance');
+        var kpi_info = respuesta[i];
         region_avance.push(kpi_info.course_information.percentage);
-        for(var j = 0; j <  respuesta.result[i].course_information.region_comparative.comparative.length; j++){
-            var kpi_name_region = respuesta.result[i].course_information.region_comparative.comparative[j];
+        for(var j = 0; j <  respuesta[i].course_information.region_comparative.comparative.length; j++){
+            var kpi_name_region = respuesta[i].course_information.region_comparative.comparative[j];
             nombre_region.push(kpi_name_region.name);
-        }        
+        } 
+        createCardGrahp(container,respuesta[i].kpi_name, region_avance, nombre_region, i )       
     }
 
-    document.getElementById("kpi_region").innerHTML = "<div class='col-sm-12 espacio'>" +
+    
+
+    
+
+}
+
+function createCardGrahp(container,title, region_avance, nombre_region, id ){
+    console.log("ra> " + region_avance);
+    console.log("nr> " + nombre_region);
+    var cardKPIRegion = "<div class='col-sm-12 espacio'>" +
         "<div class='card bg-gray border-0 m-2'>" +
         "<div class='align-items-end'>" +
         "<div class='fincard text-center'>" +
-        "<a href=''>Grafica comparativa general</a>" +
+        "<a href=''>"+title+"</a>" +
         "</div>" +
         "</div>" +
         "<div class='card esp'>" +
         "<div class='row espr'>" +
         "</div>" +
         "</div>" +
-        "<div class='chart_ bg-faded m-2' id='grafica_a'></div>"
+        "<div class='chart_ bg-faded m-2' id='grafica_a_kpi"+ id +"'></div>"
         "</div>" +
     "</div>";
+
+    $(container).append(cardKPIRegion);
+
+        console.log(nombre_region);
     return c3.generate({
         data: {
             x: 'x',
             columns: [
-                    region_avance,nombre_region
+                nombre_region,
+                    region_avance
                 // ['x', 'Region 1', 'Region 2', 'Region 3', 'Region 4'],
                 // ['avance', 30, 200, 100, 400]
+            ]
+                    
 
-            ],
+            ,
             type: 'spline'
         },
         axis: {
@@ -1333,5 +1355,4 @@ function kpi_region() {
         },
         bindto: "#grafica_a",
     });
-
 }
