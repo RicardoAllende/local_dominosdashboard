@@ -181,7 +181,7 @@ function crearGraficaDeCurso(_bindto, curso){
     }
     return c3.generate({
         data: {
-            columns: _columns, //[] ,//_columns,
+            columns: [], //[] ,//_columns,
             type: curso.chart,
             colors: {
                 Inscritos: '#0000ff',
@@ -558,21 +558,21 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     // });
 
     // Gráfica de curvas
-    var chartz = c3.generate({
-        data: {
-            columns: info_grafica,
-            type: 'spline'
-        },        
-        bindto: '#' + div_id,
-        tooltip: {
-            format: {
-                title: function (d) { return cursos[d].title; },
-                value: function (value, ratio, id) {
-                    return value + " %";
-                }
-            }
-        }
-    });
+    // var chartz = c3.generate({
+    //     data: {
+    //         columns: info_grafica,
+    //         type: 'spline'
+    //     },        
+    //     bindto: '#' + div_id,
+    //     tooltip: {
+    //         format: {
+    //             title: function (d) { return cursos[d].title; },
+    //             value: function (value, ratio, id) {
+    //                 return value + " %";
+    //             }
+    //         }
+    //     }
+    // });
 
       
     // var titulos_cursos=['x'];
@@ -590,31 +590,31 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     // console.log(arr_grafica);
     
     //Gráfica de barra agrupada
-    // var chartz = c3.generate({
-    //     data: {
-    //         x: 'x',                        
-    //         columns: info_grafica,
-    //             // columns: [titulos_cursos, arr_grafica],
-    //         type: 'bar',
-    //         colors: {
-    //             'Ideal de cobertura': '#8a7e7e',            
-    //         }                           
-    //     },
-    //     axis: {
-    //         x: {
-    //             type: 'category' // this needed to load string x value
-    //         }
-    //     },        
-    //     bindto: '#' + div_id,
-    //     tooltip: {
-    //         format: {
-    //             title: function (d) { return cursos[d].title; },
-    //             value: function (value, ratio, id) {
-    //                 return value + " %";
-    //             }
-    //         }
-    //     }
-    // });
+    var chartz = c3.generate({
+        data: {
+            x: 'x',                        
+            columns: info_grafica,
+                // columns: [titulos_cursos, arr_grafica],
+            type: 'bar',
+            colors: {
+                'Ideal de cobertura': '#8a7e7e',            
+            }                           
+        },
+        axis: {
+            x: {
+                type: 'category' // this needed to load string x value
+            }
+        },        
+        bindto: '#' + div_id,
+        tooltip: {
+            format: {
+                title: function (d) { return cursos[d].title; },
+                value: function (value, ratio, id) {
+                    return value + " %";
+                }
+            }
+        }
+    });
 
     
     
