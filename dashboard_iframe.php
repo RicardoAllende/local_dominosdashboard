@@ -219,8 +219,8 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                         showPage("ldm_tab_" + currentTab);
                     }
                 },1000)
-                imprimirGraficaComparativaCursos();
-                imprimirComparativaFiltrosDeCurso('#comparativa_region', informacion_del_curso.data.region_comparative);    
+                //imprimirGraficaComparativaCursos();
+                //imprimirComparativaFiltrosDeCurso('#comparativa_region', informacion_del_curso.data.region_comparative);    
                 
             })
             .fail(function(error, error2) {
@@ -240,11 +240,11 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     </script>
     <script src="dominosdashboard_scripts.js"></script>
     <script>        
-        //imprimirComparativaFiltrosDeCurso('#graficas_seccion_a');        
-        seccion_a_imprimirGraficaComparativaCursos('#graficas_seccion_a');
-        seccion_b_imprimirGraficaComparativaCursos('#graficas_seccion_b');
-        seccion_c_imprimirGraficaComparativaCursos('#graficas_seccion_c');
-        seccion_d_imprimirGraficaComparativaCursos('#graficas_seccion_d');
+        //imprimirComparativaFiltrosDeCurso('#graficas_seccion_c', informacion_del_curso.data.region_comparative);            
+        // seccion_a_imprimirGraficaComparativaCursos('#graficas_seccion_a');
+        // seccion_b_imprimirGraficaComparativaCursos('#graficas_seccion_b');
+        // seccion_c_imprimirGraficaComparativaCursos('#graficas_seccion_c', informacion_del_curso.data.region_comparative);
+        // seccion_d_imprimirGraficaComparativaCursos('#graficas_seccion_d');
     </script>
     
 </body>
