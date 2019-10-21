@@ -608,7 +608,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     $response = new stdClass();
     $response->key = 'course' . $courseid;
     $response->id = $courseid;
-    $response->chart = local_dominosdashboard_get_course_chart($courseid);
+    // $response->chart = local_dominosdashboard_get_course_chart($courseid);
     $response->title = $course->fullname;
     $response->status = 'ok';
     $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
