@@ -599,7 +599,7 @@ function local_dominosdashboard_create_slug($str, $delimiter = '_'){
 
 define('RETURN_RANDOM_DATA', false);
 define('MAX_RANDOM_NUMBER', 500);
-function local_dominosdashboard_get_course_information(int $courseid, bool $get_kpis = false, bool $get_activities = false, array $params = array(), bool $get_region_comparative = false){
+function local_dominosdashboard_get_course_information(int $courseid, bool $get_kpis = false, bool $get_activities = false, array $params = array(), bool $get_region_comparative = false){ // pendiente
     global $DB;
     $course = $DB->get_record('course', array('id' => $courseid));
     if($course === false){
@@ -657,6 +657,37 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     }
     $params['selected_filter'] = "regiones"; // Comparativa de las regiones
     $response->region_comparative = local_dominosdashboard_get_course_comparative($courseid, $params);
+    $response->not_approved_users = $response->enrolled_users - $response->approved_users;
+    $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users);
+    $response->value = $response->percentage;
+    return $response;
+}
+
+function local_dominosdashboard_make_course_information(int $courseid, array $params = array()){ // pendiente
+    global $DB;
+    $course = $DB->get_record('course', array('id' => $courseid));
+    if($course === false){
+        return false;
+    }
+    $response = new stdClass();
+    $response->key = 'course' . $courseid;
+    $response->id = $courseid;
+    // $response->chart = local_dominosdashboard_get_course_chart($courseid);
+    $response->title = $course->fullname;
+    $response->status = 'ok';
+    $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
+    $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final');
+
+    $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params);
+
+    $response->enrolled_users = local_dominosdashboard_get_count_users($userids); // modificar
+    if($response->enrolled_users == 0){
+        $response->approved_users = 0;
+    }else{
+        $response->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids, $fecha_inicial, $fecha_final); //
+    }
+    // $params['selected_filter'] = "regiones"; // Comparativa de las regiones
+    // $response->region_comparative = local_dominosdashboard_get_course_comparative($courseid, $params);
     $response->not_approved_users = $response->enrolled_users - $response->approved_users;
     $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users);
     $response->value = $response->percentage;
@@ -1464,6 +1495,109 @@ function local_dominosdashboard_make_all_historic_reports(){
     }
 }
 
+function local_dominosdashboard_get_cache_params(int $courseid, array $params, $prefix = '_cache'){ // pendiente
+    $indicators = local_dominosdashboard_get_indicators(); 
+    $indicators_request = array();
+    foreach($params as $key => $param){ // Sólo se agregan los indicadores
+        if(array_key_exists($key, $indicators)){
+            if(!empty($param)){
+                $indicators_request[$key] = $param;
+            }
+        }
+    }
+
+    $where_clauses = array(" {$prefix}.courseid = ? ");
+    $where_params = array($courseid);
+    foreach($indicators_request as $key => $request){
+        $elements = array();
+        if(is_array($request)){
+            sort($request);
+            $indicators_request[$key] = implode(local_dominosdashboard_cache_separator, $request);
+        }elseif(is_string($request) || is_numeric($request)){
+            // array_push($where_clauses, '?'); // array_push($where_params, $request);
+        }else{
+            unset($indicators_request[$key]);
+            continue;
+        }
+        array_push($where_clauses, " {$prefix}.{$key} = ? ");
+        array_push($where_params, $request);
+    }
+    foreach($indicators_request as $key => $request){
+        if(!array_key_exists($key, $indicators)){
+            array_push($where_clauses, " {$prefix}.{$key} = '' ");
+        }
+    }
+    $response = new stdClass();
+    $response->where_clauses = $where_clauses;
+    $response->where_params = $where_params;
+    return $response;
+}
+
+/**
+ * Regresa la información del curso si se tiene almacenada, en caso de no existir, se devuleve false
+ * @param int $courseid Id del curso a buscar
+ * @param array $params Parámetros de búsqueda del curso, serán validados contra los indicadores
+ * @return stdClass|false Devuelve el registro del curso si se encuentra o false si no existe.
+ */
+function local_dominosdashboard_get_info_from_cache(int $courseid, array $params = array()){ // pendiente
+    global $DB;
+    if(!$DB->record_exists('course', array('id' => $courseid))){
+        print_error('No se encuentra el curso');
+    }
+    $conditions = local_dominosdashboard_get_cache_params($courseid, $params);
+    $where = explode(' AND ', $conditions->where_clauses);
+    $query = "SELECT * FROM {dominos_d_cache} WHERE {$where}";
+    $record = $DB->get_record_sql($query, $conditions->where_params);
+    if(!empty($record)){
+        // $record->
+        return $record;
+    }else{ // Crear caché
+        return local_dominosdashboard_make_cache_for_course($courseid, $params);
+    }
+    return false;
+}
+
+function local_dominosdashboard_make_cache_for_course(int $courseid, array $params, bool $exists = false){ // pendiente
+    global $DB;
+    $conditions = local_dominosdashboard_get_cache_params($courseid, $params);
+    $course_information = local_dominosdashboard_get_course_information($courseid, false, false, $params, false);
+    $where = explode(' AND ', $conditions->where_clauses);
+    $query = "SELECT courseid, courseid as id, fullname, shortname, enrolled_users, approved_users, percentage FROM {dominos_d_cache} WHERE {$where}";
+    $record = $DB->get_record_sql($query, $conditions->where_params);
+    if(empty($record)){ // Actualizar
+
+    }else{ // Crear
+
+    }
+}
+
+function local_dominosdashboard_make_courses_cache(){ // pendiente
+    global $DB;
+    $courses = local_dominosdashboard_get_courses();
+    $currenttime = time();
+    if($DB->count_records('dominos_d_cache', array()) > 0){
+        $regiones = local_dominosdashboard_get_catalogue('regiones');
+        return;
+    }
+    foreach($courses as $course){
+        $courseid = $course->id;
+        $course = $DB->get_record('course', array('id' => $courseid), 'id, shortname, fullname');
+        if($course == false){
+            return false;
+        }
+        $course_information = local_dominosdashboard_get_course_information($course->id, $kpis = false, $activities = false, $params = array(), false);
+        local_dominosdashboard_insert_historic_record($course_information, $currenttime, $course);
+        foreach (local_dominosdashboard_get_indicators() as $indicator) {
+            foreach (local_dominosdashboard_get_catalogue($indicator) as $item) {
+                $params = array();
+                $params[$indicator] = $item;
+                $course_information = local_dominosdashboard_get_course_information($courseid, $kpis = false, $activities = false, $params = array(), false);
+                local_dominosdashboard_insert_historic_record($course_information, $currenttime, $course, $indicator, $item);
+            }
+        }
+    }
+}
+
 function local_dominosdashboard_make_historic_report(int $courseid){
     global $DB;
     $currenttime = time();
@@ -1589,36 +1723,7 @@ function local_dominosdashboard_update_kpi(array $params){
     }
 }
 
-/**
- * Regresa la información del curso si se tiene almacenada, en caso de no existir, se devuleve false
- * @param int $courseid Id del curso a buscar
- * @param array $params Parámetros de búsqueda del curso, serán validados contra los indicadores
- * @return stdClass|false Devuelve el registro del curso si se encuentra o false si no existe.
- */
-function local_dominosdashboard_get_info_from_cache(int $courseid, array $params = array()){
-    $indicators = local_dominosdashboard_get_indicators(); 
-    $indicators_request = array();
-    foreach($params as $key => $param){ // Sólo se agregan los indicadores
-        if(array_key_exists($key, $indicators)){
-            if(!empty($param)){
-                $indicators_request[$key] = $param;
-            }
-        }
-    }
-
-    $where_clauses = array();
-    $where_params = array();
-    foreach($indicators_request as $key => $request){
-        if(is_array($request)){
-            sort($request);
-        }
-        if(is_string($request) || is_numeric($request)){
-
-        }
-    }
-
-    return false;
-}
+DEFINE('local_dominosdashboard_cache_separator', '^');
 
 function local_dominosdashboard_create_kpi(array $params){
     try{

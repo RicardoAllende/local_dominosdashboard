@@ -33,6 +33,24 @@ $tasks = [
         'month'     => '*', // Todos los meses
         'dayofweek' => '6', // cada sábado
     ],
+    [
+        'classname' => 'local_dominosdashboard\task\make_course_cache',
+        'blocking'  => 0,   // cambiar a 1 si la tarea tendrá un impacto alto en la plataforma
+        'minute'    => 'R', // Minuto aleatorio
+        'hour'      => '8', // 8 AM
+        'day'       => '*', // Todos los días
+        'month'     => '*', // Todos los meses
+        'dayofweek' => '6', // cada sábado
+    ],
+    [
+        'classname' => 'local_dominosdashboard\task\make_course_cache',
+        'blocking'  => 0,   // cambiar a 1 si la tarea tendrá un impacto alto en la plataforma
+        'minute'    => 'R', // Minuto aleatorio
+        'hour'      => '15', // 3 PM
+        'day'       => '*', // Todos los días
+        'month'     => '*', // Todos los meses
+        'dayofweek' => '6', // cada sábado
+    ],
     // [ // prueba cada minuto
     //     'classname' => 'local_dominosdashboard\task\make_historic_logs',
     //     'blocking'  => 0,   // cambiar a 1 si la tarea tendrá un impacto alto en la plataforma

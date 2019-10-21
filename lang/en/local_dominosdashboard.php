@@ -117,3 +117,5 @@ $string['seccion_c_desc'] = 'Contendra un comparativo de regiones, dividido por 
 
 $string['seccion_d'] = 'Programas de entrenamiento temporal';
 $string['seccion_d_desc'] = 'Contendra la información de aprovechamiento (usuarios inscritos, usuarios aprobados y usuarios no aprobados) de los cursos seleccionados definidos por el usuario administrador y responderan a todos los filtros';
+
+$string['make_course_cache'] = 'Generación de información para dashboard Domino\'s';
