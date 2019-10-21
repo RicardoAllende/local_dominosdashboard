@@ -181,7 +181,7 @@ function crearGraficaDeCurso(_bindto, curso){
     }
     return c3.generate({
         data: {
-            columns: [] ,//_columns,
+            columns: _columns, //[] ,//_columns,
             type: curso.chart,
             colors: {
                 Inscritos: '#0000ff',
