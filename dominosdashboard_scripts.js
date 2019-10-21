@@ -317,7 +317,7 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                     crearTarjetaParaGrafica(_bindto, curso);
                 }
             }
-            console.log('Grupo de cursos', grupoDeCursos);
+            // console.log('Grupo de cursos', grupoDeCursos);
             dashboardCrearGraficaComparativaGrupoDeCursos(_bindto, [nombres_, inscritos, aprobados_, no_aprobados_], grupoDeCursos, "Grupo de cursos");
 
         }

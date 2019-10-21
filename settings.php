@@ -192,7 +192,8 @@ if ($hassiteconfig) {
 
             $page = new admin_settingpage($ldm_pluginname . 'coursetypestab', get_string('coursetypestab', $ldm_pluginname));
 
-            $sections = array('a', 'b', 'c', 'd');
+            // $sections = array('a', 'b', 'c', 'd'); // a allows all courses
+            $sections = array('b', 'c', 'd');
             foreach($sections as $section){
                 $config_name = 'seccion_' . $section;
                 $name = $ldm_pluginname . '/' . $config_name;
