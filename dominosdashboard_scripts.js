@@ -318,7 +318,6 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                 }
             }
             console.log('Grupo de cursos', grupoDeCursos);
-            // dashboardCrearGraficaComparativaGrupoDeCursos(_bindto, [inscritos, aprobados_, no_aprobados_], grupoDeCursos, "Grupo de cursos");
             dashboardCrearGraficaComparativaGrupoDeCursos(_bindto, [nombres_, inscritos, aprobados_, no_aprobados_], grupoDeCursos, "Grupo de cursos");
 
         }
@@ -652,7 +651,6 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
 }
 
 function dashboardCrearGraficaComparativaGrupoDeCursos(_bindto, info_grafica, cursos, titulo, id){
-    console.log('dashboardCrearGraficaComparativaGrupoDeCursos', info_grafica);
     div_id = "course_group_";
     if(typeof currentTab != 'undefined'){
         div_id += '_';
@@ -667,7 +665,7 @@ function dashboardCrearGraficaComparativaGrupoDeCursos(_bindto, info_grafica, cu
                     <div class="card bg-faded border-0 m-2" id="">
                     <div class="align-items-end">
                             <div class="fincard text-center">
-                                <a href="#">Comparativas</a>
+                                <a href="#">${titulo}</a>
                             </div>
                         </div>
                         <div class="bg-white m-2" id="${div_id}"></div>                        
