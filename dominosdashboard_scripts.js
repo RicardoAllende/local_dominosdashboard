@@ -1075,48 +1075,49 @@ function seccion_b_imprimirGraficaComparativaCursos(){
 }
 
 function seccion_c_imprimirGraficaComparativaCursos(){
-    document.getElementById("graficas_seccion_c").innerHTML = "<div class='col-sm-6 espacio'>"+
-    "<div class='card bg-gray border-0 m-2'>"+
-    "<div class='align-items-end'>"+
-            "<div class='fincard text-center'>"+
-                "<a href=''>Grafica comparativa de ruta dominos</a>"+
-            "</div>"+
-        "</div>"+
-        "<div class='card esp'>"+
-        "<div class='row espr'>"+           
+    // document.getElementById("graficas_seccion_c").innerHTML = "<div class='col-sm-6 espacio'>"+
+    // "<div class='card bg-gray border-0 m-2'>"+
+    // "<div class='align-items-end'>"+
+    //         "<div class='fincard text-center'>"+
+    //             "<a href=''>Grafica comparativa de ruta dominos</a>"+
+    //         "</div>"+
+    //     "</div>"+
+    //     "<div class='card esp'>"+
+    //     "<div class='row espr'>"+           
             
-            "</div>"+
-        "</div>"+
-        "<div class='chart_ bg-faded m-2' id='grafica_c'></div>"                    
-    "</div>"+
-    "</div>";
-    return c3.generate({
-        data: {
-            columns: [
-                ['Region 1', 30],
-                ['Region 2', 70],
-                ['Region 3', 25],
-                ['Region 4', 50]                
-            ],
-            type: 'bar',
-            colors: {
-                Inscritos: '#a5a3a4',
-                Aprobados: '#016392',
-                'No Aprobados': '#d70c20'
+    //         "</div>"+
+    //     "</div>"+
+    //     "<div class='chart_ bg-faded m-2' id='grafica_c'></div>"                    
+    // "</div>"+
+    // "</div>";
+    // return c3.generate({
+    //     data: {
+    //         columns: [
+    //             ['Region 1', 30],
+    //             ['Region 2', 70],
+    //             ['Region 3', 25],
+    //             ['Region 4', 50]                
+    //         ],
+    //         type: 'bar',
+    //         colors: {
+    //             Inscritos: '#a5a3a4',
+    //             Aprobados: '#016392',
+    //             'No Aprobados': '#d70c20'
                 
-            },
+    //         },
             
-        },
-        axis: {
-            rotated: true
-        },
-        bindto: "#grafica_c",
-        grid: {
-            y: {
-                lines: [{value:0}]
-            }
-        }
-    });
+    //     },
+    //     axis: {
+    //         rotated: true
+    //     },
+    //     bindto: "#grafica_c",
+    //     grid: {
+    //         y: {
+    //             lines: [{value:0}]
+    //         }
+    //     }
+    // });
+    imprimirComparativaFiltrosDeCurso(_bindto, informacion);
 }
 
 //Función para pintar una card donde se comparen los cursos, en la primera pestaña
@@ -1178,17 +1179,16 @@ function seccion_d_imprimirGraficaComparativaCursos(){
                 //insertarTituloSeparador(_bindto, 'Comparativa ' + informacion.filter);
                 $(_bindto).append(`<div class='col-sm-6 espacio'>
                 <div class='card bg-gray border-0 m-2'>
-                <div class='align-items-end'>
-                <div class='fincard text-center'>
-                <a href=''>Comparativa</a>
-                </div>
-                </div>
-                <div class='card esp'>
-                <div class='row espr'>
-                </div>
-                </div>
-                <div class='chart_ bg-faded m-2' id='${id_para_Grafica}'></div>
-                </div>
+                    <div class='align-items-end'>
+                        <div class='fincard text-center'>
+                            <a href=''>Comparativa</a>
+                        </div>
+                    </div>
+                    <div class='card esp'>
+                        <div class='row espr'>
+                         </div>
+                    </div>
+                    <div class='chart_ bg-faded m-2' id='${id_para_Grafica}'></div>                
                 </div>`);
                 // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
                 id_para_Grafica = '#' + id_para_Grafica;
