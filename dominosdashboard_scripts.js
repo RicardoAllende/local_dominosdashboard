@@ -1300,12 +1300,13 @@ function kpi_region(container, respuesta) {
         nombre_region.push('x');
         region_avance.push('Avance');
         var kpi_info = respuesta[i];
-        region_avance.push(kpi_info.course_information.percentage);
+       
         for(var j = 0; j <  respuesta[i].course_information.region_comparative.comparative.length; j++){
             var kpi_name_region = respuesta[i].course_information.region_comparative.comparative[j];
             nombre_region.push(kpi_name_region.name);
+            region_avance.push(kpi_name_region.percentage);
         } 
-        createCardGrahp(container,respuesta[i].kpi_name, region_avance, nombre_region, i )       
+        createCardGrahp(container,respuesta[i].kpi_name +" vs "+respuesta[i].course_name, region_avance, nombre_region, i )       
     }
 
     
