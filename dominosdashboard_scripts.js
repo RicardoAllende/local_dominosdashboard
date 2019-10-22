@@ -1102,8 +1102,9 @@ function seccion_a_imprimirGraficaComparativaCursos() {
         data: {
             x: 'x',
             columns: [
-                ['x', 'Region 1', 'Region 2', 'Region 3', 'Region 4'],
-                ['avance', 30, 200, 100, 400]
+                ['x', 'Curso 1', 'Curso 2', 'Curso 3', 'Curso 4'],
+                ['Region', 30, 200, 100, 400],
+                ['Region2', 10, 100, 10, 40]
 
             ],
             type: 'spline'
@@ -1353,6 +1354,6 @@ function createCardGrahp(container,title, region_avance, nombre_region, id ){
                 type: 'category' // this needed to load string x value
             }
         },
-        bindto: "#grafica_a",
+        bindto: "#grafica_a_kpi" + id,
     });
 }
