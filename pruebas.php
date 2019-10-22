@@ -35,7 +35,16 @@ $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 require_once(__DIR__ . '/../../lib/enrollib.php');
 echo $OUTPUT->header();
+$tiempo_inicial = microtime(true); //true es para que sea calculado en segundos
 
-_print(local_dominosdashboard_get_courses_overview(LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO));
+// _print(local_dominosdashboard_get_courses_overview(LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO));
+// _print(local_dominosdashboard_get_info_from_cache($courseid, $params = $_POST));
+_print(local_dominosdashboard_make_courses_cache());
 
+
+
+
+$tiempo_final = microtime(true);
+$tiempo = $tiempo_final - $tiempo_inicial; //este resultado estará en segundos
+echo "<br>El tiempo de ejecución del archivo ha sido de " . $tiempo . " segundos";
 echo $OUTPUT->footer();

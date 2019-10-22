@@ -32,11 +32,11 @@ DROP TABLE IF EXISTS `mdl_dominos_d_cache`;
 CREATE TABLE IF NOT EXISTS `mdl_dominos_d_cache` (
   `id` bigint(10) NOT NULL AUTO_INCREMENT,
   `courseid` bigint(10) DEFAULT NULL,
-  `shortname` varchar(255) DEFAULT NULL,
-  `fullname` varchar(255) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
   `enrolled_users` int(9) DEFAULT NULL,
   `approved_users` int(9) DEFAULT NULL,
   `percentage` int(9) DEFAULT NULL,
+  `value` int(9) DEFAULT NULL,
   `regiones` longtext,
   `distritos` longtext,
   `entrenadores` longtext,
