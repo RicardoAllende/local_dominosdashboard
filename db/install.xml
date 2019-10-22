@@ -50,12 +50,12 @@
         <TABLE NAME="dominos_d_cache" COMMENT="">
             <FIELDS>
                 <FIELD NAME="id"                TYPE="int"  LENGTH="10"     NOTNULL="true"  SEQUENCE="true" />
-                <FIELD NAME="courseid"          TYPE="int"  LENGTH="10"     NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="title"             TYPE="char" LENGTH="255"    NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="enrolled_users"    TYPE="int"  LENGTH="9"      NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="approved_users"    TYPE="int"  LENGTH="9"      NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="percentage"        TYPE="int"  LENGTH="9"      NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="value"             TYPE="int"  LENGTH="9"      NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="courseid"          TYPE="int"  LENGTH="10"     NOTNULL="true" SEQUENCE="false" />
+                <FIELD NAME="title"             TYPE="char" LENGTH="255"    NOTNULL="false" DEFAULT="" SEQUENCE="false" />
+                <FIELD NAME="enrolled_users"    TYPE="int"  LENGTH="9"      NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
+                <FIELD NAME="approved_users"    TYPE="int"  LENGTH="9"      NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
+                <FIELD NAME="percentage"        TYPE="int"  LENGTH="9"      NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
+                <FIELD NAME="value"             TYPE="int"  LENGTH="9"      NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
                 <FIELD NAME="regiones"          TYPE="text" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="distritos"         TYPE="text" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="entrenadores"      TYPE="text" NOTNULL="false" SEQUENCE="false" />

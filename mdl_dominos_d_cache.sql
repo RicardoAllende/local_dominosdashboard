@@ -31,12 +31,12 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `mdl_dominos_d_cache`;
 CREATE TABLE IF NOT EXISTS `mdl_dominos_d_cache` (
   `id` bigint(10) NOT NULL AUTO_INCREMENT,
-  `courseid` bigint(10) DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `enrolled_users` int(9) DEFAULT NULL,
-  `approved_users` int(9) DEFAULT NULL,
-  `percentage` int(9) DEFAULT NULL,
-  `value` int(9) DEFAULT NULL,
+  `courseid` bigint(10) NOT NULL,
+  `title` varchar(255) DEFAULT '',
+  `enrolled_users` int(9) DEFAULT 0,
+  `approved_users` int(9) DEFAULT 0,
+  `percentage` int(9) DEFAULT 0,
+  `value` int(9) DEFAULT 0,
   `regiones` longtext,
   `distritos` longtext,
   `entrenadores` longtext,
