@@ -1537,8 +1537,8 @@ function local_dominosdashboard_get_cache_params(int $courseid, array $params, $
         array_push($where_params, $request);
     }
 
-    $response->startdate = $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
-    $response->enddate = $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final');
+    $response->startdate = $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial', null);
+    $response->enddate = $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final', null);
     if(!empty($fecha_inicial)){
         array_push($where_clauses, " {$prefix}.startdate = ? ");
         array_push($where_params, $fecha_inicial);        
