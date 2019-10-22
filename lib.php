@@ -561,7 +561,7 @@ function local_dominosdashboard_get_courses_overview(int $type, array $params = 
         }
     }
     foreach($course_sections as $cs){
-        _log($cs);
+        // _log($cs);
         usort($cs->courses, function ($a, $b) {return $a->percentage < $b->percentage;});
     }
     $response = ['sections' => $course_sections];
@@ -604,6 +604,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     }
     // $response = new stdClass();
     $response = local_dominosdashboard_get_info_from_cache($courseid, $params);
+    // _log('', $response);
     $response->key = 'course' . $courseid;
     $response->id = $courseid;
     // $response->chart = local_dominosdashboard_get_course_chart($courseid);
@@ -611,6 +612,8 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     // $response->status = 'ok';
     $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
     $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final');
+    // $response->fecha_inicial = $fecha_inicial;
+    // $response->fecha_final = $fecha_final;
 
     // if(RETURN_RANDOM_DATA){
     //     $response->enrolled_users = random_int(100, MAX_RANDOM_NUMBER);
@@ -1507,7 +1510,7 @@ function local_dominosdashboard_get_cache_params(int $courseid, array $params, $
     $where_params = array($courseid);
     foreach($indicators as $indicator){ // Sólo se agregan los indicadores, coninciden con la tabla dominos_d_cache
         $found = false;
-        $response->$indicator = '';
+        $response->$indicator = null;
         if(array_key_exists($indicator, $params)){
             if(!empty($params[$indicator])){
                 $indicators_request[$indicator] = $params[$indicator];
@@ -1540,13 +1543,13 @@ function local_dominosdashboard_get_cache_params(int $courseid, array $params, $
         array_push($where_clauses, " {$prefix}.startdate = ? ");
         array_push($where_params, $fecha_inicial);        
     }else{
-        array_push($where_clauses, " {$prefix}.startdate = '' ");
+        array_push($where_clauses, " {$prefix}.startdate IS NULL ");
     }
     if(!empty($fecha_final)){
         array_push($where_clauses, " {$prefix}.enddate = ? ");
         array_push($where_params, $fecha_final);                
     }else{
-        array_push($where_clauses, " {$prefix}.enddate = '' ");
+        array_push($where_clauses, " {$prefix}.enddate IS NULL ");
     }
     $response->where_clauses = $where_clauses;
     $response->where_params = $where_params;
@@ -1597,12 +1600,14 @@ function local_dominosdashboard_make_cache_for_course(int $courseid, array $para
         $record->value = $course_information->value;
         $record->startdate = $course_information->startdate;
         $record->enddate = $course_information->enddate;
+
         $record->regiones = $conditions->regiones;
         $record->distritos = $conditions->distritos;
         $record->entrenadores = $conditions->entrenadores;
         $record->tiendas = $conditions->tiendas;
         $record->puestos = $conditions->puestos;
         $record->ccosto = $conditions->ccosto;
+        
         $record->timemodified = $currenttime;
         $DB->insert_record('dominos_d_cache', $record);
     }else{ // Actualizar
@@ -1641,8 +1646,8 @@ function local_dominosdashboard_make_courses_cache(){ // realizando
             $count++;
         }
     }
-    $query = "SELECT * FROM {dominos_d_cache} where (distritos != '' OR entrenadores != '' OR tiendas != ''
-     OR puestos != '' OR ccosto != '') AND startdate = '' AND enddate = ''";
+    $query = "SELECT * FROM {dominos_d_cache} where (distritos IS NULL OR entrenadores IS NULL OR tiendas IS NULL
+    OR puestos IS NULL OR ccosto IS NULL) AND startdate IS NOT NULL AND enddate IS NOT NULL ";
     $custom_caches = $DB->get_records_sql($query); // Caché de consultas ejecutadas anteriormente
     foreach($custom_caches as $cc){
         $original_params = local_dominosdashboard_get_parameters_from_cache_record($cc);

@@ -62,8 +62,8 @@
                 <FIELD NAME="tiendas"           TYPE="text" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="puestos"           TYPE="text" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="ccosto"            TYPE="text" NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="startdate"         TYPE="int"  LENGTH="10"     NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="enddate"           TYPE="int"  LENGTH="10"     NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
+                <FIELD NAME="startdate"         TYPE="int"  LENGTH="10"     NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="enddate"           TYPE="int"  LENGTH="10"     NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="timemodified"      TYPE="int"  LENGTH="10"     NOTNULL="false" SEQUENCE="false" />
             </FIELDS>
             <KEYS>

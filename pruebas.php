@@ -40,8 +40,27 @@ $tiempo_inicial = microtime(true); //true es para que sea calculado en segundos
 // _print(local_dominosdashboard_get_courses_overview(LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO));
 // _print(local_dominosdashboard_get_info_from_cache($courseid, $params = $_POST));
 _print(local_dominosdashboard_make_courses_cache());
-
-
+// $currenttime = time();
+// $course_information = local_dominosdashboard_get_course_information(8);
+// // _print($course_information);
+// $record = new stdClass();
+// $record->courseid = 1;
+// $record->title = $course_information->title;
+// $record->enrolled_users = $course_information->enrolled_users;
+// $record->approved_users = $course_information->approved_users;
+// $record->percentage = $course_information->percentage;
+// $record->value = $course_information->value;
+// // $record->startdate = $course_information->fecha_inicial;
+// // $record->enddate = $course_information->fecha_final;
+// // $record->regiones = $conditions->regiones;
+// $record->distritos = null;
+// $record->entrenadores = null;
+// $record->tiendas = null;
+// $record->puestos = null;
+// $record->ccosto = null;
+// $record->timemodified = $currenttime;
+// _print($record);
+// $DB->insert_record('dominos_d_cache', $record);
 
 
 $tiempo_final = microtime(true);
