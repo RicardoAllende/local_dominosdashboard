@@ -744,7 +744,7 @@ function local_dominosdashboard_get_course_comparative(int $courseid, array $par
             $item_to_compare->name = $catalogue_item;
         }
         $params[$key] = [$catalogue_item];
-        $item_to_compare = local_dominosdashboard_get_info_from_cache($courseid, $params);
+        $item_to_compare = local_dominosdashboard_get_info_from_cache($courseid, $params, $return_regions = true);
 
         // $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params);
         // $item_to_compare->enrolled_users = local_dominosdashboard_get_count_users($userids);
@@ -1560,15 +1560,16 @@ function local_dominosdashboard_get_cache_params(int $courseid, array $params, $
  * @param array $params Parámetros de búsqueda del curso, serán validados contra los indicadores
  * @return stdClass|false Devuelve el registro del curso si se encuentra o false si no existe.
  */
-function local_dominosdashboard_get_info_from_cache(int $courseid, array $params = array()){ // realizando
+function local_dominosdashboard_get_info_from_cache(int $courseid, array $params = array(), bool $return_regions = false){ // realizando
     global $DB;
     if(!$DB->record_exists('course', array('id' => $courseid))){
         print_error('No se encuentra el curso');
     }
     $conditions = local_dominosdashboard_get_cache_params($courseid, $params);
+    $regions = ($return_regions) ? ', regiones as name' : '';
     $where = implode(' AND ', $conditions->where_clauses);
     $query = "SELECT id, courseid, enrolled_users,
-     approved_users, percentage, value FROM {dominos_d_cache} AS _cache WHERE {$where}";
+     approved_users, percentage, value {$regions} FROM {dominos_d_cache} AS _cache WHERE {$where}";
     $record = $DB->get_record_sql($query, $conditions->where_params);
     if(!empty($record)){
         return $record;
