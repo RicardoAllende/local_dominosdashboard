@@ -291,35 +291,43 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                 nombres.push(curso.title);
             }
             crearGraficaComparativaVariosCursos(_bindto, [nombres, aprobados, no_aprobados, _ideal_cobertura], cursos, titulo);
-            grupoDeCursos = Array();
+
+
+            /**
+             * Sección d, adaptar
+             */
+            // grupoDeCursos = Array();
+            listadoDeCursos = array();
             var aprobados_ = Array();
             var no_aprobados_ = Array();
             var nombres_ = Array();
             var inscritos = Array();
-            var _ideal_cobertura_ = Array();
+            // var _ideal_cobertura_ = Array();
             nombres_.push('x');
             inscritos.push('Inscritos');
             aprobados_.push("Aprobados");
             no_aprobados_.push("No Aprobados");
-            _ideal_cobertura_.push('Ideal de cobertura');
+            // _ideal_cobertura_.push('Ideal de cobertura');
             for (var i = 0; i < cursos.length; i++) {
                 var curso = cursos[i];
                 chart = curso.chart;
-                if (chart.indexOf('grupo_cursos') !== -1) { // Se hará una comparativa entre estos cursos, primero creamos un arreglo con esos cursos
-                    grupoDeCursos.push(curso);
+                // if (chart.indexOf('grupo_cursos') !== -1) { // Se hará una comparativa entre estos cursos, primero creamos un arreglo con esos cursos
+                    // grupoDeCursos.push(curso);
                     var curso_ = cursos[i];
                     // _ideal_cobertura_.push(ideal_cobertura);
                     aprobados_.push(curso_.approved_users);
                     inscritos.push(curso.enrolled_users);
                     no_aprobados_.push(curso_.not_approved_users);
                     nombres_.push(curso_.title);
-                } else { // Creación estándar donde se hace una gráfica por curso (gauge, bar, pie, comparativa_regiones, ...)
-                    crearTarjetaParaGrafica(_bindto, curso);
-                }
+                // } else { // Creación estándar donde se hace una gráfica por curso (gauge, bar, pie, comparativa_regiones, ...)
+                //     crearTarjetaParaGrafica(_bindto, curso);
+                // }
             }
             // console.log('Grupo de cursos', grupoDeCursos);
-            dashboardCrearGraficaComparativaGrupoDeCursos(_bindto, [nombres_, inscritos, aprobados_, no_aprobados_], grupoDeCursos, "Grupo de cursos");
-
+            dashboardCrearGraficaComparativaGrupoDeCursos(_bindto, [nombres_, inscritos, aprobados_, no_aprobados_], listadoDeCursos, "Programas de entrenamiento temporal"); // Se puede modificar sin problemas
+            /**
+             * Termina sección d
+             */
         }
     }
     if (type == 'kpi_list') {
