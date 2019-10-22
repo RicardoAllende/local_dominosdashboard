@@ -43,9 +43,9 @@ CREATE TABLE IF NOT EXISTS `mdl_dominos_d_cache` (
   `tiendas` longtext,
   `puestos` longtext,
   `ccosto` longtext,
-  `startdate` bigint(10) DEFAULT '0',
-  `enddate` bigint(10) DEFAULT '0',
-  `timemodified` bigint(10) DEFAULT NULL,
+  `startdate` bigint(10) DEFAULT 0,
+  `enddate` bigint(10) DEFAULT 0,
+  `timemodified` bigint(10) DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
 COMMIT;
