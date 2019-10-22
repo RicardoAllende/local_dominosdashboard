@@ -680,8 +680,8 @@ function local_dominosdashboard_make_course_completion_information(int $courseid
     $response->key = 'course' . $courseid;
     $response->id = $courseid;
     $response->title = $course->fullname;
-    $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
-    $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final');
+    $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial', null);
+    $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final', null);
 
     $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params);
 
