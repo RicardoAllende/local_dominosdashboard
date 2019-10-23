@@ -1530,8 +1530,10 @@ function local_dominosdashboard_get_info_from_cache(int $courseid, array $params
     $conditions = local_dominosdashboard_get_cache_params($courseid, $params);
     $regions = ($return_regions) ? ', regiones as name' : '';
     $where = implode(' AND ', $conditions->where_clauses);
-    $query = "SELECT id, courseid, enrolled_users,
-     approved_users, percentage, value {$regions} FROM {dominos_d_cache} AS _cache WHERE {$where}";
+    $query = "SELECT id, courseid, enrolled_users, approved_users, percentage, value {$regions} FROM {dominos_d_cache} AS _cache WHERE {$where} limit 1";
+    // if($DB->count_records_sql($query, $conditions->where_params) > 1){
+    //     _sql($query, $conditions->where_params);
+    // }
     $record = $DB->get_record_sql($query, $conditions->where_params);
     if(!empty($record)){
         $record->source = 'Caché';
@@ -1874,7 +1876,7 @@ if(!function_exists('_sql')){
      * Imprime los parámetros enviados con la función error_log()
      * @param mixed ...$parameters Recibe varios parámetros e imprime su valor en el archivo log, para pasarlos a cadena de texto se utiliza print_r($var, true)
      */
-    function _sql(string $query, array $params = array(), string $title = 'Probando Consulta. Debugger por subitus'){
+    function _sql(string $query, array $params = array(), string $title = ''){
         global $CFG;
         $prefix = $CFG->prefix;
         $title .= ' ';
@@ -1898,10 +1900,28 @@ if(!function_exists('_sql')){
         }
         if($replaceParams){
             for($i = 0; $i < $nested_params; $i++){
-                $query = local_flexi_analytics_str_replace_first('?', "'".$params[$i] . "'", $query);
+                $query = local_dominosdashboard_str_replace_first('?', "'".$params[$i] . "'", $query);
             }
         }
         if(!$showParams || empty($params)){ $params = ''; }
         _log($title, $query, $params, $error);
     }
+}
+
+
+/**
+ * Devuelve la cadena con el texto remplazado en solo la primera ocurrencia
+ * @param string $buscar Texto a buscar
+ * @param string $remplazar Texto con el que será remplazado
+ * @param string $str Cadena donde se remplazará la primera ocurrencia
+ * @return string texto en el cual se remplaza sólo la primera ocurrencia
+ */
+function local_dominosdashboard_str_replace_first($buscar, $remplazar, $str){
+    $pos = strpos($str, $buscar);
+    if ($pos !== false) {
+        $newstring = substr_replace($str, $remplazar, $pos, strlen($buscar));
+    }
+    return $newstring;
+    // $buscar = '/'.preg_quote($buscar, '/').'/';
+    // return preg_replace($buscar, $remplazar, $str, 1);
 }
