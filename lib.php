@@ -1544,6 +1544,17 @@ function local_dominosdashboard_get_info_from_cache(int $courseid, array $params
     // return false;
 }
 
+function local_dominosdashboard_date_to_time(string $date){
+    try{
+        if(empty($date)){
+            return $date;
+        }
+        return strtotime($date);
+    }catch(Exception $e){
+        return null; // Nulo en este dashboard pretende no dejar fecha en ese campo
+    }
+}
+
 function local_dominosdashboard_make_cache_for_course(int $courseid, array $params, bool $returninfo = true){ // realizando
     global $DB;
     $currenttime = time();
@@ -1552,6 +1563,10 @@ function local_dominosdashboard_make_cache_for_course(int $courseid, array $para
     $where = implode(' AND ', $conditions->where_clauses);
     $query = "SELECT * FROM {dominos_d_cache} AS _cache WHERE {$where}";
     $record = $DB->get_record_sql($query, $conditions->where_params);
+
+    $course_information->startdate = local_dominosdashboard_date_to_time($course_information->startdate);
+    $course_information->startdate = local_dominosdashboard_date_to_time($course_information->enddate);
+    
     if(empty($record)){ // Crear
         $record = new stdClass();
         $record->courseid = $courseid;
