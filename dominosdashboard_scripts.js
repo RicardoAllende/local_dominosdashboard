@@ -1092,78 +1092,119 @@ function imprimirDIV(contenido) {
 
 function seccion_a_imprimirGraficaComparativaCursos(container,respuesta) {
 
-var nombre_curso= [];
-var nombre_region=[];
-nombre_curso.push('x');
-//var arrTempReg = new Array(respuesta.sections.seccion_a.courses.length + 1); // [0,0,0,0,0,0,0,0,0,0]
-// for(var i = 0; i < respuesta.sections.seccion_a.courses.length; i++){
-// var cursos = respuesta.sections.seccion_a.courses[i];
-// nombre_curso.push(cursos.region_comparative.title);
-// //console.log('NOMBRE CURSOS');
-
-// for(var j = 0; j < respuesta.sections.seccion_a.courses[i].region_comparative.comparative.length; j++){
-// var region_percentage = respuesta.sections.seccion_a.courses[i].region_comparative.comparative[j];
-// //['Region[j].name',curso[i].percentage,]
-// //arrTempReg[].push(region_percentage.name);
-// nombre_region[j][1].push(region_percentage.percentage);
-// }
-// console.log("NOMBRE");
-// }
-
-respuesta = respuesta.sections.seccion_a;
-cursos = respuesta.courses;
-for(var i = 0; i < cursos.length; i++){
-var curso = cursos[i];
-nombre_curso.push(curso.title);
-// nombre_curso.push(curso.region_comparative.title);
-comparativa = curso.region_comparative.comparative;
-
-for(var j = 0; j < comparativa.length; j++){
-comparativa_actual = comparativa[j];
-var region_percentage = comparativa_actual.percentage;
-console.log('Comparativa actual', region_percentage);
-// nombre_region[j][1].push(region_percentage);
+    var nombre_curso= [];
+    var nombre_region=[];
+    var arrRegions = [];
+    var arrGraph = [];
+    nombre_curso.push('x');
+    
+    
+    respuesta = respuesta.sections.seccion_a;
+    cursos = respuesta.courses;
+    for(var i = 0; i < cursos.length; i++){
+    var curso = cursos[i];
+    nombre_curso.push(curso.title);
+    // nombre_curso.push(curso.region_comparative.title);
+    comparativa = curso.region_comparative.comparative;
+    
+    for(var j = 0; j < comparativa.length; j++){
+    comparativa_actual = comparativa[j];
+    var region_percentage = comparativa_actual.percentage;
+    saveRegionCourse(comparativa_actual.name,j,region_percentage,arrRegions );
+    
+    console.log('Comparativa actual', region_percentage);
+    }
+    }
+    console.log('Nombre de los cursos', nombre_curso);
+    /// console.log("Array regions");
+    
+    arrGraph.push(nombre_curso);
+    arrGraph.push(arrRegions);
+    createCardGrahpRegions_comparative(container,respuesta.sections.seccion_a.name, arrGraph, i )
+    
+    // document.getElementById("graficas_seccion_a").innerHTML = "<div class='col-sm-12 espacio'>" +
+    // "<div class='card bg-gray border-0 m-2'>" +
+    // "<div class='align-items-end'>" +
+    // "<div class='fincard text-center'>" +
+    // "<a href=''>Grafica comparativa general</a>" +
+    // "</div>" +
+    // "</div>" +
+    // "<div class='card esp'>" +
+    // "<div class='row espr'>" +
+    
+    // "</div>" +
+    // "</div>" +
+    // "<div class='chart_ bg-faded m-2' id='grafica_a'></div>"
+    // "</div>" +
+    // "</div>";
+    // return c3.generate({
+    // data: {
+    // x: 'x',
+    // columns: [
+    // ['x', 'Curso 1', 'Curso 2', 'Curso 3', 'Curso 4'],
+    // ['Region', 30, 200, 100, 400],
+    // ['Region2', 10, 100, 10, 40]
+    
+    // ],
+    // type: 'spline'
+    // },
+    // axis: {
+    // x: {
+    // type: 'category' // this needed to load string x value
+    // }
+    // },
+    // bindto: "#grafica_a",
+    // });
 }
+
+function saveRegionCourse(region,id, percentage, arrRegions){
+    if(arrRegions[id] != undefined){
+      //console.log(arrRegions[id]);
+      arrRegions[id].push(parseInt(percentage))
+    } else {
+      arrRegions[id] = [region,parseInt(percentage)];
+    }
+    
+    //console.log(arrRegions);    
 }
-console.log('Nombre de los cursos', nombre_curso);
-/// console.log("Array regions");
-//console.log(nombre_region)
-//createCardGrahpRegions(container,respuesta.sections.seccion_a.name, nombre_curso, i )
 
-// document.getElementById("graficas_seccion_a").innerHTML = "<div class='col-sm-12 espacio'>" +
-// "<div class='card bg-gray border-0 m-2'>" +
-// "<div class='align-items-end'>" +
-// "<div class='fincard text-center'>" +
-// "<a href=''>Grafica comparativa general</a>" +
-// "</div>" +
-// "</div>" +
-// "<div class='card esp'>" +
-// "<div class='row espr'>" +
+function createCardGrahp_comparative(container,title, arrGraph, id ){
+    //console.log("ra> " + region_avance);
+    //console.log("nr> " + nombre_region);
+    var cardKPIRegion = "<div class='col-sm-12 espacio'>" +
+        "<div class='card bg-gray border-0 m-2'>" +
+        "<div class='align-items-end'>" +
+        "<div class='fincard text-center'>" +
+        "<a href=''>"+title+"</a>" +
+        "</div>" +
+        "</div>" +
+        "<div class='card esp'>" +
+        "<div class='row espr'>" +
+        "</div>" +
+        "</div>" +
+        "<div class='chart_ bg-faded m-2' id='grafica_a_kpi"+ id +"'></div>"
+        "</div>" +
+    "</div>";
 
-// "</div>" +
-// "</div>" +
-// "<div class='chart_ bg-faded m-2' id='grafica_a'></div>"
-// "</div>" +
-// "</div>";
-// return c3.generate({
-// data: {
-// x: 'x',
-// columns: [
-// ['x', 'Curso 1', 'Curso 2', 'Curso 3', 'Curso 4'],
-// ['Region', 30, 200, 100, 400],
-// ['Region2', 10, 100, 10, 40]
+    $(container).append(cardKPIRegion);
 
-// ],
-// type: 'spline'
-// },
-// axis: {
-// x: {
-// type: 'category' // this needed to load string x value
-// }
-// },
-// bindto: "#grafica_a",
-// });
+        console.log(nombre_region);
+    return c3.generate({
+        data: {
+            x: 'x',
+            columns: arrGraph,
+            type: 'spline'
+        },
+        axis: {
+            x: {
+                type: 'category' // this needed to load string x value
+            }
+        },
+        bindto: "#grafica_a_kpi" + id,
+    });
 }
+
+
 
 function seccion_b_imprimirGraficaComparativaCursos(container, respuesta) {
     for(var i = 0; i< respuesta.sections.seccion_b.courses.length; i++){
@@ -1223,6 +1264,10 @@ function createCardGrahp_gauge(container,title, c_aprobados, id ){
                 c_aprobados
             ],
             type: 'gauge',
+            colors: {                
+                'Porcentaje Aprobados': '#FFB347',
+               
+            },
         },
         bindto: "#grafica_gauge" + id,
     });
@@ -1349,7 +1394,7 @@ function seccion_d_imprimirGraficaComparativaCursos(container, respuesta) {
         aprobados_d.push(curso_name.approved_users);
         no_aprobados_d.push(curso_name.not_approved_users);
     } 
-    createCardGrahp_group(container,r_secciond.name, cursos_d, inscritos_d, aprobados_d, no_aprobados_d)
+    createCardGrahp_group(container,r_secciond.name, cursos_d, inscritos_d, aprobados_d, no_aprobados_d);
     
     
 
@@ -1441,54 +1486,7 @@ function createCardGrahp_group(container,title, cursos_d, inscritos_d, aprobados
     });
 }
 
-/**
- * @param _bindto string selector con sintaxis jquery donde se imprimirán las gráficas
- */
-function imprimirComparativaFiltrosDeCurso(_bindto, informacion) {
 
-    if (!esVacio(informacion.comparative)) {
-        comparative = informacion.comparative;
-        columns = Array();
-        comparativas++;
-        id_para_Grafica = 'ldm_comparativa_' + comparativas + '_' + informacion.key;
-        //insertarTituloSeparador(_bindto, 'Comparativa ' + informacion.filter);
-        $(_bindto).append(`<div class='col-sm-6 espacio'>
-                <div class='card bg-gray border-0 m-2'>
-                    <div class='align-items-end'>
-                        <div class='fincard text-center'>
-                            <a href=''>Comparativa</a>
-                        </div>
-                    </div>
-                    <div class='card esp'>
-                        <div class='row espr'>
-                         </div>
-                    </div>
-                    <div class='chart_ bg-faded m-2' id='${id_para_Grafica}'></div>                
-                </div>`);
-        // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
-        id_para_Grafica = '#' + id_para_Grafica;
-        for (var j = 0; j < comparative.length; j++) {
-            datos_a_comparar = comparative[j];
-            columns.push([datos_a_comparar.name, datos_a_comparar.percentage]);
-        }
-        data = { columns: columns, type: 'bar' };
-        var chart = c3.generate({
-            data: data,
-            axis: {
-                rotated: true
-            },
-            tooltip: {
-                format: {
-                    title: function (d) { return 'Porcentaje de aprobación'; },
-                }
-            },
-            bindto: id_para_Grafica,
-        });
-    } else {
-        console.log('Error de imprimirComparativaFiltrosDeCurso', informacion);
-        $(_bindto).html('');
-    }
-}
 
 //Funcion de kpi por region en la pestaña 3
 function kpi_region(container, respuesta) {
@@ -1501,20 +1499,23 @@ function kpi_region(container, respuesta) {
     for(var i = 0; i < respuesta.length; i++){
         var nombre_region= [];
         var region_avance= [];
+        var kpi_comparative=[];
         nombre_region.push('x');
         region_avance.push('Avance');
-        var kpi_info = respuesta[i];
+        kpi_comparative.push('KPI');
+        //var kpi_info = respuesta[i];
        
         for(var j = 0; j <  respuesta[i].course_information.region_comparative.comparative.length; j++){
             var kpi_name_region = respuesta[i].course_information.region_comparative.comparative[j];
             nombre_region.push(kpi_name_region.name);
             region_avance.push(kpi_name_region.percentage);
+            kpi_comparative.push(respuesta[i].kpi.status);
         } 
-        createCardGrahp(container,respuesta[i].kpi_name +" vs "+respuesta[i].course_name, region_avance, nombre_region, i )       
+        createCardGrahp(container,respuesta[i].kpi_name +" vs "+respuesta[i].course_name, region_avance, nombre_region,kpi_comparative, i )       
     }
 }
 
-function createCardGrahp(container,title, region_avance, nombre_region, id ){
+function createCardGrahp(container,title, region_avance, nombre_region, kpi_comparative, id ){
     //console.log("ra> " + region_avance);
     //console.log("nr> " + nombre_region);
     var cardKPIRegion = "<div class='col-sm-12 espacio'>" +
@@ -1540,7 +1541,8 @@ function createCardGrahp(container,title, region_avance, nombre_region, id ){
             x: 'x',
             columns: [
                 nombre_region,
-                    region_avance
+                    region_avance,
+                    kpi_comparative
                 // ['x', 'Region 1', 'Region 2', 'Region 3', 'Region 4'],
                 // ['avance', 30, 200, 100, 400]
             ],

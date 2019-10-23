@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
  * Plugin strings are defined here.
  *
@@ -22,7 +21,6 @@
  * @copyright   2019 Subitus <contacto@subitus.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 require_once(__DIR__ . '/../../config.php');
 require_login();
 $context_system = context_system::instance();
@@ -34,9 +32,7 @@ $course = $DB->get_record($table = 'course', $conditions_array = array('id' => $
 $PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/detalle_curso.php");
 $PAGE->set_context($context_system);
 // $PAGE->set_pagelayout('admin');
-
 // $PAGE->set_title(get_string('course_details_title', 'local_dominosdashboard') . $course->fullname);
-
 // echo $OUTPUT->header();
 ?>
 <!DOCTYPE html>
@@ -96,7 +92,7 @@ $PAGE->set_context($context_system);
         var isFilterLoading = false;
         var trabajoPendiente = false;
         var comparativa;
-        imprimirComparativaFiltrosDeCurso('#ldm_comparativas');
+        var comparativas = 0;
         document.addEventListener("DOMContentLoaded", function () {
             $('.dominosdashboard-ranking').hide();
             $('.course-selector').change(function () { obtenerInformacion() });
@@ -158,7 +154,6 @@ $PAGE->set_context($context_system);
                             });
                             kpi_texto(valor, informacion_del_curso.data.percentage ,index);
                             break;
-
                             case 'Número entero': // Número entero de quejas (ejemplo)
                             var a = ((informacion_del_curso.data.approved_users * 100)/informacion_del_curso.data.enrolled_users);
                             var porcentaje_aprobados_entero = a.toFixed(2);
@@ -167,7 +162,6 @@ $PAGE->set_context($context_system);
                             var valor_numero = [[_kpi.kpi_key , parseInt(_kpi.value)],['Porcentaje de aprobados',porcentaje_aprobados_entero]];                            
                             kpi_numero(valor_numero, informacion_del_curso.data.percentage,index);
                             break;    
-
                             case 'Porcentaje': // Número entero de quejas, Reporte de Casos Histórico por tiendas
                             var b = ((informacion_del_curso.data.approved_users * 100)/informacion_del_curso.data.enrolled_users);
                             var porcentaje_aprobados_porcentaje = b.toFixed(2);
@@ -187,7 +181,6 @@ $PAGE->set_context($context_system);
                     insertarTituloSeparador('#course_title', 'Curso ' + informacion_del_curso.data.title);
                     crearTarjetaParaGrafica('#course_overview', informacion_del_curso.data, 'col-sm-12 col-xl-12');
                     //Aqui va una funcion nueva 
-
                     imprimirRanking('#ranking_dm', informacion_del_curso.data);
                     dateEnding = Date.now();
                     console.log(`Tiempo de respuesta de API al obtener json para gráficas ${dateEnding - dateBegining} ms`);
@@ -203,7 +196,6 @@ $PAGE->set_context($context_system);
                 obtenerFiltros(indicator);
             }
         }
-
         var ccoms_seleccionados;
         function ajustar_ccoms(){
             ccoms_seleccionados = "";
@@ -222,9 +214,7 @@ $PAGE->set_context($context_system);
                 $('#selected_ccoms').val(ccoms_seleccionados);
             }
         }
-
         
-
         // Función cuando el tipo de kpi es texto
         function kpi_texto(valores, porcentaje_curso, indexfor){
             
@@ -242,10 +232,8 @@ $PAGE->set_context($context_system);
                                     </div>
                     </div>
                 `);
-
                     var chartc = c3.generate({
                     data: {                        
-
                         columns: valores,
                         type: 'bar',
                         colors: {
@@ -263,13 +251,11 @@ $PAGE->set_context($context_system);
                                 var format = id === 'data1' ? d3.format(',') : d3.format('');
                                 return format(value);
                            }
-
                         }
                     }
                 });
             
         }
-
         // Función cuando el tipo de kpi es entero o porcentaje
         function kpi_numero(valores, porcentaje_curso, indexfor){           
             div_selector = '#todos_los_kpis';            
@@ -286,10 +272,8 @@ $PAGE->set_context($context_system);
                                     </div>
                     </div>
                 `);
-
                     var chartc = c3.generate({
                     data: {                        
-
                         columns: valores,
                         type: 'bar'
                         // colors: {
@@ -307,16 +291,13 @@ $PAGE->set_context($context_system);
                                 var format = id === 'data1' ? d3.format(',') : d3.format('');
                                 return format(value);
                             }
-
                         }
                     }
                 });
             
          
         }
-
         
-
         function imprimir_kpi_ops_ica_curso(kpi) {
             if (esVacio(kpi.value)) {
                 insertarGraficaSinInfo("#card_ops");
@@ -324,7 +305,6 @@ $PAGE->set_context($context_system);
                 //var a = obtenerDefaultEnNull(kpi.value["Aprobado"]);
                 //var b = obtenerDefaultEnNull(kpi.value["No aprobado"]);
                 //var c = parseInt(a) + parseInt(b);
-
                 document.getElementById("card_ops").innerHTML = "<div class='col-sm-12 espacio'>"+
                                     "<div class='card bg-gray border-0 m-2'>"+
                                         "<div class='align-items-end'>"+
@@ -360,7 +340,6 @@ $PAGE->set_context($context_system);
                     
                 //$('#apro2').html(obtenerDefaultEnNull(kpi.value["Aprobado"]));//Aprobados
                 //$('#no_apro2').html(obtenerDefaultEnNull(kpi.value["No aprobado"]));//No Aprobados
-
                 $('#titulo_grafica2').html(kpi.kpi_name);//Titulo grafica
                 
                 var chartc = c3.generate({
@@ -387,13 +366,11 @@ $PAGE->set_context($context_system);
                                 var format = id === 'data1' ? d3.format(',') : d3.format('');
                                 return format(value);
                             }
-
                         }
                     }
                 });
             }
         }
-
         function imprimir_kpi_reporte_casos_historico_curso(kpi, not_approved) {
             if(!esVacio(kpi.value)){
                 var a = obtenerDefaultEnNull(kpi.value["Aprobado"]);
@@ -402,7 +379,6 @@ $PAGE->set_context($context_system);
                 var d = parseInt(b) * 100;
                 var e = parseInt(d) / parseInt(c);
                 
-
                 document.getElementById("card_numero_de_quejas").innerHTML = "<div class='col-sm-12 espacio'>"+
                                         "<div class='card bg-gray border-0 m-2'>"+
                                             "<div class='align-items-end'>"+
@@ -437,18 +413,14 @@ $PAGE->set_context($context_system);
                     "</div>";
                 //$('#apro3').html(obtenerDefaultEnNull(kpi.value["Aprobado"]));//Aprobados
                 //$('#no_apro3').html(obtenerDefaultEnNull(kpi.value["No aprobado"]));// No Aprobados
-
                 $('#titulo_grafica3').html(kpi.kpi_name);//Titulo grafica
-
                 // var a = obtenerDefaultEnNull(kpi.value["Aprobado"]);
                 // var b = obtenerDefaultEnNull(kpi.value["No aprobado"]);
                 // var c = parseInt(a) + parseInt(b);
                 // var d = parseInt(b) * 100;
                 // var e = parseInt(d) / parseInt(c);
                 // var f = e.toFixed(2);
-
                 
-
                 var chartc = c3.generate({
                     data: {
                         columns: [
@@ -469,7 +441,6 @@ $PAGE->set_context($context_system);
                                 var format = id === 'data1' ? d3.format(',') : d3.format('');
                                 return format(value);
                             }
-
                         }
                     }
                 });
@@ -477,7 +448,6 @@ $PAGE->set_context($context_system);
                 insertarGraficaSinInfo("#card_numero_de_quejas")
             }
         }
-
         function imprimir_kpi_scorcard_rotacion_curso(kpi, not_approved) {
             if(!esVacio(kpi.value)){  
                 if(esVacio(_kpi.value["rotacion_mensual"]) && esVacio(_kpi.value["rotacion_rolling"])){
@@ -518,7 +488,6 @@ $PAGE->set_context($context_system);
                     "</div>";
                 // $('#apro4').html(kpi.value["Aprobado"]);//Aprobados
                 // $('#no_apro4').html(kpi.value["No aprobado"]);//No Aprobados
-
                 $('#titulo_grafica4').html(kpi.kpi_name);//Titulo grafica
                 // var a = kpi.value["Aprobado"];
                 // var b = kpi.value["No aprobado"];
@@ -552,7 +521,6 @@ $PAGE->set_context($context_system);
                                 var format = id === 'data1' ? d3.format(',') : d3.format('');
                                 return format(value);
                             }
-
                         }
                     }
                 });
@@ -560,7 +528,6 @@ $PAGE->set_context($context_system);
                 insertarGraficaSinInfo("#card_scorcard")
             }
         }
-
         var comparativaMaxima = 20;
         var clase;
         function compararFiltros(filtro_seleccionado){
@@ -601,81 +568,42 @@ $PAGE->set_context($context_system);
                     ocultarLoader();
                 });
         }
-
         /**
          * @param _bindto string selector con sintaxis jquery donde se imprimirán las gráficas
          */
-        // function imprimirComparativaFiltrosDeCurso(_bindto, informacion){
-        //     informacion = {
-        //             title: "Fanáticos por el servicio", key: "course_5", id: "5", shortname: "fanserv2019", fullname: "Fanáticos por el servicio",
-        //             comparative: [
-        //             {
-        //                 approved_users: "8",
-        //                 enrolled_users: 18,
-        //                 name: "bajio",
-        //                 percentage: 44.44
-        //             },{
-        //                 approved_users: "1371",
-        //                 enrolled_users: 2032,
-        //                 name: "centro norte",
-        //                 percentage: 67.47
-        //             },{
-        //                 approved_users: "1118",
-        //                 enrolled_users: 1901,
-        //                 name: "centro sur",
-        //                 percentage: 58.81
-        //             },{
-        //                 approved_users: "1",
-        //                 enrolled_users: 1,
-        //                 name: "Ciudad de Mexico",
-        //                 percentage: 100
-        //             }
-                
-                
-        //             ],
-        //             filter: "regiones",
-        //             fullname: "Fanáticos por el servicio",
-        //             id: "5",
-        //             key: "course_5",
-        //             shortname: "fanserv2019",
-        //             title: "Fanáticos por el servicio"
-        //         } 
-        //     $(_bindto).html('');
-        //     if(!esVacio(informacion.comparative)){
-        //         comparative = informacion.comparative;
-        //         columns = Array();
-        //         comparativas++;
-        //         id_para_Grafica = 'ldm_comparativa_' + comparativas + '_' + informacion.key;
-        //         insertarTituloSeparador(_bindto, 'Comparativa ' + informacion.filter);
-        //         $(_bindto).append(`<div class='col-sm-12'><div id="${id_para_Grafica}"></div></div><br>`);
-        //         // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
-        //         id_para_Grafica = '#' + id_para_Grafica;
-        //         for(var j = 0; j < comparative.length; j++){
-        //             datos_a_comparar = comparative[j];
-        //             columns.push([datos_a_comparar.name, datos_a_comparar.percentage]);
-        //         }
-        //         data = { columns: columns, type: 'bar'};
-        //         var chart = c3.generate({
-        //             data: data,
-        //             axis: {
-        //                 rotated: true
-        //             },
-        //             tooltip: {
-        //                 format: {
-        //                     title: function (d) { return 'Porcentaje de aprobación'; },
-
-        //                 }               
-        //             },   
-        //             bindto: id_para_Grafica,
-        //         });
-        //     }else{
-        //         console.log('Error de imprimirComparativaFiltrosDeCurso', informacion);
-        //         $(_bindto).html('');
-        //     }
-        // }
-
+        function imprimirComparativaFiltrosDeCurso(_bindto, informacion){
+            $(_bindto).html('');
+            if(!esVacio(informacion.comparative)){
+                comparative = informacion.comparative;
+                columns = Array();
+                comparativas++;
+                id_para_Grafica = 'ldm_comparativa_' + comparativas + '_' + informacion.key;
+                insertarTituloSeparador(_bindto, 'Comparativa ' + informacion.filter);
+                $(_bindto).append(`<div class='col-sm-12'><div id="${id_para_Grafica}"></div></div><br>`);
+                // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
+                id_para_Grafica = '#' + id_para_Grafica;
+                for(var j = 0; j < comparative.length; j++){
+                    datos_a_comparar = comparative[j];
+                    columns.push([datos_a_comparar.name, datos_a_comparar.percentage]);
+                }
+                data = { columns: columns, type: 'bar'};
+                var chart = c3.generate({
+                    data: data,
+                    axis: {
+                        rotated: true
+                    },
+                    tooltip: {
+                        format: {
+                            title: function (d) { return 'Porcentaje de aprobación'; },
+                        }               
+                    },   
+                    bindto: id_para_Grafica,
+                });
+            }else{
+                console.log('Error de imprimirComparativaFiltrosDeCurso', informacion);
+                $(_bindto).html('');
+            }
+        }
     </script>
 </body>
 </html>
-
-
