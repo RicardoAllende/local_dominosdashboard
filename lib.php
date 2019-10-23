@@ -563,6 +563,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     }
     // $response = new stdClass();
     $response = local_dominosdashboard_get_info_from_cache($courseid, $params);
+    $response->not_approved_users = $response->enrolled_users - $response->approved_users;
     // _log('', $response);
     $response->key = 'course' . $courseid;
     $response->id = $courseid;
