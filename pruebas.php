@@ -37,7 +37,6 @@ require_once(__DIR__ . '/../../lib/enrollib.php');
 echo $OUTPUT->header();
 $tiempo_inicial = microtime(true); //true es para que sea calculado en segundos
 
-// _print(local_dominosdashboard_get_courses_overview(LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO));
 // _print(local_dominosdashboard_get_info_from_cache($courseid, $params = $_POST));
 _print(local_dominosdashboard_make_courses_cache());
 // $currenttime = time();
