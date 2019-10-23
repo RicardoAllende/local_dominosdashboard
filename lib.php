@@ -87,15 +87,15 @@ DEFINE("KPI_SCORCARD", 3);
 
 DEFINE("LOCALDOMINOSDASHBOARD_NOFILTER", "__NOFILTER__");
 
-DEFINE('LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO', 1);
-DEFINE('LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS', 2);
+DEFINE('LOCALDOMINOSDASHBOARD_ENTRENAMIENTO_NACIONAL', 1);
+DEFINE('LOCALDOMINOSDASHBOARD_DETALLES_ENTRENAMIENTO', 2);
 DEFINE('LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARATIVE', 3);
 DEFINE('LOCALDOMINOSDASHBOARD_AVAILABLE_COURSES', 4);
 
 function local_dominosdashboard_get_course_tabs(){
     return $tabOptions = [
-        LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO => 'Programas de entrenamiento',
-        LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS => 'Campañas',
+        LOCALDOMINOSDASHBOARD_ENTRENAMIENTO_NACIONAL => 'Programas de entrenamiento',
+        LOCALDOMINOSDASHBOARD_DETALLES_ENTRENAMIENTO => 'Detalles de entrenamiento',
         LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARATIVE => "Comparación de KPI's",
     ];
 }
@@ -381,71 +381,6 @@ function local_dominosdashboard_get_userid_with_dominos_mail(){
     return $DB->get_fieldset_sql($query);
 }
 
-function local_dominosdashboard_get_courses_with_filter(bool $allCourses = false, int $type){
-    $LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS = get_config('local_dominosdashboard', 'LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS');
-    if($LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS === false && $LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS == ''){
-        $LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS = "";
-    }
-    switch ($type) {
-        case LOCALDOMINOSDASHBOARD_AVAILABLE_COURSES:
-            return local_dominosdashboard_get_courses($allCourses);
-            break;
-        case LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO: // Cursos en línea
-        # not in
-            if($LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS != ""){
-                $where = " AND id NOT IN ({$LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS}) ";
-            }else{
-                $where = "";
-            }
-            return local_dominosdashboard_get_courses($allCourses, $where);
-            break;
-        
-        case LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS: // Cursos presenciales
-        # where id in
-            if($LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS != ""){
-                $where = " AND id IN ({$LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS}) ";
-            }else{
-                return array();
-                $where = "";
-            }
-            return local_dominosdashboard_get_courses($allCourses, $where);
-            break;
-        
-        case LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARATIVE: // Cruce de kpis KPI_NA
-            $kpis = local_dominosdashboard_get_KPIS();
-            $wherecourseidin = array();
-
-            foreach($kpis as $key => $kpi){
-                $name = 'kpi_' . $key;
-                if( $config = get_config('local_dominosdashboard', $name)){
-                    array_push($wherecourseidin, $config);
-                }
-                // $title = get_string('kpi_relation', $ldm_pluginname) . ': ' . $kpi;
-                // $description = get_string('kpi_relation' . '_desc', $ldm_pluginname);        
-                // $setting = new admin_setting_configmultiselect($name, $title, $description, array(), $courses_min);
-                // $page->add($setting);
-            }
-            if(!empty($wherecourseidin)){
-                $wherecourseidin = array_unique($wherecourseidin);
-                $wherecourseidin = implode(',', $wherecourseidin);
-                $where = " AND id IN ({$wherecourseidin}) ";
-                return local_dominosdashboard_get_courses($allCourses, $where);
-            }
-            return array();
-
-            return array_filter(local_dominosdashboard_get_courses($allCourses), function ($element){
-                $config = get_config('local_dominosdashboard', 'course_kpi_' . $element->id);
-                $result = ($config !== false && $config != KPI_NA);
-                return $result;
-            });
-            break;
-        
-        default:
-            return array();
-            break;
-    }
-}
-
 function local_dominosdashboard_get_kpi_overview(array $params = array(), bool $allCourses = false){
     $kpis = local_dominosdashboard_get_KPIS('list');
     $wherecourseidin = array();
@@ -505,67 +440,91 @@ function local_dominosdashboard_get_kpi_overview(array $params = array(), bool $
  * @return array
  */
 function local_dominosdashboard_get_courses_overview(int $type, array $params = array(), bool $allCourses = false){
-    if($type === LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARATIVE){
-        return local_dominosdashboard_get_kpi_overview($params, $allCourses);
-    }
-    $sections_array = array('b', 'c', 'd');
-    $sections = array();
-    $selected_courses = array();
-    $configs = array();
-    $course_sections = array();
-    $config_name = 'seccion_a';
-    $course_sections[$config_name] = new stdClass();
-    $course_sections[$config_name]->name = get_string($config_name, "local_dominosdashboard");
-    $course_sections[$config_name]->courses = array();
+    switch ($type) {
+        case LOCALDOMINOSDASHBOARD_ENTRENAMIENTO_NACIONAL: // Listado de secciones
+            
+            $sections_array = array('b', 'c', 'd');
+            $sections = array();
+            $selected_courses = array();
+            $configs = array();
+            $course_sections = array();
+            $config_name = 'seccion_a';
+            $course_sections[$config_name] = new stdClass();
+            $course_sections[$config_name]->name = get_string($config_name, "local_dominosdashboard");
+            $course_sections[$config_name]->courses = array();
 
-    foreach($sections_array as $s){
-        $config_name = 'seccion_' . $s;
-        $config = get_config('local_dominosdashboard', $config_name);
-        $course_sections[$config_name] = new stdClass();
-        $course_sections[$config_name]->name = get_string($config_name, "local_dominosdashboard");
-        $course_sections[$config_name]->courses = array();
-        if(empty($config)){
-            continue;
-        }
-        $temp_config = new stdClass();
-        $temp_config->config = $config;
-        if(strpos($config, ',') === false){
-            $temp_config->exploded_config = array($config);
-        }else{ 
-            $temp_config->exploded_config = explode(',', $config);
-        }
-        $configs[$config_name] = $temp_config;
-        $selected_courses = array_merge($selected_courses, $temp_config->exploded_config);
-
-    }
-    $selected_courses = array_unique($selected_courses);
-    $selected_courses = implode(',', $selected_courses);
-    if(empty($selected_courses)){
-        $selected_courses = " AND 1 = 0";
-    }else{
-        $selected_courses = " AND id IN ($selected_courses)";
-    }
-    $courses = local_dominosdashboard_get_courses(false, $selected_courses);
-    $courses_list = array();
-    foreach($courses as $course){
-        $course_information = local_dominosdashboard_get_course_information($course->id, $kpis = false, $activities = false, $params);
-        if(empty($course_information)){
-            continue;
-        }
-        $courseid = $course_information->id;
-        array_push($course_sections['seccion_a']->courses, $course_information);
-        foreach($configs as $config_key => $config){
-            if(in_array($courseid, $config->exploded_config)){
-                array_push($course_sections[$config_key]->courses, $course_information);
+            foreach($sections_array as $s){
+                $config_name = 'seccion_' . $s;
+                $config = get_config('local_dominosdashboard', $config_name);
+                $course_sections[$config_name] = new stdClass();
+                $course_sections[$config_name]->name = get_string($config_name, "local_dominosdashboard");
+                $course_sections[$config_name]->courses = array();
+                if(empty($config)){
+                    continue;
+                }
+                $temp_config = new stdClass();
+                $temp_config->config = $config;
+                if(strpos($config, ',') === false){
+                    $temp_config->exploded_config = array($config);
+                }else{ 
+                    $temp_config->exploded_config = explode(',', $config);
+                }
+                $configs[$config_name] = $temp_config;
+                $selected_courses = array_merge($selected_courses, $temp_config->exploded_config);
             }
-        }
+            $selected_courses = array_unique($selected_courses);
+            $selected_courses = implode(',', $selected_courses);
+            if(empty($selected_courses)){
+                $selected_courses = " AND 1 = 0";
+            }else{
+                $selected_courses = " AND id IN ($selected_courses)";
+            }
+            $courses = local_dominosdashboard_get_courses(false, $selected_courses);
+            $courses_list = array();
+
+            foreach($courses as $course){
+                $course_information = local_dominosdashboard_get_course_information($course->id, $kpis = false, $activities = false, $params);
+                if(empty($course_information)){
+                    continue;
+                }
+                $courseid = $course_information->id;
+                array_push($course_sections['seccion_a']->courses, $course_information);
+                foreach($configs as $config_key => $config){
+                    if(in_array($courseid, $config->exploded_config)){
+                        array_push($course_sections[$config_key]->courses, $course_information);
+                    }
+                }
+            }
+            foreach($course_sections as $cs){
+                usort($cs->courses, function ($a, $b) {return $a->percentage < $b->percentage;});
+            }
+            $response = ['sections' => $course_sections];
+            return $response;
+
+            break;
+        
+        case LOCALDOMINOSDASHBOARD_DETALLES_ENTRENAMIENTO: // Listado de cursos disponibles
+        case LOCALDOMINOSDASHBOARD_AVAILABLE_COURSES:
+            $response = array();
+            $courses = local_dominosdashboard_get_courses($allCourses, $selected_courses);
+            foreach($courses as $course){
+                $course_information = local_dominosdashboard_get_course_information($course->id, false, false, $params);
+                array_push($response, $course_information);
+            }
+            if(!empty($response)){
+                usort($response, function ($a, $b) {return $a->percentage < $b->percentage;});
+            }
+            return $response;
+            break;
+        
+        case LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARATIVE:
+            return local_dominosdashboard_get_kpi_overview($params, $allCourses);
+            break;
+        
+        default:
+            return array();
+            break;
     }
-    foreach($course_sections as $cs){
-        // _log($cs);
-        usort($cs->courses, function ($a, $b) {return $a->percentage < $b->percentage;});
-    }
-    $response = ['sections' => $course_sections];
-    return $response;
 }
 
 function local_dominosdashboard_get_course_chart(int $courseid){
@@ -596,7 +555,7 @@ function local_dominosdashboard_create_slug($str, $delimiter = '_'){
 
 define('RETURN_RANDOM_DATA', false);
 define('MAX_RANDOM_NUMBER', 500);
-function local_dominosdashboard_get_course_information(int $courseid, bool $get_kpis = false, bool $get_activities = false, array $params = array(), bool $get_region_comparative = false){ // realizando
+function local_dominosdashboard_get_course_information(int $courseid, bool $get_kpis = false, bool $get_activities = false, array $params = array()){ // realizando
     global $DB;
     $course = $DB->get_record('course', array('id' => $courseid));
     if($course === false){

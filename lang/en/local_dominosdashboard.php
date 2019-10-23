@@ -71,11 +71,11 @@ $string['chart_desc'] = 'Seleccione el tipo de gráfica con el que se mostrará 
 $string['course_main_chart_color'] = 'Color principal de gráfica en inicio';
 $string['course_main_chart_color_desc'] = 'Seleccione el color principal que tendrá la gráfica con el que se mostrará este curso en el dashboard';
 
-$string['LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO'] = 'Seleccione los programas de entrenamiento';
-$string['LOCALDOMINOSDASHBOARD_PROGRAMAS_ENTRENAMIENTO_desc'] = 'Presione la tecla ctrl para seleccionar múltiples elementos';
+$string['LOCALDOMINOSDASHBOARD_ENTRENAMIENTO_NACIONAL'] = 'Seleccione los programas de entrenamiento';
+$string['LOCALDOMINOSDASHBOARD_ENTRENAMIENTO_NACIONAL_desc'] = 'Presione la tecla ctrl para seleccionar múltiples elementos';
 
-$string['LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS'] = 'Seleccione los cursos de la pestaña "Lanzamientos y campañas"';
-$string['LOCALDOMINOSDASHBOARD_CURSOS_CAMPANAS_desc'] = 'Presione la tecla ctrl para seleccionar múltiples elementos, los cursos que no seleccione aparecerán en la pestaña "Programas de entrenamiento"';
+$string['LOCALDOMINOSDASHBOARD_DETALLES_ENTRENAMIENTO'] = 'Seleccione los cursos de la pestaña "Lanzamientos y campañas"';
+$string['LOCALDOMINOSDASHBOARD_DETALLES_ENTRENAMIENTO_desc'] = 'Presione la tecla ctrl para seleccionar múltiples elementos, los cursos que no seleccione aparecerán en la pestaña "Programas de entrenamiento"';
 
 $string['excluded_courses'] = 'Seleccione los cursos para excluir en los reportes';
 $string['excluded_courses_desc'] = 'Presione la tecla ctrl para seleccionar múltiples elementos';

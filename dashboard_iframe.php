@@ -68,12 +68,12 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 <ul class="nav justify-content-center nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active dtag" id="home-tab" data-toggle="tab" href="#home" role="tab"
-                            aria-controls="home" onclick="cambiarpestana(1)" aria-selected="true">Programas de entrenamiento</a>
+                            aria-controls="home" onclick="cambiarpestana(1)" aria-selected="true">Entrenamiento nacional</a>
                     </li>
-                    <!-- <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                            aria-controls="profile" onclick="cambiarpestana(2)" aria-selected="false">Lanzamientos y campañas</a>
-                    </li> -->
+                            aria-controls="profile" onclick="cambiarpestana(2)" aria-selected="false">Detalles entrenamiento</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
                             aria-controls="contact" onclick="cambiarpestana(3)" aria-selected="false">Cruce de indicadores</a>
@@ -160,8 +160,8 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         }
         pestanas = [
             '',
-            'Programas de entrenamiento',
-            'Lanzamientos y campañas',
+            'Entrenamiento nacional',
+            'Detalles entrenamiento',
             'Cruce de indicadores'
         ]
         document.addEventListener("DOMContentLoaded", function() {
