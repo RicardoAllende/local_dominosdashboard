@@ -62,7 +62,7 @@ function insertarGraficaSinInfo(div, mensaje) {
     $(div).html(`
     <div class='col-sm-12 espacio'>
             <div class='card bg-gray border-0 m-2'>
-            <div class='align-items-end'>                                        
+            <div class='align-items-end'>
                     <div class='fincard text-center'>
                         <a href='#' id=''></a>
                     </div>
@@ -251,7 +251,7 @@ function crearTarjetaParaGrafica(div, curso, claseDiv) {
                         </div>
                         </div>
                     </div>
-                    <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>                    
+                    <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>
                 </div>
             </div>`);
     return crearGraficaDeCurso('#' + id_para_Grafica, curso);
@@ -353,8 +353,8 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                     $(_bindto).append(`
                         <div class="col-sm-12 col-xl-12">
                             <div class="card bg-faded border-0 m-2" id="">
-                                    
-                                <div class="bg-white m-2" id="${div_id}"></div>                        
+
+                                <div class="bg-white m-2" id="${div_id}"></div>
                             </div>
                         </div>`);
                     div_id = "#" + div_id;
@@ -484,7 +484,7 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
                                                 </div>
                                                 </div>
                                             </div>
-                                            <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>                    
+                                            <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>
                                         </div>
                                     </div>`);
                             id_para_Grafica = '#' + id_para_Grafica;
@@ -545,7 +545,7 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
                                 <a href="#">Comparativas</a>
                             </div>
                         </div>
-                        <div class="bg-white m-2" id="${div_id}"></div>                        
+                        <div class="bg-white m-2" id="${div_id}"></div>
                     </div>
                 </div>`);
     // Gráfica de líneas rectas
@@ -553,7 +553,7 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     //     data: {
     //         columns: info_grafica,
     //         type: ''
-    //     },        
+    //     },
     //     bindto: '#' + div_id,
     //     tooltip: {
     //         format: {
@@ -570,7 +570,7 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     //     data: {
     //         columns: info_grafica,
     //         type: 'spline'
-    //     },        
+    //     },
     //     bindto: '#' + div_id,
     //     tooltip: {
     //         format: {
@@ -630,7 +630,7 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     console.log(cursos);
 
     // if(currentTab != 3){
-    //     $(_bindto).append(`        
+    //     $(_bindto).append(`
     //         <div class="col-sm-12">
     //         <table frame="void" id="tabla_comparativa${currentTab}" rules="rows" style="width:100%;text-align: center;">
 
@@ -638,22 +638,22 @@ function crearGraficaComparativaVariosCursos(_bindto, info_grafica, cursos, titu
     //                 <th>Nombre del curso</th>
     //                 <th class="txt_tabla_aprobados">Aprobados</th>
     //                 <th class="txt_tabla_no_aprobados">No Aprobados</th>
-    //                 <th class="txt_tabla_inscritos">Total de usuarios inscritos</th>                    
-    //                 <th class="txt_tabla_porcentaje_aprobacion">Porcentaje de Aprobación del curso</th>                        
-    //             </tr>                                       
+    //                 <th class="txt_tabla_inscritos">Total de usuarios inscritos</th>
+    //                 <th class="txt_tabla_porcentaje_aprobacion">Porcentaje de Aprobación del curso</th>
+    //             </tr>
     //         </table>
     //         <br>
-    //         </div>        
-    //     `);   
-    //     for(var j = 0; j < cursos.length; j++){                  
-    //         $(`#tabla_comparativa${currentTab}`).append(`<tr>        
+    //         </div>
+    //     `);
+    //     for(var j = 0; j < cursos.length; j++){
+    //         $(`#tabla_comparativa${currentTab}`).append(`<tr>
     //             <td>${cursos[j].title}</td>
     //             <td class="txt_tabla_aprobados">${cursos[j].approved_users}</td>
     //             <td class="txt_tabla_no_aprobados">${cursos[j].not_approved_users}</td>
-    //             <td class="txt_tabla_inscritos">${cursos[j].enrolled_users}</td>                
+    //             <td class="txt_tabla_inscritos">${cursos[j].enrolled_users}</td>
     //             <td class="txt_tabla_porcentaje_aprobacion">${cursos[j].percentage} %</td>
-    //             </tr> 
-    //         `);                
+    //             </tr>
+    //         `);
     //     }
     // }
 }
@@ -676,7 +676,7 @@ function dashboardCrearGraficaComparativaGrupoDeCursos(_bindto, info_grafica, cu
                                 <a href="#">${titulo}</a>
                             </div>
                         </div>
-                        <div class="bg-white m-2" id="${div_id}"></div>                        
+                        <div class="bg-white m-2" id="${div_id}"></div>
                     </div>
                 </div>`);
 
@@ -699,7 +699,7 @@ function dashboardCrearGraficaComparativaGrupoDeCursos(_bindto, info_grafica, cu
             x: {
                 type: 'category' // this needed to load string x value
             }
-        }, 
+        },
     });
 }
 
@@ -739,7 +739,7 @@ function crearTarjetaParaGraficakpi(div, curso, kpi, id){
                         </div>
                         </div>
                     </div>
-                    <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>                    
+                    <div class="chart_ bg-faded m-2" id="${id_para_Grafica}"></div>
                 </div>
             </div>`);
     return crearGraficaDeCursokpi('#' + id_para_Grafica, curso, kpi);
@@ -1094,21 +1094,10 @@ function seccion_a_imprimirGraficaComparativaCursos(container,respuesta) {
 
 var nombre_curso= [];
 var nombre_region=[];
+var arrRegions = [];
+var arrGraph = [];
 nombre_curso.push('x');
-//var arrTempReg = new Array(respuesta.sections.seccion_a.courses.length + 1); // [0,0,0,0,0,0,0,0,0,0]
-// for(var i = 0; i < respuesta.sections.seccion_a.courses.length; i++){
-// var cursos = respuesta.sections.seccion_a.courses[i];
-// nombre_curso.push(cursos.region_comparative.title);
-// //console.log('NOMBRE CURSOS');
 
-// for(var j = 0; j < respuesta.sections.seccion_a.courses[i].region_comparative.comparative.length; j++){
-// var region_percentage = respuesta.sections.seccion_a.courses[i].region_comparative.comparative[j];
-// //['Region[j].name',curso[i].percentage,]
-// //arrTempReg[].push(region_percentage.name);
-// nombre_region[j][1].push(region_percentage.percentage);
-// }
-// console.log("NOMBRE");
-// }
 
 respuesta = respuesta.sections.seccion_a;
 cursos = respuesta.courses;
@@ -1121,14 +1110,17 @@ comparativa = curso.region_comparative.comparative;
 for(var j = 0; j < comparativa.length; j++){
 comparativa_actual = comparativa[j];
 var region_percentage = comparativa_actual.percentage;
+saveRegionCourse(comparativa_actual.name,j,region_percentage,arrRegions );
+
 console.log('Comparativa actual', region_percentage);
-// nombre_region[j][1].push(region_percentage);
 }
 }
 console.log('Nombre de los cursos', nombre_curso);
 /// console.log("Array regions");
-//console.log(nombre_region)
-//createCardGrahpRegions(container,respuesta.sections.seccion_a.name, nombre_curso, i )
+
+arrGraph.push(nombre_curso);
+arrGraph.push(arrRegions);
+createCardGrahpRegions(container,respuesta.sections.seccion_a.name, arrGraph, i )
 
 // document.getElementById("graficas_seccion_a").innerHTML = "<div class='col-sm-12 espacio'>" +
 // "<div class='card bg-gray border-0 m-2'>" +
@@ -1165,14 +1157,28 @@ console.log('Nombre de los cursos', nombre_curso);
 // });
 }
 
+
+function saveRegionCourse(region,id, percentage, arrRegions){
+if(arrRegions[id] != undefined){
+  //console.log(arrRegions[id]);
+  arrRegions[id].push(parseInt(percentage))
+} else {
+  arrRegions[id] = [region,parseInt(percentage)];
+}
+
+//console.log(arrRegions);
+
+}
+
+
 function seccion_b_imprimirGraficaComparativaCursos(container, respuesta) {
     for(var i = 0; i< respuesta.sections.seccion_b.courses.length; i++){
         var c_aprobados = [];
         c_aprobados.push('Porcentaje Aprobados');
         var percentage_aprobados =  respuesta.sections.seccion_b.courses[i];
-        c_aprobados.push(percentage_aprobados.percentage); 
-        createCardGrahp_gauge(container,respuesta.sections.seccion_b.courses[i].title, c_aprobados, i ) 
-    }   
+        c_aprobados.push(percentage_aprobados.percentage);
+        createCardGrahp_gauge(container,respuesta.sections.seccion_b.courses[i].title, c_aprobados, i )
+    }
     // document.getElementById("graficas_seccion_b").innerHTML = "<div class='col-sm-6 espacio'>" +
     //     "<div class='card bg-gray border-0 m-2'>" +
     //     "<div class='align-items-end'>" +
@@ -1199,7 +1205,7 @@ function seccion_b_imprimirGraficaComparativaCursos(container, respuesta) {
     // });
 }
 function createCardGrahp_gauge(container,title, c_aprobados, id ){
-    
+
     var card_gauge= "<div class='col-sm-6 espacio'>" +
         "<div class='card bg-gray border-0 m-2'>" +
         "<div class='align-items-end'>" +
@@ -1216,8 +1222,8 @@ function createCardGrahp_gauge(container,title, c_aprobados, id ){
     "</div>";
 
     $(container).append(card_gauge);
-        
-    return c3.generate({        
+
+    return c3.generate({
         data: {
             columns: [
                 c_aprobados
@@ -1229,8 +1235,9 @@ function createCardGrahp_gauge(container,title, c_aprobados, id ){
 }
 
 function seccion_c_imprimirGraficaComparativaCursos(container,respuesta) {
-    r_seccionc = respuesta.sections.seccion_c;
-    for(var i = 0; i< r_seccionc.courses.length; i ++){        
+
+    r_seccionc = respuesta.sections.seccion_c
+    for(var i = 0; i< r_seccionc.courses.length; i ++){
         var c_percentage_region = Array();
         var regiones = r_seccionc.courses[i];
         for(var j = 0; j< regiones.region_comparative.comparative.length; j ++){
@@ -1238,8 +1245,8 @@ function seccion_c_imprimirGraficaComparativaCursos(container,respuesta) {
         }
         createCardGrahp_horizontalBar(container,r_seccionc.name, c_percentage_region, i);
     }
-    
-    
+
+
     // document.getElementById("graficas_seccion_c").innerHTML = "<div class='col-sm-6 espacio'>"+
     // "<div class='card bg-gray border-0 m-2'>"+
     // "<div class='align-items-end'>"+
@@ -1248,11 +1255,11 @@ function seccion_c_imprimirGraficaComparativaCursos(container,respuesta) {
     //         "</div>"+
     //     "</div>"+
     //     "<div class='card esp'>"+
-    //     "<div class='row espr'>"+           
+    //     "<div class='row espr'>"+
 
     //         "</div>"+
     //     "</div>"+
-    //     "<div class='chart_ bg-faded m-2' id='grafica_c'></div>"                    
+    //     "<div class='chart_ bg-faded m-2' id='grafica_c'></div>"
     // "</div>"+
     // "</div>";
     // return c3.generate({
@@ -1261,7 +1268,7 @@ function seccion_c_imprimirGraficaComparativaCursos(container,respuesta) {
     //             ['Region 1', 30],
     //             ['Region 2', 70],
     //             ['Region 3', 25],
-    //             ['Region 4', 50]                
+    //             ['Region 4', 50]
     //         ],
     //         type: 'bar',
     //         colors: {
@@ -1286,7 +1293,7 @@ function seccion_c_imprimirGraficaComparativaCursos(container,respuesta) {
 }
 
 function createCardGrahp_horizontalBar(container,title, c_percentage_region, id ){
-    
+
     var card_horizontal= "<div class='col-sm-6 espacio'>" +
         "<div class='card bg-gray border-0 m-2'>" +
         "<div class='align-items-end'>" +
@@ -1304,20 +1311,20 @@ function createCardGrahp_horizontalBar(container,title, c_percentage_region, id 
     console.log('c_percentage_region' );
     console.log(c_percentage_region );
     $(container).append(card_horizontal);
-        
-    return c3.generate({        
+
+    return c3.generate({
         data: {
-                    columns: 
-                        c_percentage_region,           
-                    
+                    columns:
+                        c_percentage_region,
+
                     type: 'bar',
                     // colors: {
                     //     Inscritos: '#a5a3a4',
                     //     Aprobados: '#016392',
                     //     'No Aprobados': '#d70c20'
-        
+
                     // },
-        
+
                 },
                 axis: {
                     rotated: true
@@ -1348,10 +1355,10 @@ function seccion_d_imprimirGraficaComparativaCursos(container, respuesta) {
         inscritos_d.push(curso_name.enrolled_users);
         aprobados_d.push(curso_name.approved_users);
         no_aprobados_d.push(curso_name.not_approved_users);
-    } 
+    }
     createCardGrahp_group(container,r_secciond.name, cursos_d, inscritos_d, aprobados_d, no_aprobados_d)
-    
-    
+
+
 
     // return c3.generate({
     //     data: {
@@ -1389,7 +1396,7 @@ function seccion_d_imprimirGraficaComparativaCursos(container, respuesta) {
 }
 
 function createCardGrahp_group(container,title, cursos_d, inscritos_d, aprobados_d, no_aprobados_d){
-    
+
     var card_group= "<div class='col-sm-6 espacio'>" +
         "<div class='card bg-gray border-0 m-2'>" +
         "<div class='align-items-end'>" +
@@ -1406,7 +1413,7 @@ function createCardGrahp_group(container,title, cursos_d, inscritos_d, aprobados
     "</div>";
 
     $(container).append(card_group);
-        
+
     return c3.generate({
         data: {
             x : 'x',
@@ -1463,7 +1470,7 @@ function imprimirComparativaFiltrosDeCurso(_bindto, informacion) {
                         <div class='row espr'>
                          </div>
                     </div>
-                    <div class='chart_ bg-faded m-2' id='${id_para_Grafica}'></div>                
+                    <div class='chart_ bg-faded m-2' id='${id_para_Grafica}'></div>
                 </div>`);
         // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
         id_para_Grafica = '#' + id_para_Grafica;
@@ -1504,17 +1511,17 @@ function kpi_region(container, respuesta) {
         nombre_region.push('x');
         region_avance.push('Avance');
         var kpi_info = respuesta[i];
-       
+
         for(var j = 0; j <  respuesta[i].course_information.region_comparative.comparative.length; j++){
             var kpi_name_region = respuesta[i].course_information.region_comparative.comparative[j];
             nombre_region.push(kpi_name_region.name);
             region_avance.push(kpi_name_region.percentage);
-        } 
-        createCardGrahp(container,respuesta[i].kpi_name +" vs "+respuesta[i].course_name, region_avance, nombre_region, i )       
+        }
+        createCardGrahp(container,respuesta[i].kpi_name +" vs "+respuesta[i].course_name, region_avance, nombre_region, i )
     }
 }
 
-function createCardGrahp(container,title, region_avance, nombre_region, id ){
+function createCardGrahp(container,title, arrGraph, id ){
     //console.log("ra> " + region_avance);
     //console.log("nr> " + nombre_region);
     var cardKPIRegion = "<div class='col-sm-12 espacio'>" +
@@ -1538,12 +1545,7 @@ function createCardGrahp(container,title, region_avance, nombre_region, id ){
     return c3.generate({
         data: {
             x: 'x',
-            columns: [
-                nombre_region,
-                    region_avance
-                // ['x', 'Region 1', 'Region 2', 'Region 3', 'Region 4'],
-                // ['avance', 30, 200, 100, 400]
-            ],
+            columns: arrGraph,
             type: 'spline'
         },
         axis: {
