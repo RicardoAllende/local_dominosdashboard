@@ -1007,7 +1007,7 @@ function local_dominosdashboard_get_enrolled_users_ids(int $courseid, $fecha_ini
     }else{
         $where = ""; 
     }
-    $campo_fecha = "_ue.timestart";
+    $campo_fecha = "__ue__.timestart";
     $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
     /* User is active participant (used in user_enrolments->status) -- Documentación tomada de enrollib.php 
     define('ENROL_USER_ACTIVE', 0);*/
@@ -1565,7 +1565,7 @@ function local_dominosdashboard_make_cache_for_course(int $courseid, array $para
     $record = $DB->get_record_sql($query, $conditions->where_params);
 
     $course_information->startdate = local_dominosdashboard_date_to_time($course_information->startdate);
-    $course_information->startdate = local_dominosdashboard_date_to_time($course_information->enddate);
+    $course_information->enddate = local_dominosdashboard_date_to_time($course_information->enddate);
     
     if(empty($record)){ // Crear
         $record = new stdClass();
