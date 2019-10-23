@@ -741,13 +741,13 @@ function local_dominosdashboard_get_course_comparative(int $courseid, array $par
     $comparative = array();
     foreach($catalogue as $catalogue_item){
         $item_to_compare = new stdClass();
+        $params[$key] = [$catalogue_item];
+        $item_to_compare = local_dominosdashboard_get_info_from_cache($courseid, $params, $return_regions = true);
         if($catalogue_item == ''){
             $item_to_compare->name = '(Vacío)';
         }else{
             $item_to_compare->name = $catalogue_item;
         }
-        $params[$key] = [$catalogue_item];
-        $item_to_compare = local_dominosdashboard_get_info_from_cache($courseid, $params, $return_regions = true);
 
         // $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params);
         // $item_to_compare->enrolled_users = local_dominosdashboard_get_count_users($userids);
@@ -1624,6 +1624,9 @@ function local_dominosdashboard_make_cache_for_course(int $courseid, array $para
         $record->enddate = $course_information->enddate;
         $record->timemodified = $currenttime;
         $DB->update_record('dominos_d_cache', $record);
+    }
+    if($record->regiones != null){
+        $record->name = $record->regiones;
     }
     if($returninfo){
         return $course_information;
