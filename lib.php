@@ -893,7 +893,7 @@ function local_dominosdashboard_get_ideales_as_js_script(){
     return "<script> var ideal_cobertura = {$ideal_cobertura}; var ideal_rotacion = {$ideal_rotacion}; </script>";
 }
 
-function local_dominosdashboard_get_approved_users(int $courseid, $userids = '', string $fecha_inicial, string $fecha_final){ //
+function local_dominosdashboard_get_approved_users(int $courseid, $userids = '', $fecha_inicial, $fecha_final){ //
     $response = 0;
     if(empty($userids)){ // no users to search in query
         // _log('No se encuentran usuarios');
@@ -1041,7 +1041,7 @@ function local_dominosdashboard_get_selected_params(array $params){
 }
 
 
-function local_dominosdashboard_get_enrolled_users_ids(int $courseid, string $fecha_inicial, string $fecha_final){
+function local_dominosdashboard_get_enrolled_users_ids(int $courseid, $fecha_inicial, $fecha_final){
     $email_provider = local_dominosdashboard_get_email_provider_to_allow();
     if(!empty($email_provider)){
         $where = " AND email LIKE '%{$email_provider}'"; 
@@ -1351,7 +1351,7 @@ function local_dominosdashboard_get_activities(int $courseid, string $andwhere =
     return $DB->get_records_sql_menu($query);
 }
 
-function local_dominosdashboard_get_activities_completion(int $courseid, $userids, string $fecha_inicial, string $fecha_final){
+function local_dominosdashboard_get_activities_completion(int $courseid, $userids, $fecha_inicial, $fecha_final){
 
     $activities = array();
     if(empty($userids)){
@@ -1367,7 +1367,7 @@ function local_dominosdashboard_get_activities_completion(int $courseid, $userid
     return $activities;
 }
 
-function local_dominosdashboard_get_activity_completions(int $activityid, $userids = "", $title = "", string $fecha_inicial, string $fecha_final){
+function local_dominosdashboard_get_activity_completions(int $activityid, $userids = "", $title = "", $fecha_inicial, $fecha_final){
     $campo_fecha = "timemodified";
     $filtro_fecha = "";
     $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
