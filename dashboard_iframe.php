@@ -53,7 +53,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
 <body>
     
     <div class="row" style="max-width: 100%; min-height: 300px;">
-        <form id="filter_form" name="filter_form" method="post" action="imprimir.php" class='col-sm-3'>
+        <form id="filter_form" name="filter_form" method="post" style="display:none" action="imprimir.php" class='col-sm-3'>
             <!-- <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br> -->
             <p class="btn btn-primary" onclick="exportar_a_excel();">Exportar cursos a excel</p>
             <div id="contenedor_fechas">
@@ -146,12 +146,34 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         var indicator;
         var item;
         var tituloPestana = "";
-        var tabsCursos = [false, false, false];                        
+        var tabsCursos = [false, false, false];
+        verificarVistaFiltros(currentTab);
+        function verificarVistaFiltros(tab){
+            ocultarFiltros = false;
+            if(typeof tab === 'number'){ // dashboard_iframe
+                if(tab === 1){ // Entrenamiento nacional
+                    ocultarFiltros = true;
+                // }else{
+                }
+            // }else{ // detalle_curso_iframe
+            }
+            if(ocultarFiltros){
+                $('#filter_form').hide();
+                $('#contenido_cursos, #contenido_dashboard').removeClass('row col-sm-9 col-sm-12 sin_filtro');
+                $('#contenido_cursos, #contenido_dashboard').addClass('row col-sm-12 sin_filtro');
+                // return;
+            }else{
+                $('#filter_form').show();
+                $('#contenido_cursos, #contenido_dashboard').removeClass('row col-sm-9 col-sm-12 sin_filtro');
+                $('#contenido_cursos, #contenido_dashboard').addClass('row col-sm-9');
+            }
+        }
         //imprimirComparativaFiltrosDeCurso('#comparativa_region',informacion_del_curso.data.region_comparative);
         function cambiarpestana(id){
             if(id != currentTab){
                 hidePage("ldm_tab_" + id);
                 currentTab = id;
+                verificarVistaFiltros(currentTab);
                 tituloPestana = pestanas[id];
                 setTimeout(function() {
                     obtenerInformacion();

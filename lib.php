@@ -506,7 +506,7 @@ function local_dominosdashboard_get_courses_overview(int $type, array $params = 
         case LOCALDOMINOSDASHBOARD_DETALLES_ENTRENAMIENTO: // Listado de cursos disponibles
         case LOCALDOMINOSDASHBOARD_AVAILABLE_COURSES:
             $response = array();
-            $courses = local_dominosdashboard_get_courses($allCourses, $selected_courses);
+            $courses = local_dominosdashboard_get_courses($allCourses);
             foreach($courses as $course){
                 $course_information = local_dominosdashboard_get_course_information($course->id, false, false, $params);
                 array_push($response, $course_information);

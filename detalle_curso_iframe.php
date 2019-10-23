@@ -96,7 +96,7 @@ $PAGE->set_context($context_system);
         var isFilterLoading = false;
         var trabajoPendiente = false;
         var comparativa;
-        imprimirComparativaFiltrosDeCurso('#ldm_comparativas');
+        // imprimirComparativaFiltrosDeCurso('#ldm_comparativas');
         document.addEventListener("DOMContentLoaded", function () {
             $('.dominosdashboard-ranking').hide();
             $('.course-selector').change(function () { obtenerInformacion() });

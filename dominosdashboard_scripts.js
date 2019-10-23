@@ -782,9 +782,10 @@ function peticionFiltros(info) {
     // }
     // isFilterLoading = !isFilterLoading;
     dateBeginingFiltros = Date.now();
-    if (typeof muestraComparativas != 'boolean') {
-        muestraComparativas = false;
-    }
+    // if (typeof muestraComparativas != 'boolean') {
+    //     muestraComparativas = false;
+    // }
+    muestraComparativas = true; // Se mostrarán comparativas a todos los cursos por defecto
     $.ajax({
         type: "POST",
         url: "services.php",
