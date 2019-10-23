@@ -1229,7 +1229,7 @@ function createCardGrahp_gauge(container,title, c_aprobados, id ){
 }
 
 function seccion_c_imprimirGraficaComparativaCursos(container,respuesta) {
-    r_seccionc = respuesta.sections.seccion_c
+    r_seccionc = respuesta.sections.seccion_c;
     for(var i = 0; i< r_seccionc.courses.length; i ++){        
         var c_percentage_region = Array();
         var regiones = r_seccionc.courses[i];
@@ -1332,49 +1332,113 @@ function createCardGrahp_horizontalBar(container,title, c_percentage_region, id 
 }
 
 //Función para pintar una card donde se comparen los cursos, en la primera pestaña
-function seccion_d_imprimirGraficaComparativaCursos() {
-    // document.getElementById("graficas_seccion_d").innerHTML = "<div class='col-sm-6 espacio'>" +
-    //     "<div class='card bg-gray border-0 m-2'>" +
-    //     "<div class='align-items-end'>" +
-    //     "<div class='fincard text-center'>" +
-    //     "<a href=''>Grafica comparativa cursos</a>" +
-    //     "</div>" +
-    //     "</div>" +
-    //     "<div class='card esp'>" +
-    //     "<div class='row espr'>" +
-
-    //     "</div>" +
-    //     "</div>" +
-    //     "<div class='chart_ bg-faded m-2' id='grafica_d'></div>"
-    // "</div>" +
-    //     "</div>";
+function seccion_d_imprimirGraficaComparativaCursos(container, respuesta) {
+    r_secciond = respuesta.sections.seccion_d;
+    var cursos_d = [];
+    cursos_d.push('x');
+   var inscritos_d = [];
+   var aprobados_d = [];
+   var no_aprobados_d = [];
+   inscritos_d.push('Inscritos');
+   aprobados_d.push('Aprobados');
+   no_aprobados_d.push('No Aprobados');
+    for(i = 0; i < r_secciond.courses.length; i++){
+        var curso_name = r_secciond.courses[i];
+        cursos_d.push(curso_name.title);
+        inscritos_d.push(curso_name.enrolled_users);
+        aprobados_d.push(curso_name.approved_users);
+        no_aprobados_d.push(curso_name.not_approved_users);
+    } 
+    createCardGrahp_group(container,r_secciond.name, cursos_d, inscritos_d, aprobados_d, no_aprobados_d)
+    
+    
 
     // return c3.generate({
     //     data: {
+    //         x : 'x',
     //         columns: [
-    //             ['Aprobados', 30, 200, 200, 400, 150, 250],
-    //             ['No Aprobados', 130, 100, 100, 200, 150, 50],
-    //             ['Inscritos', 230, 200, 200, 300, 250, 250]
+    //             ['x', 'curso', 'curso', 'curso', 'curso'],
+    //             ['Inscritos', 30, 200, 100, 400],
+    //             ['Aprobados', 90, 100, 140, 200],
+    //             ['No Aprobados', 230, 200, 200, 300]
+    //         ],
+    //         groups: [
+    //             ['Aprobados', 'No Aprobados']
     //         ],
     //         type: 'bar',
     //         colors: {
-    //             Inscritos: '#a5a3a4',
-    //             Aprobados: '#016392',
-    //             'No Aprobados': '#d70c20'
+    //              Inscritos: '#a5a3a4',
+    //              Aprobados: '#016392',
+    //              'No Aprobados': '#d70c20'
 
-    //         },
-    //         groups: [
-    //             ['Aprobados', 'No Aprobados']
-    //         ]
+    //          },
+    //     },
+    //     axis: {
+    //         x: {
+    //             type: 'category' // this needed to load string x value
+    //         }
     //     },
     //     bindto: "#grafica_d",
-    //     // grid: {
-    //     //     y: {
-    //     //         lines: [{value:0}]
-    //     //     }
-    //     // }
-    // });
+        // grid: {
+        //     y: {
+        //         lines: [{value:0}]
+        //     }
+        // }
+    //});
 
+}
+
+function createCardGrahp_group(container,title, cursos_d, inscritos_d, aprobados_d, no_aprobados_d){
+    
+    var card_group= "<div class='col-sm-6 espacio'>" +
+        "<div class='card bg-gray border-0 m-2'>" +
+        "<div class='align-items-end'>" +
+        "<div class='fincard text-center'>" +
+        "<a href=''>"+title+"</a>" +
+        "</div>" +
+        "</div>" +
+        "<div class='card esp'>" +
+        "<div class='row espr'>" +
+        "</div>" +
+        "</div>" +
+        "<div class='chart_ bg-faded m-2' id='grafica_group'></div>"
+        "</div>" +
+    "</div>";
+
+    $(container).append(card_group);
+        
+    return c3.generate({
+        data: {
+            x : 'x',
+            columns: [
+                cursos_d,
+                inscritos_d,
+                aprobados_d,
+                no_aprobados_d
+            ],
+            groups: [
+                ['Aprobados', 'No Aprobados']
+            ],
+            type: 'bar',
+            colors: {
+                 Inscritos: '#a5a3a4',
+                 Aprobados: '#016392',
+                 'No Aprobados': '#d70c20'
+
+             },
+        },
+        axis: {
+            x: {
+                type: 'category' // this needed to load string x value
+            }
+        },
+        bindto: "#grafica_group",
+        // grid: {
+        //     y: {
+        //         lines: [{value:0}]
+        //     }
+        // }
+    });
 }
 
 /**
