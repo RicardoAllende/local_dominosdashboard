@@ -1530,7 +1530,7 @@ function local_dominosdashboard_get_info_from_cache(int $courseid, array $params
     $conditions = local_dominosdashboard_get_cache_params($courseid, $params);
     $regions = ($return_regions) ? ', regiones as name' : '';
     $where = implode(' AND ', $conditions->where_clauses);
-    $query = "SELECT id, courseid, enrolled_users, approved_users, percentage, value {$regions} FROM {dominos_d_cache} AS _cache WHERE {$where} limit 1";
+    $query = "SELECT id, courseid, enrolled_users, approved_users, percentage, value {$regions} FROM {dominos_d_cache} AS _cache WHERE {$where} ORDER BY _cache.timemodified DESC limit 1";
     // if($DB->count_records_sql($query, $conditions->where_params) > 1){
     //     _sql($query, $conditions->where_params);
     // }
