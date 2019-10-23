@@ -1518,7 +1518,7 @@ function local_dominosdashboard_get_cache_params(int $courseid, array $params, $
             }
         }
         if(!$found){
-            array_push($where_clauses, " {$prefix}.{$indicator} = '' ");
+            array_push($where_clauses, " {$prefix}.{$indicator} IS NULL ");
         }
     }
     
@@ -1575,9 +1575,12 @@ function local_dominosdashboard_get_info_from_cache(int $courseid, array $params
      approved_users, percentage, value {$regions} FROM {dominos_d_cache} AS _cache WHERE {$where}";
     $record = $DB->get_record_sql($query, $conditions->where_params);
     if(!empty($record)){
+        $record->source = 'Caché';
         return $record;
     }else{ // Crear caché
-        return local_dominosdashboard_make_cache_for_course($courseid, $params);
+        $record = local_dominosdashboard_make_cache_for_course($courseid, $params);
+        $record->source = "Consulta";
+        return $record;
     }
     // return false;
 }
