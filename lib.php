@@ -1540,16 +1540,16 @@ function local_dominosdashboard_get_cache_params(int $courseid, array $params, $
     $response->startdate = $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial', null);
     $response->enddate = $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final', null);
     if(!empty($fecha_inicial)){
-        array_push($where_clauses, " {$prefix}.startdate = ? ");
+        array_push($where_clauses, " date(from_unixtime({$prefix}.startdate)) = ? ");
         array_push($where_params, $fecha_inicial);        
     }else{
-        array_push($where_clauses, " {$prefix}.startdate IS NULL ");
+        array_push($where_clauses, " ({$prefix}.startdate IS NULL OR {$prefix}.startdate = 0) ");
     }
     if(!empty($fecha_final)){
-        array_push($where_clauses, " {$prefix}.enddate = ? ");
+        array_push($where_clauses, " date(from_unixtime({$prefix}.enddate)) = ? ");
         array_push($where_params, $fecha_final);                
     }else{
-        array_push($where_clauses, " {$prefix}.enddate IS NULL ");
+        array_push($where_clauses, " ({$prefix}.enddate IS NULL OR {$prefix}.enddate = 0) ");
     }
     $response->where_clauses = $where_clauses;
     $response->where_params = $where_params;
@@ -1652,8 +1652,8 @@ function local_dominosdashboard_make_courses_cache(){ // realizando
             $count++;
         }
     }
-    $query = "SELECT * FROM {dominos_d_cache} where (distritos IS NULL OR entrenadores IS NULL OR tiendas IS NULL
-    OR puestos IS NULL OR ccosto IS NULL) AND startdate IS NOT NULL AND enddate IS NOT NULL ";
+    $query = "SELECT * FROM {dominos_d_cache} where (distritos IS NOT NULL OR entrenadores IS NOT NULL OR tiendas IS NOT NULL
+    OR puestos IS NOT NULL OR ccosto IS NOT NULL)";// AND (startdate IS NOT NULL OR ) AND enddate IS NOT NULL ";
     $custom_caches = $DB->get_records_sql($query); // Caché de consultas ejecutadas anteriormente
     foreach($custom_caches as $cc){
         $original_params = local_dominosdashboard_get_parameters_from_cache_record($cc);
