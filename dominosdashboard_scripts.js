@@ -1103,20 +1103,20 @@ function seccion_a_imprimirGraficaComparativaCursos(container,respuesta) {
     respuesta = respuesta.sections.seccion_a;
     cursos = respuesta.courses;
     for(var i = 0; i < cursos.length; i++){
-    var curso = cursos[i];
-    nombre_curso.push(curso.title);
-    // nombre_curso.push(curso.region_comparative.title);
-    comparativa = curso.region_comparative.comparative;
-    
-    for(var j = 0; j < comparativa.length; j++){
-    comparativa_actual = comparativa[j];
-    var region_percentage = comparativa_actual.percentage;
-    saveRegionCourse(comparativa_actual.name,j,region_percentage,arrRegions );
-    
-    console.log('Comparativa actual', region_percentage);
+        var curso = cursos[i];
+        nombre_curso.push(curso.title);
+        // nombre_curso.push(curso.region_comparative.title);
+        comparativa = curso.region_comparative.comparative;
+
+        for(var j = 0; j < comparativa.length; j++){
+            comparativa_actual = comparativa[j];
+            var region_percentage = comparativa_actual.percentage;
+            saveRegionCourse(comparativa_actual.name, j, region_percentage, arrRegions);
+
+            // console.log('Comparativa actual', region_percentage);
+        }
     }
-    }
-    console.log('Nombre de los cursos', nombre_curso);
+    // console.log('Nombre de los cursos', nombre_curso);
     /// console.log("Array regions");
     
     arrGraph.push(nombre_curso);
