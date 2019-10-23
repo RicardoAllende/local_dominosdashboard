@@ -1333,47 +1333,47 @@ function createCardGrahp_horizontalBar(container,title, c_percentage_region, id 
 
 //Función para pintar una card donde se comparen los cursos, en la primera pestaña
 function seccion_d_imprimirGraficaComparativaCursos() {
-    document.getElementById("graficas_seccion_d").innerHTML = "<div class='col-sm-6 espacio'>" +
-        "<div class='card bg-gray border-0 m-2'>" +
-        "<div class='align-items-end'>" +
-        "<div class='fincard text-center'>" +
-        "<a href=''>Grafica comparativa cursos</a>" +
-        "</div>" +
-        "</div>" +
-        "<div class='card esp'>" +
-        "<div class='row espr'>" +
+    // document.getElementById("graficas_seccion_d").innerHTML = "<div class='col-sm-6 espacio'>" +
+    //     "<div class='card bg-gray border-0 m-2'>" +
+    //     "<div class='align-items-end'>" +
+    //     "<div class='fincard text-center'>" +
+    //     "<a href=''>Grafica comparativa cursos</a>" +
+    //     "</div>" +
+    //     "</div>" +
+    //     "<div class='card esp'>" +
+    //     "<div class='row espr'>" +
 
-        "</div>" +
-        "</div>" +
-        "<div class='chart_ bg-faded m-2' id='grafica_d'></div>"
-    "</div>" +
-        "</div>";
+    //     "</div>" +
+    //     "</div>" +
+    //     "<div class='chart_ bg-faded m-2' id='grafica_d'></div>"
+    // "</div>" +
+    //     "</div>";
 
-    return c3.generate({
-        data: {
-            columns: [
-                ['Aprobados', 30, 200, 200, 400, 150, 250],
-                ['No Aprobados', 130, 100, 100, 200, 150, 50],
-                ['Inscritos', 230, 200, 200, 300, 250, 250]
-            ],
-            type: 'bar',
-            colors: {
-                Inscritos: '#a5a3a4',
-                Aprobados: '#016392',
-                'No Aprobados': '#d70c20'
+    // return c3.generate({
+    //     data: {
+    //         columns: [
+    //             ['Aprobados', 30, 200, 200, 400, 150, 250],
+    //             ['No Aprobados', 130, 100, 100, 200, 150, 50],
+    //             ['Inscritos', 230, 200, 200, 300, 250, 250]
+    //         ],
+    //         type: 'bar',
+    //         colors: {
+    //             Inscritos: '#a5a3a4',
+    //             Aprobados: '#016392',
+    //             'No Aprobados': '#d70c20'
 
-            },
-            groups: [
-                ['Aprobados', 'No Aprobados']
-            ]
-        },
-        bindto: "#grafica_d",
-        // grid: {
-        //     y: {
-        //         lines: [{value:0}]
-        //     }
-        // }
-    });
+    //         },
+    //         groups: [
+    //             ['Aprobados', 'No Aprobados']
+    //         ]
+    //     },
+    //     bindto: "#grafica_d",
+    //     // grid: {
+    //     //     y: {
+    //     //         lines: [{value:0}]
+    //     //     }
+    //     // }
+    // });
 
 }
 
