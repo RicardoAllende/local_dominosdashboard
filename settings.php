@@ -77,11 +77,11 @@ if ($hassiteconfig) {
                 $setting = new admin_setting_configselect($name, $title, $description, 0, $completions);
                 $page->add($setting);
                 
-                // $name = $ldm_pluginname . '/course_main_chart_' . $course->id;
-                // $title = get_string('chart', $ldm_pluginname);
-                // $description = get_string('chart' . '_desc', $ldm_pluginname);        
-                // $setting = new admin_setting_configselect($name, $title, $description, null, $charts);
-                // $page->add($setting);
+                $name = $ldm_pluginname . '/course_main_chart_' . $course->id;
+                $title = get_string('chart', $ldm_pluginname);
+                $description = get_string('chart' . '_desc', $ldm_pluginname);        
+                $setting = new admin_setting_configselect($name, $title, $description, null, $charts);
+                $page->add($setting);
 
                 // $name = $ldm_pluginname . '/course_main_chart_color_' . $course->id;
                 // $title = get_string('course_main_chart_color', $ldm_pluginname);

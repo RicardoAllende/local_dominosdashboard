@@ -1113,16 +1113,16 @@ function seccion_a_imprimirGraficaComparativaCursos(container, respuesta) {
             var region_percentage = comparativa_actual.percentage;
             saveRegionCourse(comparativa_actual.name, j, region_percentage, arrRegions);
 
-            console.log('Comparativa actual', region_percentage);
+            // console.log('Comparativa actual', region_percentage);
         }
     }
-    console.log('Nombre de los cursos', nombre_curso);
+    // console.log('Nombre de los cursos', nombre_curso);
     /// console.log("Array regions");
 
     arrGraph.push(nombre_curso);
     arrGraph.push(arrRegions);
-    createCardGrahp_comparative(container, respuesta.name, arrGraph, i);
-
+    // createCardGrahpRegions_comparative(container,respuesta.sections.seccion_a.name, arrGraph, i )
+    
     // document.getElementById("graficas_seccion_a").innerHTML = "<div class='col-sm-12 espacio'>" +
     // "<div class='card bg-gray border-0 m-2'>" +
     // "<div class='align-items-end'>" +
