@@ -1120,8 +1120,11 @@ function seccion_a_imprimirGraficaComparativaCursos(container, respuesta) {
     /// console.log("Array regions");
 
     arrGraph.push(nombre_curso);
-    arrGraph.push(arrRegions);
-    // createCardGrahpRegions_comparative(container,respuesta.sections.seccion_a.name, arrGraph, i )
+    for(i=0; i<arrRegions.length; i++){
+        arrGraph.push(arrRegions[i]);
+    }
+    //arrGraph.push(arrRegions);
+    createCardGrahp_comparative(container,respuesta.name, arrGraph, i )
     
     // document.getElementById("graficas_seccion_a").innerHTML = "<div class='col-sm-12 espacio'>" +
     // "<div class='card bg-gray border-0 m-2'>" +
@@ -1189,7 +1192,8 @@ function createCardGrahp_comparative(container, title, arrGraph, id) {
 
     $(container).append(cardKPIRegion);
 
-    //console.log(nombre_region);
+    console.log('arrGraph');
+    console.log(arrGraph);
     return c3.generate({
         data: {
             x: 'x',
@@ -1536,7 +1540,7 @@ function createCardGrahp(container, title, region_avance, nombre_region, kpi_com
 
     $(container).append(cardKPIRegion);
 
-    console.log(nombre_region);
+    //console.log(nombre_region);
     return c3.generate({
         data: {
             x: 'x',
