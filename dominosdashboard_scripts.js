@@ -1212,7 +1212,7 @@ function createCardGrahp_gauge(container, title, c_aprobados, id) {
             ],
             type: 'gauge',
             colors: {
-                'Porcentaje Aprobados': '#FFB347',
+                'Porcentaje Aprobados': '#ed403c',
 
             },
         },

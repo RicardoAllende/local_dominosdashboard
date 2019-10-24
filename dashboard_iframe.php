@@ -84,31 +84,26 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     <div class="" id="ldm_tab_1"></div>
                     <!-- <div class="" id="contenedor_cursos"></div> -->
-                    <div class="col-sm-12" id="seccion_a">                    
-                        <h2>Grafica comparativa general</h2>                    
+                    <div class="col-sm-12" id="seccion_a">                                           
                         <div id="graficas_seccion_a"></div>                        
                     </div>
 
-                    <div class="col-sm-12" id="seccion_b">
-                        <h2>Graficas de avance</h2>
+                    <div class="col-sm-12" id="seccion_b">                       
                         <div id="graficas_seccion_b"></div>
                     </div>
 
-                    <div class="col-sm-12" id="seccion_c">
-                        <h2>Grafica comparativa de ruta dominos</h2>
+                    <div class="col-sm-12" id="seccion_c">                        
                         <div id="graficas_seccion_c"></div>
                     </div>
 
-                    <div class="col-sm-12" id="seccion_d">
-                        <h2>Grafica comparativa cursos</h2>                    
+                    <div class="col-sm-12" id="seccion_d">                                          
                         <div id="graficas_seccion_d"></div>                        
                     </div>
 
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     <div class="" id="ldm_tab_2"></div>
-                    <div class="col-sm-12" id="seccion_detalles_entrenamiento">
-                        <h2>seccion_detalles_entrenamiento</h2>
+                    <div class="col-sm-12" id="seccion_detalles_entrenamiento">                        
                         <div id="graficas_seccion_detalles_entrenamiento"></div>
                     </div>
                 </div>
