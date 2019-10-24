@@ -153,40 +153,40 @@
 .txti_aprobados {
     margin: 5px;
     font-weight: 700;
-    color: green;
+    color: #016392;
 }
 
 .txti_noaprobados {
     margin: 5px;
     font-weight: 700;
-    color: red;
+    color: #d70c20;
 }
 
 .txti_inscritos {
     margin: 5px;
     font-weight: 700;
-    color: blue;
+    color: #a5a3a4;
 }
 
 /*Numeros de las 3 card que aparecen dentro de la card */
 .txtnum_aprobados{
     font-size: 20px;
     padding-bottom: 15px;
-    color: green;
+    color: #016392;
     font-size: 0.8rem;
 }
 
 .txtnum_noaprobados{
     font-size: 20px;
     padding-bottom: 15px;
-    color: red;
+    color: #d70c20;
     font-size: 0.8rem;
 }
 
 .txtnum_inscritos {
     font-size: 20px;
     padding-bottom: 15px;
-    color: blue;
+    color: #a5a3a4;
     font-size: 0.8rem;
 }
 
@@ -309,4 +309,8 @@
 
 .sin_filtro{
     padding-left: 3%;
+}
+
+.c3-chart-arcs-background{
+    fill: #c93c20!important;
 }

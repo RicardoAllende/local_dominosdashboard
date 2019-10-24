@@ -107,7 +107,12 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     <div class="" id="ldm_tab_2"></div>
+                    <div class="col-sm-12" id="seccion_detalles_entrenamiento">
+                        <h2>seccion_detalles_entrenamiento</h2>
+                        <div id="graficas_seccion_detalles_entrenamiento"></div>
+                    </div>
                 </div>
+
                 <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                     <div class="" id="ldm_tab_3"></div>
                     <div class="col-sm-12" id="kpi_region">                        
@@ -179,6 +184,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                     obtenerInformacion();
                 }, 500);
             }
+            
         }
         pestanas = [
             '',
@@ -240,20 +246,33 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 //render_div = "#ldm_tab_" + currentTab;
                 //var cosa = generarGraficasTodosLosCursos(render_div, respuesta, tituloPestana);
                 console.log("currentTab: " + currentTab);
-                if(currentTab == 3){
-                    kpi_region('#contenedor_kpi', respuesta.result)
+                if(currentTab == 1){
+                    $('#graficas_seccion_a').empty();
+                    $('#graficas_seccion_b').empty();
+                    $('#graficas_seccion_c').empty();
+                    $('#graficas_seccion_d').empty();
+                    seccion_a_imprimirGraficaComparativaCursos('#graficas_seccion_a',respuesta);
+                    seccion_b_imprimirGraficaComparativaCursos('#graficas_seccion_b',respuesta);
+                    seccion_c_imprimirGraficaComparativaCursos('#graficas_seccion_c',respuesta);
+                    seccion_d_imprimirGraficaComparativaCursos('#graficas_seccion_d',respuesta);
                 }
-                seccion_a_imprimirGraficaComparativaCursos('#graficas_seccion_a',respuesta);
-                seccion_b_imprimirGraficaComparativaCursos('#graficas_seccion_b',respuesta);
-                seccion_c_imprimirGraficaComparativaCursos('#graficas_seccion_c',respuesta);
-                seccion_d_imprimirGraficaComparativaCursos('#graficas_seccion_d',respuesta);
+                if(currentTab == 2){
+                    $('#graficas_seccion_detalles_entrenamiento').empty();
+                    detalles_entrenamiento('#graficas_seccion_detalles_entrenamiento',respuesta);
+                }
+                if(currentTab == 3){
+                    $('#contenedor_kpi').empty();
+                    kpi_region('#contenedor_kpi', respuesta.result);
+                }
+                ocultarLoader();
+                
 
 
-                setTimeout(function(){
-                    if(cosa == true){
-                        showPage("ldm_tab_" + currentTab);
-                    }
-                },1000)
+                // setTimeout(function(){
+                //     if(cosa == true){
+                //         showPage("ldm_tab_" + currentTab);
+                //     }
+                // },1000)
                 //imprimirGraficaComparativaCursos();
                 //imprimirComparativaFiltrosDeCurso('#comparativa_region', informacion_del_curso.data.region_comparative);    
                 
