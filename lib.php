@@ -1015,14 +1015,20 @@ function local_dominosdashboard_get_enrolled_users_ids(int $courseid, $fecha_ini
     $query = "( SELECT DISTINCT __user__.id FROM {user} AS __user__
     JOIN {user_enrolments} AS __ue__ ON __ue__.userid = __user__.id
     JOIN {enrol} __enrol__ ON (__enrol__.id = __ue__.enrolid AND __enrol__.courseid = {$courseid})
-    WHERE __ue__.status = 0 AND __user__.deleted = 0 {$filtro_fecha} AND __user__.suspended = 0 {$where} AND __user__.id NOT IN 
-    (SELECT DISTINCT __role_assignments__.userid as userid
-        FROM {course} AS __course__
-        LEFT JOIN {context} AS __context__ ON __course__.id = __context__.instanceid
-        JOIN {role_assignments} AS __role_assignments__ ON __role_assignments__.contextid = __context__.id
-        WHERE __course__.id = {$courseid}
-        AND __role_assignments__.roleid NOT IN (5) # No students
-    ) )";
+    WHERE __ue__.status = 0 AND __user__.deleted = 0 {$filtro_fecha} AND __user__.suspended = 0 {$where} )";
+
+    // Consulta con sección de estudiantes solamente
+    // $query = "( SELECT DISTINCT __user__.id FROM {user} AS __user__
+    // JOIN {user_enrolments} AS __ue__ ON __ue__.userid = __user__.id
+    // JOIN {enrol} __enrol__ ON (__enrol__.id = __ue__.enrolid AND __enrol__.courseid = {$courseid})
+    // WHERE __ue__.status = 0 AND __user__.deleted = 0 {$filtro_fecha} AND __user__.suspended = 0 {$where} AND __user__.id NOT IN 
+    // (SELECT DISTINCT __role_assignments__.userid as userid
+    //     FROM {course} AS __course__
+    //     LEFT JOIN {context} AS __context__ ON __course__.id = __context__.instanceid
+    //     JOIN {role_assignments} AS __role_assignments__ ON __role_assignments__.contextid = __context__.id
+    //     WHERE __course__.id = {$courseid}
+    //     AND __role_assignments__.roleid NOT IN (5) # No students
+    // ) )";
 
     return $query;
 
