@@ -1547,7 +1547,7 @@ function local_dominosdashboard_get_info_from_cache(int $courseid, array $params
     // return false;
 }
 
-function local_dominosdashboard_date_to_time(string $date){
+function local_dominosdashboard_date_to_time($date){
     try{
         if(empty($date)){
             return $date;
