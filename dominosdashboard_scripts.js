@@ -1367,7 +1367,8 @@ function kpi_region(container, respuesta) {
             region_avance.push(kpi_name_region.percentage);
             kpi_comparative.push(respuesta[i].kpi.status);
         }
-        createCardGrahp(container, respuesta[i].kpi_name + " vs " + respuesta[i].course_name, region_avance, nombre_region, kpi_comparative, i)
+       
+        createCardGrahp(container, respuesta[i].kpi_name + " vs " + respuesta[i].course_name.toUpperCase(), region_avance, nombre_region, kpi_comparative, i)
     }
 }
 
