@@ -531,7 +531,7 @@ $PAGE->set_context($context_system);
         }
         var comparativaMaxima = 20;
         var clase;
-        function compararFiltros(filtro_seleccionado){
+        function compararFiltros(filtro_seleccionado, courseid){
             mostrarLoader();
             informacion = $('#filter_form').serializeArray();
             informacion.push({ name: 'request_type', value: 'course_comparative' });
