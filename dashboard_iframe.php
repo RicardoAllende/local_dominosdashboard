@@ -92,7 +92,10 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                         <div id="graficas_seccion_b"></div>
                     </div>
 
-                    <div class="col-sm-12" id="seccion_c">                        
+                    <div class="col-sm-12" id="seccion_c">
+                        <div style="text-align: center;">
+                        <h3 class="titulog">Ruta Dominos</h3>
+                        </div>                        
                         <div id="graficas_seccion_c"></div>
                     </div>
 

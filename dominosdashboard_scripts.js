@@ -818,7 +818,7 @@ function peticionFiltros(info) {
                                 ${muestraComparativas ? `<span class="btn btn-link text-right texto-filtro" onclick="compararFiltros('${clave}')" style="color: white;font-size: 0.8rem;">Comparar</span>` : ``}
                             </h5>
                         </div>
-                        <div id="${collapse_id}" class="collapse" aria-labelledby="${heading_id}" data-parent="#contenedor_filtros">
+                        <div id="${collapse_id}" class="collapse" aria-labelledby="${heading_id}" data-parent="#contenedor_filtros" style="text-align: left;">
                             <div class="card-body subgrupo-filtro" id='${subfiltro_id}'></div>
                         </div>
                     </div>`);
@@ -1192,7 +1192,7 @@ function createCardGrahp_gauge(container, title, c_aprobados, id) {
         "<div class='card bg-gray border-0 m-2'>" +
             "<div class='align-items-end'>" +
                 "<div class='fincard text-center'>" +
-                    "<a href='detalle_curso_iframe.php?id='>" + title + "</a>" +
+                    "<a href='#'>" + title + "</a>" +
                 "</div>" +
             "</div>" +
             "<div class='card esp'>" +
@@ -1415,7 +1415,7 @@ function createCardGrahp(container, title, region_avance, nombre_region, kpi_com
 function detalles_entrenamiento(container, respuesta) {
     for (i = 0; i < respuesta.length; i++) {
         var cursos_entrenamiento = [];
-        cursos_entrenamiento.push('x');
+        // cursos_entrenamiento.push('x');
         var inscritos_entrenamiento = [];
         inscritos_entrenamiento.push('Inscritos');
         var aprobados_entrenamiento = [];
@@ -1470,17 +1470,17 @@ function createCardGrahp_entrenamiento(container, title, aprobados, no_aprobados
     
     return c3.generate({
         data: {
-                    x: 'x',
+                    // x: 'x',
                     columns: [
-                        cursos_entrenamiento,
-                        inscritos_entrenamiento,
+                        // cursos_entrenamiento,
+                        // inscritos_entrenamiento,
                         aprobados_entrenamiento,
                         no_aprobados_entrenamiento
                     ],
-                    groups: [
-                        ['Aprobados', 'No Aprobados']
-                    ],
-                    type: 'bar',
+                    // groups: [
+                    //     ['Aprobados', 'No Aprobados']
+                    // ],
+                    type: 'pie',
                     colors: {
                         Inscritos: '#a5a3a4',
                         Aprobados: '#016392',
@@ -1488,16 +1488,16 @@ function createCardGrahp_entrenamiento(container, title, aprobados, no_aprobados
         
                     },
                 },
-                axis: {
-                    x: {
-                        type: 'category' // this needed to load string x value
-                    }
-                },
+                // axis: {
+                //     x: {
+                //         type: 'category' // this needed to load string x value
+                //     }
+                // },
                 bindto: "#graph_entrenamiento" + id,
-                grid: {
-                    y: {
-                        lines: [{ value: 0 }]
-                    }
-                }
+                // grid: {
+                //     y: {
+                //         lines: [{ value: 0 }]
+                //     }
+                // }
     });
 }
