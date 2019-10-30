@@ -676,7 +676,7 @@ function local_dominosdashboard_get_count_users($userids){
     return $DB->count_records_sql("SELECT count(*) FROM {user} as _us_ WHERE 1 = 1 {$whereids}", $userids->params);
 }
 
-function local_dominosdashboard_get_course_comparative(int $courseid, array $params){
+function local_dominosdashboard_get_course_comparative($courseid, array $params){
     $response = new stdClass();
     global $DB;
     $course = $DB->get_record('course', array('id' => $courseid), 'id, shortname, fullname');

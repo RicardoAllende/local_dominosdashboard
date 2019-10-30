@@ -72,7 +72,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
         case 'course_comparative':
             if(!empty($_POST['courseid'])){
                 if(isset($_POST['selected_filter'])){
-                    $courseid = $_POST['courseid'];
+                    $courseid = intval($_POST['courseid']);
                     die(local_dominosdashboard_format_response(local_dominosdashboard_get_course_comparative($courseid, $params = $_POST)));
                 }else{
                     die(local_dominosdashboard_error_response("selected_filter (string) not found"));                
