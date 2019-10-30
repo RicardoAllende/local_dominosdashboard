@@ -1177,15 +1177,36 @@ function createCardGrahp_comparative(container, title, arrGraph, id) {
 
 //Función para imprimir el porcentaje de aprobación de cada curso
 function seccion_b_imprimirGraficaComparativaCursos(container, respuesta) {
+    
     for (var i = 0; i < respuesta.sections.seccion_b.courses.length; i++) {
+        //if(respuesta.sections.seccion_b.courses[i].enrolled_users>0){
         var c_aprobados = [];
         c_aprobados.push('Porcentaje Aprobados');
         var percentage_aprobados = respuesta.sections.seccion_b.courses[i];
         c_aprobados.push(percentage_aprobados.percentage);
         createCardGrahp_gauge(container, respuesta.sections.seccion_b.courses[i].title, c_aprobados, i)
-    }
-    
+    //}
+    //else{
+    //     var card_gauge = "<div class='col-sm-6 espacio'>" +
+    //     "<div class='card bg-gray border-0 m-2'>" +
+    //         "<div class='align-items-end'>" +
+    //             "<div class='fincard text-center'>" +
+    //                 "<a href='#'>" + respuesta.sections.seccion_b.courses[i].title + "</a>" +
+    //             "</div>" +
+    //         "</div>" +
+    //         "<div class='card esp'>" +
+    //             "<div class='row espr'>" +
+    //             "</div>" +
+    //         "</div>" +
+    //         "<div class='chart_  bg-faded m-2' id='grafica_gauge" + i + "'>No hay informacion</div>"
+    //     "</div>" +
+    //     "</div>";
+
+    // $(container).append(card_gauge);
+    // }    
+    }    
 }
+
 function createCardGrahp_gauge(container, title, c_aprobados, id) {
 
     var card_gauge = "<div class='col-sm-6 espacio'>" +
@@ -1416,6 +1437,7 @@ var cursos;
 function detalles_entrenamiento(container, respuesta) {
     cursos = Array();
     for (i = 0; i < respuesta.length; i++) {
+        if(respuesta[i].enrolled_users>0){
         cursos.push(respuesta[i]);
         var cursos_entrenamiento = [];
         // cursos_entrenamiento.push('x');
@@ -1430,6 +1452,7 @@ function detalles_entrenamiento(container, respuesta) {
         aprobados_entrenamiento.push(respuesta[i].approved_users);
         no_aprobados_entrenamiento.push(respuesta[i].not_approved_users);
         createCardGrahp_entrenamiento(container, respuesta[i].title, respuesta[i].approved_users, respuesta[i].not_approved_users, respuesta[i].enrolled_users, cursos_entrenamiento, inscritos_entrenamiento, aprobados_entrenamiento, no_aprobados_entrenamiento, i);
+        }
     }
 }
 

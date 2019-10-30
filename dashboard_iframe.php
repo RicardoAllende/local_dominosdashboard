@@ -108,6 +108,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                     <div class="" id="ldm_tab_2"></div>
                     <div class="col-sm-12" id="seccion_detalles_entrenamiento">                        
                         <div id="graficas_seccion_detalles_entrenamiento"></div>
+                        <div class="col-sm-12" id="ldm_comparativas"></div>
                     </div>
                 </div>
 
