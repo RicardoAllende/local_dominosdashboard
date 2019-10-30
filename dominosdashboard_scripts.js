@@ -1412,8 +1412,11 @@ function createCardGrahp(container, title, region_avance, nombre_region, kpi_com
     });
 }
 
+var cursos;
 function detalles_entrenamiento(container, respuesta) {
+    cursos = Array();
     for (i = 0; i < respuesta.length; i++) {
+        cursos.push(respuesta[i]);
         var cursos_entrenamiento = [];
         // cursos_entrenamiento.push('x');
         var inscritos_entrenamiento = [];
@@ -1500,4 +1503,87 @@ function createCardGrahp_entrenamiento(container, title, aprobados, no_aprobados
                 //     }
                 // }
     });
+}
+
+var comparativaMaxima = 20;
+var clase;
+function compararFiltros(filtro_seleccionado, courseid) {
+    mostrarLoader();
+    
+    clase = ".indicator_" + filtro_seleccionado;
+    elementosAComparar = $(clase).filter(':checked').length;
+    if (elementosAComparar == 0) {
+        elementosAComparar = $(clase).length;
+    }
+    if (elementosAComparar > comparativaMaxima) {
+        if (!confirm('Usted está comparando más de ' + comparativaMaxima + ' elementos, ¿desea modificar su selección?')) {
+            return false;
+        }
+    }
+    loaderComparar();
+    for (let index = 0; index < cursos.length; index++) {
+        const idcurso = cursos[index];
+        informacion = $('#filter_form').serializeArray();
+        informacion.push({ name: 'request_type', value: 'course_comparative' });
+        informacion.push({ name: 'selected_filter', value: filtro_seleccionado });
+        informacion.push({ name: 'courseid', value: idcurso });
+        $('#ldm_comparativas').html('');
+    
+        dateBeginingComparacion = Date.now();
+        $.ajax({
+            type: "POST",
+            url: "services.php",
+            data: informacion,
+            dataType: "json"
+        })
+            .done(function (response) {
+                comparativa = JSON.parse(JSON.stringify(response));
+                console.log('Información para crear comparativa: ', comparativa);
+                imprimirComparativaFiltrosDeCurso('#ldm_comparativas', comparativa.data);
+                dateEnding = Date.now();
+                console.log(`Tiempo de respuesta de API al obtener json para comparativas ${dateEnding - dateBeginingComparacion} ms`);
+                ocultarLoader();
+            })
+            .fail(function (error, error2) {
+                // isCourseLoading = false;
+                console.log(error);
+                console.log(error2);
+                ocultarLoader();
+            });
+    }
+}
+/**
+ * @param _bindto string selector con sintaxis jquery donde se imprimirán las gráficas
+ */
+function imprimirComparativaFiltrosDeCurso(_bindto, informacion) {
+    if (!esVacio(informacion.comparative)) {
+        comparative = informacion.comparative;
+        columns = Array();
+        comparativas++;
+        id_para_Grafica = 'ldm_comparativa_' + comparativas + '_' + informacion.key;
+        insertarTituloSeparador(_bindto, 'Comparativa ' + informacion.filter);
+        $(_bindto).append(`<div class='col-sm-12'><div id="${id_para_Grafica}"></div></div><br>`);
+        // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
+        id_para_Grafica = '#' + id_para_Grafica;
+        for (var j = 0; j < comparative.length; j++) {
+            datos_a_comparar = comparative[j];
+            columns.push([datos_a_comparar.name, datos_a_comparar.percentage]);
+        }
+        data = { columns: columns, type: 'bar' };
+        var chart = c3.generate({
+            data: data,
+            axis: {
+                rotated: true
+            },
+            tooltip: {
+                format: {
+                    title: function (d) { return 'Porcentaje de aprobación'; },
+                }
+            },
+            bindto: id_para_Grafica,
+        });
+    } else {
+        console.log('Error de imprimirComparativaFiltrosDeCurso', informacion);
+        $(_bindto).html('');
+    }
 }
