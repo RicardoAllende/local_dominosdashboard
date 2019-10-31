@@ -117,7 +117,8 @@ DEFINE("COMPLETION_BY_ACTIVITY", 5);
 DEFINE("COMPLETION_BY_AVG", 6);
 // DEFINE("COMPLETION_BY_ATTENDANCE", 5);
 
-DEFINE('DOMINOSDASHBOARD_INDICATORS', 'regiones/distritos/entrenadores/tiendas/puestos/ccosto');
+DEFINE('DOMINOSDASHBOARD_INDICATORS', 'regiones/entrenadores/distritos/tiendas/puestos');
+// DEFINE('DOMINOSDASHBOARD_INDICATORS', 'regiones/distritos/entrenadores/tiendas/puestos/ccosto');
 DEFINE('DOMINOSDASHBOARD_CHARTS', 
     [
         'bar' => 'Barras',
@@ -199,20 +200,20 @@ function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql =
         $whereEmailProvider = " "; 
     }
     global $DB;
-    if($key == 'ccosto'){
-        $ccomfield = get_config('local_dominosdashboard', "filtro_idccosto");
-        if(!empty($ccomfield)){
-            if(!empty($allow_empty)){
-                $_allow_empty = " AND uid_.data != '' AND uid_.data IS NOT NULL ";
-            }else{
-                $_allow_empty = "";
-            }
-            $query = "SELECT distinct data as menu_id, COALESCE((SELECT data from {user_info_data} as uid_ WHERE uid_.fieldid = {$ccomfield} AND uid_.userid = uid.userid {$_allow_empty} LIMIT 1), '') as menu_value
-             FROM {user_info_data} uid where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} {$whereEmailProvider} group by menu_id HAVING menu_value != '' ORDER BY menu_value ASC";
-            $result = $DB->get_records_sql_menu($query, $query_params);
-            return $result;
-        }
-    }
+    // if($key == 'ccosto'){
+    //     $ccomfield = get_config('local_dominosdashboard', "filtro_idccosto");
+    //     if(!empty($ccomfield)){
+    //         if(!empty($allow_empty)){
+    //             $_allow_empty = " AND uid_.data != '' AND uid_.data IS NOT NULL ";
+    //         }else{
+    //             $_allow_empty = "";
+    //         }
+    //         $query = "SELECT distinct data as menu_id, COALESCE((SELECT data from {user_info_data} as uid_ WHERE uid_.fieldid = {$ccomfield} AND uid_.userid = uid.userid {$_allow_empty} LIMIT 1), '') as menu_value
+    //          FROM {user_info_data} uid where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} {$whereEmailProvider} group by menu_id HAVING menu_value != '' ORDER BY menu_value ASC";
+    //         $result = $DB->get_records_sql_menu($query, $query_params);
+    //         return $result;
+    //     }
+    // }
     $query = "SELECT data, data as _data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} {$whereEmailProvider} group by data order by data ASC ";
     return $DB->get_records_sql_menu($query, $query_params);
 }

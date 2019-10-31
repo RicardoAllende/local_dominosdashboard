@@ -1248,13 +1248,15 @@ function createCardGrahp_gauge(container, title, c_aprobados, id) {
 
 function seccion_c_imprimirGraficaComparativaCursos(container, respuesta) {
     r_seccionc = respuesta.sections.seccion_c;
-    for (var i = 0; i < r_seccionc.courses.length; i++) {
+    _courses = r_seccionc.courses;
+    for (var i = 0; i < _courses.length; i++) {
+        cursoActual = _courses[i];
         var c_percentage_region = Array();
-        var regiones = r_seccionc.courses[i];
+        var regiones = _courses[i];
         for (var j = 0; j < regiones.region_comparative.comparative.length; j++) {
             c_percentage_region.push([regiones.region_comparative.comparative[j].name, parseInt(regiones.region_comparative.comparative[j].percentage)]);
         }
-        createCardGrahp_horizontalBar(container, r_seccionc.name, c_percentage_region, i);
+        createCardGrahp_horizontalBar(container, cursoActual.title, c_percentage_region, i);
     }    
 }
 
@@ -1264,7 +1266,7 @@ function createCardGrahp_horizontalBar(container, title, c_percentage_region, id
         "<div class='card bg-gray border-0 m-2'>" +
             "<div class='align-items-end'>" +
                 "<div class='fincard text-center'>" +
-                    "<a href=''>" + title + "</a>" +
+                    "<a href='#'>" + title + "</a>" +
                 "</div>" +
             "</div>" +
             "<div class='card esp'>" +
@@ -1596,7 +1598,9 @@ function imprimirComparativaFiltrosDeCurso(_bindto, informacion) {
         columns = Array();
         comparativas++;
         id_para_Grafica = 'ldm_comparativa_' + comparativas + '_' + informacion.key;
-        insertarTituloSeparador(_bindto, 'Comparativa ' + informacion.filter);
+        titulo  = informacion.fullname  + ' comparativa ' + informacion.filter;
+        titulo = titulo.toUpperCase();
+        insertarTituloSeparador(_bindto, titulo);
         $(_bindto).append(`<div class='col-sm-12'><div id="${id_para_Grafica}"></div></div><br>`);
         // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
         id_para_Grafica = '#' + id_para_Grafica;
