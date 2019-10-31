@@ -92,7 +92,7 @@ $PAGE->set_context($context_system);
         var isFilterLoading = false;
         var trabajoPendiente = false;
         var comparativa;
-        imprimirComparativaFiltrosDeCurso('#ldm_comparativas');
+        // imprimirComparativaFiltrosDeCurso('#ldm_comparativas');
         var comparativas = 0;
         document.addEventListener("DOMContentLoaded", function () {
             $('.dominosdashboard-ranking').hide();
@@ -548,6 +548,7 @@ $PAGE->set_context($context_system);
             }
             loaderComparar();
             dateBeginingComparacion = Date.now();
+            console.log('Información de comparativa detalle_curso_iframe', informacion);
             $.ajax({
                 type: "POST",
                 url: "services.php",

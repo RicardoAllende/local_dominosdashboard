@@ -225,7 +225,8 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
             informacion = $('#filter_form').serializeArray();
             informacion.push({name: 'request_type', value: 'course_list'});
             informacion.push({name: 'type', value: currentTab});
-            dateBegining = Date.now();
+            dateBegining_courses = Date.now();
+            $('#ldm_comparativas').html(''); // Se eliminan las gráficas comparativas anteriormente creadas
             // $('#local_dominosdashboard_content').html('Cargando la información');
             $.ajax({
                 type: "POST",
@@ -239,9 +240,9 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 respuestaArr = JSON.parse(JSON.stringify(data));
                 respuesta = respuestaArr.data;
                 console.log('Imprimiendo la respuesta', respuesta);
-                dateEnding = Date.now();
+                dateEnding_courses = Date.now();
                 // $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
-                console.log(`Tiempo de respuesta de API al obtener json para listado de cursos ${dateEnding - dateBegining} ms`);
+                console.log(`Tiempo de respuesta de API al obtener json para listado de cursos ${dateEnding_courses - dateBegining_courses} ms`);
                 //render_div = "#ldm_tab_" + currentTab;
                 //var cosa = generarGraficasTodosLosCursos(render_div, respuesta, tituloPestana);
                 console.log("currentTab: " + currentTab);

@@ -786,6 +786,11 @@ function peticionFiltros(info) {
     //     muestraComparativas = false;
     // }
     muestraComparativas = true; // Se mostrarán comparativas a todos los cursos por defecto
+    // if(typeof currentTab === 'number'){
+    //     if(currentTab){
+
+    //     }
+    // }
     $.ajax({
         type: "POST",
         url: "services.php",
@@ -1367,6 +1372,7 @@ function createCardGrahp_group(container, title, cursos_d, inscritos_d, aprobado
 
 //Funcion de kpi por region en la pestaña 3
 function kpi_region(container, respuesta) {
+    ids_de_cursos = Array();
 
     console.log("Respuesta ");
     console.log(respuesta);
@@ -1374,6 +1380,9 @@ function kpi_region(container, respuesta) {
 
 
     for (var i = 0; i < respuesta.length; i++) {
+        // elementoDeComparacion = respuesta[i];
+        // cursoActual = elementoDeComparacion.course_information;
+        // if(ids_de_cursos.indexOf(cursoActual))
         var nombre_region = [];
         var region_avance = [];
         var kpi_comparative = [];
@@ -1433,31 +1442,33 @@ function createCardGrahp(container, title, region_avance, nombre_region, kpi_com
     });
 }
 
-var cursos;
+var ids_de_cursos;
 function detalles_entrenamiento(container, respuesta) {
+    ids_de_cursos = Array();
     cursos = Array();
     for (i = 0; i < respuesta.length; i++) {
-        if(respuesta[i].enrolled_users>0){
-        cursos.push(respuesta[i]);
-        var cursos_entrenamiento = [];
-        // cursos_entrenamiento.push('x');
-        var inscritos_entrenamiento = [];
-        inscritos_entrenamiento.push('Inscritos');
-        var aprobados_entrenamiento = [];
-        aprobados_entrenamiento.push('Aprobados');
-        var no_aprobados_entrenamiento = [];
-        no_aprobados_entrenamiento.push('No Aprobados');
-        cursos_entrenamiento.push(respuesta[i].title);
-        inscritos_entrenamiento.push(respuesta[i].enrolled_users);
-        aprobados_entrenamiento.push(respuesta[i].approved_users);
-        no_aprobados_entrenamiento.push(respuesta[i].not_approved_users);
-        createCardGrahp_entrenamiento(container, respuesta[i].title, respuesta[i].approved_users, respuesta[i].not_approved_users, respuesta[i].enrolled_users, cursos_entrenamiento, inscritos_entrenamiento, aprobados_entrenamiento, no_aprobados_entrenamiento, i);
+        cursoActual = respuesta[i];
+        if(respuesta[i].enrolled_users > 0){
+            ids_de_cursos.push(cursoActual.id);
+            cursos.push(respuesta[i]);
+            var cursos_entrenamiento = [];
+            // cursos_entrenamiento.push('x');
+            var inscritos_entrenamiento = [];
+            inscritos_entrenamiento.push('Inscritos');
+            var aprobados_entrenamiento = [];
+            aprobados_entrenamiento.push('Aprobados');
+            var no_aprobados_entrenamiento = [];
+            no_aprobados_entrenamiento.push('No Aprobados');
+            cursos_entrenamiento.push(respuesta[i].title);
+            inscritos_entrenamiento.push(respuesta[i].enrolled_users);
+            aprobados_entrenamiento.push(respuesta[i].approved_users);
+            no_aprobados_entrenamiento.push(respuesta[i].not_approved_users);
+            createCardGrahp_entrenamiento(container, respuesta[i].title, respuesta[i].approved_users, respuesta[i].not_approved_users, respuesta[i].enrolled_users, aprobados_entrenamiento, no_aprobados_entrenamiento, i);
         }
     }
 }
 
-function createCardGrahp_entrenamiento(container, title, aprobados, no_aprobados, inscritos, cursos_entrenamiento, inscritos_entrenamiento, aprobados_entrenamiento, no_aprobados_entrenamiento, id) {
-    
+function createCardGrahp_entrenamiento(container, title, aprobados, no_aprobados, inscritos, aprobados_entrenamiento, no_aprobados_entrenamiento, id) {
     var cardEntrenamiento = "<div class='col-sm-6 espacio'>" +
         "<div class='card bg-gray border-0 m-2'>" +
             "<div class='align-items-end'>" +
@@ -1530,7 +1541,7 @@ function createCardGrahp_entrenamiento(container, title, aprobados, no_aprobados
 
 var comparativaMaxima = 20;
 var clase;
-function compararFiltros(filtro_seleccionado, courseid) {
+function compararFiltros(filtro_seleccionado) {
     mostrarLoader();
     
     clase = ".indicator_" + filtro_seleccionado;
@@ -1544,12 +1555,13 @@ function compararFiltros(filtro_seleccionado, courseid) {
         }
     }
     loaderComparar();
-    for (let index = 0; index < cursos.length; index++) {
-        const idcurso = cursos[index];
+    for (var index = 0; index < ids_de_cursos.length; index++) {
+        var idcurso = ids_de_cursos[index];
         informacion = $('#filter_form').serializeArray();
         informacion.push({ name: 'request_type', value: 'course_comparative' });
         informacion.push({ name: 'selected_filter', value: filtro_seleccionado });
         informacion.push({ name: 'courseid', value: idcurso });
+        console.log('Información de comparativa dominosdashboard_scripts', informacion);
         $('#ldm_comparativas').html('');
     
         dateBeginingComparacion = Date.now();
@@ -1592,7 +1604,7 @@ function imprimirComparativaFiltrosDeCurso(_bindto, informacion) {
             datos_a_comparar = comparative[j];
             columns.push([datos_a_comparar.name, datos_a_comparar.percentage]);
         }
-        data = { columns: columns, type: 'bar' };
+        data = { columns: columns, type: 'bar', labels: false, };
         var chart = c3.generate({
             data: data,
             axis: {
