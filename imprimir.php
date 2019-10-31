@@ -61,8 +61,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['report_type'])){
                     </tr>
                 </thead>
                 <tbody>";
-                // _log($cursos);
-                foreach($cursos['result'] as $curso){
+                foreach($cursos as $curso){
                     // _log($curso);
                     echo "<tr>";
                     echo "<td>{$curso->title}</td>";
