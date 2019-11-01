@@ -33,7 +33,8 @@ require_once($CFG->libdir.'/csvlib.class.php');
 $pluginName = 'local_dominosdashboard';
 $context_system = context_system::instance();
 $PAGE->set_context($context_system);
-$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/subir_archivo.php");
+$currenturl = $CFG->wwwroot . "/local/dominosdashboard/subir_archivo.php";
+$PAGE->set_url($currenturl);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', $pluginName));
 $PAGE->set_heading(get_string('pluginname', $pluginName));
@@ -67,7 +68,14 @@ echo "<div class='row' style='padding-left: 2%;'><div class='col-sm-6'><h4 style
 foreach ($fields as $fieldid => $field) {
     echo "<p>{$field}</p>";
 }
-echo "</div><div class='col-sm-6'><h2>Recuerde establecer  la relación entre los cursos y su KPI en las configuraciones del plugin</h2></div></div><br><br>";
+echo "  </div>
+        <div class='col-sm-6'>
+            <h2>Recuerde establecer  la relación entre los cursos y su KPI en las configuraciones del plugin</h2>
+            <div style='padding-top: 2%; text-align: center;'>
+                <a class='btn btn-success' href='{$currenturl}'>Recargar la página</a>
+            </div>
+        </div>
+    </div><br>";
 if ($formdata = $mform->get_data()) {
     $tiempo_inicial = microtime(true);
     
@@ -111,6 +119,7 @@ if ($formdata = $mform->get_data()) {
                 // $record->$rck = $line[$columns_->$rck];
                 $conditions[$rck] = $line[$columns_->$rck];
             }
+            _log('Las condiciones generadas son: ', $conditions);
             $record = $DB->get_record('dominos_kpis', $conditions);
             if( empty($record) ){
                 $record = new stdClass();
