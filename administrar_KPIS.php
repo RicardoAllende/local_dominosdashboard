@@ -39,7 +39,7 @@ $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 echo $OUTPUT->header();
 ?>
 <link rel="stylesheet" href="estilos.css">
-<h2>Recuerde establecer  la relación entre los cursos su KPI en las configuraciones del plugin</h2><br>
+<h2>Recuerde establecer  la relación entre los cursos y su KPI en las configuraciones del plugin</h2><br>
 <div class="row" style="padding-bottom: 2%;">
     <div class="col-sm-4" style="text-align: right;">
         <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#agregarKPIModal">Agregar nuevo KPI</button>
@@ -186,7 +186,7 @@ echo $OUTPUT->header();
                         <option value="1">Habilitado</option>
                     </select>
                 </td>
-                <td><button onclick="editarKPI('#${formname}', ${kpi.id})" class='btn btn-info'>Editar</button></td>
+                <td><button onclick="editarKPI('#${formname}', ${kpi.id})" class='btn btn-info'>Actualizar KPI</button></td>
                 <td><button onclick='eliminarKPI(${kpi.id})' class='btn btn-danger'>Eliminar</button></td>
             </tr>
         `);

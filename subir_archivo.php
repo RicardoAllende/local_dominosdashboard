@@ -38,13 +38,14 @@ $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', $pluginName));
 $PAGE->set_heading(get_string('pluginname', $pluginName));
 // admin_externalpage_setup('dominosdashboard');
-$returnurl = new moodle_url('/local/dominosdashboard/dashboard.php');
 
 $mform = new local_dominosdashboard_upload_kpis();
 global $CFG;
 $link = $CFG->wwwroot . '/local/dominosdashboard/administrar_KPIS.php';
 $managekpis = $CFG->wwwroot . '/local/dominosdashboard/administrar_KPIS.php';
 $settingsurl = $CFG->wwwroot . '/admin/settings.php?section=local_dominosdashboard';
+$returnurl = $managekpis;
+
 echo $OUTPUT->header();
 echo "
 <div class='row' style='padding-bottom: 2%;'>
@@ -66,7 +67,7 @@ echo "<div class='row' style='padding-left: 2%;'><div class='col-sm-6'><h4 style
 foreach ($fields as $fieldid => $field) {
     echo "<p>{$field}</p>";
 }
-echo "</div><div class='col-sm-6'><h2>Recuerde establecer  la relación entre los cursos su KPI en las configuraciones del plugin</h2></div></div><br><br>";
+echo "</div><div class='col-sm-6'><h2>Recuerde establecer  la relación entre los cursos y su KPI en las configuraciones del plugin</h2></div></div><br><br>";
 if ($formdata = $mform->get_data()) {
     $tiempo_inicial = microtime(true);
     
@@ -89,7 +90,6 @@ if ($formdata = $mform->get_data()) {
         return trim($element);
     }, $columns);
     $currenttime = time();
-    $requiredFields=explode(',',"profile_field_ccosto,CALIFICACIÓN,ESTATUS,TOTAL QUEJAS (NO.),ROTACION MENSUAL %,ROTACION ROLLING %");
 
     $count= 0;
     $hasRequiredColumns = true;
@@ -97,6 +97,8 @@ if ($formdata = $mform->get_data()) {
     if(!$hasRequiredColumns){
         print_error($columns_, '', $returnurl, $columns_);
     }
+    $requiredColumns = local_dominosdashboard_required_kpi_columns;
+    $requiredColumnsKeys = array_keys($requiredColumns);
     global $DB;
     $cir->init();
     while ($line = $cir->next()) {
@@ -104,11 +106,18 @@ if ($formdata = $mform->get_data()) {
         $ccosto = $columns_->ccosto;
         
         foreach($columns_->kpis as $kpi){
-            
-            $record = $DB->get_record('dominos_kpis', array('ccosto' => $ccosto, 'kpi_date' => $kpi_date, 'kpi_key' => $kpi->kpi_key));
+            $conditions = array('ccosto' => $ccosto, 'kpi_date' => $kpi_date, 'kpi_key' => $kpi->kpi_key);
+            foreach($requiredColumnsKeys as $rck){
+                // $record->$rck = $line[$columns_->$rck];
+                $conditions[$rck] = $line[$columns_->$rck];
+            }
+            $record = $DB->get_record('dominos_kpis', $conditions);
             if( empty($record) ){
                 $record = new stdClass();
-                $record->ccosto = $line[$columns_->ccosto];
+                foreach($requiredColumnsKeys as $rck){
+                    $record->$rck = $line[$columns_->$rck];
+                }
+                // $record->ccosto = $line[$columns_->ccosto];
                 $record->kpi_key = $kpi->kpi_key;
                 $record->value = $line[$kpi->position];
                 $record->kpi_date = $kpi_date;
@@ -118,7 +127,10 @@ if ($formdata = $mform->get_data()) {
                 $DB->insert_record('dominos_kpis', $record);
             }else{
                 if($updateIfExists){
-                    $record->ccosto = $line[$columns_->ccosto];
+                    foreach($requiredColumnsKeys as $rck){
+                        $record->$rck = $line[$columns_->$rck];
+                    }
+                    // $record->ccosto = $line[$columns_->ccosto];
                     $record->kpi_key = $kpi->kpi_key;
                     $record->value = $line[$kpi->position];
                     $record->kpi_date = $kpi_date;

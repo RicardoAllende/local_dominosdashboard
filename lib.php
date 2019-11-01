@@ -149,15 +149,32 @@ function local_dominosdashboard_relate_column_with_fields(array $columns, array 
     return $response;
 }
 
+define('local_dominosdashboard_required_kpi_columns', array(
+    'region' => 'profile_field_regiondp',
+    'distrital' => 'profile_field_distritalcoachdp',
+    'entrenador' => 'profile_field_entrenadordp',
+    'ccosto' => 'profile_field_ccosto',
+    'ceco' => 'CECO',
+));
+
 function local_dominosdashboard_read_kpis_from_columns(array $columns, bool &$hasRequiredColumns){
     $kpis = local_dominosdashboard_get_kpi_list();
-    $ccosto = array_search('profile_field_ccosto', $columns);
-    if($ccosto === false){
-        $hasRequiredColumns = false;
-        return "No existe el campo  profile_field_ccosto  en su archivo, por favor agréguelo e inténtelo de nuevo";
-    }
     $response = new stdClass();
-    $response->ccosto = $ccosto;
+
+    $missingColumns = array();
+    foreach(local_dominosdashboard_required_kpi_columns as $key =>$reqField){
+        $position = array_search($reqField, $columns);
+        if($position === false){ // No se encuentra esta columna, se mostrará error
+            array_push($missingColumns, $reqField);
+        }else{
+            $response->$key = $position;
+        }
+    }
+    if(!empty($missingColumns)){
+        $hasRequiredColumns = false;
+        $message = "Verifique que estén los siguientes campos: " . implode(', ', $missingColumns);
+        return $message;
+    }
     $response->kpis = array();
     $kpi_names = array();
     foreach($kpis as $kpi){
