@@ -7,9 +7,9 @@
             <FIELDS>
                 <FIELD NAME="id"                TYPE="int"   LENGTH="10"  NOTNULL="true"   SEQUENCE="true"  />
                 <!-- <FIELD NAME="name"         TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" /> -->
-                <FIELD NAME="regiones"            TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="distritales"         TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="entrenadores"        TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="regiones"          TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="distritales"       TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="entrenadores"      TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="ccosto"            TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="ceco"              TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="kpi_key"           TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
@@ -61,7 +61,7 @@
                 <FIELD NAME="percentage"        TYPE="int"  LENGTH="9"      NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
                 <FIELD NAME="value"             TYPE="int"  LENGTH="9"      NOTNULL="false" DEFAULT="0" SEQUENCE="false" />
                 <FIELD NAME="regiones"          TYPE="text" NOTNULL="false" SEQUENCE="false" />
-                <FIELD NAME="distritos"         TYPE="text" NOTNULL="false" SEQUENCE="false" />
+                <FIELD NAME="distritales"       TYPE="text" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="entrenadores"      TYPE="text" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="tiendas"           TYPE="text" NOTNULL="false" SEQUENCE="false" />
                 <FIELD NAME="puestos"           TYPE="text" NOTNULL="false" SEQUENCE="false" />

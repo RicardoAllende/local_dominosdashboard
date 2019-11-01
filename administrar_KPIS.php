@@ -261,6 +261,7 @@ echo $OUTPUT->header();
                 cargarKPIS();
                 alert('Insertado con éxito');
                 ocultarModal();
+                informacion = $('#form_kpi').trigger('reset');
             }else{ // Se trata de un error
                 alert(data);
             }

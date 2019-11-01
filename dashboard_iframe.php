@@ -171,6 +171,14 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 $('#contenido_cursos, #contenido_dashboard').removeClass('row col-sm-9 col-sm-12 sin_filtro');
                 $('#contenido_cursos, #contenido_dashboard').addClass('row col-sm-9');
             }
+            $("#cardpuestos").hide();
+
+            if(tab == 2){
+                $("#cardpuestos").show();
+            }
+            if(tab == 3){
+                $("#cardpuestos").hide();
+            }
         }
         //imprimirComparativaFiltrosDeCurso('#comparativa_region',informacion_del_curso.data.region_comparative);
         function cambiarpestana(id){

@@ -119,7 +119,7 @@ if ($formdata = $mform->get_data()) {
                 // $record->$rck = $line[$columns_->$rck];
                 $conditions[$rck] = $line[$columns_->$rck];
             }
-            _log('Las condiciones generadas son: ', $conditions);
+            _log(compact('conditions'));
             $record = $DB->get_record('dominos_kpis', $conditions);
             if( empty($record) ){
                 $record = new stdClass();

@@ -26,6 +26,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$currentTab = null;
+
 function local_dominosdashboard_user_has_access(bool $throwError = true){
     $has_capability = has_capability('local/dominosdashboard:view', context_system::instance());
     if(!$has_capability){ // si el rol del usuario no tiene permiso, buscar si está en la configuración: allowed_email_admins
@@ -117,8 +119,17 @@ DEFINE("COMPLETION_BY_ACTIVITY", 5);
 DEFINE("COMPLETION_BY_AVG", 6);
 // DEFINE("COMPLETION_BY_ATTENDANCE", 5);
 
-DEFINE('DOMINOSDASHBOARD_INDICATORS', 'regiones/entrenadores/distritos/tiendas/puestos');
 // DEFINE('DOMINOSDASHBOARD_INDICATORS', 'regiones/distritos/entrenadores/tiendas/puestos/ccosto');
+DEFINE('DOMINOSDASHBOARD_INDICATORS', 'regiones/entrenadores/distritales/tiendas/puestos');
+
+DEFINE('local_dominosdashboard_required_kpi_columns', array(
+    'regiones' => 'profile_field_regiondp',
+    'distritales' => 'profile_field_distritalcoachdp',
+    'entrenadores' => 'profile_field_entrenadordp',
+    'ccosto' => 'profile_field_ccosto',
+    'ceco' => 'CECO',
+));
+
 DEFINE('DOMINOSDASHBOARD_CHARTS', 
     [
         'bar' => 'Barras',
@@ -148,14 +159,6 @@ function local_dominosdashboard_relate_column_with_fields(array $columns, array 
     }
     return $response;
 }
-
-define('local_dominosdashboard_required_kpi_columns', array(
-    'region' => 'profile_field_regiondp',
-    'distrital' => 'profile_field_distritalcoachdp',
-    'entrenador' => 'profile_field_entrenadordp',
-    'ccosto' => 'profile_field_ccosto',
-    'ceco' => 'CECO',
-));
 
 function local_dominosdashboard_read_kpis_from_columns(array $columns, bool &$hasRequiredColumns){
     $kpis = local_dominosdashboard_get_kpi_list();
@@ -423,7 +426,7 @@ function local_dominosdashboard_get_kpi_overview(array $params = array(), bool $
     $where = " AND id IN ({$ids}) ";
     $courses = local_dominosdashboard_get_courses($allCourses, $where);
     foreach($courses as $key => $course){
-        $courses[$key] = local_dominosdashboard_get_course_information($key, false, false, $params, true);
+        $courses[$key] = local_dominosdashboard_get_course_information($key, true, false, $params);
     }
     $response = array();
     $params['selected_filter'] = "regiones"; // Comparativa de las regiones
@@ -620,9 +623,9 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     //     }
     //     return $response;
     // }
-    if($get_kpis){
-        $response->kpi = local_dominosdashboard_get_kpi_info($courseid, $params);
-    }
+    // if($get_kpis){
+    //     $response->kpi = local_dominosdashboard_get_kpi_info($courseid, $params);
+    // }
     $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params);
     if($get_activities){
         $response->activities = local_dominosdashboard_get_activities_completion($courseid, $userids, $fecha_inicial, $fecha_final); //
@@ -634,8 +637,14 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     // }else{
     //     $response->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids, $fecha_inicial, $fecha_final); //
     // }
-    $params['selected_filter'] = "regiones"; // Comparativa de las regiones
-    $response->region_comparative = local_dominosdashboard_get_course_comparative($courseid, $params);
+    $selected_filter = local_dominosdashboard_get_value_from_params($params, 'selected_filter', 'regiones');
+    $params['selected_filter'] = $selected_filter; // Comparativa de las regiones
+    $response->region_comparative = local_dominosdashboard_get_course_comparative($courseid, $params, $get_kpis);
+    // if($get_kpis){ // 
+    // }else{ // Se devuelve por defecto la comparativa de regiones
+    // }
+    // $params['selected_filter'] = "regiones"; // Comparativa de las regiones
+    // $response->region_comparative = local_dominosdashboard_get_course_comparative($courseid, $params);
     // $response->not_approved_users = $response->enrolled_users - $response->approved_users;
     // $response->percentage = local_dominosdashboard_percentage_of($response->approved_users, $response->enrolled_users);
     // $response->value = $response->percentage;
@@ -695,6 +704,11 @@ function local_dominosdashboard_get_count_users($userids){
 }
 
 function local_dominosdashboard_get_course_comparative($courseid, array $params){
+    $currentTab = local_dominosdashboard_get_value_from_params($params, 'currentTab');
+    $returnkpi = $currentTab === LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARATIVE;
+    if($returnkpi){
+        _log('Se regresará KPI');
+    }
     $response = new stdClass();
     global $DB;
     $course = $DB->get_record('course', array('id' => $courseid), 'id, shortname, fullname');
@@ -725,6 +739,12 @@ function local_dominosdashboard_get_course_comparative($courseid, array $params)
             $item_to_compare->name = '(Vacío)';
         }else{
             $item_to_compare->name = $catalogue_item;
+        }
+        if($returnkpi){
+            _log('Obteniendo KPIS');
+            $item_to_compare->kpi = local_dominosdashboard_get_kpi_results($courseid, $params);
+        }else{
+            _log('No se está regresando el kpi');
         }
 
         // $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params);
@@ -782,6 +802,7 @@ function local_dominosdashboard_get_value_from_params(array $params, string $sea
 function local_dominosdashboard_get_kpi_results($id, array $params){
     // return null;
     global $DB;
+    $whereClauses = array();
 
     $kpi = $DB->get_record('dominos_kpi_list', array('id' => $id));
     if(empty($kpi)){
@@ -790,13 +811,6 @@ function local_dominosdashboard_get_kpi_results($id, array $params){
     
     $sqlParams = array();
     $ccoms = "";
-    if(isset($params['selected_ccoms'])){
-        $ccoms = $params['selected_ccoms'];
-        if($ccoms == '*') $ccoms = '';
-        if( $ccoms != ''){
-            $ccoms = " AND ccosto IN ({$ccoms}) ";
-        }
-    }
 
     $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
     $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final');
@@ -812,8 +826,28 @@ function local_dominosdashboard_get_kpi_results($id, array $params){
         $filtro_fecha = " AND YEAR(FROM_UNIXTIME(kpi_date)) = {$year} AND MONTH(FROM_UNIXTIME(kpi_date)) = $month ";
     }
 
-    $whereClauses = " kpi_key = ? {$ccoms} {$filtro_fecha}";
+    array_push($whereClauses, " kpi_key = ? {$ccoms} {$filtro_fecha} ");
+    // $whereClauses = " kpi_key = ? {$ccoms} {$filtro_fecha}";
     array_push($sqlParams, $kpi->kpi_key);
+
+
+    // $where_filters = array();
+    $requiredColumns = local_dominosdashboard_required_kpi_columns;
+
+    foreach ($requiredColumns as $key => $requiredColumn) {        
+        // $position = array_search($key, $params);
+        // if($position !== false){
+        if(array_key_exists($key, $params)){
+            list($insql, $inparams) = $DB->get_in_or_equal($params[$key]);
+            array_push($whereClauses, " {$key} {$insql} ");
+            $sqlParams = array_merge($sqlParams, $inparams);
+        }
+    }
+
+    $whereClauses = implode(' AND ', $whereClauses);
+
+    // _log($whereClauses, $sqlParams);
+
     switch($kpi->type){
         case 'Texto': // Ejemplo: Aprobado, no aprobado y destacado
             $query = "SELECT value, COUNT(*) AS conteo FROM {dominos_kpis} WHERE {$whereClauses} GROUP BY value ";
@@ -1669,13 +1703,13 @@ function local_dominosdashboard_make_courses_cache(){ // realizando
         if($course == false){
             return false;
         }
-        $course_information = local_dominosdashboard_get_course_information($course->id, $kpis = false, $activities = false, $params = array(), false);
+        $course_information = local_dominosdashboard_get_course_information($course->id, $kpis = false, $activities = false, $params = array());
         local_dominosdashboard_insert_historic_record($course_information, $currenttime, $course);
         foreach (local_dominosdashboard_get_indicators() as $indicator) {
             foreach (local_dominosdashboard_get_catalogue($indicator) as $item) {
                 $params = array();
                 $params[$indicator] = $item;
-                $course_information = local_dominosdashboard_get_course_information($courseid, $kpis = false, $activities = false, $params = array(), false);
+                $course_information = local_dominosdashboard_get_course_information($courseid, $kpis = false, $activities = false, $params = array());
                 local_dominosdashboard_insert_historic_record($course_information, $currenttime, $course, $indicator, $item);
             }
         }
@@ -1723,13 +1757,13 @@ function local_dominosdashboard_make_historic_report(int $courseid){
     if($course == false){
         return false;
     }
-    $course_information = local_dominosdashboard_get_course_information($course->id, $kpis = false, $activities = false, $params = array(), false);
+    $course_information = local_dominosdashboard_get_course_information($course->id, $kpis = false, $activities = false, $params = array());
     local_dominosdashboard_insert_historic_record($course_information, $currenttime, $course);
     foreach (local_dominosdashboard_get_indicators() as $indicator) {
         foreach (local_dominosdashboard_get_catalogue($indicator) as $item) {
             $params = array();
             $params[$indicator] = $item;
-            $course_information = local_dominosdashboard_get_course_information($courseid, $kpis = false, $activities = false, $params = array(), false);
+            $course_information = local_dominosdashboard_get_course_information($courseid, $kpis = false, $activities = false, $params = array());
             local_dominosdashboard_insert_historic_record($course_information, $currenttime, $course, $indicator, $item);
         }
     }

@@ -807,12 +807,13 @@ function peticionFiltros(info) {
             for (var index = 0; index < keys.length; index++) {
                 clave = keys[index]
                 var catalogo = data.data[clave];
+                cardid = "card" + clave;
                 heading_id = "indicatorheading" + clave;
                 collapse_id = "collapse_" + clave;
                 subfiltro_id = 'subfilter_id_' + clave;
                 if (crearElementos) {
                     $(div_selector).append(`
-                    <div class="card">
+                    <div class="card" id="${cardid}">
                         <div class="card-header cuerpo-filtro" id="${heading_id}">
                             <h5 class="mb-0">
                                 <span class="btn btn-link collapsed texto-filtro"
@@ -1545,6 +1546,49 @@ var comparativaMaxima = 20;
 var clase;
 function compararFiltros(filtro_seleccionado) {
     mostrarLoader();
+    pestanaActual = 1;
+    if(typeof currentTab !== 'undefined'){
+        pestanaActual = currentTab;
+    }
+
+    if(pestanaActual === 3){
+        informacion = $('#filter_form').serializeArray();
+
+        informacion.push({name: 'request_type', value: 'course_list'});
+        informacion.push({name: 'type', value: currentTab});
+
+        // informacion.push({ name: 'request_type', value: 'course_comparative' });
+        informacion.push({ name: 'selected_filter', value: filtro_seleccionado });
+        // informacion.push({ name: 'courseid', value: idcurso });
+        console.log('Información de comparativa dominosdashboard_scripts', informacion);
+        $('#ldm_comparativas').html('');
+    
+        dateBeginingComparacion = Date.now();
+        $.ajax({
+            type: "POST",
+            url: "services.php",
+            data: informacion,
+            dataType: "json"
+        })
+            .done(function (response) {
+                comparativa = JSON.parse(JSON.stringify(response));
+                console.log('Información para crear comparativa: ', comparativa);
+                imprimirComparativaFiltrosDeCurso('#ldm_comparativas', comparativa.data);
+                dateEnding = Date.now();
+                console.log(`Tiempo de respuesta de API al obtener json para comparativas ${dateEnding - dateBeginingComparacion} ms`);
+                ocultarLoader();
+            })
+            .fail(function (error, error2) {
+                // isCourseLoading = false;
+                console.log(error);
+                console.log(error2);
+                ocultarLoader();
+            });
+            
+        $('#contenedor_kpi').empty();
+        kpi_region('#contenedor_kpi', respuesta.result);
+        return;
+    }
     
     clase = ".indicator_" + filtro_seleccionado;
     elementosAComparar = $(clase).filter(':checked').length;
