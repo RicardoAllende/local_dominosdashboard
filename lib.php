@@ -429,7 +429,9 @@ function local_dominosdashboard_get_kpi_overview(array $params = array(), bool $
         $courses[$key] = local_dominosdashboard_get_course_information($key, true, false, $params);
     }
     $response = array();
-    $params['selected_filter'] = "regiones"; // Comparativa de las regiones
+    // $params['selected_filter'] = "regiones"; // Comparativa de las regiones
+    $params['selected_filter'] = local_dominosdashboard_get_value_from_params($params, 'selected_filter', 'regiones'); // Mostrar comparativa de filtros, en caso de no encontrarla se toma regiones por defecto
+    if($params['selected_filter'] == 'selected_filter') _log('Mostrando un resultado diferente a regiones');
     foreach($configs as $id => $config){ // Iteración entre las configuraciones de los kpis
         $kpi_result = local_dominosdashboard_get_kpi_results($id, $params);
 
@@ -744,7 +746,7 @@ function local_dominosdashboard_get_course_comparative($courseid, array $params)
             _log('Obteniendo KPIS');
             $item_to_compare->kpi = local_dominosdashboard_get_kpi_results($courseid, $params);
         }else{
-            _log('No se está regresando el kpi');
+            // _log('No se está regresando el kpi');
         }
 
         // $userids = local_dominosdashboard_get_user_ids_with_params($courseid, $params);
@@ -1634,11 +1636,11 @@ function local_dominosdashboard_make_cache_for_course(int $courseid, array $para
         $record->enddate = $course_information->enddate;
 
         $record->regiones = $conditions->regiones;
-        $record->distritos = $conditions->distritos;
+        $record->distritales = $conditions->distritales;
         $record->entrenadores = $conditions->entrenadores;
         $record->tiendas = $conditions->tiendas;
         $record->puestos = $conditions->puestos;
-        $record->ccosto = $conditions->ccosto;
+        zz $record->ccosto = $conditions->ccosto; // Aquí está el error, revisar
         
         $record->timemodified = $currenttime;
         $DB->insert_record('dominos_d_cache', $record);
@@ -1681,7 +1683,7 @@ function local_dominosdashboard_make_courses_cache(){ // realizando
             $count++;
         }
     }
-    $query = "SELECT * FROM {dominos_d_cache} where (distritos IS NOT NULL OR entrenadores IS NOT NULL OR tiendas IS NOT NULL
+    $query = "SELECT * FROM {dominos_d_cache} where (distritales IS NOT NULL OR entrenadores IS NOT NULL OR tiendas IS NOT NULL
     OR puestos IS NOT NULL OR ccosto IS NOT NULL)";// AND (startdate IS NOT NULL OR ) AND enddate IS NOT NULL ";
     $custom_caches = $DB->get_records_sql($query); // Caché de consultas ejecutadas anteriormente
     foreach($custom_caches as $cc){

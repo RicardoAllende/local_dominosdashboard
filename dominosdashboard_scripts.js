@@ -1556,7 +1556,7 @@ function compararFiltros(filtro_seleccionado) {
 
         informacion.push({name: 'request_type', value: 'course_list'});
         informacion.push({name: 'type', value: currentTab});
-
+        informacion.push({name: 'currentTab', value: currentTab});
         // informacion.push({ name: 'request_type', value: 'course_comparative' });
         informacion.push({ name: 'selected_filter', value: filtro_seleccionado });
         // informacion.push({ name: 'courseid', value: idcurso });
@@ -1571,12 +1571,15 @@ function compararFiltros(filtro_seleccionado) {
             dataType: "json"
         })
             .done(function (response) {
-                comparativa = JSON.parse(JSON.stringify(response));
-                console.log('Información para crear comparativa: ', comparativa);
-                imprimirComparativaFiltrosDeCurso('#ldm_comparativas', comparativa.data);
-                dateEnding = Date.now();
-                console.log(`Tiempo de respuesta de API al obtener json para comparativas ${dateEnding - dateBeginingComparacion} ms`);
-                ocultarLoader();
+                // comparativa = JSON.parse(JSON.stringify(response));
+                // console.log('Información para crear comparativa: ', comparativa);
+                // imprimirComparativaFiltrosDeCurso('#ldm_comparativas', comparativa.data);
+                // dateEnding = Date.now();
+                // console.log(`Tiempo de respuesta de API al obtener json para comparativas ${dateEnding - dateBeginingComparacion} ms`);
+                // ocultarLoader();
+                respuesta = JSON.parse(JSON.stringify(response));
+                $('#contenedor_kpi').empty();
+                kpi_region('#contenedor_kpi', respuesta.result);
             })
             .fail(function (error, error2) {
                 // isCourseLoading = false;
@@ -1585,8 +1588,8 @@ function compararFiltros(filtro_seleccionado) {
                 ocultarLoader();
             });
             
-        $('#contenedor_kpi').empty();
-        kpi_region('#contenedor_kpi', respuesta.result);
+        // $('#contenedor_kpi').empty();
+        // kpi_region('#contenedor_kpi', respuesta.result);
         return;
     }
     
