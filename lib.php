@@ -425,13 +425,13 @@ function local_dominosdashboard_get_kpi_overview(array $params = array(), bool $
     $ids = implode(',', $ids);
     $where = " AND id IN ({$ids}) ";
     $courses = local_dominosdashboard_get_courses($allCourses, $where);
+    // Mostrar comparativa de filtros, en caso de no encontrarla se toma regiones por defecto
+    $params['selected_filter'] = local_dominosdashboard_get_value_from_params($params, 'selected_filter', 'regiones'); 
     foreach($courses as $key => $course){
         $courses[$key] = local_dominosdashboard_get_course_information($key, true, false, $params);
     }
     $response = array();
     // $params['selected_filter'] = "regiones"; // Comparativa de las regiones
-    $params['selected_filter'] = local_dominosdashboard_get_value_from_params($params, 'selected_filter', 'regiones'); // Mostrar comparativa de filtros, en caso de no encontrarla se toma regiones por defecto
-    if($params['selected_filter'] == 'selected_filter') _log('Mostrando un resultado diferente a regiones');
     foreach($configs as $id => $config){ // Iteración entre las configuraciones de los kpis
         $kpi_result = local_dominosdashboard_get_kpi_results($id, $params);
 
@@ -449,8 +449,8 @@ function local_dominosdashboard_get_kpi_overview(array $params = array(), bool $
                 $ctemp = $courses[$courseid];
                 $item = new stdClass();
                 $item->course_name = $ctemp->title;
-                $item->kpi_name = $_kpi->name;
-                $item->kpi = $_kpi;
+                // $item->kpi_name = $_kpi->name;
+                // $item->kpi = $_kpi;
                 $item->course_information = $ctemp;
                 array_push($response, $item);
             }
@@ -639,8 +639,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     // }else{
     //     $response->approved_users = local_dominosdashboard_get_approved_users($courseid, $userids, $fecha_inicial, $fecha_final); //
     // }
-    $selected_filter = local_dominosdashboard_get_value_from_params($params, 'selected_filter', 'regiones');
-    $params['selected_filter'] = $selected_filter; // Comparativa de las regiones
+    $params['selected_filter'] =  local_dominosdashboard_get_value_from_params($params, 'selected_filter', 'regiones');
     $response->region_comparative = local_dominosdashboard_get_course_comparative($courseid, $params, $get_kpis);
     // if($get_kpis){ // 
     // }else{ // Se devuelve por defecto la comparativa de regiones
@@ -707,7 +706,8 @@ function local_dominosdashboard_get_count_users($userids){
 
 function local_dominosdashboard_get_course_comparative($courseid, array $params){
     $currentTab = local_dominosdashboard_get_value_from_params($params, 'currentTab');
-    $returnkpi = $currentTab === LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARATIVE;
+    // _log('currentTab', $currentTab);
+    $returnkpi = $currentTab == LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARATIVE;
     if($returnkpi){
         _log('Se regresará KPI');
     }
@@ -727,6 +727,8 @@ function local_dominosdashboard_get_course_comparative($courseid, array $params)
     $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
     $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final');
     $indicator = $params['selected_filter'];
+    _log('Calculando selected_filter ', $indicator);
+    // if($params['selected_filter'] != 'regiones') _log('Mostrando un resultado diferente a regiones');    
     $catalogue = local_dominosdashboard_get_catalogue($indicator, $conditions->sql, $conditions->params);
     if(!in_array('', $catalogue)){
         array_push($catalogue, '');
@@ -1640,7 +1642,7 @@ function local_dominosdashboard_make_cache_for_course(int $courseid, array $para
         $record->entrenadores = $conditions->entrenadores;
         $record->tiendas = $conditions->tiendas;
         $record->puestos = $conditions->puestos;
-        zz $record->ccosto = $conditions->ccosto; // Aquí está el error, revisar
+        // $record->ccosto = $conditions->ccosto; // Se quita este filtro, por ello no se encuentra
         
         $record->timemodified = $currenttime;
         $DB->insert_record('dominos_d_cache', $record);
