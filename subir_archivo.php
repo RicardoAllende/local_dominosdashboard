@@ -127,7 +127,7 @@ if ($formdata = $mform->get_data()) {
                 }
                 // $record->ccosto = $line[$columns_->ccosto];
                 $record->kpi_key = $kpi->kpi_key;
-                $record->value = $line[$kpi->position];
+                $record->value = $line[$kpi->position]; // Valor del kpi
                 $record->kpi_date = $kpi_date;
                 $record->month = $month;
                 $record->year = $currentYear;
@@ -140,7 +140,7 @@ if ($formdata = $mform->get_data()) {
                     }
                     // $record->ccosto = $line[$columns_->ccosto];
                     $record->kpi_key = $kpi->kpi_key;
-                    $record->value = $line[$kpi->position];
+                    $record->value = $line[$kpi->position]; // Valor del kpi
                     $record->kpi_date = $kpi_date;
                     $record->month = $month;
                     $record->year = $currentYear;
