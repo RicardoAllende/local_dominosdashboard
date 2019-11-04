@@ -13,7 +13,7 @@
                 <FIELD NAME="ccosto"            TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="ceco"              TYPE="char"  LENGTH="50"  NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="kpi_key"           TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="value"             TYPE="char"  LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="value"             TYPE="int"   LENGTH="9" NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="kpi_date"          TYPE="int"   LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="month"             TYPE="char"  LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
                 <FIELD NAME="year"              TYPE="char"  LENGTH="10"  NOTNULL="false"  SEQUENCE="false" />
@@ -25,11 +25,14 @@
         </TABLE>
         <TABLE NAME="dominos_kpi_list" COMMENT="">
             <FIELDS>
-                <FIELD NAME="id"        TYPE="int"  LENGTH="10" NOTNULL="true"   SEQUENCE="true"  />
-                <FIELD NAME="kpi_key"   TYPE="char" LENGTH="255"  NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="name"      TYPE="char" LENGTH="255"  NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="enabled"   TYPE="char" LENGTH="1" NOTNULL="false"  SEQUENCE="false" />
-                <FIELD NAME="type"      TYPE="char" LENGTH="50" NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="id"          TYPE="int"  LENGTH="10" NOTNULL="true"   SEQUENCE="true"  />
+                <FIELD NAME="kpi_key"     TYPE="char" LENGTH="255"  NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="name"        TYPE="char" LENGTH="255"  NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="enabled"     TYPE="char" LENGTH="1" NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="calculation" TYPE="char" LENGTH="25"  NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="min_value"   TYPE="char" LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="max_value"   TYPE="char" LENGTH="255" NOTNULL="false"  SEQUENCE="false" />
+                <FIELD NAME="type"        TYPE="char" LENGTH="50" NOTNULL="false"  SEQUENCE="false" />
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" />
