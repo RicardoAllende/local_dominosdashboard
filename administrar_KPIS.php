@@ -97,7 +97,7 @@ echo $OUTPUT->header();
                         <label for="message-text" class="col-form-label">Tipo de dato:</label>
                         <select name="kpi_type" class="form-control">
                             <option value="Porcentaje">Porcentaje</option>
-                            <option value="Número entero">Número entero</option>
+                            <option value="Escala">Escala</option>
                             <option value="Texto">Texto</option>
                         </select>
                     </div>

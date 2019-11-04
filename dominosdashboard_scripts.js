@@ -173,7 +173,7 @@ function crearGraficaDeCurso(_bindto, curso) {
             break;
 
         case 'comparativa_regiones':
-            imprimirComparativaFiltrosDeCurso(_bindto, curso.region_comparative);
+            imprimirComparativaFiltrosDeCurso(_bindto, curso.filter_comparative);
             break;
         default:
             $(_bindto).html('');
@@ -1111,8 +1111,8 @@ function seccion_a_imprimirGraficaComparativaCursos(container, respuesta) {
     for (var i = 0; i < cursos.length; i++) {
         var curso = cursos[i];
         nombre_curso.push(curso.title);
-        // nombre_curso.push(curso.region_comparative.title);
-        comparativa = curso.region_comparative.comparative;
+        // nombre_curso.push(curso.filter_comparative.title);
+        comparativa = curso.filter_comparative.comparative;
 
         for (var j = 0; j < comparativa.length; j++) {
             comparativa_actual = comparativa[j];
@@ -1254,8 +1254,8 @@ function seccion_c_imprimirGraficaComparativaCursos(container, respuesta) {
         cursoActual = _courses[i];
         var c_percentage_region = Array();
         var regiones = _courses[i];
-        for (var j = 0; j < regiones.region_comparative.comparative.length; j++) {
-            c_percentage_region.push([regiones.region_comparative.comparative[j].name, parseInt(regiones.region_comparative.comparative[j].percentage)]);
+        for (var j = 0; j < regiones.filter_comparative.comparative.length; j++) {
+            c_percentage_region.push([regiones.filter_comparative.comparative[j].name, parseInt(regiones.filter_comparative.comparative[j].percentage)]);
         }
         createCardGrahp_horizontalBar(container, cursoActual.title, c_percentage_region, i);
     }    
@@ -1394,8 +1394,8 @@ function kpi_region(container, respuesta) {
         kpi_comparative.push('KPI');
         
 
-        for (var j = 0; j < respuesta[i].course_information.region_comparative.comparative.length; j++) {
-            var kpi_name_region = respuesta[i].course_information.region_comparative.comparative[j];
+        for (var j = 0; j < respuesta[i].course_information.filter_comparative.comparative.length; j++) {
+            var kpi_name_region = respuesta[i].course_information.filter_comparative.comparative[j];
             nombre_region.push(kpi_name_region.name);
             region_avance.push(kpi_name_region.percentage);
             kpi_comparative.push(respuesta[i].kpi.status);

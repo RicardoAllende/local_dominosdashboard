@@ -180,7 +180,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 $("#cardpuestos").hide();
             }
         }
-        //imprimirComparativaFiltrosDeCurso('#comparativa_region',informacion_del_curso.data.region_comparative);
+        //imprimirComparativaFiltrosDeCurso('#comparativa_region',informacion_del_curso.data.filter_comparative);
         function cambiarpestana(id){
             if(id != currentTab){
                 hidePage("ldm_tab_" + id);
@@ -282,7 +282,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 //     }
                 // },1000)
                 //imprimirGraficaComparativaCursos();
-                //imprimirComparativaFiltrosDeCurso('#comparativa_region', informacion_del_curso.data.region_comparative);    
+                //imprimirComparativaFiltrosDeCurso('#comparativa_region', informacion_del_curso.data.filter_comparative);    
                 
             })
             .fail(function(error, error2) {
@@ -302,7 +302,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     </script>
     <script src="dominosdashboard_scripts.js"></script>
     <script>        
-        //imprimirComparativaFiltrosDeCurso('#graficas_seccion_c', informacion_del_curso.data.region_comparative);            
+        //imprimirComparativaFiltrosDeCurso('#graficas_seccion_c', informacion_del_curso.data.filter_comparative);            
         //seccion_a_imprimirGraficaComparativaCursos('#graficas_seccion_a');
         //seccion_b_imprimirGraficaComparativaCursos('#graficas_seccion_b');
         
