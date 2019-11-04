@@ -1561,7 +1561,7 @@ function compararFiltros(filtro_seleccionado) {
         // informacion.push({ name: 'request_type', value: 'course_comparative' });
         informacion.push({ name: 'selected_filter', value: filtro_seleccionado });
         // informacion.push({ name: 'courseid', value: idcurso });
-        console.log('Información de comparativa dominosdashboard_scripts', informacion);
+        // console.log('Información de comparativa dominosdashboard_scripts', informacion);
         $('#ldm_comparativas').html('');
     
         dateBeginingComparacion = Date.now();
@@ -1572,15 +1572,12 @@ function compararFiltros(filtro_seleccionado) {
             dataType: "json"
         })
             .done(function (response) {
-                // comparativa = JSON.parse(JSON.stringify(response));
-                // console.log('Información para crear comparativa: ', comparativa);
-                // imprimirComparativaFiltrosDeCurso('#ldm_comparativas', comparativa.data);
-                // dateEnding = Date.now();
-                // console.log(`Tiempo de respuesta de API al obtener json para comparativas ${dateEnding - dateBeginingComparacion} ms`);
-                // ocultarLoader();
+                dateEndingComparacion = Date.now();
                 respuesta = JSON.parse(JSON.stringify(response));
                 $('#contenedor_kpi').empty();
-                kpi_comparative('#contenedor_kpi', respuesta.result);
+                kpi_comparative('#contenedor_kpi', respuesta.data.result);
+                console.log(`Tiempo de respuesta de API al obtener json para listado de cursos ${dateBeginingComparacion - dateEndingComparacion} ms`);
+
             })
             .fail(function (error, error2) {
                 // isCourseLoading = false;
@@ -1611,7 +1608,7 @@ function compararFiltros(filtro_seleccionado) {
         informacion.push({ name: 'request_type', value: 'course_comparative' });
         informacion.push({ name: 'selected_filter', value: filtro_seleccionado });
         informacion.push({ name: 'courseid', value: idcurso });
-        console.log('Información de comparativa dominosdashboard_scripts', informacion);
+        // console.log('Información de comparativa dominosdashboard_scripts', informacion);
         $('#ldm_comparativas').html('');
     
         dateBeginingComparacion = Date.now();

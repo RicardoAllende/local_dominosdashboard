@@ -224,12 +224,15 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
 
         // }
         function obtenerInformacion(indicator){
-            // if(isCourseLoading){
-            //     console.log('Cargando contenido de cursos, no debe procesar más peticiones por el momento');
-            //     return;
-            // }
-            // isCourseLoading = !isCourseLoading;
-            // console.log("Obteniendo gráficas");
+            
+            // Limpiando todas las secciones
+            $('#graficas_seccion_a').empty();
+            $('#graficas_seccion_b').empty();
+            $('#graficas_seccion_c').empty();
+            $('#graficas_seccion_d').empty();
+            $('#graficas_seccion_detalles_entrenamiento').empty();
+            $('#contenedor_kpi').empty();
+
             informacion = $('#filter_form').serializeArray();
             informacion.push({name: 'request_type', value: 'course_list'});
             informacion.push({name: 'type', value: currentTab});
@@ -244,16 +247,12 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
             })
             .done(function(data) {
                 isCourseLoading = false;
-                console.log('Data obtenida', data);
                 respuestaArr = JSON.parse(JSON.stringify(data));
                 respuesta = respuestaArr.data;
-                console.log('Imprimiendo la respuesta', respuesta);
+                console.log(`Resultado de la petición course_list pestaña ${currentTab}: ` , respuesta);
                 dateEnding_courses = Date.now();
                 // $('#local_dominosdashboard_content').html('<pre>' + JSON.stringify(data, undefined, 2) + '</pre>');
                 console.log(`Tiempo de respuesta de API al obtener json para listado de cursos ${dateEnding_courses - dateBegining_courses} ms`);
-                //render_div = "#ldm_tab_" + currentTab;
-                //var cosa = generarGraficasTodosLosCursos(render_div, respuesta, tituloPestana);
-                console.log("currentTab: " + currentTab);
                 if(currentTab == 1){
                     $('#graficas_seccion_a').empty();
                     $('#graficas_seccion_b').empty();
@@ -272,17 +271,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                     $('#contenedor_kpi').empty();
                     kpi_comparative('#contenedor_kpi', respuesta.result); // Cambiado nombre a kpi_comparative por ambigüedad (funciona para cualquier filtro)
                 }
-                ocultarLoader();
-                
-
-
-                // setTimeout(function(){
-                //     if(cosa == true){
-                //         showPage("ldm_tab_" + currentTab);
-                //     }
-                // },1000)
-                //imprimirGraficaComparativaCursos();
-                //imprimirComparativaFiltrosDeCurso('#comparativa_region', informacion_del_curso.data.filter_comparative);    
+                ocultarLoader(); 
                 
             })
             .fail(function(error, error2) {
