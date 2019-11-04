@@ -448,7 +448,8 @@ function local_dominosdashboard_get_kpi_overview(array $params = array(), bool $
         foreach($config as $courseid){ // Se agregan los cursos correspondientes
             if(isset($courses[$courseid])){
                 // $ctemp = $courses[$courseid];
-                $ctemp = local_dominosdashboard_get_course_information($courseid, true, false, $params);
+                // $ctemp = local_dominosdashboard_get_course_information($courseid, true, false, $params);
+                $ctemp = local_dominosdashboard_get_course_comparative($courseid, $params);
                 // $item = new stdClass();
                 // $item->course_name = $ctemp->title;
                 // $item->kpi_name = $_kpi->name;
@@ -606,7 +607,7 @@ function local_dominosdashboard_get_course_information(int $courseid, bool $get_
     }
 
     $params['selected_filter'] =  local_dominosdashboard_get_value_from_params($params, 'selected_filter', 'regiones');
-    $response->filter_comparative = local_dominosdashboard_get_course_comparative($courseid, $params, $get_kpis);
+    $response->filter_comparative = local_dominosdashboard_get_course_comparative($courseid, $params);
     return $response;
 }
 
@@ -713,11 +714,11 @@ function local_dominosdashboard_get_course_comparative($courseid, array $params)
             // $kpi_id = local_dominosdashboard_get_value_from_params($params, 'kpi_id');
             // $params['kpi_id']
             $item_to_compare->kpi = local_dominosdashboard_get_kpi_results($kpi_id, $kpi_params);
-            if($item_to_compare->kpi !== null){
-                _log('Se encontró kpi no nulo', $item_to_compare);
-            }else{
-                _log("Kpi {$kpi_id} null", $kpi_params[$key]);
-            }
+            // if($item_to_compare->kpi !== null){
+            //     _log('Se encontró kpi no nulo', $item_to_compare);
+            // }else{
+            //     _log("Kpi {$kpi_id} null", $kpi_params[$key]);
+            // }
         }
         array_push($comparative, $item_to_compare);
     }
@@ -747,6 +748,7 @@ function local_dominosdashboard_get_kpi_results($id, array $params){
     $kpi = $DB->get_record('dominos_kpi_list', array('id' => $id));
     if(empty($kpi)){
         _log('No se encontró el kpi con el id', $id);
+        return "KPI no encontrado";
         return null;
     }
     
@@ -812,7 +814,8 @@ function local_dominosdashboard_get_kpi_results($id, array $params){
         case 'Texto': // Ejemplo: Aprobado, no aprobado y destacado
             $query = "SELECT value, COUNT(*) AS conteo FROM {dominos_kpis} WHERE {$whereClauses} GROUP BY value ";
             $result = $DB->get_records_sql_menu($query, $sqlParams);
-            if($result === false){
+            if($result === false || $result === null){
+                // _log('Retornando valor por defecto');
                 // _sql($query, $sqlParams);
                 return local_dominosdashboard_kpi_empty_result;
             } 
@@ -821,7 +824,8 @@ function local_dominosdashboard_get_kpi_results($id, array $params){
         case 'Escala': // 2 Ejemplo: devuelve el número de quejas
             $query = "SELECT ROUND(AVG(value), 0) AS value FROM {dominos_kpis} WHERE {$whereClauses} ";
             $result = $DB->get_field_sql($query, $sqlParams);
-            if($result === false){
+            if($result === false || $result === null){
+                // _log('Retornando valor por defecto');
                 // _sql($query, $sqlParams);
                 return local_dominosdashboard_kpi_empty_result;
             }
@@ -830,7 +834,8 @@ function local_dominosdashboard_get_kpi_results($id, array $params){
         case 'Porcentaje': // 3
             $query = "SELECT ROUND(AVG(value), 2) AS value FROM {dominos_kpis} WHERE {$whereClauses} ";
             $result = $DB->get_field_sql($query, $sqlParams);
-            if($result === false){
+            if($result === false || $result === null){
+                // _log('Retornando valor por defecto');
                 // _sql($query, $sqlParams);
                 return local_dominosdashboard_kpi_empty_result;
             }
@@ -862,17 +867,17 @@ function local_dominosdashboard_get_time_from_month_and_year(int $month, int $ye
     return $date->format('U');
 }
 
-function local_dominosdashboard_get_ideales_as_js_script(){
-    $ideal_cobertura = get_config('local_dominosdashboard', 'ideal_cobertura');
-    if($ideal_cobertura === false){
-        $ideal_cobertura = 94;
-    }
-    $ideal_rotacion  = get_config('local_dominosdashboard', 'ideal_rotacion');
-    if($ideal_rotacion === false){
-        $ideal_rotacion = 85;
-    }
-    return "<script> var ideal_cobertura = {$ideal_cobertura}; var ideal_rotacion = {$ideal_rotacion}; </script>";
-}
+// function local_dominosdashboard_get_ideales_as_js_script(){
+//     $ideal_cobertura = get_config('local_dominosdashboard', 'ideal_cobertura');
+//     if($ideal_cobertura === false){
+//         $ideal_cobertura = 94;
+//     }
+//     $ideal_rotacion  = get_config('local_dominosdashboard', 'ideal_rotacion');
+//     if($ideal_rotacion === false){
+//         $ideal_rotacion = 85;
+//     }
+//     return "<script> var ideal_cobertura = {$ideal_cobertura}; var ideal_rotacion = {$ideal_rotacion}; </script>";
+// }
 
 function local_dominosdashboard_get_approved_users(int $courseid, $userids = '', $fecha_inicial, $fecha_final){ //
     $response = 0;

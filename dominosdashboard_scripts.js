@@ -1377,40 +1377,37 @@ function createCardGrahp_group(container, title, cursos_d, inscritos_d, aprobado
 
 
 
-//Funcion de kpi por region en la pestaña 3
-function kpi_region(container, respuesta) {
-    ids_de_cursos = Array();
-
-    console.log("Respuesta ");
-    console.log(respuesta);
-
-
-
+//Funcion de kpi por region en la pestaña 3, la respuesta es un listado de cursos (Pueden estar repetidos si pertenecen a varios KPIs)
+function kpi_comparative(container, respuesta) {
     for (var i = 0; i < respuesta.length; i++) {
         // elementoDeComparacion = respuesta[i];
         // cursoActual = elementoDeComparacion.course_information;
         // if(ids_de_cursos.indexOf(cursoActual))
-        var nombre_region = [];
-        var region_avance = [];
-        var kpi_comparative = [];
+        cursoActual = respuesta[i];
+        informacion_kpi = cursoActual.kpi_info;
+        comparativa = cursoActual.comparative; // 
+        chartTitle = informacion_kpi.name.toUpperCase() + " vs " + cursoActual.fullname.toUpperCase();
+
+        var nombre_region = Array();
+        var region_avance = Array();
+        var kpi_comparative = Array();
         nombre_region.push('x');
         region_avance.push('Avance');
-        kpi_comparative.push('KPI');
+        kpi_comparative.push(informacion_kpi.name);
         
 
-        for (var j = 0; j < respuesta[i].course_information.filter_comparative.comparative.length; j++) {
-            var kpi_name_region = respuesta[i].course_information.filter_comparative.comparative[j];
-            nombre_region.push(kpi_name_region.name);
-            region_avance.push(kpi_name_region.percentage);
-            kpi_comparative.push(respuesta[i].kpi.status);
+        for (var j = 0; j < comparativa.length; j++) {
+            var elemento_comparado = comparativa[j];
+            nombre_region.push(elemento_comparado.name);
+            region_avance.push(elemento_comparado.percentage);
+            kpi_comparative.push(elemento_comparado.kpi);
         }
        
-        createCardGrahp(container, respuesta[i].kpi_name + " vs " + respuesta[i].course_name.toUpperCase(), region_avance, nombre_region, kpi_comparative, i)
+        createCardGrahp(container, chartTitle, region_avance, nombre_region, kpi_comparative, i)
     }
 }
 
 function createCardGrahp(container, title, region_avance, nombre_region, kpi_comparative, id) {
-    
     var cardKPIRegion = "<div class='col-sm-12 espacio'>" +
         "<div class='card bg-gray border-0 m-2'>" +
             "<div class='align-items-end'>" +
@@ -1583,7 +1580,7 @@ function compararFiltros(filtro_seleccionado) {
                 // ocultarLoader();
                 respuesta = JSON.parse(JSON.stringify(response));
                 $('#contenedor_kpi').empty();
-                kpi_region('#contenedor_kpi', respuesta.result);
+                kpi_comparative('#contenedor_kpi', respuesta.result);
             })
             .fail(function (error, error2) {
                 // isCourseLoading = false;
@@ -1593,7 +1590,7 @@ function compararFiltros(filtro_seleccionado) {
             });
             
         // $('#contenedor_kpi').empty();
-        // kpi_region('#contenedor_kpi', respuesta.result);
+        // kpi_comparative('#contenedor_kpi', respuesta.result);
         return;
     }
     

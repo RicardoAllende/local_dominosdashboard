@@ -114,7 +114,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
 
                 <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                     <div class="" id="ldm_tab_3"></div>
-                    <div class="col-sm-12" id="kpi_region">                        
+                    <div class="col-sm-12" id="kpi_comparative">                        
                         <div id="contenedor_kpi"></div>
                     </div>
                 </div>
@@ -129,7 +129,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         <!-- <div class="col-sm-12" style="padding-top: 50px;" id="local_dominosdashboard_request"></div> -->
     </div>
     
-    <?php echo local_dominosdashboard_get_ideales_as_js_script(); echo local_dominosdashboard_get_course_tabs_as_js_script(); ?>
+    <?php echo local_dominosdashboard_get_course_tabs_as_js_script(); ?>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script> -->
     <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
@@ -270,7 +270,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 }
                 if(currentTab == 3){
                     $('#contenedor_kpi').empty();
-                    kpi_region('#contenedor_kpi', respuesta.result);
+                    kpi_comparative('#contenedor_kpi', respuesta.result); // Cambiado nombre a kpi_comparative por ambigüedad (funciona para cualquier filtro)
                 }
                 ocultarLoader();
                 
@@ -307,7 +307,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
         //seccion_b_imprimirGraficaComparativaCursos('#graficas_seccion_b');
         
         //seccion_d_imprimirGraficaComparativaCursos('#graficas_seccion_d');
-       // kpi_region('#contenedor_kpi');
+       // kpi_comparative('#contenedor_kpi');
     </script>
     
 </body>

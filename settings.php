@@ -134,17 +134,17 @@ if ($hassiteconfig) {
                 $page->add($setting);
             }
 
-            $name = $ldm_pluginname . '/ideal_rotacion';
-            $title = get_string('ideal_rotacion', $ldm_pluginname);
-            $description = get_string('ideal_rotacion' . '_desc', $ldm_pluginname);
-            $setting = new admin_setting_configtext($name, $title, $description, 94, PARAM_INT);
-            $page->add($setting);
+            // $name = $ldm_pluginname . '/ideal_rotacion';
+            // $title = get_string('ideal_rotacion', $ldm_pluginname);
+            // $description = get_string('ideal_rotacion' . '_desc', $ldm_pluginname);
+            // $setting = new admin_setting_configtext($name, $title, $description, 94, PARAM_INT);
+            // $page->add($setting);
 
-            $name = $ldm_pluginname . '/ideal_cobertura';
-            $title = get_string('ideal_cobertura', $ldm_pluginname);
-            $description = get_string('ideal_cobertura' . '_desc', $ldm_pluginname);
-            $setting = new admin_setting_configtext($name, $title, $description, 85, PARAM_INT);
-            $page->add($setting);
+            // $name = $ldm_pluginname . '/ideal_cobertura';
+            // $title = get_string('ideal_cobertura', $ldm_pluginname);
+            // $description = get_string('ideal_cobertura' . '_desc', $ldm_pluginname);
+            // $setting = new admin_setting_configtext($name, $title, $description, 85, PARAM_INT);
+            // $page->add($setting);
 
             $settings->add($page);
 

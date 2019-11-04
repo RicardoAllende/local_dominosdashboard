@@ -74,7 +74,6 @@ $PAGE->set_context($context_system);
             <div class="col-sm-12" id="ldm_comparativas"></div>
         </div>
     </div>
-    <?php echo local_dominosdashboard_get_ideales_as_js_script(); ?>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
