@@ -705,15 +705,16 @@ function local_dominosdashboard_get_count_users($userids){
 }
 
 function local_dominosdashboard_get_course_comparative($courseid, array $params){
-    $currentTab = local_dominosdashboard_get_value_from_params($params, 'currentTab');
+    $currentTab = local_dominosdashboard_get_value_from_params($params, 'type');
     // _log('currentTab', $currentTab);
     $returnkpi = $currentTab == LOCALDOMINOSDASHBOARD_COURSE_KPI_COMPARATIVE;
-    if($returnkpi){
-        _log('Se regresará KPI');
-    }
+    // if($returnkpi){
+    //     _log('Se regresará KPI');
+    // }
     $response = new stdClass();
     global $DB;
     $course = $DB->get_record('course', array('id' => $courseid), 'id, shortname, fullname');
+    $response->info_kpi = $returnkpi ? 'Regresando kpi' : 'Sin kpi';
     $response->title = $course->fullname;
     $response->key = 'course_' . $course->id;
     $response->id = $course->id;
@@ -727,7 +728,7 @@ function local_dominosdashboard_get_course_comparative($courseid, array $params)
     $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
     $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final');
     $indicator = $params['selected_filter'];
-    _log('Calculando selected_filter ', $indicator);
+    // _log('Calculando selected_filter ', $indicator);
     // if($params['selected_filter'] != 'regiones') _log('Mostrando un resultado diferente a regiones');    
     $catalogue = local_dominosdashboard_get_catalogue($indicator, $conditions->sql, $conditions->params);
     if(!in_array('', $catalogue)){
@@ -745,7 +746,7 @@ function local_dominosdashboard_get_course_comparative($courseid, array $params)
             $item_to_compare->name = $catalogue_item;
         }
         if($returnkpi){
-            _log('Obteniendo KPIS');
+            // _log('Obteniendo KPIS');
             $item_to_compare->kpi = local_dominosdashboard_get_kpi_results($courseid, $params);
         }else{
             // _log('No se está regresando el kpi');

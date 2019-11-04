@@ -1551,7 +1551,7 @@ function compararFiltros(filtro_seleccionado) {
         pestanaActual = currentTab;
     }
 
-    if(pestanaActual === 3){
+    if(pestanaActual == 3){
         informacion = $('#filter_form').serializeArray();
 
         informacion.push({name: 'request_type', value: 'course_list'});

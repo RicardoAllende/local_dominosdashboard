@@ -31,9 +31,9 @@ if( ! has_capability('local/dominosdashboard:view', $context_system) ){
     die(local_dominosdashboard_error_response("Usuario no autenticado"));
 }
 if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
-    if(isset($_POST['currentTab'])){
-        _log('Enviando la petición con currenttab', $_POST['currentTab']);
-    }
+    // if(isset($_POST['currentTab'])){
+    //     _log('Enviando la petición con currenttab', $_POST['currentTab']);
+    // }
     $request_type = $_POST['request_type'];
     switch($request_type){
         case 'catalogue':
@@ -53,7 +53,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
             }
             break;
         case 'course_list':
-            _log('Calculando comparativa de cursos', $_POST);
+            // _log('Calculando comparativa de cursos', $_POST);
             if(isset($_POST['type'])){
                 die(local_dominosdashboard_format_response(local_dominosdashboard_get_courses_overview($_POST['type'], $_POST)));
             }else{
