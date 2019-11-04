@@ -215,9 +215,9 @@ function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql =
     }
     $email_provider = local_dominosdashboard_get_email_provider_to_allow();
     if(!empty($email_provider)){
-        $whereEmailProvider = " AND userid IN (SELECT id FROM {user} WHERE email LIKE '%{$email_provider}')"; 
+        $whereEmailProvider = " AND userid IN (SELECT id FROM {user} WHERE email LIKE '%{$email_provider}' AND suspended = 0 AND deleted = 0)"; 
     }else{
-        $whereEmailProvider = " "; 
+        $whereEmailProvider = " AND userid IN (SELECT id FROM {user} WHERE suspended = 0 AND deleted = 0)"; 
     }
     global $DB;
     // if($key == 'ccosto'){
@@ -234,8 +234,8 @@ function local_dominosdashboard_get_catalogue(string $key, string $andWhereSql =
     //         return $result;
     //     }
     // }
-    $query = "SELECT data, data as _data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} {$whereEmailProvider} group by data order by data ASC ";
-    return $DB->get_records_sql_menu($query, $query_params);
+    $query = "SELECT distinct data FROM {user_info_data} where fieldid = {$fieldid} {$andWhereSql} {$allow_empty} {$whereEmailProvider} order by data ASC ";
+    return $DB->get_fieldset_sql($query, $query_params);
 }
 
 function local_dominosdashboard_get_user_catalogues(array $params = array()){
@@ -842,9 +842,25 @@ function local_dominosdashboard_get_kpi_results($id, array $params){
         // $position = array_search($key, $params);
         // if($position !== false){
         if(array_key_exists($key, $params)){
-            list($insql, $inparams) = $DB->get_in_or_equal($params[$key]);
-            array_push($whereClauses, " {$key} {$insql} ");
-            $sqlParams = array_merge($sqlParams, $inparams);
+            if($key == 'tiendas'){
+                $fieldid = get_config('local_dominosdashboard', "filtro_tiendas");
+                if($fieldid === false){ // Campo no configurado
+                    continue;
+                }
+                
+                list($insql, $inparams) = $DB->get_in_or_equal($params[$key]);
+                $sqlParams = array_merge($sqlParams, $inparams);
+                $query = " ccosto IN (SELECT distinct data FROM {user_info_data} 
+                WHERE userid IN 
+                    (SELECT DISTINCT userid FROM {user_info_data} where fieldid = {$fieldid} AND data {$insql})) ";
+                array_push($whereClauses, $query);
+                // $query = "SELECT * FROM {user_info_data} WHERE ";
+                // array_push()
+            }else{
+                list($insql, $inparams) = $DB->get_in_or_equal($params[$key]);
+                $sqlParams = array_merge($sqlParams, $inparams);
+                array_push($whereClauses, " {$key} {$insql} ");
+            }
         }
     }
 
