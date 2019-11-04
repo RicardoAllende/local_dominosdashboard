@@ -1248,7 +1248,7 @@ function createCardGrahp_gauge(container, title, c_aprobados, id) {
 }
 
 function seccion_c_imprimirGraficaComparativaCursos(container, respuesta) {
-    courses = r_seccionc = respuesta.sections.seccion_c;
+    _courses = r_seccionc = respuesta.sections.seccion_c.courses;
     for (var i = 0; i < _courses.length; i++) {
         cursoActual = _courses[i];
         var c_percentage_region = Array();
@@ -1287,14 +1287,19 @@ function createCardGrahp_horizontalBar(container, title, c_percentage_region, id
             type: 'bar',            
         },
         axis: {
-            rotated: true
+            rotated: true,
+            x : {
+                tick: {
+                    format: function (d) { return title; }
+                }
+            },
         },
         bindto: "#grafica_horizontal" + id,
         grid: {
             y: {
                 lines: [{ value: 0 }]
-            }
-        }
+            },
+        },
     });
 }
 
