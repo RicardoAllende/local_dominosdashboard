@@ -707,9 +707,9 @@ function local_dominosdashboard_get_course_comparative($courseid, array $params)
     // _log('Calculando selected_filter ', $indicator);
     // if($params['selected_filter'] != 'regiones') _log('Mostrando un resultado diferente a regiones');    
     $catalogue = local_dominosdashboard_get_catalogue($indicator, $conditions->sql, $conditions->params);
-    if(!in_array('', $catalogue)){
-        array_push($catalogue, '');
-    }
+    // if(!in_array('', $catalogue)){
+    //     array_push($catalogue, '');
+    // }
     $kpi_id = $returnkpi ? local_dominosdashboard_get_value_from_params($params, 'kpi_id') : '';
     $kpi_info = $returnkpi ? $DB->get_record('dominos_kpi_list', array('id' => $kpi_id)) : false;
     if($returnkpi) $response->kpi_info = $kpi_info;
@@ -717,7 +717,6 @@ function local_dominosdashboard_get_course_comparative($courseid, array $params)
     $comparative = array();
     foreach($catalogue as $catalogue_item){
         $item_to_compare = new stdClass();
-        $params[$key] = [$catalogue_item];
         $item_to_compare = local_dominosdashboard_get_info_from_cache($courseid, $params, $return_regions = true);
         if($catalogue_item == ''){
             $item_to_compare->name = '(Vacío)';
@@ -725,12 +724,16 @@ function local_dominosdashboard_get_course_comparative($courseid, array $params)
             $item_to_compare->name = $catalogue_item;
         }
         if($returnkpi){
+            $kpi_params = $params;
+            $kpi_params[$key] = $catalogue_item;
             // _log('Obteniendo KPIS');
             // $kpi_id = local_dominosdashboard_get_value_from_params($params, 'kpi_id');
             // $params['kpi_id']
-            $item_to_compare->kpi = local_dominosdashboard_get_kpi_results($kpi_id, $params);
-            if(!empty($item_to_compare->kpi)){
-                _log('Se encontró kpi no vacío', $item_to_compare);
+            $item_to_compare->kpi = local_dominosdashboard_get_kpi_results($kpi_id, $kpi_params);
+            if($item_to_compare->kpi !== null){
+                _log('Se encontró kpi no nulo', $item_to_compare);
+            }else{
+                _log("Kpi {$kpi_id} null", $kpi_params[$key]);
             }
         // }else{
         //     _log('No se está regresando el kpi');
@@ -829,26 +832,35 @@ function local_dominosdashboard_get_kpi_results($id, array $params){
 
     $whereClauses = implode(' AND ', $whereClauses);
 
-    _log('La consulta de los KPIS es: ', $whereClauses);
+    // _log('La consulta de los KPIS es: ', $whereClauses);
     // _log($whereClauses, $sqlParams);
 
     switch($kpi->type){
         case 'Texto': // Ejemplo: Aprobado, no aprobado y destacado
             $query = "SELECT value, COUNT(*) AS conteo FROM {dominos_kpis} WHERE {$whereClauses} GROUP BY value ";
             $result = $DB->get_records_sql_menu($query, $sqlParams);
-            if(empty($result)) return null;
+            if($result === false){
+                // _sql($query, $sqlParams);
+                return null;
+            } 
             return $result;
             break;
         case 'Escala': // 2 Ejemplo: devuelve el número de quejas
             $query = "SELECT ROUND(AVG(value), 0) AS value FROM {dominos_kpis} WHERE {$whereClauses} ";
             $result = $DB->get_field_sql($query, $sqlParams);
-            if(empty($result)) return null;
+            if($result === false){
+                // _sql($query, $sqlParams);
+                return null;
+            }
             return $result;
             break;
         case 'Porcentaje': // 3
             $query = "SELECT ROUND(AVG(value), 2) AS value FROM {dominos_kpis} WHERE {$whereClauses} ";
             $result = $DB->get_field_sql($query, $sqlParams);
-            if(empty($result)) return null;
+            if($result === false){
+                // _sql($query, $sqlParams);
+                return null;
+            }
             return $result;
             break;
         default:

@@ -1248,8 +1248,7 @@ function createCardGrahp_gauge(container, title, c_aprobados, id) {
 }
 
 function seccion_c_imprimirGraficaComparativaCursos(container, respuesta) {
-    r_seccionc = respuesta.sections.seccion_c;
-    _courses = r_seccionc.courses;
+    courses = r_seccionc = respuesta.sections.seccion_c;
     for (var i = 0; i < _courses.length; i++) {
         cursoActual = _courses[i];
         var c_percentage_region = Array();

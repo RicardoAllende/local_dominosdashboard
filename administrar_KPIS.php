@@ -98,7 +98,7 @@ echo $OUTPUT->header();
                         <select name="kpi_type" class="form-control">
                             <option value="Porcentaje">Porcentaje</option>
                             <option value="Escala">Escala</option>
-                            <option value="Texto">Texto</option>
+                            <!-- <option value="Texto">Texto</option> -->
                         </select>
                     </div>
                     <input type="hidden" name="kpi_enabled" value="1">
@@ -176,8 +176,8 @@ echo $OUTPUT->header();
                 <td>
                     <select form='${formname}' name="kpi_type" id='type_selected_${kpi.id}' class="form-control">
                         <option value="Porcentaje">Porcentaje</option>
-                        <option value="Número entero">Número entero</option>
-                        <option value="Texto">Texto</option>
+                        <option value="Escala">Escala</option>
+                        <!-- <option value="Texto">Texto</option> -->
                     </select>
                 </td>
                 <td>
