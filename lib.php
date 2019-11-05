@@ -1029,7 +1029,7 @@ function local_dominosdashboard_get_selected_params(array $params){
 }
 
 
-function local_dominosdashboard_get_enrolled_users_ids(int $courseid, $fecha_inicial, $fecha_final){
+function local_dominosdashboard_get_enrolled_userids(int $courseid, $fecha_inicial, $fecha_final){
     $email_provider = local_dominosdashboard_get_email_provider_to_allow();
     if(!empty($email_provider)){
         $where = " AND email LIKE '%{$email_provider}'"; 
@@ -1065,8 +1065,8 @@ function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $p
     $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
     $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final');
     // Se omite $fecha_inicial debido a que si se incluye los usuarios inscritos anteriormente serían omitidos, activar si se pide explícitamente ese funcionamiento
-    // $ids = local_dominosdashboard_get_enrolled_users_ids($courseid, $fecha_inicial, $fecha_final);
-    $ids = local_dominosdashboard_get_enrolled_users_ids($courseid, '', $fecha_final);
+    // $ids = local_dominosdashboard_get_enrolled_userids($courseid, $fecha_inicial, $fecha_final);
+    $ids = local_dominosdashboard_get_enrolled_userids($courseid, '', $fecha_final);
     $filters_sql = array();
     array_push($filters_sql, $ids);
     $allow_users = array();
@@ -1957,4 +1957,427 @@ function local_dominosdashboard_str_replace_first($buscar, $remplazar, $str){
     return $newstring;
     // $buscar = '/'.preg_quote($buscar, '/').'/';
     // return preg_replace($buscar, $remplazar, $str, 1);
+}
+
+DEFINE('local_dominosdashboard_course_users_pagination', 1);
+DEFINE('local_dominosdashboard_all_users_pagination', 2);
+DEFINE('local_dominosdashboard_suspended_users_pagination', 3);
+DEFINE('local_dominosdashboard_actived_users_pagination', 4);
+DEFINE('local_dominosdashboard_oficina_central_pagination', 5);
+
+/**
+ * Regresa información para la paginación de usuarios compatible con datatables
+ */
+function local_dominosdashboard_get_paginated_users(array $params, $type){
+    $courseid = local_dominosdashboard_get_value_from_params($params, 'courseid');
+    $courseid = intval($courseid);
+    // _log($params);
+    switch($type){
+        case local_dominosdashboard_course_users_pagination:
+            list($enrol_sql_query, $enrol_params) = " user.id IN " . local_dominosdashboard_get_enrolled_userids($courseid, $desde = '', $hasta = '', $params);
+        break;
+
+        case local_dominosdashboard_all_users_pagination:
+            $enrol_sql_query = " user.id > 1 AND user.deleted = 0";
+        break;
+
+        case local_dominosdashboard_suspended_users_pagination:
+            $enrol_sql_query = ' user.id > 1 AND user.suspended = 1 AND user.deleted = 0';
+        break;
+
+        case local_dominosdashboard_actived_users_pagination:
+            $marcafield = get_config('local_dominosdashboard', 'marcafield');
+            $marcaValue = local_dominosdashboard_oficina_central_value;
+            if(empty($marcafield)){
+                $marcafield = -1;
+            }
+            $enrol_sql_query = " user.id > 1 AND user.suspended = 0 AND user.deleted = 0
+            userid.id NOT IN (SELECT distinct userid FROM {user_info_data} WHERE fieldid = {$marcafield} AND data = '{$marcaValue}')";
+        break;
+
+        case local_dominosdashboard_oficina_central_pagination:
+            $marcafield = get_config('local_dominosdashboard', 'marcafield');
+            $marcaValue = local_dominosdashboard_oficina_central_value;
+            if(empty($marcafield)){
+                $marcafield = -1;
+            }
+            $enrol_sql_query = " user.id > 1 AND user.deleted = 1 IN (SELECT distinct userid FROM {user_info_data} WHERE fieldid = {$marcafield} AND data = '{$marcaValue}')";
+        break;
+
+        default:
+            $enrol_sql_query = ' user.id > 1 ';
+        break;
+    }
+    if(empty($params)){
+        return array();
+    }
+    global $DB;
+    $draw = $params['draw'];
+    $row = $params['start'];
+    $rowperpage = $params['length']; // Rows display per page
+    $columnIndex = $params['order'][0]['column']; // Column index
+    $columnName = $params['columns'][$columnIndex]['data']; // Column name
+    $columnSortOrder = $params['order'][0]['dir']; // asc or desc
+    $searchValue = $params['search']['value']; // Search value
+
+    ## Search 
+    $searchQuery = " WHERE " . $enrol_sql_query;
+    $searched = '';
+    if(!empty($searchValue) && strpos($columnName, 'link') !== false){
+        $searched = $columnName;
+    }
+    $queryParams = array();
+    
+    
+    $report_info = local_dominosdashboard_get_report_columns($type, $courseid, $searched);
+
+    ## Fetch records
+    $select_sql = $report_info->select_sql;
+    $select_slim = $report_info->slim_query;
+    $limit = " LIMIT {$row}, {$rowperpage}";
+    if($rowperpage == -1){
+        $limit = "";
+    }
+    
+    ## Total number of records without filtering
+    $query = 'SELECT COUNT(*) FROM {user} AS user WHERE ' . $enrol_sql_query;
+    // _sql('Sin filtro ', $query, $queryParams);
+    $totalRecords = $DB->count_records_sql($query);//($table, $conditions_array);
+    // _log('Elementos totales', $totalRecords);    
+    if($searchValue != ''){
+        if($columnName == 'name'){ // Campo por defecto name
+        // if(strpos('user.name',$columnName) !== false){
+            $searchValue = "%{$searchValue}%";
+            $searchQuery = " WHERE " . $enrol_sql_query . " AND CONCAT(firstname, ' ', lastname) like ? ";
+            // array_push($queryParams, $searchValue);
+        }elseif(strpos($columnName, 'custom_') !== false){ // Campo que requiere having
+        // }elseif(strpos('user.',$columnName) !== false){
+            $searchValue = "%{$searchValue}%";
+            $searchQuery = " WHERE $enrol_sql_query HAVING {$columnName} like ?  " ;
+        }else{ // Campo estándar de la tabla user
+            $searchValue = "%{$searchValue}%";
+            $searchQuery = " WHERE {$columnName} like ? AND " . $enrol_sql_query;
+        }
+        $searched = $columnName;
+    }
+
+    ## Total number of record with filtering
+    $query = "SELECT count(*) FROM (SELECT {$select_slim} FROM {user} AS user {$searchQuery}) AS t1";
+    $queryParamsFilter = array($searchValue);
+    
+    $totalRecordwithFilter = $DB->count_records_sql($query, $queryParamsFilter);
+    // _log('Elementos filtrados', $totalRecordwithFilter);
+    // _sql('Filtrados ', $query, $queryParamsFilter);
+    
+    ## Consulta de los elementos
+    $queryParams = array();
+    array_push($queryParams, $searchValue);
+    $query = "select {$select_sql} from {user} AS user {$searchQuery} order by {$columnName} {$columnSortOrder} {$limit}";
+    // _log($query);
+    // _log($queryParams);
+    // _sql('Consulta de elementos ', $query, $queryParams);
+    $records = $DB->get_records_sql($query, $queryParams);
+
+    ## Response
+    $response = array(
+        "draw" => intval($draw),
+        "iTotalRecords" => $totalRecordwithFilter,
+        "iTotalDisplayRecords" => $totalRecords,
+        "aaData" => array_values($records)
+    );
+    $json_response = json_encode($response);
+    return $json_response;
+}
+
+function local_dominosdashboard_get_report_columns(int $type, $custom_information = '', $searched = '', $prefix = 'user.'){
+    $select_sql = array("concat({$prefix}id, '||', {$prefix}firstname, ' ', {$prefix}lastname ) as name, institution, department");
+    $ajax_names = array("name", 'institution', 'department');
+    $visible_names = array('Nombre', 'Unidad operativa', 'Puesto');
+    $slim_query = array("id");
+    // $slim_query = 
+    // array_push($select_sql, 'fullname');
+    $default_fields = local_dominosdashboard_get_default_report_fields();
+    foreach($default_fields as $key => $df){
+        if($key == $searched){
+            array_push($slim_query, $prefix . $key);
+        }
+        array_push($ajax_names, $key);
+        array_push($select_sql, $prefix . $key);
+        array_push($visible_names, $df);
+    }
+    $custom_fields = local_dominosdashboard_get_custom_report_fields();
+    $underscores = '_';
+    foreach ($custom_fields as $key => $cf) {
+        $new_key = "custom_" .$key;
+        $select_key = " COALESCE((SELECT data FROM {user_info_data} AS {$underscores}uif WHERE {$underscores}uif.userid = user.id AND fieldid = {$key} LIMIT 1), '') AS {$new_key}";
+        array_push($ajax_names, $new_key);
+        array_push($select_sql, $select_key);
+        array_push($visible_names, $cf);
+        if($new_key == $searched){
+            array_push($slim_query, $select_key);
+        }
+        $underscores .= "_";
+    }
+    switch ($type) {
+        case local_dominosdashboard_course_users_pagination:
+            global $DB;
+            $courseid = intval($custom_information);
+            $name = $DB->get_field('course', 'fullname', array('id' => $courseid));
+            if($name !== false){
+                $key_name = 'custom_completion';
+                $field = "IF( EXISTS( SELECT id FROM {course_completions} AS cc WHERE user.id = cc.userid 
+                AND cc.course = {$courseid} AND cc.timecompleted IS NOT NULL), 'Completado', 'No completado') as {$key_name}";
+                array_push($select_sql, $field);
+                array_push($ajax_names, $key_name);
+                if($key_name == $searched){
+                    array_push($slim_query, $field);
+                }
+                array_push($visible_names, $name);
+
+                $key_name = 'custom_completion_date';
+                $field = "COALESCE( ( SELECT DATE(FROM_UNIXTIME(cc.timecompleted)) FROM {course_completions} AS cc WHERE user.id = cc.userid 
+                AND cc.course = {$courseid} AND cc.timecompleted IS NOT NULL), '-') as {$key_name}";
+                array_push($select_sql, $field);
+                array_push($ajax_names, $key_name);
+                if($key_name == $searched){
+                    array_push($slim_query, $field);
+                }
+                array_push($visible_names, 'Fecha de completado');
+
+                $grade_item = local_dominosdashboard_get_course_grade_item_id($courseid);
+
+                if($grade_item !== false){
+                    $key_name = "custom_grade";
+                    $field = "COALESCE( ( SELECT ROUND(gg.finalgrade, 2) FROM {grade_grades} AS gg
+                    WHERE user.id = gg.userid AND gg.itemid = {$grade_item}), '-') as {$key_name}";
+                    $field_slim = $field;
+                    array_push($select_sql, $field);
+                    if($key_name == $searched){
+                        array_push($slim_query, $field_slim);
+                    }
+                    array_push($ajax_names, $key_name);
+                    array_push($visible_names, 'Calificación actual');
+
+                    $key_name = "custom_grade_date";
+                    $field = "COALESCE( ( SELECT DATE(FROM_UNIXTIME(gg.timemodified)) FROM {grade_grades} AS gg
+                    WHERE user.id = gg.userid AND gg.itemid = {$grade_item}), '-') as {$key_name}";
+                    $field_slim = $field;
+                    array_push($select_sql, $field);
+                    if($key_name == $searched){
+                        array_push($slim_query, $field_slim);
+                    }
+                    array_push($ajax_names, $key_name);
+                    array_push($visible_names, 'Fecha de calificación');
+
+                    // grade/report/grader/index.php?id=6 // Agregar libro de calificaciones // https://durango.aprendiendo.org.mx/grade/report/user/index.php?userid=8&id=6
+                    
+                }else{
+                    _log('No existe item_grade para el curso: ', $courseid);
+                }
+
+                $key_name = "link_libro_calificaciones";
+                $field = "{$prefix}id as {$key_name}";
+                array_push($select_sql, $field);
+                array_push($ajax_names, $key_name);
+                array_push($visible_names, 'Libro de calificaciones');
+            }
+
+            break;    
+        case local_dominosdashboard_all_users_pagination:
+            $key_name = 'link_edit_user';
+            $field = "{$prefix}id as {$key_name}";
+            $field_slim = "'e' as {$key_name}";
+            array_push($select_sql, $field);
+            array_push($ajax_names, $key_name);
+            array_push($visible_names, 'Editar usuario');
+
+            $key_name = "link_suspend_user";
+            $field = "{$prefix}id, concat({$prefix}id, '||', {$prefix}suspended)  as {$key_name}";
+            $field_slim = "'s' as {$key_name}";
+            array_push($select_sql, $field);
+            array_push($ajax_names, $key_name);
+            array_push($visible_names, 'Suspender usuario');
+
+            break;
+        case local_dominosdashboard_suspended_users_pagination:
+            $key_name = "link_suspend_user";
+            $field = "{$prefix}id, concat({$prefix}id, '||', {$prefix}suspended)  as {$key_name}";
+            $field_slim = "'s' as {$key_name}";
+            array_push($select_sql, $field);
+            array_push($ajax_names, $key_name);
+            array_push($visible_names, 'Suspender usuario');
+        break;
+
+        case local_dominosdashboard_actived_users_pagination:
+
+        break;
+
+        case local_dominosdashboard_oficina_central_pagination:
+
+        break;
+            default:
+            # code...
+            break;
+    }
+
+    $imploded_sql = implode(', 
+    ', $select_sql);
+    $imploded_slim = implode(', 
+    ', $slim_query);
+    $ajax_code = "";
+    $ajax_printed_rows = '';
+    $ajax_link_fields = '';
+    $count = 0;
+    foreach($ajax_names as $an){
+        $islink = true;
+        switch($an){
+            case 'link_suspend_user':
+                $ajax_code .= "{data: '{$an}', render: 
+                function ( data, type, row ) { 
+                    parts = data.split('||');
+                    id = parts[0];
+                    suspended = parts[1];
+                    texto = (suspended == '1') ? 'Quitar suspensión' : 'Suspender';
+                    clase = (suspended == '1') ? 'btn Success' : 'btn Danger';
+                    return '<a target=\"_blank\" class=\"' + clase + '\" href=\"administrar_usuarios.php?suspenduser=1&id=' + id + '\">' + texto + '</a>'; }  
+                }, ";
+            break;
+            case 'link_edit_user':
+                $ajax_code .= "{data: '{$an}', render: 
+                function ( data, type, row ) { return '<a target=\"_blank\" class=\"btn btn-info\" href=\"administrar_usuarios.php?id=' + data + '\">Editar usuario</a>'; }  }, ";
+                // $ajax_code .= "{data: '{$an}', render: function ( data, type, row ) { return data; }  }, ";            
+            break;
+            case 'name':
+                $ajax_code .= "{data: '{$an}', render: 
+                    function ( data, type, row ) { 
+                        parts = data.split('||');
+                        return '<a class=\"\" href=\"administrar_usuarios.php?id=' + parts[0] + '\">' + parts[1] + '</a>'; 
+                    } 
+                }, ";
+            // $ajax_code .= "{data: '{$an}', render: function ( data, type, row ) { return data; }  }, ";
+            break;
+            case 'link_libro_calificaciones':
+                global $CFG;
+                $ajax_code .= "{data: '{$an}', render: function ( data, type, row ) 
+                    { return '<a target=\"_blank\" class=\"btn btn-info\" href=\"{$CFG->wwwroot}/grade/report/user/index.php?id={$custom_information}&userid=' + data + '\">Libro de calificaciones</a>'; }  
+                }, ";
+                break;
+            default:
+                $islink = false;
+                $ajax_printed_rows .= ($count . ',');
+                $ajax_code .= "{data: '{$an}' },";
+            break;
+        }
+        if($islink){
+            $ajax_link_fields .= ($count . ",");
+        }
+        $count++;
+    }
+    // $ajax_code .= "{data: '{$an}', render: function ( data, type, row ) // Ejemplo agregando una columna de alguna ya generada
+    //                 { return 'Otra cosa con el mismo {$an}' + data; } // Ejemplo agregando una columna de alguna ya generada
+    //             }, "; // Ejemplo agregando una columna de alguna ya generada
+    $table_code = "";
+    foreach($visible_names as $vn){
+        $table_code .= "<th>{$vn}</th>";
+    }
+    // $table_code .= "<th>Una última columna</th>"; // Ejemplo agregando una columna de alguna ya generada
+    $response = new stdClass();
+    $response->select_sql = $prefix . 'id, ' . $imploded_sql;
+    $response->ajax_code = $ajax_code;
+    $response->ajax_printed_rows = $ajax_printed_rows;
+    $response->table_code = $table_code;
+    $response->slim_query = $imploded_slim;
+    $response->default_fields = $default_fields;
+    $response->custom_fields = $custom_fields;
+    $response->ajax_link_fields = $ajax_link_fields;
+
+    return $response;
+}
+
+/**
+ * Devuelve un arreglo de nombres de campos de la tabla de moodle user. Hay un campo diferente llamado fullname que equivale a CONCAT(firstname, ' ', lastname)
+ * @return array ['firstname','lastname','email' ... ]
+ */
+function local_dominosdashboard_get_default_report_fields(){
+    if($config = get_config('local_dominosdashboard', 'reportdefaultfields')){
+        if(!empty($config)){
+            $menu = local_dominosdashboard_get_default_profile_fields();
+            $configs = explode(',', $config);
+            $response = array();
+            foreach($configs as $r){
+                if(array_key_exists($r, $menu)){
+                    $response[$r] = $menu[$r];
+                }
+            }
+            return $response;
+        }
+    }
+    return array();
+}
+
+/**
+ * Devuelve un arreglo de ids de los campos de usuario
+ * @return array [1,2,3,...]
+ */
+function local_dominosdashboard_get_custom_report_fields(){
+    if($config = get_config('local_dominosdashboard', 'reportcustomfields')){
+        if(!empty($config)){
+            $menu = local_dominosdashboard_get_custom_profile_fields($config);
+            $configs = explode(',', $config);
+            $response = array();
+            foreach($configs as $r){
+                if(array_key_exists($r, $menu)){
+                    $response[$r] = $menu[$r];
+                }
+            }
+            return $response;
+        }
+    }
+    return array();
+}
+
+
+/**
+ * Devuelve un menú (clave => valor ... ) de los campos de usuario personalizados
+ * @param string $ids ids de los campos personalizados. Ejemplo: 1,2,3
+ * @return array|false Menú de los campos de usuario personalizados o false si no se encuentran
+ */
+function local_dominosdashboard_get_custom_profile_fields(string $ids = ''){
+    global $DB;
+    if(!empty($ids)){
+        return $DB->get_records_sql_menu("SELECT id, name FROM {user_info_field} WHERE id IN ({$ids}) ORDER BY name");
+    }
+    return $DB->get_records_menu('user_info_field', array(), 'name', "id, name");
+}
+
+/**
+ * Devuelve la lista de campos que contiene la tabla user
+ * @param bool $form true elimina las opciones username, firstname, lastname
+ * @return array
+ */
+function local_dominosdashboard_get_default_profile_fields(){
+    $fields = array(
+        'username' => 'Nombre de usuario', 
+        'firstname' => 'Nombre (s)', 
+        'lastname' => 'Apellido (s)', 
+        'email' => 'Dirección Email',
+        'address' => 'Dirección', 
+        'phone1' => 'Teléfono', 
+        'phone2' => 'Teléfono móvil', 
+        'icq' => 'Número de ICQ', 
+        'skype' => 'ID Skype', 
+        'yahoo' => 'ID Yahoo', 
+        'aim' => 'ID AIM', 
+        'msn' => 'ID MSN', 
+        'department' => 'Departamento',
+        'institution' => 'Institución', 
+        'idnumber' => 'Número de ID', 
+        // 'lang', 
+        // 'timezone', 
+        'description' => 'Descripción',
+        'city' => 'Ciudad', 
+        'url' => 'Página web', 
+        'country' => 'País',
+    );
+    return $fields;
 }
