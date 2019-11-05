@@ -1376,6 +1376,13 @@ function createCardGrahp_group(container, title, cursos_d, inscritos_d, aprobado
 }
 
 
+function get_percentage_of(value, maxNumber){
+    if(maxNumber != 0){
+        return value / maxNumber * 100;
+    }
+    return 0;
+}
+
 
 //Funcion de kpi por region en la pestaña 3, la respuesta es un listado de cursos (Pueden estar repetidos si pertenecen a varios KPIs)
 function kpi_comparative(container, respuesta) {
@@ -1401,7 +1408,7 @@ function kpi_comparative(container, respuesta) {
             var elemento_comparado = comparativa[j];
             nombre_region.push(elemento_comparado.name);
             region_avance.push(elemento_comparado.percentage);
-            kpi_values.push(elemento_comparado.kpi);
+            // kpi_values.push(elemento_comparado.kpi);
             kpi_comparative.push(elemento_comparado.kpi); // Considerando que imprime un valor
         }
         // maxValue = Math.max.apply(null, kpi_values);
@@ -1415,13 +1422,6 @@ function kpi_comparative(container, respuesta) {
        
         createCardGrahp(container, chartTitle, region_avance, nombre_region, kpi_comparative, i)
     }
-}
-
-function get_percentage_of(value, maxNumber){
-    if(maxNumber != 0){
-        return value / maxNumber * 100;
-    }
-    return 0;
 }
 
 function createCardGrahp(container, title, region_avance, nombre_region, kpi_comparative, id) {
@@ -1442,8 +1442,11 @@ function createCardGrahp(container, title, region_avance, nombre_region, kpi_com
 
     $(container).append(cardKPIRegion);
 
-    nombre_kpi = kpi_comparative[0];
     nombre_region_avance = region_avance[0];
+    nombre_kpi = kpi_comparative[0];
+    // axes  = {nombre_kpi: 'y2'};
+    axes = {};
+    axes[nombre_kpi] = 'y2'; // Es necesario agregar esta propiedad de esta forma por sintaxis json js
     return c3.generate({
         data: {
             x: 'x',
@@ -1453,34 +1456,35 @@ function createCardGrahp(container, title, region_avance, nombre_region, kpi_com
                 kpi_comparative,
                 
             ],
-            axes: {
-                nombre_kpi: 'y2'
-            },
-            // types: {
-            //     'Avance' : 'bar', // ADD
-            //     nombre_kpi: 'spline',
-            // },
-            // type: 'spline'
+            axes: axes,
+            type: 'spline',
         },
         axis: {
             x: {
-                type: 'category' // this needed to load string x value
+                label: {
+                    text: 'Cursos',
+                    position: 'outer-middle'
+                },
+                type: 'category', // this needed to load string x value
             },
             y: {
                 label: {
-                    text: 'Porcentaje de aprobación',
+                    text: nombre_region_avance,
                     position: 'outer-middle'
                 },
-                // format: {
-                //     title: function (d) { return d + '%'; },
-                // }
+                // tick: {
+                //     format: function(text){ return text + "%"; } // ADD
+                // },
             },
             y2: {
                 show: true,
                 label: {
                     text: nombre_kpi,
                     position: 'outer-middle'
-                }
+                },
+                tick: {
+                    format: function(text){ return text; } // ADD
+                },
             }
         },
         bindto: "#grafica_a_kpi" + id,
@@ -1552,35 +1556,35 @@ function createCardGrahp_entrenamiento(container, title, aprobados, no_aprobados
     
     return c3.generate({
         data: {
-                    // x: 'x',
-                    columns: [
-                        // cursos_entrenamiento,
-                        // inscritos_entrenamiento,
-                        aprobados_entrenamiento,
-                        no_aprobados_entrenamiento
-                    ],
-                    // groups: [
-                    //     ['Aprobados', 'No Aprobados']
-                    // ],
-                    type: 'pie',
-                    colors: {
-                        Inscritos: '#a5a3a4',
-                        Aprobados: '#016392',
-                        'No Aprobados': '#d70c20'
-        
-                    },
-                },
-                // axis: {
-                //     x: {
-                //         type: 'category' // this needed to load string x value
-                //     }
-                // },
-                bindto: "#graph_entrenamiento" + id,
-                // grid: {
-                //     y: {
-                //         lines: [{ value: 0 }]
-                //     }
-                // }
+            // x: 'x',
+            columns: [
+                // cursos_entrenamiento,
+                // inscritos_entrenamiento,
+                aprobados_entrenamiento,
+                no_aprobados_entrenamiento
+            ],
+            // groups: [
+            //     ['Aprobados', 'No Aprobados']
+            // ],
+            type: 'pie',
+            colors: {
+                Inscritos: '#a5a3a4',
+                Aprobados: '#016392',
+                'No Aprobados': '#d70c20'
+
+            },
+        },
+        // axis: {
+        //     x: {
+        //         type: 'category' // this needed to load string x value
+        //     }
+        // },
+        bindto: "#graph_entrenamiento" + id,
+        // grid: {
+        //     y: {
+        //         lines: [{ value: 0 }]
+        //     }
+        // }
     });
 }
 
