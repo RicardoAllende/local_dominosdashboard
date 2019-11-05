@@ -1394,17 +1394,34 @@ function kpi_comparative(container, respuesta) {
         nombre_region.push('x');
         region_avance.push('Avance');
         kpi_comparative.push(informacion_kpi.name);
+        kpi_values = Array();
         
 
         for (var j = 0; j < comparativa.length; j++) {
             var elemento_comparado = comparativa[j];
             nombre_region.push(elemento_comparado.name);
             region_avance.push(elemento_comparado.percentage);
-            kpi_comparative.push(elemento_comparado.kpi);
+            kpi_values.push(elemento_comparado.kpi);
+            kpi_comparative.push(elemento_comparado.kpi); // Considerando que imprime un valor
         }
+        // maxValue = Math.max.apply(null, kpi_values);
+        // // minValue = Math.min.apply(null, kpi_values); // En este caso es preferible utilizar 0
+        // minValue = 0;
+        // for (var index = 0; index < kpi_values.length; index++) {
+        //     var current_kpi = kpi_values[index];
+        //     // kpi_percentage = 
+        //     // kpi_comparative.push()
+        // }
        
         createCardGrahp(container, chartTitle, region_avance, nombre_region, kpi_comparative, i)
     }
+}
+
+function get_percentage_of(value, maxNumber){
+    if(maxNumber != 0){
+        return value / maxNumber * 100;
+    }
+    return 0;
 }
 
 function createCardGrahp(container, title, region_avance, nombre_region, kpi_comparative, id) {
@@ -1425,21 +1442,45 @@ function createCardGrahp(container, title, region_avance, nombre_region, kpi_com
 
     $(container).append(cardKPIRegion);
 
-    
+    nombre_kpi = kpi_comparative[0];
+    nombre_region_avance = region_avance[0];
     return c3.generate({
         data: {
             x: 'x',
             columns: [
                 nombre_region,
                 region_avance,
-                kpi_comparative
+                kpi_comparative,
                 
             ],
-            type: 'spline'
+            axes: {
+                nombre_kpi: 'y2'
+            },
+            // types: {
+            //     'Avance' : 'bar', // ADD
+            //     nombre_kpi: 'spline',
+            // },
+            // type: 'spline'
         },
         axis: {
             x: {
                 type: 'category' // this needed to load string x value
+            },
+            y: {
+                label: {
+                    text: 'Porcentaje de aprobación',
+                    position: 'outer-middle'
+                },
+                // format: {
+                //     title: function (d) { return d + '%'; },
+                // }
+            },
+            y2: {
+                show: true,
+                label: {
+                    text: nombre_kpi,
+                    position: 'outer-middle'
+                }
             }
         },
         bindto: "#grafica_a_kpi" + id,
@@ -1547,22 +1588,15 @@ var comparativaMaxima = 20;
 var clase;
 function compararFiltros(filtro_seleccionado) {
     mostrarLoader();
-    pestanaActual = 1;
-    if(typeof currentTab !== 'undefined'){
-        pestanaActual = currentTab;
-    }
-
-    if(pestanaActual == 3){
+    if(currentTab == 3){
         informacion = $('#filter_form').serializeArray();
 
         informacion.push({name: 'request_type', value: 'course_list'});
         informacion.push({name: 'type', value: currentTab});
         informacion.push({name: 'currentTab', value: currentTab});
-        // informacion.push({ name: 'request_type', value: 'course_comparative' });
         informacion.push({ name: 'selected_filter', value: filtro_seleccionado });
-        // informacion.push({ name: 'courseid', value: idcurso });
-        // console.log('Información de comparativa dominosdashboard_scripts', informacion);
         $('#ldm_comparativas').html('');
+        $('#contenedor_kpi').empty();
     
         dateBeginingComparacion = Date.now();
         $.ajax({
@@ -1574,20 +1608,15 @@ function compararFiltros(filtro_seleccionado) {
             .done(function (response) {
                 dateEndingComparacion = Date.now();
                 respuesta = JSON.parse(JSON.stringify(response));
-                $('#contenedor_kpi').empty();
                 kpi_comparative('#contenedor_kpi', respuesta.data.result);
                 console.log(`Tiempo de respuesta de API al obtener json para listado de cursos ${dateBeginingComparacion - dateEndingComparacion} ms`);
-
+                ocultarLoader();
             })
             .fail(function (error, error2) {
-                // isCourseLoading = false;
                 console.log(error);
                 console.log(error2);
                 ocultarLoader();
             });
-            
-        // $('#contenedor_kpi').empty();
-        // kpi_comparative('#contenedor_kpi', respuesta.result);
         return;
     }
     
