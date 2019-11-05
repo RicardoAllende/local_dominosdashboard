@@ -53,7 +53,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
             }
             break;
         case 'course_list':
-            // _log('Calculando comparativa de cursos', $_POST);
             if(isset($_POST['type'])){
                 die(local_dominosdashboard_format_response(local_dominosdashboard_get_courses_overview($_POST['type'], $_POST)));
             }else{

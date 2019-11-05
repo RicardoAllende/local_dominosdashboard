@@ -243,7 +243,11 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
             informacion.push({name: 'request_type', value: 'course_list'});
             informacion.push({name: 'type', value: currentTab});
             if(currentTab === 3){
-                informacion.push({ name: 'selected_filter', value: indicator });
+                if(esVacio(indicator)){
+                    informacion.push({ name: 'selected_filter', value: 'regiones' });
+                }else{
+                    informacion.push({ name: 'selected_filter', value: indicator });
+                }
             }
             dateBegining_courses = Date.now();
             $('#ldm_comparativas').html(''); // Se eliminan las gráficas comparativas anteriormente creadas
