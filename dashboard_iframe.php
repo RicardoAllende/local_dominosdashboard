@@ -55,7 +55,7 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
     <div class="row" style="max-width: 100%; min-height: 300px;">
         <form id="filter_form" name="filter_form" method="post" style="display:none" action="imprimir.php" class='col-sm-3'>
             <!-- <span class="btn btn-success" onclick="quitarFiltros()">Quitar todos los filtros</span><br><br> -->
-            <p class="btn btn-primary" onclick="exportar_a_excel();">Exportar cursos a excel</p>
+            <p class="btn btn-primary" id="exportar_a_excel_boton" onclick="exportar_a_excel();">Exportar cursos a excel</p>
             <div id="contenedor_fechas">
                 <label for="fecha_inicial">Desde <input type="date" onchange="obtenerInformacion(),loaderFiltro()" class="form-control" name="fecha_inicial" id="fecha_inicial"></label> 
                 <label for="fecha_final">Hasta <input type="date" onchange="obtenerInformacion(),loaderFiltro()" class="form-control" name="fecha_final" id="fecha_final"></label>
@@ -93,9 +93,9 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                     </div>
 
                     <div class="col-sm-12" id="seccion_c">
-                        <div style="text-align: center;">
+                        <!-- <div style="text-align: center;">
                         <h3 class="titulog">Ruta Dominos</h3>
-                        </div>                        
+                        </div> -->
                         <div id="graficas_seccion_c"></div>
                     </div>
 
@@ -174,9 +174,11 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
             $("#cardpuestos").hide();
 
             if(tab == 2){
+                $("#exportar_a_excel_boton").show();
                 $("#cardpuestos").show();
             }
             if(tab == 3){
+                $("#exportar_a_excel_boton").hide(); // Ocultar exportado de cursos en la última pestaña
                 $("#cardpuestos").hide();
             }
         }
@@ -233,9 +235,16 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
             $('#graficas_seccion_detalles_entrenamiento').empty();
             $('#contenedor_kpi').empty();
 
-            informacion = $('#filter_form').serializeArray();
+            if(currentTab == 1){
+                informacion = Array();
+            }else{
+                informacion = $('#filter_form').serializeArray();
+            }
             informacion.push({name: 'request_type', value: 'course_list'});
             informacion.push({name: 'type', value: currentTab});
+            if(currentTab === 3){
+                informacion.push({ name: 'selected_filter', value: indicator });
+            }
             dateBegining_courses = Date.now();
             $('#ldm_comparativas').html(''); // Se eliminan las gráficas comparativas anteriormente creadas
             // $('#local_dominosdashboard_content').html('Cargando la información');

@@ -309,6 +309,10 @@ function generarGraficasTodosLosCursos(_bindto, response, titulo) {
             no_aprobados_.push("No Aprobados");
             // _ideal_cobertura_.push('Ideal de cobertura');
             for (var i = 0; i < cursos.length; i++) {
+
+                // porcentaje_aprobados = parseFloat(curso_.percentage).toFixed(2);
+                // porcentaje_reprobados = (100 - porcentaje_aprobados).toFixed(2);
+
                 var curso = cursos[i];
                 chart = curso.chart;
                 // if (chart.indexOf('grupo_cursos') !== -1) { // Se hará una comparativa entre estos cursos, primero creamos un arreglo con esos cursos
@@ -1107,6 +1111,7 @@ function seccion_a_imprimirGraficaComparativaCursos(container, respuesta) {
 
 
     respuesta = respuesta.sections.seccion_a;
+    insertarTituloSeparador(container, respuesta.name);
     cursos = respuesta.courses;
     for (var i = 0; i < cursos.length; i++) {
         var curso = cursos[i];
@@ -1163,8 +1168,8 @@ function createCardGrahp_comparative(container, title, arrGraph, id) {
 
     $(container).append(cardKPIRegion);
 
-    console.log('arrGraph');
-    console.log(arrGraph);
+    // console.log('arrGraph');
+    // console.log(arrGraph);
     return c3.generate({
         data: {
             x: 'x',
@@ -1183,6 +1188,8 @@ function createCardGrahp_comparative(container, title, arrGraph, id) {
 
 //Función para imprimir el porcentaje de aprobación de cada curso
 function seccion_b_imprimirGraficaComparativaCursos(container, respuesta) {
+
+    insertarTituloSeparador(container, respuesta.sections.seccion_b.name);
     
     for (var i = 0; i < respuesta.sections.seccion_b.courses.length; i++) {
         //if(respuesta.sections.seccion_b.courses[i].enrolled_users>0){
@@ -1248,6 +1255,7 @@ function createCardGrahp_gauge(container, title, c_aprobados, id) {
 }
 
 function seccion_c_imprimirGraficaComparativaCursos(container, respuesta) {
+    insertarTituloSeparador(container, respuesta.sections.seccion_c.name);
     _courses = r_seccionc = respuesta.sections.seccion_c.courses;
     for (var i = 0; i < _courses.length; i++) {
         cursoActual = _courses[i];
@@ -1305,6 +1313,7 @@ function createCardGrahp_horizontalBar(container, title, c_percentage_region, id
 
 //Función para pintar una card donde se comparen los cursos, en la primera pestaña
 function seccion_d_imprimirGraficaComparativaCursos(container, respuesta) {
+    insertarTituloSeparador(container, respuesta.sections.seccion_d.name);
     r_secciond = respuesta.sections.seccion_d;
     var cursos_d = [];
     cursos_d.push('x');
@@ -1420,11 +1429,11 @@ function kpi_comparative(container, respuesta) {
         //     // kpi_comparative.push()
         // }
        
-        createCardGrahp(container, chartTitle, region_avance, nombre_region, kpi_comparative, i)
+        createCardGrahp(container, chartTitle, region_avance, nombre_region, kpi_comparative, i, informacion_kpi)
     }
 }
 
-function createCardGrahp(container, title, region_avance, nombre_region, kpi_comparative, id) {
+function createCardGrahp(container, title, region_avance, nombre_region, kpi_comparative, id, informacion_kpi) {
     var cardKPIRegion = "<div class='col-sm-12 espacio'>" +
         "<div class='card bg-gray border-0 m-2'>" +
             "<div class='align-items-end'>" +
@@ -1444,51 +1453,85 @@ function createCardGrahp(container, title, region_avance, nombre_region, kpi_com
 
     nombre_region_avance = region_avance[0];
     nombre_kpi = kpi_comparative[0];
-    // axes  = {nombre_kpi: 'y2'};
+    
     axes = {};
-    axes[nombre_kpi] = 'y2'; // Es necesario agregar esta propiedad de esta forma por sintaxis json js
-    return c3.generate({
-        data: {
-            x: 'x',
-            columns: [
-                nombre_region,
-                region_avance,
-                kpi_comparative,
-                
-            ],
-            axes: axes,
-            type: 'spline',
-        },
-        axis: {
-            x: {
-                label: {
-                    text: 'Cursos',
-                    position: 'outer-middle'
-                },
-                type: 'category', // this needed to load string x value
+    axes[nombre_kpi] = 'y2'; // Es necesario agregar esta propiedad de esta forma por sintaxis json js // axes  = {nombre_kpi: 'y2'};
+    if(informacion_kpi.type == 'Porcentaje'){ // Crear gráfica de un eje pues muestra porcentajes y son comparables directamente
+        return c3.generate({
+            data: {
+                x: 'x',
+                columns: [
+                    nombre_region,
+                    region_avance,
+                    kpi_comparative,
+                    
+                ],
+                type: 'spline',
             },
-            y: {
-                label: {
-                    text: nombre_region_avance,
-                    position: 'outer-middle'
+            axis: {
+                x: {
+                    label: {
+                        text: 'Cursos',
+                        position: 'outer-middle'
+                    },
+                    type: 'category', // this needed to load string x value
                 },
-                // tick: {
-                //     format: function(text){ return text + "%"; } // ADD
-                // },
+                y: {
+                    label: {
+                        text: nombre_region_avance,
+                        position: 'outer-middle'
+                    },
+                    tick: {
+                        format: function(text){ return text + "%"; } // ADD
+                    },
+                },
             },
-            y2: {
-                show: true,
-                label: {
-                    text: nombre_kpi,
-                    position: 'outer-middle'
+            bindto: "#grafica_a_kpi" + id,
+        });
+    }else{ // Crear gráfica de doble eje
+        return c3.generate({
+            data: {
+                x: 'x',
+                columns: [
+                    nombre_region,
+                    region_avance,
+                    kpi_comparative,
+                    
+                ],
+                axes: axes,
+                type: 'spline',
+            },
+            axis: {
+                x: {
+                    label: {
+                        text: 'Cursos',
+                        position: 'outer-middle'
+                    },
+                    type: 'category', // this needed to load string x value
                 },
-                tick: {
-                    format: function(text){ return text; } // ADD
+                y: {
+                    label: {
+                        text: nombre_region_avance,
+                        position: 'outer-middle'
+                    },
+                    tick: {
+                        format: function(text){ return text + "%"; } // ADD
+                    },
                 },
-            }
-        },
-        bindto: "#grafica_a_kpi" + id,
-    });
+                y2: {
+                    show: true,
+                    label: {
+                        text: nombre_kpi,
+                        position: 'outer-middle'
+                    },
+                    tick: {
+                        format: function(text){ return text; } // ADD
+                    },
+                }
+            },
+            bindto: "#grafica_a_kpi" + id,
+        });
+    }
 }
 
 var ids_de_cursos;

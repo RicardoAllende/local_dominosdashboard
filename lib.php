@@ -810,19 +810,21 @@ function local_dominosdashboard_get_kpi_results($id, array $params){
     // _log('La consulta de los KPIS es: ', $whereClauses);
     // _log($whereClauses, $sqlParams);
 
+    $operation = empty($kpi->calculation) ? 'avg' : $kpi->calculation; // Operación de cálculo (avg o sum)
+
     switch($kpi->type){
-        case 'Texto': // Ejemplo: Aprobado, no aprobado y destacado
-            $query = "SELECT value, COUNT(*) AS conteo FROM {dominos_kpis} WHERE {$whereClauses} GROUP BY value ";
-            $result = $DB->get_records_sql_menu($query, $sqlParams);
-            if($result === false || $result === null){
-                // _log('Retornando valor por defecto');
-                // _sql($query, $sqlParams);
-                return local_dominosdashboard_kpi_empty_result;
-            } 
-            return $result;
-            break;
+        // case 'Texto': // Ejemplo: Aprobado, no aprobado y destacado
+        //     $query = "SELECT value, COUNT(*) AS conteo FROM {dominos_kpis} WHERE {$whereClauses} GROUP BY value ";
+        //     $result = $DB->get_records_sql_menu($query, $sqlParams);
+        //     if($result === false || $result === null){
+        //         // _log('Retornando valor por defecto');
+        //         // _sql($query, $sqlParams);
+        //         return local_dominosdashboard_kpi_empty_result;
+        //     } 
+        //     return $result;
+        //     break;
         case 'Escala': // 2 Ejemplo: devuelve el número de quejas
-            $query = "SELECT ROUND(AVG(value), 0) AS value FROM {dominos_kpis} WHERE {$whereClauses} ";
+            $query = "SELECT ROUND({$operation}(value), 2) AS value FROM {dominos_kpis} WHERE {$whereClauses} ";
             $result = $DB->get_field_sql($query, $sqlParams);
             if($result === false || $result === null){
                 // _log('Retornando valor por defecto');
@@ -832,7 +834,7 @@ function local_dominosdashboard_get_kpi_results($id, array $params){
             return $result;
             break;
         case 'Porcentaje': // 3
-            $query = "SELECT ROUND(AVG(value), 2) AS value FROM {dominos_kpis} WHERE {$whereClauses} ";
+            $query = "SELECT ROUND({$operation}(value), 2) AS value FROM {dominos_kpis} WHERE {$whereClauses} ";
             $result = $DB->get_field_sql($query, $sqlParams);
             if($result === false || $result === null){
                 // _log('Retornando valor por defecto');
@@ -842,7 +844,7 @@ function local_dominosdashboard_get_kpi_results($id, array $params){
             return $result;
             break;
         default:
-            return null;
+            return local_dominosdashboard_kpi_empty_result;
         break;
     }
 }

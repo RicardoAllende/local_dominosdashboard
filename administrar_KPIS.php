@@ -97,8 +97,8 @@ echo $OUTPUT->header();
                     <div class="form-group">
                         <label for="kpi_calculation" class="col-form-label">Cálculo de la información:</label>
                         <select name="kpi_calculation" class="form-control">
-                            <option value="promedio">Promedio</option>
-                            <option value="suma">Suma</option>
+                            <option value="avg">Promedio</option>
+                            <option value="sum">Suma</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -190,8 +190,8 @@ echo $OUTPUT->header();
                 </td>
                 <td>
                     <select form='${formname}' name="kpi_calculation" id='kpi_calculation_${kpi.id}'  class="form-control">
-                        <option value="promedio">Promedio</option>
-                        <option value="suma">Suma</option>
+                        <option value="avg">Promedio</option>
+                        <option value="sum">Suma</option>
                     </select>
                 </td>
                 <td>
