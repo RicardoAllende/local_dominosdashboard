@@ -1831,6 +1831,7 @@ function local_dominosdashboard_update_kpi(array $params){
         $key = local_dominosdashboard_get_value_from_params($params, 'kpi_key', false, true);
         $name = local_dominosdashboard_get_value_from_params($params, 'kpi_name', false, true);
         $type = local_dominosdashboard_get_value_from_params($params, 'kpi_type', false, true);
+        $calculation = local_dominosdashboard_get_value_from_params($params, 'kpi_calculation', false, true);
         $enabled = local_dominosdashboard_get_value_from_params($params, 'kpi_enabled', false, true);
         if($kpi->kpi_key != $key){
             if($DB->record_exists('dominos_kpi_list', array('kpi_key' => $key))){
@@ -1841,6 +1842,7 @@ function local_dominosdashboard_update_kpi(array $params){
         $kpi->name = $name;
         $kpi->type = $type;
         $kpi->enabled = $enabled;
+        $kpi->calculation = $calculation;
         $DB->update_record('dominos_kpi_list', $kpi);
         return 'ok';
     }catch(Exception $e){
@@ -1858,7 +1860,8 @@ function local_dominosdashboard_create_kpi(array $params){
         $name = local_dominosdashboard_get_value_from_params($params, 'kpi_name', false, true);
         $type = local_dominosdashboard_get_value_from_params($params, 'kpi_type', false, true);
         $enabled = local_dominosdashboard_get_value_from_params($params, 'kpi_enabled', false, true);
-        if(local_dominosdashboard_has_empty($key, $name, $type, $enabled)){
+        $calculation = local_dominosdashboard_get_value_from_params($params, 'kpi_calculation', false, true);
+        if(local_dominosdashboard_has_empty($key, $name, $type, $enabled, $calculation)){
             _log('Datos vacíos en creación de kpi');
             return 'Hay datos vacíos';
         }
@@ -1872,6 +1875,7 @@ function local_dominosdashboard_create_kpi(array $params){
         $kpi->name = $name;
         $kpi->type = $type;
         $kpi->enabled = $enabled;
+        $kpi->calculation = $calculation;
         $insertion = $DB->insert_record('dominos_kpi_list', $kpi);
         
         return "ok";

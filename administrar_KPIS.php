@@ -59,8 +59,9 @@ echo $OUTPUT->header();
                 <th scope="col" class="text-center">Clave</th>
                 <th scope="col" class="text-center">Nombre del KPI</th>
                 <th scope="col" class="text-center">Tipo de valor</th>
+                <th scope="col" class="text-center">Cálculo</th>
                 <th scope="col" class="text-center">Estado</th>
-                <th scope="col" class="text-center">Editar</th>                
+                <th scope="col" class="text-center">Editar</th>
                 <th scope="col" class="text-center">Eliminar</th>
             </tr>
         </thead>
@@ -94,7 +95,14 @@ echo $OUTPUT->header();
                         <input type="text" class="form-control" id="kpi_key" name="kpi_key">
                     </div>
                     <div class="form-group">
-                        <label for="message-text" class="col-form-label">Tipo de dato:</label>
+                        <label for="kpi_calculation" class="col-form-label">Cálculo de la información:</label>
+                        <select name="kpi_calculation" class="form-control">
+                            <option value="promedio">Promedio</option>
+                            <option value="suma">Suma</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="kpi_type" class="col-form-label">Tipo de dato:</label>
                         <select name="kpi_type" class="form-control">
                             <option value="Porcentaje">Porcentaje</option>
                             <option value="Escala">Escala</option>
@@ -181,6 +189,12 @@ echo $OUTPUT->header();
                     </select>
                 </td>
                 <td>
+                    <select form='${formname}' name="kpi_calculation" id='kpi_calculation_${kpi.id}'  class="form-control">
+                        <option value="promedio">Promedio</option>
+                        <option value="suma">Suma</option>
+                    </select>
+                </td>
+                <td>
                     <select form='${formname}' name="kpi_enabled" id='type_enabled_${kpi.id}' class="form-control">
                         <option value="0">Deshabilitado</option>
                         <option value="1">Habilitado</option>
@@ -192,6 +206,8 @@ echo $OUTPUT->header();
         `);
         $(`#type_selected_${kpi.id}`).val(kpi.type);
         $(`#type_enabled_${kpi.id}`).val(kpi.enabled);
+        console.log('Estableciendo el KPI con la forma de cálculo ', kpi.calculation);
+        $(`#kpi_calculation_${kpi.id}`).val(kpi.calculation);
     }
 
     /*
@@ -200,6 +216,7 @@ echo $OUTPUT->header();
 
     function editarKPI(formname, id){
         informacion = $(formname).serializeArray();
+        console.log(informacion);
         informacion.push({name: 'request_type', value: 'update_kpi'});
         $.ajax({
             type: "POST",
