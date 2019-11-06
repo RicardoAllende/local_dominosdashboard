@@ -823,8 +823,18 @@ function local_dominosdashboard_get_kpi_results($id, array $params){
         //     } 
         //     return $result;
         //     break;
-        case 'Escala': // 2 Ejemplo: devuelve el número de quejas
+        case 'Número entero': // 2 Ejemplo: devuelve el número de quejas
             $query = "SELECT ROUND({$operation}(value), 2) AS value FROM {dominos_kpis} WHERE {$whereClauses} ";
+            $result = $DB->get_field_sql($query, $sqlParams);
+            if($result === false || $result === null){
+                // _log('Retornando valor por defecto');
+                // _sql($query, $sqlParams);
+                return local_dominosdashboard_kpi_empty_result;
+            }
+            return $result;
+            break;
+        case 'Decimal': // 2 Ejemplo: devuelve el número de quejas
+            $query = "SELECT ROUND({$operation}(value), 0) AS value FROM {dominos_kpis} WHERE {$whereClauses} ";
             $result = $DB->get_field_sql($query, $sqlParams);
             if($result === false || $result === null){
                 // _log('Retornando valor por defecto');
