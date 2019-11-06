@@ -1170,7 +1170,7 @@ function createCardGrahp_comparative(container, title, arrGraph, id) {
 
     // console.log('arrGraph');
     // console.log(arrGraph);
-    return c3.generate({
+    chart = c3.generate({
         data: {
             x: 'x',
             columns: arrGraph,
@@ -1183,6 +1183,7 @@ function createCardGrahp_comparative(container, title, arrGraph, id) {
         },
         bindto: "#grafica_a_kpi" + id,
     });
+    chart.axis.range({max: { y: 100 }, min: {y: 0}});
 }
 
 
@@ -1287,7 +1288,7 @@ function createCardGrahp_horizontalBar(container, title, c_percentage_region, id
    
     $(container).append(card_horizontal);
 
-    return c3.generate({
+    chart = c3.generate({
         data: {
             columns:
                 c_percentage_region,
@@ -1309,6 +1310,7 @@ function createCardGrahp_horizontalBar(container, title, c_percentage_region, id
             },
         },
     });
+    chart.axis.range({max: { y: 100 }, min: {y: 0}});
 }
 
 //Función para pintar una card donde se comparen los cursos, en la primera pestaña
