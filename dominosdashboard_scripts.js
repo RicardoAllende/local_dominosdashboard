@@ -1183,9 +1183,10 @@ function createCardGrahp_comparative(container, title, arrGraph, id) {
         },
         bindto: "#grafica_a_kpi" + id,
     });
-    chart.axis.range({max: { y: 100 }, min: {y: 0}});
+    chart.axis.range({max: { y: maxAxisRange }, min: {y: 0}});
 }
 
+var maxAxisRange = 99;
 
 //Función para imprimir el porcentaje de aprobación de cada curso
 function seccion_b_imprimirGraficaComparativaCursos(container, respuesta) {
@@ -1310,7 +1311,7 @@ function createCardGrahp_horizontalBar(container, title, c_percentage_region, id
             },
         },
     });
-    chart.axis.range({max: { y: 100 }, min: {y: 0}});
+    chart.axis.range({max: { y: maxAxisRange }, min: {y: 0}});
 }
 
 //Función para pintar una card donde se comparen los cursos, en la primera pestaña
@@ -1397,6 +1398,7 @@ function get_percentage_of(value, maxNumber){
 
 //Funcion de kpi por region en la pestaña 3, la respuesta es un listado de cursos (Pueden estar repetidos si pertenecen a varios KPIs)
 function kpi_comparative(container, respuesta) {
+    kpi_charts = Array();
     for (var i = 0; i < respuesta.length; i++) {
         // elementoDeComparacion = respuesta[i];
         // cursoActual = elementoDeComparacion.course_information;
@@ -1433,7 +1435,15 @@ function kpi_comparative(container, respuesta) {
        
         createCardGrahp(container, chartTitle, region_avance, nombre_region, kpi_comparative, i, informacion_kpi)
     }
+    setTimeout(function() { // Dar el rango hasta 100% en columna y con retraso pues no funciona en tiempo real
+        for (var chartIndex = 0; chartIndex < kpi_charts.length; chartIndex++) {
+            currentChart = kpi_charts[chartIndex];
+            currentChart.axis.range({max: { y: maxAxisRange }});
+        }
+    }, 200);
 }
+
+var kpi_charts;
 
 function createCardGrahp(container, title, region_avance, nombre_region, kpi_comparative, id, informacion_kpi) {
     var cardKPIRegion = "<div class='col-sm-12 espacio'>" +
@@ -1459,7 +1469,7 @@ function createCardGrahp(container, title, region_avance, nombre_region, kpi_com
     axes = {};
     axes[nombre_kpi] = 'y2'; // Es necesario agregar esta propiedad de esta forma por sintaxis json js // axes  = {nombre_kpi: 'y2'};
     if(informacion_kpi.type == 'Porcentaje'){ // Crear gráfica de un eje pues muestra porcentajes y son comparables directamente
-        return c3.generate({
+        chart = c3.generate({
             data: {
                 x: 'x',
                 columns: [
@@ -1490,8 +1500,9 @@ function createCardGrahp(container, title, region_avance, nombre_region, kpi_com
             },
             bindto: "#grafica_a_kpi" + id,
         });
+        // chart.axis.range({max: { y: maxAxisRange }});
     }else{ // Crear gráfica de doble eje
-        return c3.generate({
+        chart = c3.generate({
             data: {
                 x: 'x',
                 columns: [
@@ -1533,7 +1544,9 @@ function createCardGrahp(container, title, region_avance, nombre_region, kpi_com
             },
             bindto: "#grafica_a_kpi" + id,
         });
+        // chart.axis.range({max: { y: maxAxisRange } });
     }
+    kpi_charts.push(chart);
 }
 
 var ids_de_cursos;
@@ -1712,6 +1725,7 @@ function compararFiltros(filtro_seleccionado) {
             });
     }
 }
+
 /**
  * @param _bindto string selector con sintaxis jquery donde se imprimirán las gráficas
  */
@@ -1723,6 +1737,7 @@ function imprimirComparativaFiltrosDeCurso(_bindto, informacion) {
         id_para_Grafica = 'ldm_comparativa_' + comparativas + '_' + informacion.key;
         titulo  = informacion.fullname.toUpperCase() + ' comparativa ' + informacion.filter.toUpperCase();
         // titulo = titulo.toUpperCase();
+        $(_bindto).append('<br>');
         insertarTituloSeparador(_bindto, titulo);
         $(_bindto).append(`<div class='col-sm-12'><div id="${id_para_Grafica}"></div></div><br>`);
         // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
@@ -1749,6 +1764,7 @@ function imprimirComparativaFiltrosDeCurso(_bindto, informacion) {
             },
             bindto: id_para_Grafica,
         });
+        chart.axis.range({max: { y: maxAxisRange, }, min: {y: 0}});
     } else {
         console.log('Error de imprimirComparativaFiltrosDeCurso', informacion);
         $(_bindto).html('');
