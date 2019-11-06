@@ -1719,8 +1719,8 @@ function imprimirComparativaFiltrosDeCurso(_bindto, informacion) {
         columns = Array();
         comparativas++;
         id_para_Grafica = 'ldm_comparativa_' + comparativas + '_' + informacion.key;
-        titulo  = informacion.fullname  + ' comparativa ' + informacion.filter;
-        titulo = titulo.toUpperCase();
+        titulo  = informacion.fullname.toUpperCase() + ' comparativa ' + informacion.filter.toUpperCase();
+        // titulo = titulo.toUpperCase();
         insertarTituloSeparador(_bindto, titulo);
         $(_bindto).append(`<div class='col-sm-12'><div id="${id_para_Grafica}"></div></div><br>`);
         // $(_bindto).append(`<div><h4 style="text-transform: uppercase;">Comparativa ${informacion.filter}</h4><div id="${id_para_Grafica}"></div></div>`);
@@ -1733,6 +1733,11 @@ function imprimirComparativaFiltrosDeCurso(_bindto, informacion) {
         var chart = c3.generate({
             data: data,
             axis: {
+                x : {
+                    tick: {
+                        format: function (d) { return titulo; }
+                    }
+                },
                 rotated: true
             },
             tooltip: {
