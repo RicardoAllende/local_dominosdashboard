@@ -120,8 +120,10 @@ $string['seccion_d_desc'] = 'Contendra la información de aprovechamiento (usuar
 
 $string['make_course_cache'] = "Generación de información para dashboard Domino's";
 
-$string['tab_report'] = "Campos del reporte";
+$string['tab_report'] = "Reporte personalizado";
 $string['reportcustomfields'] = 'Campos personalizados en reporte';
 $string['reportcustomfields_desc'] = 'Seleccione los campos personalizados a mostrar en el reporte. Presione ctrl para seleccionar varios campos';
 $string['reportdefaultfields'] = 'Campos tabla usuarios en reportes';
 $string['reportdefaultfields_desc'] = 'Seleccione los campos de la tabla {user} de moodle para mostrar en el reporte. Presione ctrl para seleccionar varios campos';
+$string['reportcourses'] = 'Cursos del reporte personalizado';
+$string['reportcourses_desc'] = 'Seleccione los cursos que incluirá el reporte personalizado. Presione ctrl para seleccionar varios campos';

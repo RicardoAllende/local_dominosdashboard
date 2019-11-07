@@ -220,6 +220,12 @@ if ($hassiteconfig) {
             $description = get_string('reportcustomfields' . '_desc', $ldm_pluginname);
             $setting = new admin_setting_configmultiselect($name, $title, $description, array(), $custom_fields);
             $page->add($setting);
+
+            $name = $ldm_pluginname . '/reportcourses';
+            $title = get_string('reportcourses', $ldm_pluginname);
+            $description = get_string('reportcourses' . '_desc', $ldm_pluginname);
+            $setting = new admin_setting_configmultiselect($name, $title, $description, array(), $courses_min);
+            $page->add($setting);
             
             $settings->add($page); // Se agrega pestaña a la administración del plugin
 

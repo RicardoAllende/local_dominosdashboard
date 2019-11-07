@@ -76,6 +76,11 @@ function local_dominosdashboard_extend_navigation(global_navigation $nav) {
             new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php' )
         );
         $node->showinflatnavigation = true;
+        $node = $nav->add (
+            "Reporte personalizado " . get_string('pluginname', 'local_dominosdashboard'),
+            new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/reporte_personalizado.php' )
+        );
+        $node->showinflatnavigation = true;
     }
 }
 
@@ -1983,16 +1988,8 @@ function local_dominosdashboard_get_paginated_users(array $params, $type = local
     // $courseid = local_dominosdashboard_get_value_from_params($params, 'courseid');
     // $courseid = intval($courseid);
     // _log($params);
-    $courses = local_dominosdashboard_get_courses();
-    $courseids = array();
-    foreach($courses as $course){
-        array_push($courseids, $course->id);
-    }
-    if(empty($courses)){
-        print_error('No se tienen cursos configurados');
-    }
 
-    $courseids = implode(',', $courseids);
+    // $courseids = implode(',', $courseids);
     
     if(empty($params)){
         return array(); // Dificilmente se podrá calcular esto pues datatables siempre envía estos parámetros, probablemente se trate de un error
@@ -2098,6 +2095,9 @@ function local_dominosdashboard_get_report_fields_in_order(){
 
 function local_dominosdashboard_get_report_columns(int $type, $searched = '', $prefix = 'user.'){
     $select_sql = array("{$prefix}id as id"); // Id como columna inicial por defecto para cumplir con reglas de data manipulation api
+    $ajax_names = array();
+    $visible_names = array();
+    $slim_query = array("id");
 
     list($default_fields, $custom_fields) = local_dominosdashboard_get_report_fields();
 
@@ -2106,10 +2106,9 @@ function local_dominosdashboard_get_report_columns(int $type, $searched = '', $p
     }
     foreach($default_fields as $key => $df){
         if($key == 'name'){
-            $select_sql = array("concat({$prefix}firstname, ' ', {$prefix}lastname ) as name"); // Nombre como columna inicial opr defecto
-            $ajax_names = array("name");
-            $visible_names = array('Nombre');
-            $slim_query = array("id");
+            array_push($ajax_names, $key);
+            array_push($select_sql, "concat({$prefix}firstname, ' ', {$prefix}lastname ) as name");
+            array_push($visible_names, 'Nombre');
         }else{
             if($key == $searched){
                 array_push($slim_query, $prefix . $key);
@@ -2131,17 +2130,18 @@ function local_dominosdashboard_get_report_columns(int $type, $searched = '', $p
         }
         $underscores .= "_";
     }
-    $courses = local_dominosdashboard_get_courses();
-    $courseids = array();
-    foreach($courses as $course){
-        array_push($courseids, $course->id);
+    global $DB;
+    $courseids = get_config('local_dominosdashboard', 'reportcourses');
+    if(empty($courseids)){
+        print_error('No se tienen cursos configurados');
     }
+    $courses = $DB->get_records_sql("SELECT id, shortname, fullname FROM {course} WHERE id IN ({$courseids})");
     if(empty($courses)){
-        print_error('No se tienen cursos');
+        print_error('No se encontraron los cursos previamente configurados');
     }
     foreach($courses as $course){
         $courseid = $course->id;
-        $coursename = $course->fullname;
+        $coursename = $course->shortname;
 
         $key_name = 'custom_completion' . $courseid;
         $field = "IF( EXISTS( SELECT id FROM {course_completions} AS cc WHERE user.id = cc.userid 
@@ -2329,6 +2329,7 @@ function local_dominosdashboard_get_custom_profile_fields(string $ids = ''){
  */
 function local_dominosdashboard_get_default_profile_fields(){
     $fields = array(
+        'name' => "Nombre",
         'username' => 'Nombre de usuario', 
         'email' => 'Dirección Email',
         'firstname' => 'Nombre (s)', 

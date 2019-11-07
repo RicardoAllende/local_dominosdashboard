@@ -29,7 +29,7 @@ local_dominosdashboard_user_has_access();
 $PAGE->set_context(context_system::instance());
 
 $currentdate = date('d-M-Y');
-$PAGE->set_url($CFG->wwwroot . '/local/dominosdashboard/detalle_curso.php');
+$PAGE->set_url($CFG->wwwroot . '/local/dominosdashboard/reporte_personalizado.php');
 
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title('Reporte personalizado ' . $currentdate);
