@@ -36,27 +36,55 @@ $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 echo $OUTPUT->header();
 
-// list($default_fields, $custom_fields) = local_dominosdashboard_get_report_fields();
-// $allfields = array_merge($default_fields, $custom_fields);
-// _print($allfields);
-$all_default_profile_fields = local_dominosdashboard_get_default_profile_fields();
-$custom_fields = local_dominosdashboard_get_custom_profile_fields();
-$allfields = array_merge($all_default_profile_fields, $custom_fields);
+$update_key = optional_param('update_key', '', PARAM_TEXT);
+$update_action = optional_param('update_action', '', PARAM_TEXT);
+
+if(!local_dominosdashboard_has_empty($update_key, $update_action)){
+    local_dominosdashboard_set_new_order($update_key, $update_action);
+}
+
+$allfields = local_dominosdashboard_get_report_fields_in_order();
+$num_fields = count($allfields);
+if($num_fields == 0){
+    print_error('No se ha configurado ningún campo personalizado');
+}
+$keys = array_keys($allfields);
+$firstkey = $keys[0];
+if($num_fields > 1){
+    $lastkey  = $keys[$num_fields - 1];
+}else{
+    $lastkey = '';
+}
+
 echo "<table class='table'>";
-foreach($allfields as $key => $name){
-    echo "
-    <tr>
-        <td>{$name} </td>
-        <td><button onclick='moverElemento(\"{$key}\", \"up\")' class='btn btn-info'>Subir</button></td>
-        <td><button onclick='moverElemento(\"{$key}\", \"down\")' class='btn btn-info'>Bajar</button></td>
+echo "<tr>
+        <td>Nombre del filtro</td>
+        <td>Subir posición</td>
+        <td>Bajar posición</td>
     </tr>";
+foreach($allfields as $key => $name){
+    echo "<tr>";
+    echo "<td>{$name} </td>";
+    if($firstkey !== $key){
+        echo "<td><button onclick='moverElemento(\"{$key}\", \"up\")' class='btn btn-info'>Subir</button></td>";
+    }else{
+        echo "<td></td>";
+    }
+    if($lastkey !== $key){
+        echo "<td><button onclick='moverElemento(\"{$key}\", \"down\")' class='btn btn-info'>Bajar</button></td>";
+    }else{
+        echo "<td></td>";
+    }
+    echo "</tr>";
 }
 echo "</table>";
 ?>
 <script src="js/jquery.min.js"></script>
 <script>
     function moverElemento(clave, movimiento){
-        
+        urlActual = location.protocol + '//' + location.host + location.pathname;
+        nueva_url = urlActual = `?update_key=${clave}&update_action=${movimiento}`;
+        window.location.href = nueva_url;
     }
 </script>
 <?php

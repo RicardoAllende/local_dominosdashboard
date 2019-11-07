@@ -2083,14 +2083,7 @@ function local_dominosdashboard_get_paginated_users(array $params, $type = local
 function local_dominosdashboard_get_report_fields(){
     $default_fields = local_dominosdashboard_get_default_report_fields();
     $custom_fields = local_dominosdashboard_get_custom_report_fields();
-    // $response = array({
-    //      elements = name
-    // });
     return array($default_fields, $custom_fields);
-}
-
-function local_dominosdashboard_get_report_fields_in_order(){
-
 }
 
 function local_dominosdashboard_get_report_columns(int $type, $searched = '', $prefix = 'user.'){
@@ -2221,7 +2214,7 @@ function local_dominosdashboard_get_report_columns(int $type, $searched = '', $p
                 //     } 
                 // }, ";
                 // $ajax_code .= "{data: '{$an}', render: function ( data, type, row ) { return data; }  }, ";
-            break;
+            // break;
             // case 'link_libro_calificaciones':
             //     global $CFG;
             //     $ajax_code .= "{data: '{$an}', render: function ( data, type, row ) 
@@ -2266,11 +2259,16 @@ function local_dominosdashboard_get_report_columns(int $type, $searched = '', $p
     return $response;
 }
 
+$default_report_fields_cache = null;
 /**
  * Devuelve un arreglo de nombres de campos de la tabla de moodle user. Hay un campo diferente llamado fullname que equivale a CONCAT(firstname, ' ', lastname)
  * @return array ['firstname','lastname','email' ... ]
  */
 function local_dominosdashboard_get_default_report_fields(){
+    global $default_report_fields_cache;
+    if($default_report_fields_cache !== null){
+        return $default_report_fields_cache;
+    }
     if($config = get_config('local_dominosdashboard', 'reportdefaultfields')){
         if(!empty($config)){
             $menu = local_dominosdashboard_get_default_profile_fields();
@@ -2281,17 +2279,23 @@ function local_dominosdashboard_get_default_report_fields(){
                     $response[$r] = $menu[$r];
                 }
             }
+            $default_report_fields_cache = $response;
             return $response;
         }
     }
     return array();
 }
 
+$custom_report_fields_cache = null;
 /**
  * Devuelve un arreglo de id => "nombre de campo" de los campos de usuario personalizados
  * @return array [1 => '',2 => '',3 => '', ...]
  */
 function local_dominosdashboard_get_custom_report_fields(){
+    global $custom_report_fields_cache;
+    if($custom_report_fields_cache !== null){
+        return $custom_report_fields_cache;
+    }
     if($config = get_config('local_dominosdashboard', 'reportcustomfields')){
         if(!empty($config)){
             $menu = local_dominosdashboard_get_custom_profile_fields($config);
@@ -2302,6 +2306,7 @@ function local_dominosdashboard_get_custom_report_fields(){
                     $response[$r] = $menu[$r];
                 }
             }
+            $custom_report_fields_cache = $response;
             return $response;
         }
     }
@@ -2353,4 +2358,87 @@ function local_dominosdashboard_get_default_profile_fields(){
         'country' => 'País',
     );
     return $fields;
+}
+
+/**
+ * Devuelve los campos de reporte ordenados según la configuración o añade los últimos en caso de no existir
+ * @return array
+ */
+function local_dominosdashboard_get_report_fields_in_order(){
+    list($default_report_fields, $custom_report_fields) = local_dominosdashboard_get_report_fields();
+    $all_filters = array_merge($default_report_fields, $custom_report_fields);
+
+    $update_config = false;
+    $original_config = $keys = get_config('local_dominosdashboard', 'sort_report_fields');
+    if($keys === false){ // No existe orden, crearlo
+        $keys = array_keys($all_filters);
+        $update_config = true;
+    }else{
+        $keys = explode(',', $keys);
+    }
+
+    // ejemplo: $keys = ['username', 'name', 1, 3];
+
+    foreach($all_filters as $filter_key => $filter_name){ // Agregando los filtros que no estaban antes
+        if(!in_array($filter_key, $keys)){
+            array_push($keys, $filter_key);
+        }
+    }
+
+    $response = array();
+    foreach ($keys as $key_id => $key) {
+        if(!array_key_exists($key, $all_filters)){ // El filtro fue eliminado de ajustes
+            unset($keys[$key_id]);
+        }else{ // El filtro sigue en ajustes
+            $response[$key] = $all_filters[$key];
+        }
+    }
+    
+    $keys_with_order = implode(',', array_keys($response));
+    if($update_config || $keys_with_order != $original_config){
+        set_config('sort_report_fields', $keys_with_order, 'local_dominosdashboard');
+    }
+    return $response;
+}
+
+function local_dominosdashboard_set_new_order($key, string $action){
+    if(!($action == 'up' || $action == 'down')){
+        print_error("Acción '{$action}' no soportada");
+    }
+    $fields_in_order = local_dominosdashboard_get_report_fields_in_order();
+    $keys_fields_in_order = array_keys($fields_in_order);
+    $position = array_search($key, $keys_fields_in_order);
+    if($position !== false){
+        switch($action){
+            case 'up':
+                $new_config = local_dominosdashboard_array_up($keys_fields_in_order, $position);
+            break;
+            case 'down':
+                $new_config = local_dominosdashboard_array_down($keys_fields_in_order, $position);
+            break;
+        }
+        $new_config = implode(',', $new_config);
+        set_config('sort_report_fields', $new_config, 'local_dominosdashboard');
+    }else{
+        print_error('No se encuentra el filtro');
+    }
+}
+
+function local_dominosdashboard_array_down($array,$position) {
+	if( count($array)-1 > $position ) {
+		$b = array_slice($array,0,$position,true);
+		$b[] = $array[$position+1];
+		$b[] = $array[$position];
+		$b += array_slice($array,$position+2,count($array),true);
+		return($b);
+	} else { return $array; }
+}
+function local_dominosdashboard_array_up($array,$position) {
+	if( $position > 0 and $position < count($array) ) {
+		$b = array_slice($array,0,($position-1),true);
+		$b[] = $array[$position];
+		$b[] = $array[$position-1];
+		$b += array_slice($array,($position+1),count($array),true);
+		return($b);
+	} else { return $array; }
 }
