@@ -96,6 +96,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
         case 'create_kpi':
             die(local_dominosdashboard_create_kpi($params = $_POST));
         break;
+        case 'course_users_pagination':
+            die(local_dominosdashboard_get_paginated_users($_POST));
+        break;
         default:
             die(local_dominosdashboard_error_response("request_type not allowed"));
             break;

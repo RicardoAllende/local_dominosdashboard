@@ -15,49 +15,117 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin strings are defined here.
+ * Listado de usuarios inscritos en un curso
  *
  * @package     local_dominosdashboard
- * @category    dashboard
+ * @category    admin
  * @copyright   2019 Subitus <contacto@subitus.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once(__DIR__ . '/../../config.php');
-$context_system = context_system::instance();
 require_once(__DIR__ . '/lib.php');
 local_dominosdashboard_user_has_access();
-require_login();
-$courseid = optional_param('id', 0, PARAM_INT);
-$PAGE->set_url($CFG->wwwroot . "/local/dominosdashboard/detalle_curso.php");
-$PAGE->set_context($context_system);
+$PAGE->set_context(context_system::instance());
+$courseid = optional_param('courseid', 9, PARAM_INT);
+$course = $DB->get_record('course', array('id' => $courseid), 'id, fullname', MUST_EXIST);
+$PAGE->set_url($CFG->wwwroot . '/local/dominosdashboard/detalle_curso.php', array('courseid' => $courseid));
 $PAGE->set_pagelayout('admin');
-$PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
+$PAGE->set_title('Detalle curso ' . $course->fullname);
+
 
 echo $OUTPUT->header();
-$url = "detalle_curso_iframe.php?id={$courseid}";
+$report_info = local_dominosdashboard_get_report_columns(local_dominosdashboard_course_users_pagination);
 ?>
-<link href="estilos.css" rel="stylesheet">
-<iframe src="<?php echo $url; ?>" id="iframe_ldm" frameborder="0" style="width: 100%; overflow: hidden;"></iframe>
-<div class="btnimprimir">
-    <button class="btn btn-primary" onclick="imprimir();">Imprimir</button>        
-</div>
+
+<table id='empTable' class='display dataTable table table-bordered'>    
+    <thead>
+        <tr>
+            <?php echo $report_info->table_code; ?>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <?php echo $report_info->table_code; ?>
+        </tr>
+    </tfoot>
+</table>
+
+<!-- Datatable CSS -->
+<link href='datatables/jquery.dataTables.min.css' rel='stylesheet' type='text/css'>
+
+<!-- <link href='//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css' rel='stylesheet' type='text/css'> -->
+<link href="datatables/buttons.dataTables.min.css" rel="stylesheet">
+
+<!-- jQuery Library -->
+<script src="js/jquery.min.js"></script>
+
+<!-- Datatable JS -->
+<script src="datatables/jquery.dataTables.min.js"></script>
+<script src="datatables/dataTables.buttons.min.js"></script>
+<script src="datatables/buttons.flash.min.js"></script>
+<script src="datatables/jszip.min.js"></script>
+<script src="datatables/pdfmake.min.js"></script>
+<script src="datatables/vfs_fonts.js"></script>
+<script src="datatables/buttons.html5.min.js"></script>
+<script src="datatables/buttons.print.min.js"></script>
+
+<!-- Table -->
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById('region-main').style.width = "100%"
-        require(['jquery'], function ($) {
-            setInterval(function() { iResize('iframe_ldm'); }, 1000);
+    $(document).ready(function(){
+        $('#empTable').DataTable({
+            'processing': true,
+            'serverSide': true,
+            'serverMethod': 'post',
+            'ajax': {
+                'url':'services.php',
+                data: {
+                    request_type: 'course_users_pagination',
+                    courseid: <?php echo $courseid; ?>,
+                }
+            },
+            lengthMenu: [[10, 15, 20, 100, -1], [10, 15, 20, 100, "Todos los registros"]],
+            'dom': 'Bfrtip',
+            "pageLength": 10,
+            buttons: [
+                {
+                    extend: 'excel',
+                    text: '<span class="fa fa-file-excel-o"></span> Exportar a excel',
+                    exportOptions: {
+                        modifier: {
+                            search: 'applied',
+                            order: 'applied'
+                        },
+                        columns: [<?php echo $report_info->ajax_printed_rows; ?>],
+                    },
+                },
+                {
+                    extend: 'excel',
+                    text: '<span class="fa fa-file-o"></span> Exportar a CSV',
+                    exportOptions: {
+                        modifier: {
+                            search: 'applied',
+                            order: 'applied'
+                        },
+                        columns: [<?php echo $report_info->ajax_printed_rows; ?>],
+                    },
+                },
+                'pageLength',
+            ],
+            'columns': [
+                <?php echo $report_info->ajax_code; ?>
+            ],
+            language: {
+                "url": "datatables/Spanish.json",
+            },
+            "columnDefs": [
+                { "targets": [<?php echo $report_info->ajax_link_fields; ?>], "orderable": false }
+            ]
+            // language: {
+            // },
+            // buttons: [ { extend: 'excel', action: newExportAction } ],
         });
     });
-    function iResize(frame_id) {
-        size = document.getElementById(frame_id).contentWindow.document.body.offsetHeight + 'px';
-        document.getElementById(frame_id).style.height = size;
-    }
-    function imprimir() {
-        window.print();
-    }
-
 </script>
 <?php
-
 echo $OUTPUT->footer();

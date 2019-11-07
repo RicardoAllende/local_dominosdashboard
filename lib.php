@@ -1038,37 +1038,38 @@ function local_dominosdashboard_get_selected_params(array $params){
     return $result;
 }
 
-
-function local_dominosdashboard_get_enrolled_userids(int $courseid, $fecha_inicial, $fecha_final){
+/**
+ * @param mixed $course Id de los cursos
+ * @param string $fecha_inicial YYYY/MM/dd
+ * @param string $fecha_final YYYY/MM/dd
+ */
+function local_dominosdashboard_get_enrolled_userids($course, $fecha_inicial, $fecha_final){
     $email_provider = local_dominosdashboard_get_email_provider_to_allow();
     if(!empty($email_provider)){
         $where = " AND email LIKE '%{$email_provider}'"; 
     }else{
         $where = ""; 
     }
+    $many_courses = strpos($course, ',') !== false;
+    $wherecourse = ($many_courses) ? " IN ({$course}) " : " = {$course} ";
+
     $campo_fecha = "__ue__.timestart";
     $filtro_fecha = local_dominosdashboard_create_sql_dates($campo_fecha, $fecha_inicial, $fecha_final);
     /* User is active participant (used in user_enrolments->status) -- Documentación tomada de enrollib.php 
     define('ENROL_USER_ACTIVE', 0);*/
     $query = "( SELECT DISTINCT __user__.id FROM {user} AS __user__
     JOIN {user_enrolments} AS __ue__ ON __ue__.userid = __user__.id
-    JOIN {enrol} __enrol__ ON (__enrol__.id = __ue__.enrolid AND __enrol__.courseid = {$courseid})
+    JOIN {enrol} __enrol__ ON (__enrol__.id = __ue__.enrolid AND __enrol__.courseid {$wherecourse})
     WHERE __ue__.status = 0 AND __user__.deleted = 0 {$filtro_fecha} AND __user__.suspended = 0 {$where} AND __user__.id NOT IN 
     (SELECT DISTINCT __role_assignments__.userid as userid
         FROM {course} AS __course__
         LEFT JOIN {context} AS __context__ ON __course__.id = __context__.instanceid
         JOIN {role_assignments} AS __role_assignments__ ON __role_assignments__.contextid = __context__.id
-        WHERE __course__.id = {$courseid}
+        WHERE __course__.id {$wherecourse}
         AND __role_assignments__.roleid NOT IN (5) # No students
     ) )";
 
     return $query;
-
-    global $DB;
-    if($result = $DB->get_fieldset_sql($query)){
-        return $result;
-    }
-    return array(); // default
 }
 
 function local_dominosdashboard_get_user_ids_with_params(int $courseid, array $params = array(), bool $returnAsString = false){
@@ -1978,48 +1979,29 @@ DEFINE('local_dominosdashboard_oficina_central_pagination', 5);
 /**
  * Regresa información para la paginación de usuarios compatible con datatables
  */
-function local_dominosdashboard_get_paginated_users(array $params, $type){
-    $courseid = local_dominosdashboard_get_value_from_params($params, 'courseid');
-    $courseid = intval($courseid);
+function local_dominosdashboard_get_paginated_users(array $params, $type = local_dominosdashboard_course_users_pagination){
+    // $courseid = local_dominosdashboard_get_value_from_params($params, 'courseid');
+    // $courseid = intval($courseid);
     // _log($params);
+    $courses = local_dominosdashboard_get_courses();
+    $courseids = array();
+    foreach($courses as $course){
+        array_push($courseids, $course->id);
+    }
+    if(empty($courses)){
+        print_error('No se tienen cursos configurados');
+    }
+
+    $courseids = implode(',', $courseids);
+    
+    if(empty($params)){
+        return array(); // Dificilmente se podrá calcular esto pues datatables siempre envía estos parámetros, probablemente se trate de un error
+    }
     switch($type){
         case local_dominosdashboard_course_users_pagination:
-            list($enrol_sql_query, $enrol_params) = " user.id IN " . local_dominosdashboard_get_enrolled_userids($courseid, $desde = '', $hasta = '', $params);
+        // $enrol_sql_query = " user.id IN " . local_dominosdashboard_get_enrolled_userids($courseids, $desde = '', $hasta = '', $params);
+        $enrol_sql_query = " user.id > 1 ";
         break;
-
-        case local_dominosdashboard_all_users_pagination:
-            $enrol_sql_query = " user.id > 1 AND user.deleted = 0";
-        break;
-
-        case local_dominosdashboard_suspended_users_pagination:
-            $enrol_sql_query = ' user.id > 1 AND user.suspended = 1 AND user.deleted = 0';
-        break;
-
-        case local_dominosdashboard_actived_users_pagination:
-            $marcafield = get_config('local_dominosdashboard', 'marcafield');
-            $marcaValue = local_dominosdashboard_oficina_central_value;
-            if(empty($marcafield)){
-                $marcafield = -1;
-            }
-            $enrol_sql_query = " user.id > 1 AND user.suspended = 0 AND user.deleted = 0
-            userid.id NOT IN (SELECT distinct userid FROM {user_info_data} WHERE fieldid = {$marcafield} AND data = '{$marcaValue}')";
-        break;
-
-        case local_dominosdashboard_oficina_central_pagination:
-            $marcafield = get_config('local_dominosdashboard', 'marcafield');
-            $marcaValue = local_dominosdashboard_oficina_central_value;
-            if(empty($marcafield)){
-                $marcafield = -1;
-            }
-            $enrol_sql_query = " user.id > 1 AND user.deleted = 1 IN (SELECT distinct userid FROM {user_info_data} WHERE fieldid = {$marcafield} AND data = '{$marcaValue}')";
-        break;
-
-        default:
-            $enrol_sql_query = ' user.id > 1 ';
-        break;
-    }
-    if(empty($params)){
-        return array();
     }
     global $DB;
     $draw = $params['draw'];
@@ -2033,13 +2015,14 @@ function local_dominosdashboard_get_paginated_users(array $params, $type){
     ## Search 
     $searchQuery = " WHERE " . $enrol_sql_query;
     $searched = '';
-    if(!empty($searchValue) && strpos($columnName, 'link') !== false){
+    if(!empty($searchValue)){
         $searched = $columnName;
     }
     $queryParams = array();
     
     
-    $report_info = local_dominosdashboard_get_report_columns($type, $courseid, $searched);
+    $report_info = local_dominosdashboard_get_report_columns($type, $searched);
+    // _log($report_info);
 
     ## Fetch records
     $select_sql = $report_info->select_sql;
@@ -2069,6 +2052,7 @@ function local_dominosdashboard_get_paginated_users(array $params, $type){
             $searchQuery = " WHERE {$columnName} like ? AND " . $enrol_sql_query;
         }
         $searched = $columnName;
+        array_push($queryParams, $searchValue);
     }
 
     ## Total number of record with filtering
@@ -2080,13 +2064,13 @@ function local_dominosdashboard_get_paginated_users(array $params, $type){
     // _sql('Filtrados ', $query, $queryParamsFilter);
     
     ## Consulta de los elementos
-    $queryParams = array();
-    array_push($queryParams, $searchValue);
+    // $queryParams = array();
     $query = "select {$select_sql} from {user} AS user {$searchQuery} order by {$columnName} {$columnSortOrder} {$limit}";
     // _log($query);
     // _log($queryParams);
     // _sql('Consulta de elementos ', $query, $queryParams);
     $records = $DB->get_records_sql($query, $queryParams);
+    _sql($query, $queryParams);
 
     ## Response
     $response = array(
@@ -2099,10 +2083,10 @@ function local_dominosdashboard_get_paginated_users(array $params, $type){
     return $json_response;
 }
 
-function local_dominosdashboard_get_report_columns(int $type, $custom_information = '', $searched = '', $prefix = 'user.'){
-    $select_sql = array("concat({$prefix}id, '||', {$prefix}firstname, ' ', {$prefix}lastname ) as name, institution, department");
-    $ajax_names = array("name", 'institution', 'department');
-    $visible_names = array('Nombre', 'Unidad operativa', 'Puesto');
+function local_dominosdashboard_get_report_columns(int $type, $searched = '', $prefix = 'user.'){
+    $select_sql = array("concat({$prefix}firstname, ' ', {$prefix}lastname, '||', {$prefix}id ) as name");
+    $ajax_names = array("name");
+    $visible_names = array('Nombre');
     $slim_query = array("id");
     // $slim_query = 
     // array_push($select_sql, 'fullname');
@@ -2128,106 +2112,59 @@ function local_dominosdashboard_get_report_columns(int $type, $custom_informatio
         }
         $underscores .= "_";
     }
-    switch ($type) {
-        case local_dominosdashboard_course_users_pagination:
-            global $DB;
-            $courseid = intval($custom_information);
-            $name = $DB->get_field('course', 'fullname', array('id' => $courseid));
-            if($name !== false){
-                $key_name = 'custom_completion';
-                $field = "IF( EXISTS( SELECT id FROM {course_completions} AS cc WHERE user.id = cc.userid 
-                AND cc.course = {$courseid} AND cc.timecompleted IS NOT NULL), 'Completado', 'No completado') as {$key_name}";
-                array_push($select_sql, $field);
-                array_push($ajax_names, $key_name);
-                if($key_name == $searched){
-                    array_push($slim_query, $field);
-                }
-                array_push($visible_names, $name);
+    $courses = local_dominosdashboard_get_courses();
+    $courseids = array();
+    foreach($courses as $course){
+        array_push($courseids, $course->id);
+    }
+    if(empty($courses)){
+        print_error('No se tienen cursos');
+    }
+    foreach($courses as $course){
+        $courseid = $course->id;
+        $coursename = $course->fullname;
 
-                $key_name = 'custom_completion_date';
-                $field = "COALESCE( ( SELECT DATE(FROM_UNIXTIME(cc.timecompleted)) FROM {course_completions} AS cc WHERE user.id = cc.userid 
-                AND cc.course = {$courseid} AND cc.timecompleted IS NOT NULL), '-') as {$key_name}";
-                array_push($select_sql, $field);
-                array_push($ajax_names, $key_name);
-                if($key_name == $searched){
-                    array_push($slim_query, $field);
-                }
-                array_push($visible_names, 'Fecha de completado');
+        $key_name = 'custom_completion' . $courseid;
+        $field = "IF( EXISTS( SELECT id FROM {course_completions} AS cc WHERE user.id = cc.userid 
+        AND cc.course = {$courseid} AND cc.timecompleted IS NOT NULL), 'Finalizado', 'No finalizado') as {$key_name}";
+        array_push($select_sql, $field);
+        array_push($ajax_names, $key_name);
+        if($key_name == $searched){
+            array_push($slim_query, $field);
+        }
+        array_push($visible_names, $coursename);
 
-                $grade_item = local_dominosdashboard_get_course_grade_item_id($courseid);
+        $grade_item = local_dominosdashboard_get_course_grade_item_id($courseid);
 
-                if($grade_item !== false){
-                    $key_name = "custom_grade";
-                    $field = "COALESCE( ( SELECT ROUND(gg.finalgrade, 2) FROM {grade_grades} AS gg
-                    WHERE user.id = gg.userid AND gg.itemid = {$grade_item}), '-') as {$key_name}";
-                    $field_slim = $field;
-                    array_push($select_sql, $field);
-                    if($key_name == $searched){
-                        array_push($slim_query, $field_slim);
-                    }
-                    array_push($ajax_names, $key_name);
-                    array_push($visible_names, 'Calificación actual');
-
-                    $key_name = "custom_grade_date";
-                    $field = "COALESCE( ( SELECT DATE(FROM_UNIXTIME(gg.timemodified)) FROM {grade_grades} AS gg
-                    WHERE user.id = gg.userid AND gg.itemid = {$grade_item}), '-') as {$key_name}";
-                    $field_slim = $field;
-                    array_push($select_sql, $field);
-                    if($key_name == $searched){
-                        array_push($slim_query, $field_slim);
-                    }
-                    array_push($ajax_names, $key_name);
-                    array_push($visible_names, 'Fecha de calificación');
-
-                    // grade/report/grader/index.php?id=6 // Agregar libro de calificaciones // https://durango.aprendiendo.org.mx/grade/report/user/index.php?userid=8&id=6
-                    
-                }else{
-                    _log('No existe item_grade para el curso: ', $courseid);
-                }
-
-                $key_name = "link_libro_calificaciones";
-                $field = "{$prefix}id as {$key_name}";
-                array_push($select_sql, $field);
-                array_push($ajax_names, $key_name);
-                array_push($visible_names, 'Libro de calificaciones');
+        if($grade_item !== false){
+            $key_name = "custom_grade" . $grade_item;
+            $field = "COALESCE( ( SELECT ROUND(gg.finalgrade, 0) FROM {grade_grades} AS gg
+            WHERE user.id = gg.userid AND gg.itemid = {$grade_item}), '-') as {$key_name}";
+            $field_slim = $field;
+            array_push($select_sql, $field);
+            if($key_name == $searched){
+                array_push($slim_query, $field_slim);
             }
+            array_push($ajax_names, $key_name);
+            array_push($visible_names, 'Calificación ' . $coursename);
 
-            break;    
-        case local_dominosdashboard_all_users_pagination:
-            $key_name = 'link_edit_user';
-            $field = "{$prefix}id as {$key_name}";
-            $field_slim = "'e' as {$key_name}";
+
+            // "(SELECT ROUND(gg.finalgrade,0)
+            // FROM prefix_grade_grades AS gg
+            // JOIN prefix_grade_items AS gi 
+            // JOIN prefix_course AS c ON gi.courseid = c.id
+            // WHERE  c.shortname ='icawebdom' 
+            // AND  gg.userid =u.id
+            // AND gi.id = gg.itemid
+            // AND gi.itemtype = 'course'
+            // )";
+        }else{
+            $key_name = "sin_calificacion".$courseid;
+            $field = "'-' as {$key_name}";
             array_push($select_sql, $field);
             array_push($ajax_names, $key_name);
-            array_push($visible_names, 'Editar usuario');
-
-            $key_name = "link_suspend_user";
-            $field = "{$prefix}id, concat({$prefix}id, '||', {$prefix}suspended)  as {$key_name}";
-            $field_slim = "'s' as {$key_name}";
-            array_push($select_sql, $field);
-            array_push($ajax_names, $key_name);
-            array_push($visible_names, 'Suspender usuario');
-
-            break;
-        case local_dominosdashboard_suspended_users_pagination:
-            $key_name = "link_suspend_user";
-            $field = "{$prefix}id, concat({$prefix}id, '||', {$prefix}suspended)  as {$key_name}";
-            $field_slim = "'s' as {$key_name}";
-            array_push($select_sql, $field);
-            array_push($ajax_names, $key_name);
-            array_push($visible_names, 'Suspender usuario');
-        break;
-
-        case local_dominosdashboard_actived_users_pagination:
-
-        break;
-
-        case local_dominosdashboard_oficina_central_pagination:
-
-        break;
-            default:
-            # code...
-            break;
+            array_push($visible_names, $coursename . " --Sin calicación--");
+        }
     }
 
     $imploded_sql = implode(', 
@@ -2261,21 +2198,26 @@ function local_dominosdashboard_get_report_columns(int $type, $custom_informatio
                 $ajax_code .= "{data: '{$an}', render: 
                     function ( data, type, row ) { 
                         parts = data.split('||');
-                        return '<a class=\"\" href=\"administrar_usuarios.php?id=' + parts[0] + '\">' + parts[1] + '</a>'; 
+                        return '<a class=\"\" href=\"administrar_usuarios.php?id=' + parts[1] + '\">' + parts[0] + '</a>'; 
                     } 
                 }, ";
             // $ajax_code .= "{data: '{$an}', render: function ( data, type, row ) { return data; }  }, ";
             break;
-            case 'link_libro_calificaciones':
-                global $CFG;
-                $ajax_code .= "{data: '{$an}', render: function ( data, type, row ) 
-                    { return '<a target=\"_blank\" class=\"btn btn-info\" href=\"{$CFG->wwwroot}/grade/report/user/index.php?id={$custom_information}&userid=' + data + '\">Libro de calificaciones</a>'; }  
-                }, ";
-                break;
+            // case 'link_libro_calificaciones':
+            //     global $CFG;
+            //     $ajax_code .= "{data: '{$an}', render: function ( data, type, row ) 
+            //         { return '<a target=\"_blank\" class=\"btn btn-info\" href=\"{$CFG->wwwroot}/grade/report/user/index.php?id={$custom_information}&userid=' + data + '\">Libro de calificaciones</a>'; }  
+            //     }, ";
+            //     break;
             default:
+            if(strpos($an, 'sin_calificacion') !== false){
+                $ajax_code .= "{data: '{$an}', render: function ( data, type, row ) { return data; }  }, ";
+                $ajax_printed_rows .= ($count . ',');
+            }else{
                 $islink = false;
                 $ajax_printed_rows .= ($count . ',');
                 $ajax_code .= "{data: '{$an}' },";
+            }
             break;
         }
         if($islink){
