@@ -2086,43 +2086,56 @@ function local_dominosdashboard_get_report_fields(){
     return array($default_fields, $custom_fields);
 }
 
+/**
+ * Devuelve true si es un campo personalizado o false si es estándar de la tabla user de Moodle
+ * @param string $field Nombre clave del campo
+ * @return bool true si es campo personalizado o false si es de la tabla user
+ */
+function local_dominosdashboard_is_custom_field(string $field){
+    // is_number();
+    $response = is_number($field);
+    return $response;
+}
+
 function local_dominosdashboard_get_report_columns(int $type, $searched = '', $prefix = 'user.'){
     $select_sql = array("{$prefix}id as id"); // Id como columna inicial por defecto para cumplir con reglas de data manipulation api
     $ajax_names = array();
     $visible_names = array();
     $slim_query = array("id");
 
-    list($default_fields, $custom_fields) = local_dominosdashboard_get_report_fields();
+    $report_fields = local_dominosdashboard_get_report_fields_in_order();
 
-    if(empty($default_fields)){
-        array_push($default_fields, 'name'); // Agregar name por si no se encuentra ningún campo
+    if(empty($report_fields)){
+        array_push($report_fields, 'name'); // Agregar name por si no se encuentra ningún campo
     }
-    foreach($default_fields as $key => $df){
-        if($key == 'name'){
-            array_push($ajax_names, $key);
-            array_push($select_sql, "concat({$prefix}firstname, ' ', {$prefix}lastname ) as name");
-            array_push($visible_names, 'Nombre');
-        }else{
-            if($key == $searched){
-                array_push($slim_query, $prefix . $key);
+
+    foreach($report_fields as $field_key => $field_name){
+        if( local_dominosdashboard_is_custom_field($field_key) ){
+            $new_key = "custom_" .$field_key;
+            $select_key = " COALESCE((SELECT data FROM {user_info_data} AS uif WHERE uif.userid = user.id AND fieldid = {$field_key} LIMIT 1), '') AS {$new_key}";
+            array_push($ajax_names, $new_key);
+            array_push($select_sql, $select_key);
+            array_push($visible_names, $field_name);
+            if($new_key == $searched){
+                array_push($slim_query, $select_key);
             }
-            array_push($ajax_names, $key);
-            array_push($select_sql, $prefix . $key);
-            array_push($visible_names, $df);
+        }else{
+            if($field_key == 'name'){
+                array_push($ajax_names, $field_key);
+                array_push($select_sql, "concat({$prefix}firstname, ' ', {$prefix}lastname ) as name");
+                array_push($visible_names, 'Nombre');
+            }else{
+                if($field_key == $searched){
+                    array_push($slim_query, $prefix . $field_key);
+                }
+                array_push($ajax_names, $field_key);
+                array_push($select_sql, $prefix . $field_key);
+                array_push($visible_names, $field_name);
+            }
+
         }
     }
-    $underscores = '';
-    foreach ($custom_fields as $key => $cf) {
-        $new_key = "custom_" .$key;
-        $select_key = " COALESCE((SELECT data FROM {user_info_data} AS {$underscores}uif WHERE {$underscores}uif.userid = user.id AND fieldid = {$key} LIMIT 1), '') AS {$new_key}";
-        array_push($ajax_names, $new_key);
-        array_push($select_sql, $select_key);
-        array_push($visible_names, $cf);
-        if($new_key == $searched){
-            array_push($slim_query, $select_key);
-        }
-        $underscores .= "_";
-    }
+
     global $DB;
     $courseids = get_config('local_dominosdashboard', 'reportcourses');
     if(empty($courseids)){
@@ -2252,8 +2265,8 @@ function local_dominosdashboard_get_report_columns(int $type, $searched = '', $p
     $response->ajax_printed_rows = $ajax_printed_rows;
     $response->table_code = $table_code;
     $response->slim_query = $imploded_slim;
-    $response->default_fields = $default_fields;
-    $response->custom_fields = $custom_fields;
+    // $response->default_fields = $default_fields;
+    // $response->custom_fields = $custom_fields;
     $response->ajax_link_fields = $ajax_link_fields;
 
     return $response;
