@@ -2000,7 +2000,7 @@ function local_dominosdashboard_get_paginated_users(array $params, $type = local
     switch($type){
         case local_dominosdashboard_course_users_pagination:
         // $enrol_sql_query = " user.id IN " . local_dominosdashboard_get_enrolled_userids($courseids, $desde = '', $hasta = '', $params);
-        $enrol_sql_query = " user.id > 1 ";
+        $enrol_sql_query = " user.id > 1 AND user.deleted = 0 ";
         break;
     }
     global $DB;
@@ -2083,24 +2083,43 @@ function local_dominosdashboard_get_paginated_users(array $params, $type = local
     return $json_response;
 }
 
-function local_dominosdashboard_get_report_columns(int $type, $searched = '', $prefix = 'user.'){
-    $select_sql = array("concat({$prefix}firstname, ' ', {$prefix}lastname, '||', {$prefix}id ) as name");
-    $ajax_names = array("name");
-    $visible_names = array('Nombre');
-    $slim_query = array("id");
-    // $slim_query = 
-    // array_push($select_sql, 'fullname');
+function local_dominosdashboard_get_report_fields(){
     $default_fields = local_dominosdashboard_get_default_report_fields();
-    foreach($default_fields as $key => $df){
-        if($key == $searched){
-            array_push($slim_query, $prefix . $key);
-        }
-        array_push($ajax_names, $key);
-        array_push($select_sql, $prefix . $key);
-        array_push($visible_names, $df);
-    }
     $custom_fields = local_dominosdashboard_get_custom_report_fields();
-    $underscores = '_';
+    // $response = array({
+    //      elements = name
+    // });
+    return array($default_fields, $custom_fields);
+}
+
+function local_dominosdashboard_get_report_fields_in_order(){
+
+}
+
+function local_dominosdashboard_get_report_columns(int $type, $searched = '', $prefix = 'user.'){
+    $select_sql = array("{$prefix}id as id"); // Id como columna inicial por defecto para cumplir con reglas de data manipulation api
+
+    list($default_fields, $custom_fields) = local_dominosdashboard_get_report_fields();
+
+    if(empty($default_fields)){
+        array_push($default_fields, 'name'); // Agregar name por si no se encuentra ningún campo
+    }
+    foreach($default_fields as $key => $df){
+        if($key == 'name'){
+            $select_sql = array("concat({$prefix}firstname, ' ', {$prefix}lastname ) as name"); // Nombre como columna inicial opr defecto
+            $ajax_names = array("name");
+            $visible_names = array('Nombre');
+            $slim_query = array("id");
+        }else{
+            if($key == $searched){
+                array_push($slim_query, $prefix . $key);
+            }
+            array_push($ajax_names, $key);
+            array_push($select_sql, $prefix . $key);
+            array_push($visible_names, $df);
+        }
+    }
+    $underscores = '';
     foreach ($custom_fields as $key => $cf) {
         $new_key = "custom_" .$key;
         $select_key = " COALESCE((SELECT data FROM {user_info_data} AS {$underscores}uif WHERE {$underscores}uif.userid = user.id AND fieldid = {$key} LIMIT 1), '') AS {$new_key}";
@@ -2132,7 +2151,7 @@ function local_dominosdashboard_get_report_columns(int $type, $searched = '', $p
         if($key_name == $searched){
             array_push($slim_query, $field);
         }
-        array_push($visible_names, $coursename);
+        array_push($visible_names, 'Estado ' . $coursename);
 
         $grade_item = local_dominosdashboard_get_course_grade_item_id($courseid);
 
@@ -2194,14 +2213,14 @@ function local_dominosdashboard_get_report_columns(int $type, $searched = '', $p
                 function ( data, type, row ) { return '<a target=\"_blank\" class=\"btn btn-info\" href=\"administrar_usuarios.php?id=' + data + '\">Editar usuario</a>'; }  }, ";
                 // $ajax_code .= "{data: '{$an}', render: function ( data, type, row ) { return data; }  }, ";            
             break;
-            case 'name':
-                $ajax_code .= "{data: '{$an}', render: 
-                    function ( data, type, row ) { 
-                        parts = data.split('||');
-                        return '<a class=\"\" href=\"administrar_usuarios.php?id=' + parts[1] + '\">' + parts[0] + '</a>'; 
-                    } 
-                }, ";
-            // $ajax_code .= "{data: '{$an}', render: function ( data, type, row ) { return data; }  }, ";
+            // case 'name':
+                // $ajax_code .= "{data: '{$an}', render: 
+                //     function ( data, type, row ) { 
+                //         parts = data.split('||');
+                //         return '<a class=\"\" href=\"administrar_usuarios.php?id=' + parts[1] + '\">' + parts[0] + '</a>'; 
+                //     } 
+                // }, ";
+                // $ajax_code .= "{data: '{$an}', render: function ( data, type, row ) { return data; }  }, ";
             break;
             // case 'link_libro_calificaciones':
             //     global $CFG;
@@ -2210,10 +2229,10 @@ function local_dominosdashboard_get_report_columns(int $type, $searched = '', $p
             //     }, ";
             //     break;
             default:
-            if(strpos($an, 'sin_calificacion') !== false){
+            if(strpos($an, 'sin_calificacion') !== false){ // No buscar esta columna
                 $ajax_code .= "{data: '{$an}', render: function ( data, type, row ) { return data; }  }, ";
                 $ajax_printed_rows .= ($count . ',');
-            }else{
+            }else{ // Columnas de la tabla usuarios
                 $islink = false;
                 $ajax_printed_rows .= ($count . ',');
                 $ajax_code .= "{data: '{$an}' },";
@@ -2221,7 +2240,7 @@ function local_dominosdashboard_get_report_columns(int $type, $searched = '', $p
             break;
         }
         if($islink){
-            $ajax_link_fields .= ($count . ",");
+            $ajax_link_fields .= ($count . ","); // No permite ordenar este campo
         }
         $count++;
     }
@@ -2234,7 +2253,8 @@ function local_dominosdashboard_get_report_columns(int $type, $searched = '', $p
     }
     // $table_code .= "<th>Una última columna</th>"; // Ejemplo agregando una columna de alguna ya generada
     $response = new stdClass();
-    $response->select_sql = $prefix . 'id, ' . $imploded_sql;
+    // $response->select_sql = $prefix . 'id, ' . $imploded_sql;
+    $response->select_sql = $imploded_sql;
     $response->ajax_code = $ajax_code;
     $response->ajax_printed_rows = $ajax_printed_rows;
     $response->table_code = $table_code;
@@ -2268,8 +2288,8 @@ function local_dominosdashboard_get_default_report_fields(){
 }
 
 /**
- * Devuelve un arreglo de ids de los campos de usuario
- * @return array [1,2,3,...]
+ * Devuelve un arreglo de id => "nombre de campo" de los campos de usuario personalizados
+ * @return array [1 => '',2 => '',3 => '', ...]
  */
 function local_dominosdashboard_get_custom_report_fields(){
     if($config = get_config('local_dominosdashboard', 'reportcustomfields')){
@@ -2310,9 +2330,9 @@ function local_dominosdashboard_get_custom_profile_fields(string $ids = ''){
 function local_dominosdashboard_get_default_profile_fields(){
     $fields = array(
         'username' => 'Nombre de usuario', 
+        'email' => 'Dirección Email',
         'firstname' => 'Nombre (s)', 
         'lastname' => 'Apellido (s)', 
-        'email' => 'Dirección Email',
         'address' => 'Dirección', 
         'phone1' => 'Teléfono', 
         'phone2' => 'Teléfono móvil', 

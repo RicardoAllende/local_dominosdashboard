@@ -203,9 +203,25 @@ if ($hassiteconfig) {
                 $page->add($setting);
             }
 
-
             $settings->add($page);
 
+            $page = new admin_settingpage($ldm_pluginname . 'tab_report', get_string('tab_report', $ldm_pluginname)); // Inicia pestaña
+            $all_default_profile_fields = local_dominosdashboard_get_default_profile_fields();
+            $custom_fields = local_dominosdashboard_get_custom_profile_fields();
+
+            $name = $ldm_pluginname . '/reportdefaultfields';
+            $title = get_string('reportdefaultfields', $ldm_pluginname);
+            $description = get_string('reportdefaultfields' . '_desc', $ldm_pluginname);
+            $setting = new admin_setting_configmultiselect($name, $title, $description, array(), $all_default_profile_fields);
+            $page->add($setting);
+
+            $name = $ldm_pluginname . '/reportcustomfields';
+            $title = get_string('reportcustomfields', $ldm_pluginname);
+            $description = get_string('reportcustomfields' . '_desc', $ldm_pluginname);
+            $setting = new admin_setting_configmultiselect($name, $title, $description, array(), $custom_fields);
+            $page->add($setting);
+            
+            $settings->add($page); // Se agrega pestaña a la administración del plugin
 
         }
     }

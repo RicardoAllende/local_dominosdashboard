@@ -119,3 +119,9 @@ $string['seccion_d'] = 'Programas de entrenamiento temporal';
 $string['seccion_d_desc'] = 'Contendra la información de aprovechamiento (usuarios inscritos, usuarios aprobados y usuarios no aprobados) de los cursos seleccionados definidos por el usuario administrador y responderan a todos los filtros';
 
 $string['make_course_cache'] = "Generación de información para dashboard Domino's";
+
+$string['tab_report'] = "Campos del reporte";
+$string['reportcustomfields'] = 'Campos personalizados en reporte';
+$string['reportcustomfields_desc'] = 'Seleccione los campos personalizados a mostrar en el reporte. Presione ctrl para seleccionar varios campos';
+$string['reportdefaultfields'] = 'Campos tabla usuarios en reportes';
+$string['reportdefaultfields_desc'] = 'Seleccione los campos de la tabla {user} de moodle para mostrar en el reporte. Presione ctrl para seleccionar varios campos';

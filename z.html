@@ -1,4 +1,4 @@
-<html>
+<!-- <html>
 
 <head>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css" rel="stylesheet" type="text/css">
@@ -130,4 +130,30 @@
     </script>
 </body>
 
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <ul id="simpleList" class="list-group">
+        <li class="list-group-item">This is <a href="http://SortableJS.github.io/Sortable/">Sortable</a></li>
+        <li class="list-group-item">It works with Bootstrap...</li>
+        <li class="list-group-item">...out of the box.</li>
+        <li class="list-group-item">It has support for touch devices.</li>
+        <li class="list-group-item">Just drag some elements around.</li>
+    </ul>
+    <script src="js/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js"></script>
+    <script>
+        $('#simpleList').sortable();
+        console.log($('#simpleList').sortable('toArray'));
+    </script>
+</body>
 </html>

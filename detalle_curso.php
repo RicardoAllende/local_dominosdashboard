@@ -27,11 +27,12 @@ require_once(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/lib.php');
 local_dominosdashboard_user_has_access();
 $PAGE->set_context(context_system::instance());
-$courseid = optional_param('courseid', 9, PARAM_INT);
-$course = $DB->get_record('course', array('id' => $courseid), 'id, fullname', MUST_EXIST);
-$PAGE->set_url($CFG->wwwroot . '/local/dominosdashboard/detalle_curso.php', array('courseid' => $courseid));
+
+$currentdate = date('d-M-Y');
+$PAGE->set_url($CFG->wwwroot . '/local/dominosdashboard/detalle_curso.php');
+
 $PAGE->set_pagelayout('admin');
-$PAGE->set_title('Detalle curso ' . $course->fullname);
+$PAGE->set_title('Reporte personalizado ' . $currentdate);
 
 
 echo $OUTPUT->header();
@@ -81,7 +82,6 @@ $report_info = local_dominosdashboard_get_report_columns(local_dominosdashboard_
                 'url':'services.php',
                 data: {
                     request_type: 'course_users_pagination',
-                    courseid: <?php echo $courseid; ?>,
                 }
             },
             lengthMenu: [[10, 15, 20, 100, -1], [10, 15, 20, 100, "Todos los registros"]],
@@ -111,6 +111,7 @@ $report_info = local_dominosdashboard_get_report_columns(local_dominosdashboard_
                     },
                 },
                 'pageLength',
+                'copy',
             ],
             'columns': [
                 <?php echo $report_info->ajax_code; ?>
