@@ -2435,6 +2435,7 @@ function local_dominosdashboard_set_new_order($key, string $action){
     }else{
         print_error('No se encuentra el filtro');
     }
+    return true;
 }
 
 function local_dominosdashboard_array_down($array,$position) {

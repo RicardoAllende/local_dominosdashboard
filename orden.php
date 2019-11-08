@@ -39,8 +39,9 @@ echo $OUTPUT->header();
 $update_key = optional_param('update_key', '', PARAM_TEXT);
 $update_action = optional_param('update_action', '', PARAM_TEXT);
 
+$updated = false;
 if($update_key != '' && $update_action != ''){
-    local_dominosdashboard_set_new_order($update_key, $update_action);
+    $updated = local_dominosdashboard_set_new_order($update_key, $update_action);
 }
 
 $allfields = local_dominosdashboard_get_report_fields_in_order();
@@ -95,6 +96,9 @@ foreach($allfields as $key => $name){
     echo "</tr>";
 }
 echo "</tbody></table>";
+if($updated){
+    echo "<script>alert('Cambios guardados correctamente');</script>";
+}
 ?>
 <script src="js/jquery.min.js"></script>
 <script>
