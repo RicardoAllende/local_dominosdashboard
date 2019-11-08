@@ -34,6 +34,8 @@ $PAGE->set_url($CFG->wwwroot . '/local/dominosdashboard/reporte_personalizado.ph
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title('Reporte personalizado ' . $currentdate);
 
+$orderFields = $CFG->wwwroot . '/local/dominosdashboard/orden.php';
+$settingsurl = $CFG->wwwroot . '/admin/settings.php?section=local_dominosdashboard';
 
 echo $OUTPUT->header();
 $report_info = local_dominosdashboard_get_report_columns(local_dominosdashboard_course_users_pagination);
@@ -51,6 +53,18 @@ $report_info = local_dominosdashboard_get_report_columns(local_dominosdashboard_
         </tr>
     </tfoot>
 </table>
+
+
+<div class="row" style="padding-bottom: 2%;">
+    <div class="col-sm-6" style="text-align: center;">
+        <h4>Si el reporte no tiene la estructura necesaria, por favor ordene los campos del reporte en el siguiente enlace: </h4>
+        <a class="btn btn-primary btn-lg" href="<?php echo $orderFields; ?>">Configurar posiciones</a>
+    </div>
+    <div class="col-sm-6" style="text-align: center;">
+        <h4>Si desea modificar los campos que aparecerán, o los cursos incluídos por favor edítelo en Configuraciones del plugin->reportes personalizados </h4>
+        <a class="btn btn-primary btn-lg" href="<?php echo $settingsurl; ?>">Configuraciones del plugin</a>
+    </div>
+</div>
 
 <!-- Datatable CSS -->
 <link href='datatables/jquery.dataTables.min.css' rel='stylesheet' type='text/css'>

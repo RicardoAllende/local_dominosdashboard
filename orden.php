@@ -39,7 +39,7 @@ echo $OUTPUT->header();
 $update_key = optional_param('update_key', '', PARAM_TEXT);
 $update_action = optional_param('update_action', '', PARAM_TEXT);
 
-if(!local_dominosdashboard_has_empty($update_key, $update_action)){
+if($update_key != '' && $update_action != ''){
     local_dominosdashboard_set_new_order($update_key, $update_action);
 }
 
@@ -55,13 +55,30 @@ if($num_fields > 1){
 }else{
     $lastkey = '';
 }
-
-echo "<table class='table'>";
-echo "<tr>
+$reporte = $CFG->wwwroot . '/local/dominosdashboard/reporte_personalizado.php';
+$settingsurl = $CFG->wwwroot . '/admin/settings.php?section=local_dominosdashboard';
+?>
+<div class="row" style="padding-bottom: 2%;">
+    <div class="col-sm-6" style="text-align: center;">
+        <!-- <h4>Si el reporte no tiene la estructura necesaria, por favor ordene los campos del reporte en el siguiente enlace: </h4> -->
+        <a class="btn btn-primary btn-lg" href="<?php echo $reporte; ?>">Ver reporte personalizado</a>
+    </div>
+    <div class="col-sm-6" style="text-align: center;">
+        <h4>Si desea modificar los campos que aparecerán, o los cursos incluídos por favor edítelo en Configuraciones del plugin->reportes personalizados </h4>
+        <a class="btn btn-primary btn-lg" href="<?php echo $settingsurl; ?>">Configuraciones del plugin</a>
+    </div>
+</div>
+<?php
+echo "<table class='table table-hover text-center'  rules='rows' style='width: 80%; text-align: center; margin: auto;'>";
+echo "
+    <thead class='thead-dark' style='background: black; color: white; font-weight: bold;'>
+    <tr>
         <td>Nombre del filtro</td>
         <td>Subir posición</td>
         <td>Bajar posición</td>
-    </tr>";
+    </tr>
+    </thead><tbody>
+    ";
 foreach($allfields as $key => $name){
     echo "<tr>";
     echo "<td>{$name} </td>";
@@ -77,7 +94,7 @@ foreach($allfields as $key => $name){
     }
     echo "</tr>";
 }
-echo "</table>";
+echo "</tbody></table>";
 ?>
 <script src="js/jquery.min.js"></script>
 <script>
