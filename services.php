@@ -26,10 +26,7 @@
 header("Content-Type: application/json");
 require_once(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/lib.php');
-$context_system = context_system::instance();
-if( ! has_capability('local/dominosdashboard:view', $context_system) ){
-    die(local_dominosdashboard_error_response("Usuario no autenticado"));
-}
+local_dominosdashboard_user_has_access();
 if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['request_type'])){
     // if(isset($_POST['currentTab'])){
     //     _log('Enviando la petición con currenttab', $_POST['currentTab']);
