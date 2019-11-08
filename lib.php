@@ -2067,7 +2067,7 @@ function local_dominosdashboard_get_paginated_users(array $params, $type = local
     // _log($queryParams);
     // _sql('Consulta de elementos ', $query, $queryParams);
     $records = $DB->get_records_sql($query, $queryParams);
-    _sql($query, $queryParams);
+    // _sql($query, $queryParams);
 
     ## Response
     $response = array(
