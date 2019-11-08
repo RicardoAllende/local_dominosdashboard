@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 $currentTab = null;
 
 function local_dominosdashboard_user_has_access(bool $throwError = true){
-    $has_capability = has_capability('local/dominosdashboard:view', context_system::instance());
+    $has_capability = has_capability('local/dominosdashboard:view', context_system::instance()) || is_siteadmin();
     if(!$has_capability){ // si el rol del usuario no tiene permiso, buscar si está en la configuración: allowed_email_admins
         if(isloggedin()){
             $allowed_email_admins = get_config('local_dominosdashboard', 'allowed_email_admins');
