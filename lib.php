@@ -1310,6 +1310,9 @@ function local_dominosdashboard_get_categories_with_subcategories(int $category_
             array_push($categories, $subc->id);
         }
     }
+    if(empty($categories)){
+        array_push($categories, '-1'); // Agregar un id que no exista, course_categories tiene un id unsigned_int por lo que no debe dar problemas este id
+    }
     if($returnAsArray){
         return $categories;
     }else{
