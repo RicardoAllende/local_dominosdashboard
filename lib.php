@@ -2000,7 +2000,13 @@ function local_dominosdashboard_get_paginated_users(array $params, $type = local
     switch($type){
         case local_dominosdashboard_course_users_pagination:
         // $enrol_sql_query = " user.id IN " . local_dominosdashboard_get_enrolled_userids($courseids, $desde = '', $hasta = '', $params);
-        $enrol_sql_query = " user.id > 1 AND user.deleted = 0 ";
+        $email_provider = local_dominosdashboard_get_email_provider_to_allow();
+        if(!empty($email_provider)){
+            $whereEmailProvider = " AND email LIKE '%{$email_provider}'"; 
+        }else{
+            $whereEmailProvider = ""; 
+        }
+        $enrol_sql_query = " user.id > 1 AND user.deleted = 0 {$whereEmailProvider}";
         break;
     }
     global $DB;

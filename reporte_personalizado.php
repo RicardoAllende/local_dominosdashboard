@@ -61,7 +61,7 @@ $report_info = local_dominosdashboard_get_report_columns(local_dominosdashboard_
         <a class="btn btn-primary btn-lg" href="<?php echo $orderFields; ?>">Configurar posiciones</a>
     </div>
     <div class="col-sm-6" style="text-align: center;">
-        <h4>Si desea modificar los campos que aparecerán, o los cursos incluídos por favor edítelo en Configuraciones del plugin->reportes personalizados </h4>
+        <h4>Si desea modificar los campos que aparecerán, o los cursos incluídos por favor edítelo en Configuraciones del plugin-> campos del reporte </h4>
         <a class="btn btn-primary btn-lg" href="<?php echo $settingsurl; ?>">Configuraciones del plugin</a>
     </div>
 </div>
