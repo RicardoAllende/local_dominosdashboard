@@ -2439,12 +2439,18 @@ function local_dominosdashboard_get_report_fields_in_order(){
 }
 
 function local_dominosdashboard_set_new_order($key, string $action){
+    // _log($key, $action);
     if(!($action == 'up' || $action == 'down')){
         print_error("Acción '{$action}' no soportada");
     }
     $fields_in_order = local_dominosdashboard_get_report_fields_in_order();
     $keys_fields_in_order = array_keys($fields_in_order);
-    $position = array_search($key, $keys_fields_in_order);
+    // _log($key, $keys_fields_in_order);
+    if(is_number($key)){
+        $position = array_search($key, $keys_fields_in_order);
+    }else{
+        $position = array_search($key, $keys_fields_in_order, true);
+    }
     if($position !== false){
         switch($action){
             case 'up':
@@ -2455,6 +2461,7 @@ function local_dominosdashboard_set_new_order($key, string $action){
             break;
         }
         $new_config = implode(',', $new_config);
+        // _log($new_config);
         set_config('sort_report_fields', $new_config, 'local_dominosdashboard');
     }else{
         print_error('No se encuentra el filtro');
@@ -2463,20 +2470,26 @@ function local_dominosdashboard_set_new_order($key, string $action){
 }
 
 function local_dominosdashboard_array_down($array,$position) {
-	if( count($array)-1 > $position ) {
-		$b = array_slice($array,0,$position,true);
-		$b[] = $array[$position+1];
-		$b[] = $array[$position];
-		$b += array_slice($array,$position+2,count($array),true);
-		return($b);
-	} else { return $array; }
+    // _log($position, 'Antes', $array);
+    if( count($array)-1 > $position ) {
+		$response = array_slice($array,0,$position,true);
+		$response[] = $array[$position+1];
+		$response[] = $array[$position];
+		$response += array_slice($array,$position+2,count($array),true);
+		// return($response);
+    } else { $response = $array; }
+    // _log('Resultado', $response);
+    return $response;
 }
 function local_dominosdashboard_array_up($array,$position) {
+    // _log($position, 'Antes', $array);
 	if( $position > 0 and $position < count($array) ) {
-		$b = array_slice($array,0,($position-1),true);
-		$b[] = $array[$position];
-		$b[] = $array[$position-1];
-		$b += array_slice($array,($position+1),count($array),true);
-		return($b);
-	} else { return $array; }
+		$response = array_slice($array,0,($position-1),true);
+		$response[] = $array[$position];
+		$response[] = $array[$position-1];
+		$response += array_slice($array,($position+1),count($array),true);
+		// return($response);
+	} else { $response = $array; }
+    // _log('Resultado', $response);
+    return $response;
 }

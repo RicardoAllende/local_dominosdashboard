@@ -35,9 +35,11 @@ $PAGE->set_context($context_system);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 echo $OUTPUT->header();
-
-$update_key = optional_param('update_key', '', PARAM_TEXT);
-$update_action = optional_param('update_action', '', PARAM_TEXT);
+$update_action = $update_key = '';
+if(isset($_POST['key']) && isset($_POST['action'])){
+    $update_key = $_POST['key'];
+    $update_action = $_POST['action'];
+}
 
 $updated = false;
 if($update_key != '' && $update_action != ''){
@@ -59,6 +61,7 @@ if($num_fields > 1){
 $reporte = $CFG->wwwroot . '/local/dominosdashboard/reporte_personalizado.php';
 $settingsurl = $CFG->wwwroot . '/admin/settings.php?section=local_dominosdashboard';
 ?>
+<div id="update_message"></div>
 <div class="row" style="padding-bottom: 2%;">
     <div class="col-sm-6" style="text-align: center;">
         <!-- <h4>Si el reporte no tiene la estructura necesaria, por favor ordene los campos del reporte en el siguiente enlace: </h4> -->
@@ -97,15 +100,24 @@ foreach($allfields as $key => $name){
 }
 echo "</tbody></table>";
 if($updated){
-    echo "<script>alert('Cambios guardados correctamente');</script>";
+    echo "<script>document.getElementById('update_message').innerHTML = 
+        '<div class=\"alert alert-success alert-block fade in \" role=\"alert\"> <button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>Cambios actualizados</div>';
+    </script>";
 }
 ?>
+<form action="" method="post" id="order_form" id="order_form">
+    <input type="hidden" name="key" id="item_key">
+    <input type="hidden" name="action" id="item_action">
+</form>
 <script src="js/jquery.min.js"></script>
 <script>
     function moverElemento(clave, movimiento){
-        urlActual = location.protocol + '//' + location.host + location.pathname;
-        nueva_url = urlActual = `?update_key=${clave}&update_action=${movimiento}`;
-        window.location.href = nueva_url;
+        $('#item_key').val(clave);
+        $('#item_action').val(movimiento);
+        document.forms.order_form.submit();
+        // urlActual = location.protocol + '//' + location.host + location.pathname;
+        // nueva_url = urlActual = `?update_key=${clave}&update_action=${movimiento}`;
+        // window.location.href = nueva_url;
     }
 </script>
 <?php
