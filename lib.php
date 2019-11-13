@@ -2129,17 +2129,31 @@ function local_dominosdashboard_get_report_columns(int $type, $searched = '', $p
                 array_push($slim_query, $select_key);
             }
         }else{
-            if($field_key == 'name'){
-                array_push($ajax_names, $field_key);
-                array_push($select_sql, "concat({$prefix}firstname, ' ', {$prefix}lastname ) as name");
-                array_push($visible_names, 'Nombre');
-            }else{
-                if($field_key == $searched){
-                    array_push($slim_query, $prefix . $field_key);
-                }
-                array_push($ajax_names, $field_key);
-                array_push($select_sql, $prefix . $field_key);
-                array_push($visible_names, $field_name);
+            switch ($field_key) {
+                case 'name':
+                    array_push($ajax_names, $field_key);
+                    array_push($select_sql, "concat({$prefix}firstname, ' ', {$prefix}lastname ) as name");
+                    array_push($visible_names, 'Nombre');
+                break;
+
+                case 'suspended':
+                    if($field_key == $searched){
+                        array_push($slim_query, $prefix . $field_key);
+                    }
+                    $query = "IF({$prefix}{$field_key} = 0, 'Activo', 'Suspendido') AS {$field_key}";
+                    array_push($ajax_names, $field_key);
+                    array_push($select_sql, $query);
+                    array_push($visible_names, $field_name);
+                break;
+                
+                default:
+                    if($field_key == $searched){
+                        array_push($slim_query, $prefix . $field_key);
+                    }
+                    array_push($ajax_names, $field_key);
+                    array_push($select_sql, $prefix . $field_key);
+                    array_push($visible_names, $field_name);
+                break;
             }
 
         }
@@ -2372,6 +2386,7 @@ function local_dominosdashboard_get_default_profile_fields(){
         'department' => 'Departamento',
         'institution' => 'Institución', 
         'idnumber' => 'Número de ID', 
+        'suspended' => 'Estatus',
         // 'lang', 
         // 'timezone', 
         'description' => 'Descripción',
