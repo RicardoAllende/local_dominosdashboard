@@ -42,16 +42,6 @@ echo $OUTPUT->header();
 <link href="estilos.css" rel="stylesheet">
 <iframe src="reporte_personalizado_iframe.php" id="iframe_ldm" frameborder="0" style="width: 100%; overflow: hidden;"></iframe>
 
-<!-- <div class="row" style="padding-bottom: 2%; padding-top: 2%; max-width: 100%">
-    <div class="col-sm-6" style="text-align: center;">
-        <h4>Si el reporte no tiene la estructura necesaria, por favor ordene los campos del reporte en el siguiente enlace: </h4>
-        <a class="btn btn-primary btn-lg" href="<?php echo $orderFields; ?>">Configurar posiciones</a>
-    </div>
-    <div class="col-sm-6" style="text-align: center;">
-        <h4>Si desea modificar los campos que aparecerán, o los cursos incluídos por favor edítelo en Configuraciones del plugin-> campos del reporte </h4>
-        <a class="btn btn-primary btn-lg" href="<?php echo $settingsurl; ?>">Configuraciones del plugin</a>
-    </div>
-</div> -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('region-main').style.width = "100%";

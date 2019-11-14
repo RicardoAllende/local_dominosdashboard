@@ -53,7 +53,7 @@ $report_info = local_dominosdashboard_get_report_columns(local_dominosdashboard_
     <link rel="stylesheet" href="css/jquery.loadingModal.css">
     <link href="estilos.css" rel="stylesheet">
 </head>
-<body onload="loaderGeneral()">    
+<body>    
 
 <table id='empTable' class='display dataTable table table-bordered'>    
     <thead>
@@ -72,11 +72,11 @@ $report_info = local_dominosdashboard_get_report_columns(local_dominosdashboard_
 <div class="row" style="padding-bottom: 2%; padding-top: 2%; max-width: 100%">
     <div class="col-sm-6" style="text-align: center;">
         <h4>Si el reporte no tiene la estructura necesaria, por favor ordene los campos del reporte en el siguiente enlace: </h4>
-        <a class="btn btn-primary btn-lg" href="<?php echo $orderFields; ?>">Configurar posiciones</a>
+        <a class="btn btn-primary btn-lg" href="#" onclick="top.window.location.href='<?php echo $orderFields; ?>'">Configurar posiciones</a>
     </div>
     <div class="col-sm-6" style="text-align: center;">
         <h4>Si desea modificar los campos que aparecerán, o los cursos incluídos por favor edítelo en Configuraciones del plugin-> campos del reporte </h4>
-        <a class="btn btn-primary btn-lg" href="<?php echo $settingsurl; ?>">Configuraciones del plugin</a>
+        <a class="btn btn-primary btn-lg" href="#" onclick="top.window.location.href='<?php echo $settingsurl; ?>'">Configuraciones del plugin</a>
     </div>
 </div>
 

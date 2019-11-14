@@ -2403,7 +2403,7 @@ function local_dominosdashboard_get_default_profile_fields(){
  */
 function local_dominosdashboard_get_report_fields_in_order(){
     list($default_report_fields, $custom_report_fields) = local_dominosdashboard_get_report_fields();
-    $all_filters = array_merge($default_report_fields, $custom_report_fields);
+    $all_filters = $default_report_fields + $custom_report_fields;
 
     $update_config = false;
     $original_config = $keys = get_config('local_dominosdashboard', 'sort_report_fields');
