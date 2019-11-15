@@ -138,7 +138,7 @@ DEFINE('local_dominosdashboard_required_kpi_columns', array(
     'distritales' => 'profile_field_distritalcoachdp',
     'entrenadores' => 'profile_field_entrenadordp',
     'ccosto' => 'profile_field_ccosto',
-    'ceco' => 'CECO',
+    // 'ceco' => 'CECO',
 ));
 
 DEFINE('DOMINOSDASHBOARD_CHARTS', 

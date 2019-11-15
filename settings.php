@@ -35,10 +35,14 @@ if ($hassiteconfig) {
     $settings = new theme_boost_admin_settingspage_tabs($ldm_pluginname, 'Configuraciones ' . $this_plugin_name);
     $ADMIN->add('localplugins', $settings);
 
-    $ADMIN->add('localplugins', new admin_externalpage('local_dominosdashboard_graficas', "Gráficas " . $this_plugin_name, $CFG->wwwroot . '/local/dominosdashboard/dashboard.php'));
-    $ADMIN->add('localplugins', new admin_externalpage('local_dominosdashboard_subir_kpis', "Subir KPI's en csv " . $this_plugin_name, $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php'));
-    $ADMIN->add('localplugins', new admin_externalpage('local_dominosdashboard_administrar_kpis', "Administrar KPI's " . $this_plugin_name, $CFG->wwwroot . 'local/dominosdashboard/administrar_KPIS.php'));
-    $ADMIN->add('localplugins', new admin_externalpage('local_dominosdashboard_reporte_personalizado', "Reporte personalizado " . $this_plugin_name, $CFG->wwwroot . '/local/dominosdashboard/descargar_reporte_personalizado.php'));
+    $ADMIN->add('localplugins', new admin_externalpage('local_dominosdashboard_graficas', "Gráficas " .
+     $this_plugin_name, $CFG->wwwroot . '/local/dominosdashboard/dashboard.php'));
+    $ADMIN->add('localplugins', new admin_externalpage('local_dominosdashboard_subir_kpis', "Subir KPI's en csv "
+     . $this_plugin_name, $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php'));
+    $ADMIN->add('localplugins', new admin_externalpage('local_dominosdashboard_administrar_kpis', "Administrar KPI's "
+     . $this_plugin_name, $CFG->wwwroot . '/local/dominosdashboard/administrar_KPIS.php'));
+    $ADMIN->add('localplugins', new admin_externalpage('local_dominosdashboard_reporte_personalizado', "Reporte personalizado "
+     . $this_plugin_name, $CFG->wwwroot . '/local/dominosdashboard/descargar_reporte_personalizado.php'));
     
     if(isset($_GET['section'])){
         if($_GET['section'] == 'local_dominosdashboard'){
