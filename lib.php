@@ -60,6 +60,7 @@ DEFINE('LOCAL_DOMINOSDASHBOARD_USERID_FIELD', '_userid_');
 function local_dominosdashboard_extend_navigation(global_navigation $nav) {
     $has_capability = local_dominosdashboard_user_has_access(false);
     if($has_capability){
+        $this_plugin_name = get_string('pluginname', 'local_dominosdashboard');
         global $CFG;
         $node = $nav->add (
             get_string('pluginname', 'local_dominosdashboard'),
@@ -67,17 +68,22 @@ function local_dominosdashboard_extend_navigation(global_navigation $nav) {
         );
         $node->showinflatnavigation = true;
         $node = $nav->add (
-            'Configuraciones ' . get_string('pluginname', 'local_dominosdashboard'),
+            'Configuraciones ' . $this_plugin_name,
             new moodle_url( $CFG->wwwroot . '/admin/settings.php?section=local_dominosdashboard' )
         );
         $node->showinflatnavigation = true;
         $node = $nav->add (
-            "Subir KPI's en csv " . get_string('pluginname', 'local_dominosdashboard'),
+            "Subir KPI's en csv " . $this_plugin_name,
             new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/subir_archivo.php' )
         );
         $node->showinflatnavigation = true;
         $node = $nav->add (
-            "Reporte personalizado " . get_string('pluginname', 'local_dominosdashboard'),
+            "Administrar KPI's " . $this_plugin_name,
+            new moodle_url( $CFG->wwwroot . 'local/dominosdashboard/administrar_KPIS.php' )
+        );
+        $node->showinflatnavigation = true;
+        $node = $nav->add (
+            "Reporte personalizado " . $this_plugin_name,
             new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/descargar_reporte_personalizado.php' )
         );
         $node->showinflatnavigation = true;
