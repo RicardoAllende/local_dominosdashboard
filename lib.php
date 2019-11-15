@@ -78,7 +78,7 @@ function local_dominosdashboard_extend_navigation(global_navigation $nav) {
         $node->showinflatnavigation = true;
         $node = $nav->add (
             "Reporte personalizado " . get_string('pluginname', 'local_dominosdashboard'),
-            new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/reporte_personalizado.php' )
+            new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/descargar_reporte_personalizado.php' )
         );
         $node->showinflatnavigation = true;
     }
