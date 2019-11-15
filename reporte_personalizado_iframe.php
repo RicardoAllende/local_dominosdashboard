@@ -28,12 +28,12 @@ require_once(__DIR__ . '/lib.php');
 local_dominosdashboard_user_has_access();
 $PAGE->set_context(context_system::instance());
 
-$currentdate = date('d-M-Y');
 $PAGE->set_url($CFG->wwwroot . '/local/dominosdashboard/reporte_personalizado.php');
 
 // $PAGE->set_pagelayout('admin');
 // $PAGE->set_title('Reporte personalizado ' . $currentdate);
 
+$currentdate = date("d-m-Y H:i:s");
 $title = 'Reporte personalizado ' . $currentdate;
 $orderFields = $CFG->wwwroot . '/local/dominosdashboard/orden.php';
 $settingsurl = $CFG->wwwroot . '/admin/settings.php?section=local_dominosdashboard';

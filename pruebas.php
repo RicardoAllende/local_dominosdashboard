@@ -38,7 +38,7 @@ echo $OUTPUT->header();
 $tiempo_inicial = microtime(true); //true es para que sea calculado en segundos
 
 // local_dominosdashboard_export_configurable_report();
-
+_print(count(local_dominosdashboard_get_configurable_report_records()));
 
 $tiempo_final = microtime(true);
 $tiempo = $tiempo_final - $tiempo_inicial; //este resultado estará en segundos

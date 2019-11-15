@@ -2084,7 +2084,12 @@ function local_dominosdashboard_is_custom_field(string $field){
     return $response;
 }
 
-function local_dominosdashboard_get_report_columns(int $type, $searched = '', $prefix = 'user.'){
+$cache_report_columns = null;
+function local_dominosdashboard_get_report_columns(int $type = local_dominosdashboard_course_users_pagination, $searched = '', $prefix = 'user.'){
+    global $cache_report_columns;
+    if($cache_report_columns !== null){
+        return $cache_report_columns;
+    }
     $select_sql = array("{$prefix}id as id"); // Id como columna inicial por defecto para cumplir con reglas de data manipulation api
     $ajax_names = array();
     $visible_names = array();
@@ -2266,10 +2271,13 @@ function local_dominosdashboard_get_report_columns(int $type, $searched = '', $p
     $response->ajax_printed_rows = $ajax_printed_rows;
     $response->table_code = $table_code;
     $response->slim_query = $imploded_slim;
+    $response->column_names = $ajax_names;
+    $response->visible_names = $visible_names;
     // $response->default_fields = $default_fields;
     // $response->custom_fields = $custom_fields;
     $response->ajax_link_fields = $ajax_link_fields;
 
+    $cache_report_columns = $response;
     return $response;
 }
 
@@ -2473,92 +2481,39 @@ function local_dominosdashboard_array_up($array,$position) {
 }
 
 function local_dominosdashboard_export_configurable_report(){
-    global $DB, $CFG;
+    global $CFG;
     require_once($CFG->dirroot.'/lib/excellib.class.php');
 
-    $information = $DB->get_records_sql('SELECT id, shortname, fullname FROM {course}');
+    $information = local_dominosdashboard_get_configurable_report_records();
 
-    // $table = $report->table;
-    // $matrix = array();
-    $filename = 'report_'.(time()).'.xls';
+    $currentdate = date("d-m-Y_H:i:s");
+    $filename = 'Reporte_personalizado_' . $currentdate;
 
-    // if (!empty($table->head)) {
-    //     $countcols = count($table->head);
-    //     $keys = array_keys($table->head);
-    //     $lastkey = end($keys);
-    //     foreach ($table->head as $key => $heading) {
-    //             $matrix[0][$key] = str_replace("\n", ' ', htmlspecialchars_decode(strip_tags(nl2br($heading))));
-    //     }
+    $report_columns = local_dominosdashboard_get_report_columns();
+
+    /*
+     $response->ajax_names = $ajax_names;
+     $response->visible_names = $visible_names;
+     */
+    // Headers
+
+    
+    // foreach ($report_columns->column_names as $columnName) {
+        
     // }
-
-    // if (!empty($table->data)) {
-    //     foreach ($table->data as $rkey => $row) {
-    //         foreach ($row as $key => $item) {
-    //             $matrix[$rkey + 1][$key] = str_replace("\n", ' ', htmlspecialchars_decode(strip_tags(nl2br($item))));
-    //         }
-    //     }
-    // }
+    // $column_reports
 
     $matrix = array();
-    foreach ($information as $key => $value) {
-        $line = array();
-        $value = (array) $value;
-        $value = array_values($value);
-        array_push($matrix, $value);
-        // $matrix[];
-        # code...
+
+    // Headers
+    array_push($matrix, array_values($report_columns->visible_names));
+
+    foreach ($information as $line) { // Obtener sólo los campos del reporte
+        $line = (array) $line;
+        $line = array_values($line);
+        array_shift($line);
+        array_push($matrix, $line);
     }
-
-
-
-
-    // _log($matrix);
-    /* 
-        Array(
-            [0] => Array
-                (
-                    [0] => id
-                    [1] => shortname
-                    [2] => fullname
-                )
-
-            [1] => Array
-                (
-                    [0] => 1
-                    [1] => Subitus
-                    [2] => Subitus
-                )
-
-            [2] => Array
-                (
-                    [0] => 2
-                    [1] => Programación
-                    [2] => Curso de programación
-                )
-
-            [3] => Array
-                (
-                    [0] => 3
-                    [1] => Diseño
-                    [2] => Curso de diseño
-                )
-
-            [4] => Array
-                (
-                    [0] => 4
-                    [1] => Instruccional
-                    [2] => Curso de Instruccional
-                )
-
-            [5] => Array
-                (
-                    [0] => 5
-                    [1] => Administración
-                    [2] => Administración
-                )
-
-        )
-     */
 
     $downloadfilename = clean_filename($filename);
     // Creating a workbook.
@@ -2576,4 +2531,34 @@ function local_dominosdashboard_export_configurable_report(){
 
     $workbook->close();
     exit;    
+}
+
+function local_dominosdashboard_get_configurable_report_records(){
+    $type = local_dominosdashboard_course_users_pagination;
+
+    switch($type){
+        case local_dominosdashboard_course_users_pagination:
+        $email_provider = local_dominosdashboard_get_email_provider_to_allow();
+        if(!empty($email_provider)){
+            $whereEmailProvider = " AND email LIKE '%{$email_provider}'"; 
+        }else{
+            $whereEmailProvider = ""; 
+        }
+        $enrol_sql_query = " user.id > 1 AND user.deleted = 0 {$whereEmailProvider}";
+        break;
+    }
+    global $DB;
+    
+    $report_info = local_dominosdashboard_get_report_columns($type);
+    $queryParams = array();
+    $searchQuery = " WHERE " . $enrol_sql_query;
+    $select_sql = $report_info->select_sql;
+    $limit = '';
+    $columnName = 'name';
+    $columnSortOrder = 'ASC';
+    $query = "select {$select_sql} from {user} AS user {$searchQuery} order by {$columnName} {$columnSortOrder} {$limit}";
+    // _sql($query, $queryParams);
+    $records = $DB->get_records_sql($query, $queryParams);
+
+    return $records;
 }
