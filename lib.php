@@ -1687,28 +1687,6 @@ function local_dominosdashboard_make_courses_cache(){ // realizando
     $finalprocesstime = microtime(true);
     $functiontime = $finalprocesstime - $startprocesstime; //este resultado estará en segundos
     return "Se ejecutaron {$count} actualizaciones en {$functiontime} segundos";
-    if($DB->count_records('dominos_d_cache') == 0){ // Crear al menos el registro de los cursos con el catálogo regiones
-        return 'Creando regiones';
-    }else{
-        return "Existen regiones";
-    }
-    foreach($courses as $course){
-        $courseid = $course->id;
-        $course = $DB->get_record('course', array('id' => $courseid), 'id, shortname, fullname');
-        if($course == false){
-            return false;
-        }
-        $course_information = local_dominosdashboard_get_course_information($course->id, $kpis = false, $activities = false, $params = array());
-        local_dominosdashboard_insert_historic_record($course_information, $currenttime, $course);
-        foreach (local_dominosdashboard_get_indicators() as $indicator) {
-            foreach (local_dominosdashboard_get_catalogue($indicator) as $item) {
-                $params = array();
-                $params[$indicator] = $item;
-                $course_information = local_dominosdashboard_get_course_information($courseid, $kpis = false, $activities = false, $params = array());
-                local_dominosdashboard_insert_historic_record($course_information, $currenttime, $course, $indicator, $item);
-            }
-        }
-    }
 }
 
 /**
@@ -2492,4 +2470,110 @@ function local_dominosdashboard_array_up($array,$position) {
 	} else { $response = $array; }
     // _log('Resultado', $response);
     return $response;
+}
+
+function local_dominosdashboard_export_configurable_report(){
+    global $DB, $CFG;
+    require_once($CFG->dirroot.'/lib/excellib.class.php');
+
+    $information = $DB->get_records_sql('SELECT id, shortname, fullname FROM {course}');
+
+    // $table = $report->table;
+    // $matrix = array();
+    $filename = 'report_'.(time()).'.xls';
+
+    // if (!empty($table->head)) {
+    //     $countcols = count($table->head);
+    //     $keys = array_keys($table->head);
+    //     $lastkey = end($keys);
+    //     foreach ($table->head as $key => $heading) {
+    //             $matrix[0][$key] = str_replace("\n", ' ', htmlspecialchars_decode(strip_tags(nl2br($heading))));
+    //     }
+    // }
+
+    // if (!empty($table->data)) {
+    //     foreach ($table->data as $rkey => $row) {
+    //         foreach ($row as $key => $item) {
+    //             $matrix[$rkey + 1][$key] = str_replace("\n", ' ', htmlspecialchars_decode(strip_tags(nl2br($item))));
+    //         }
+    //     }
+    // }
+
+    $matrix = array();
+    foreach ($information as $key => $value) {
+        $line = array();
+        $value = (array) $value;
+        $value = array_values($value);
+        array_push($matrix, $value);
+        // $matrix[];
+        # code...
+    }
+
+
+
+
+    // _log($matrix);
+    /* 
+        Array(
+            [0] => Array
+                (
+                    [0] => id
+                    [1] => shortname
+                    [2] => fullname
+                )
+
+            [1] => Array
+                (
+                    [0] => 1
+                    [1] => Subitus
+                    [2] => Subitus
+                )
+
+            [2] => Array
+                (
+                    [0] => 2
+                    [1] => Programación
+                    [2] => Curso de programación
+                )
+
+            [3] => Array
+                (
+                    [0] => 3
+                    [1] => Diseño
+                    [2] => Curso de diseño
+                )
+
+            [4] => Array
+                (
+                    [0] => 4
+                    [1] => Instruccional
+                    [2] => Curso de Instruccional
+                )
+
+            [5] => Array
+                (
+                    [0] => 5
+                    [1] => Administración
+                    [2] => Administración
+                )
+
+        )
+     */
+
+    $downloadfilename = clean_filename($filename);
+    // Creating a workbook.
+    $workbook = new MoodleExcelWorkbook("-");
+    // Sending HTTP headers.
+    $workbook->send($downloadfilename);
+    // Adding the worksheet.
+    $myxls = $workbook->add_worksheet($filename);
+
+    foreach ($matrix as $ri => $col) {
+        foreach ($col as $ci => $cv) {
+            $myxls->write_string($ri, $ci, $cv);
+        }
+    }
+
+    $workbook->close();
+    exit;    
 }
