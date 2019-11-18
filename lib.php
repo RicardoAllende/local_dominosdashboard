@@ -1187,10 +1187,11 @@ function local_dominosdashboard_get_charts(){
 function local_dominosdashboard_get_profile_fields(){
     global $DB;
     $profileFields = array();
-    foreach($DB->get_records('user_info_field', array(), 'id, shortname') as $profileField){
-        $profileFields[$profileField->id] = $profileField->shortname;
+    $records = $DB->get_records_sql_menu("SELECT id, CONCAT(name, ' (', shortname, ')') as fieldname FROM mdl_user_info_field ORDER BY fieldname");
+    if(empty($records)){
+        return array();
     }
-    return $profileFields;
+    return $records;
 }
 
 if(!function_exists('dd')){

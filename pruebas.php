@@ -38,7 +38,27 @@ echo $OUTPUT->header();
 $tiempo_inicial = microtime(true); //true es para que sea calculado en segundos
 
 // local_dominosdashboard_export_configurable_report();
-_print(count(local_dominosdashboard_get_configurable_report_records()));
+$action = optional_param('action', '', PARAM_TEXT);
+switch ($action) {
+    case '':
+        _print(local_dominosdashboard_get_user_catalogues());
+        break;
+
+    case 'truncate':
+        global $DB;
+        $DB->delete_records('dominos_d_cache');
+        echo "Tabla dominos_d_cache truncada";
+        // _print(local_dominosdashboard_get_profile_fields());
+        break;
+
+    // case '':
+    //     _print(local_dominosdashboard_get_profile_fields());
+    //     break;
+    
+    default:
+        echo "Acción desconocida";
+        break;
+}
 
 $tiempo_final = microtime(true);
 $tiempo = $tiempo_final - $tiempo_inicial; //este resultado estará en segundos
