@@ -127,3 +127,6 @@ $string['reportdefaultfields'] = 'Campos tabla usuarios en reportes';
 $string['reportdefaultfields_desc'] = 'Seleccione los campos de la tabla {user} de moodle para mostrar en el reporte. Presione ctrl para seleccionar varios campos';
 $string['reportcourses'] = 'Cursos del reporte personalizado';
 $string['reportcourses_desc'] = 'Seleccione los cursos que incluirá el reporte personalizado. Presione ctrl para seleccionar varios campos';
+
+$string['dominosdashboard:view'] = 'Ver Domino\'s Dahsboard';
+$string['dominosdashboard:manage'] = 'Administrar Domino\'s Dahsboard';
