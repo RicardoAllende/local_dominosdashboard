@@ -2066,8 +2066,8 @@ function local_dominosdashboard_get_paginated_users(array $params, $type = local
     ## Response
     $response = array(
         "draw" => intval($draw),
-        "iTotalRecords" => $totalRecordwithFilter,
-        "iTotalDisplayRecords" => $totalRecords,
+        "iTotalRecords" => $totalRecords,
+        "iTotalDisplayRecords" => $totalRecordwithFilter,
         "aaData" => array_values($records)
     );
     $json_response = json_encode($response);
