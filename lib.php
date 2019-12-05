@@ -543,7 +543,44 @@ function local_dominosdashboard_get_courses_overview(int $type, array $params = 
         case LOCALDOMINOSDASHBOARD_DETALLES_ENTRENAMIENTO: // Listado de cursos disponibles
         case LOCALDOMINOSDASHBOARD_AVAILABLE_COURSES:
             $response = array();
-            $courses = local_dominosdashboard_get_courses($allCourses);
+            // $courses = local_dominosdashboard_get_courses($allCourses);
+            $sections_array = array('b', 'c', 'd');
+            $sections = array();
+            $selected_courses = array();
+            $configs = array();
+            $course_sections = array();
+            $config_name = 'seccion_a';
+            $course_sections[$config_name] = new stdClass();
+            $course_sections[$config_name]->name = get_string($config_name, "local_dominosdashboard");
+            $course_sections[$config_name]->courses = array();
+
+            foreach($sections_array as $s){
+                $config_name = 'seccion_' . $s;
+                $config = get_config('local_dominosdashboard', $config_name);
+                $course_sections[$config_name] = new stdClass();
+                $course_sections[$config_name]->name = get_string($config_name, "local_dominosdashboard");
+                $course_sections[$config_name]->courses = array();
+                if(empty($config)){
+                    continue;
+                }
+                $temp_config = new stdClass();
+                $temp_config->config = $config;
+                if(strpos($config, ',') === false){
+                    $temp_config->exploded_config = array($config);
+                }else{ 
+                    $temp_config->exploded_config = explode(',', $config);
+                }
+                $configs[$config_name] = $temp_config;
+                $selected_courses = array_merge($selected_courses, $temp_config->exploded_config);
+            }
+            $selected_courses = array_unique($selected_courses);
+            $selected_courses = implode(',', $selected_courses);
+            if(empty($selected_courses)){
+                $selected_courses = " AND 1 = 0";
+            }else{
+                $selected_courses = " AND id IN ($selected_courses)";
+            }
+            $courses = local_dominosdashboard_get_courses(false, $selected_courses);
             foreach($courses as $course){
                 $course_information = local_dominosdashboard_get_course_information($course->id, false, false, $params);
                 array_push($response, $course_information);
