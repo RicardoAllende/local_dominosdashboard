@@ -43,6 +43,8 @@ if ($hassiteconfig) {
      . $this_plugin_name, $CFG->wwwroot . '/local/dominosdashboard/administrar_KPIS.php'));
     $ADMIN->add('localplugins', new admin_externalpage('local_dominosdashboard_reporte_personalizado', "Reporte personalizado "
      . $this_plugin_name, $CFG->wwwroot . '/local/dominosdashboard/descargar_reporte_personalizado.php'));
+    $ADMIN->add('localplugins', new admin_externalpage('local_dominosdashboard_ordenar_reporte', "Orden de reporte personalizado "
+     . $this_plugin_name, $CFG->wwwroot . '/local/dominosdashboard/ordenar.php'));
     
     if(isset($_GET['section'])){
         if($_GET['section'] == 'local_dominosdashboard'){

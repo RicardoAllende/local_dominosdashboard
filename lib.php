@@ -83,6 +83,11 @@ function local_dominosdashboard_extend_navigation(global_navigation $nav) {
         );
         $node->showinflatnavigation = true;
         $node = $nav->add (
+            "Ordenar campos reporte personalizado " . $this_plugin_name,
+            new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/orden.php' )
+        );
+        $node->showinflatnavigation = true;
+        $node = $nav->add (
             "Reporte personalizado " . $this_plugin_name,
             new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/descargar_reporte_personalizado.php' )
         );
