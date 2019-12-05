@@ -1318,16 +1318,23 @@ function local_dominosdashboard_get_courses(bool $allCourses = false, $andWhereC
     global $DB;
     $categories = local_dominosdashboard_get_categories_with_subcategories(local_dominosdashboard_get_category_parent(), false);
     if($allCourses){
-        $query = "SELECT id, fullname, shortname FROM {course} where category in ({$categories}) {$andWhereClause} order by sortorder";
+        $query = "SELECT id, fullname, shortname FROM {course} where visible = 1 AND category in ({$categories}) {$andWhereClause} order by sortorder";
     }else{
         if($exclusion = get_config('local_dominosdashboard', 'excluded_courses')){
             if($exclusion != ''){
                 $andWhereClause .= " AND id NOT IN ({$exclusion}) ";
             }
         }
-        $query = "SELECT id, fullname, shortname FROM {course} where category in ({$categories}) {$andWhereClause} order by sortorder";
+        $query = "SELECT id, fullname, shortname FROM {course} where visible = 1 AND category in ({$categories}) {$andWhereClause} order by sortorder";
     }
     return $DB->get_records_sql($query);
+}
+
+function local_dominosdashboard_get_report_courses(){
+    global $DB;
+    $categories = local_dominosdashboard_get_categories_with_subcategories(get_config('local_dominosdashboard', 'report_parent_category'), false);
+    $query = "SELECT id, fullname FROM {course} where visible = 1 AND category in ({$categories})  order by sortorder";
+    return $DB->get_records_sql_menu($query);
 }
 
 function local_dominosdashboard_get_categories(){

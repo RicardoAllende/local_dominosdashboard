@@ -58,6 +58,13 @@ if ($hassiteconfig) {
             $setting = new admin_setting_configselect($name, $title, $description, 1, $options);
             $page->add($setting);
 
+            $name = $ldm_pluginname . '/' . 'report_parent_category';
+            $title = 'Categoría padre de los reportes';
+            $description = 'A partir de esta categoría se listarán los cursos para los reportes.<br><strong>Después de elegir la categoría padre, por favor haga clic en guardar para cargar los cursos correspondientes en la pestaña campos del reporte.</strong>';
+            $options = local_dominosdashboard_get_categories();
+            $setting = new admin_setting_configselect($name, $title, $description, 1, $options);
+            $page->add($setting);
+
             $settings->add($page);
 
             $page = new admin_settingpage($ldm_pluginname . 'tab_admins', get_string('tab_admins', $ldm_pluginname));
@@ -231,10 +238,12 @@ if ($hassiteconfig) {
             $setting = new admin_setting_configmultiselect($name, $title, $description, array(), $custom_fields);
             $page->add($setting);
 
+            $report_courses = local_dominosdashboard_get_report_courses();
+
             $name = $ldm_pluginname . '/reportcourses';
             $title = get_string('reportcourses', $ldm_pluginname);
             $description = get_string('reportcourses' . '_desc', $ldm_pluginname);
-            $setting = new admin_setting_configmultiselect($name, $title, $description, array(), $courses_min);
+            $setting = new admin_setting_configmultiselect($name, $title, $description, array(), $report_courses);
             $page->add($setting);
             
             $settings->add($page); // Se agrega pestaña a la administración del plugin
