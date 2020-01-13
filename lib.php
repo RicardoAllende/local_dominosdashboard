@@ -79,7 +79,7 @@ function local_dominosdashboard_extend_navigation(global_navigation $nav) {
         $node->showinflatnavigation = true;
         $node = $nav->add (
             "Administrar KPI's " . $this_plugin_name,
-            new moodle_url( $CFG->wwwroot . 'local/dominosdashboard/administrar_KPIS.php' )
+            new moodle_url( $CFG->wwwroot . '/local/dominosdashboard/administrar_KPIS.php' )
         );
         $node->showinflatnavigation = true;
         $node = $nav->add (
