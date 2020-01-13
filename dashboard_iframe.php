@@ -37,6 +37,8 @@ $PAGE->set_title(get_string('pluginname', 'local_dominosdashboard'));
 
 $tabOptions = local_dominosdashboard_get_course_tabs();
 
+$firstKpiDate = local_dominosdashboard_get_first_kpi_date();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -59,6 +61,10 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
             <div id="contenedor_fechas">
                 <label for="fecha_inicial">Desde <input type="date" onchange="obtenerInformacion(),loaderFiltro()" class="form-control" name="fecha_inicial" id="fecha_inicial"></label> 
                 <label for="fecha_final">Hasta <input type="date" onchange="obtenerInformacion(),loaderFiltro()" class="form-control" name="fecha_final" id="fecha_final"></label>
+            </div>
+            <div id="contenedor_fechas_kpis">
+                <label for="fecha_inicial_kpi">KPI desde <input type="date" onchange="obtenerInformacion(),loaderFiltro()" class="form-control" name="fecha_inicial_kpi" id="fecha_inicial_kpi" value="<?php echo $firstKpiDate; ?>"></label> 
+                <label for="fecha_final_kpi">KPI hasta <input type="date" onchange="obtenerInformacion(),loaderFiltro()" class="form-control" name="fecha_final_kpi" id="fecha_final_kpi" value="<?php echo date('Y-m-d'); ?>"></label>
             </div>
             <input type="hidden" name="report_type" id="report_type" value="course_list">
             <div class="col-sm-11" id='contenedor_filtros' style="text-align: center;"></div>
@@ -172,12 +178,14 @@ $tabOptions = local_dominosdashboard_get_course_tabs();
                 $('#contenido_cursos, #contenido_dashboard').addClass('row col-sm-9');
             }
             $("#cardpuestos").hide();
+            $("#contenedor_fechas_kpis").hide();
 
             if(tab == 2){
                 $("#exportar_a_excel_boton").show();
                 $("#cardpuestos").show();
             }
             if(tab == 3){
+                $("#contenedor_fechas_kpis").show();
                 $("#exportar_a_excel_boton").hide(); // Ocultar exportado de cursos en la última pestaña
                 $("#cardpuestos").hide();
             }

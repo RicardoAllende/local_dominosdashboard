@@ -808,8 +808,8 @@ function local_dominosdashboard_get_kpi_results($id, array $params){
     $sqlParams = array();
     $ccoms = "";
 
-    $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial');
-    $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final');
+    $fecha_inicial = local_dominosdashboard_get_value_from_params($params, 'fecha_inicial_kpi');
+    $fecha_final = local_dominosdashboard_get_value_from_params($params, 'fecha_final_kpi');
     
     $campo_fecha = 'kpi_date';
     $filtro_fecha = "";
@@ -1753,7 +1753,7 @@ function local_dominosdashboard_make_courses_cache(){ // realizando
 function local_dominosdashboard_get_parameters_from_cache_record($record){
     $params = array();
     if(empty($record)){
-        return params();
+        return $params;
     }
     $record = (array) $record;
     $indicators = local_dominosdashboard_get_indicators(); 
@@ -2617,4 +2617,9 @@ function local_dominosdashboard_get_configurable_report_records(){
     $records = $DB->get_records_sql($query, $queryParams);
 
     return $records;
+}
+
+function local_dominosdashboard_get_first_kpi_date(){
+    global $DB;
+    return $DB->get_field_sql("SELECT min(date(FROM_UNIXTIME(kpi_date))) FROM {dominos_kpis}");
 }
