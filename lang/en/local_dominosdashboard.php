@@ -112,7 +112,7 @@ $string['seccion_a_desc'] = 'Contendra la informacion de avance de todos los cur
 $string['seccion_b'] = 'Programa de entrenamiento de nuevo ingreso';
 $string['seccion_b_desc'] = 'Contendra la información de los cursos definidos por el administrador del dashboard (por el momento solo es nom 251 y curso de induccion), este tambien respondera a los filtros y mostrara la información de avance dividido por curso configurado en la seccion';
 
-$string['seccion_c'] = 'Ruta dominos';
+$string['seccion_c'] = 'Ruta domino´s';
 $string['seccion_c_desc'] = 'Contendra un comparativo de regiones, dividido por cursos definidos, responderá a los filtros de regiones';
 
 $string['seccion_d'] = 'Programas de entrenamiento temporal';

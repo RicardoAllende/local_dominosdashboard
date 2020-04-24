@@ -1171,6 +1171,12 @@ function createCardGrahp_comparative(container, title, arrGraph, id) {
     // console.log('arrGraph');
     // console.log(arrGraph);
     chart = c3.generate({
+        padding: {
+            top: 0,
+            right: 100,
+            bottom: 30,
+            left: 100,
+        },
         data: {
             x: 'x',
             columns: arrGraph,
@@ -1357,7 +1363,7 @@ function createCardGrahp_group(container, title, cursos_d, inscritos_d, aprobado
 
     $(container).append(card_group);
 
-    return c3.generate({
+    return c3.generate({                        
         data: {
             x: 'x',
             columns: [
